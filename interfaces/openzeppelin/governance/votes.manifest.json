@@ -1,0 +1,205 @@
+{
+    "$schema": "../../schema.json",
+    "name": "Votes unit",
+    "description": "Base abstract contract that tracks voting units, which are a measure of voting power that can be transferred, and provides a system of vote delegation.",
+    "eventDecorators": [
+        {
+            "signature": "DelegateChanged(address,address,address)",
+            "name": "Delegate changed",
+            "description": "Emitted when the tokens are delegated to another representative to be counted as voting power.",
+            "parameterDecorators": [
+                {
+                    "name": "Delegator",
+                    "description": "Account delegating the power to another representative.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Old representative",
+                    "description": "Account representing the delegator before this change occured.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "New representative",
+                    "description": "New account to represent the delegator.",
+                    "recommendedTypes": []
+                }
+            ]
+        },
+        {
+            "signature": "DelegateVotesChanged(address,uint256,uint256)",
+            "name": "Delegate votes changed",
+            "description": "Emitted when the voting power of the account changes.",
+            "parameterDecorators": [
+                {
+                    "name": "Delegate",
+                    "description": "Account holding the voting power",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Previous voting power",
+                    "description": "Voting power balance of the delegator before this change occured.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "New voting power",
+                    "description": "Voting power balance of the delegator after the change occured.",
+                    "recommendedTypes": []
+                }
+            ]
+        }
+    ],
+    "functionDecorators": [
+        {
+            "signature": "getVotes(address)",
+            "name": "Get votes",
+            "description": "Returns the current amount of voting power held by the given account.",
+            "parameterDecorators": [
+                {
+                    "name": "Account",
+                    "description": "Account for which the voting power is queried.",
+                    "recommendedTypes": [
+                        "types.contractCaller"
+                    ]
+                }
+            ],
+            "returnDecorators": [
+                {
+                    "name": "Voting power",
+                    "description": "Voting power held by the account.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "getPastVotes(address,uint256)",
+            "name": "Get past votes",
+            "description": "Returns the amount of votes that the given account had at the given point in time",
+            "parameterDecorators": [
+                {
+                    "name": "Account",
+                    "description": "Account to check the voting power for.",
+                    "recommendedTypes": [ "types.contractCaller" ]
+                },
+                {
+                    "name": "Block number",
+                    "description": "Block number in the past for which the past votes is queried.",
+                    "recommendedTypes": [ "types.blockNumber" ]
+                }
+            ],
+            "returnDecorators": [
+                {
+                    "name": "Voting power",
+                    "description": "Voting power for the given account and the point in time.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "getPastTotalSupply(uint256)",
+            "name": "Get past total supply",
+            "description": "Returns the total supply of votes available at the given point in time.",
+            "parameterDecorators": [
+                {
+                    "name": "Block number",
+                    "description": "Block number in the past for which the total votes supply is queried.",
+                    "recommendedTypes": [ "types.blockNumber" ]
+                }
+            ],
+            "returnDecorators": [
+                {
+                    "name": "Votes supply",
+                    "description": "Total number of existing votes (wrapped tokens) at the given point in time.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "delegates(address)",
+            "name": "Delegates",
+            "description": "Returns the account configured to hold the voting rights for the given delegator account.",
+            "parameterDecorators": [
+                {
+                    "name": "Delegator",
+                    "description": "Delegator account",
+                    "recommendedTypes": [
+                        "types.contractCaller"
+                    ]
+                }
+            ],
+            "returnDecorators": [
+                {
+                    "name": "Voting rights holder",
+                    "description": "Account holding the rights delegated by the delegator",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "delegate(address)",
+            "name": "Delegate",
+            "description": "Delegates voting power to another account",
+            "parameterDecorators": [
+                {
+                    "name": "Account",
+                    "description": "Account to which the voting power is delegated to.",
+                    "recommendedTypes": [
+                        "types.contractCaller"
+                    ]
+                }
+            ],
+            "returnDecorators": [],
+            "emittableEvents": [
+                "DelegateChanged(address,address,address)",
+                "DelegateVotesChanged(address,uint256,uint256)"
+            ]
+        },
+        {
+            "signature": "delegateBySig(address,uint256,uint256,uint8,bytes32,bytes32)",
+            "name": "Delegate by signature",
+            "description": "Delegates the voting power to a given account by providing the message signed by the delegator off-chain.",
+            "parameterDecorators": [
+                {
+                    "name": "Delegatee",
+                    "description": "Receiver of the voting rights transferred from the message signer.",
+                    "recommendedTypes": [ "types.contractCaller" ]
+                },
+                {
+                    "name": "Nonce",
+                    "description": "Message nonce. Must be configured properly by the message signer and auto-incremented for every new signed message sent to this contract.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Expiry",
+                    "description": "Message expiry. Message expiration timestamp configured before the message was signed.",
+                    "recommendedTypes": [
+                        "types.unixTimestamp"
+                    ]
+                },
+                {
+                    "name": "V",
+                    "description": "V",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "R",
+                    "description": "R",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "S",
+                    "description": "S",
+                    "recommendedTypes": []
+                }
+            ],
+            "returnDecorators": [],
+            "emittableEvents": [
+                "DelegateChanged(address,address,address)",
+                "DelegateVotesChanged(address,uint256,uint256)" 
+            ]
+        }
+    ]
+}
