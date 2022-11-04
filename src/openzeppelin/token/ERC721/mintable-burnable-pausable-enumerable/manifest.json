@@ -1,0 +1,417 @@
+{
+    "$schema": "../../../../schema.json",
+    "tags": [
+        "nft",
+        "mintable nft",
+        "pausable",
+        "pausable nft",
+        "burnable",
+        "burnable nft",
+        "erc721",
+        "mintable erc721",
+        "pausable erc721",
+        "burnable erc721",
+        "enumerable nft",
+        "enumerable",
+        "enumerable erc721"
+    ],
+    "implements": [
+        "erc.erc-721",
+        "erc.erc-721.burnable",
+        "erc.erc-721.enumerable",
+        "erc.erc-721.metadata"
+    ],
+    "name": "NFT (Mintable, Burnable, Pausable)",
+    "description": "ERC721 NFT implementation with mint and burn functions.",
+    "eventDecorators": [
+        {
+            "signature": "Paused(address)",
+            "name": "Pause transfers",
+            "description": "Emitted when the wallet with the pauser role stops all token transfers.",
+            "parameterDecorators": [
+                {
+                    "name": "Pause caller",
+                    "description": "Wallet with the pause rights who initiated the action to stop all token transfers",
+                    "recommendedTypes": []
+                }
+            ]
+        },
+        {
+            "signature": "Unpaused(address)",
+            "name": "Unpause transfers",
+            "description": "Emitted when the wallet with the pauser role enables token transfers again.",
+            "parameterDecorators": [
+                {
+                    "name": "Pause caller",
+                    "description": "Wallet with the pause rights who initiated the action to enable all token transfers again",
+                    "recommendedTypes": []
+                }
+            ]
+        },
+        {
+            "signature": "RoleGranted(bytes32,address,address)",
+            "name": "Role Granted",
+            "description": "Emitted when a new wallet is granted the rights for a specific role",
+            "parameterDecorators": [
+                {
+                    "name": "Role",
+                    "description": "Role category identifier.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Account",
+                    "description": "Wallet becoming the member for role category.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Caller",
+                    "description": "Wallet managing this role category and the one who granted the role to the account.",
+                    "recommendedTypes": []
+                }
+            ]
+        },
+        {
+            "signature": "RoleRevoked(bytes32,address,address)",
+            "name": "Role Revoked",
+            "description": "Emitted when the role is revoked from the specified wallet",
+            "parameterDecorators": [
+                {
+                    "name": "Role",
+                    "description": "Role category identifier.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Account",
+                    "description": "Wallet whose role has been revoked.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Caller",
+                    "description": "Wallet managing this role category and the one who revoked the role to the account.",
+                    "recommendedTypes": []
+                }
+            ]
+        },
+        {
+            "signature": "Transfer(address,address,uint256)",
+            "name": "Token transfer",
+            "description": "Indicates that ERC721 transfer has occurred.",
+            "parameterDecorators": [
+                {
+                    "name": "Sender address",
+                    "description": "Address from which the ERC721 token was sent.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Recipient address",
+                    "description": "Address to which the ERC721 token was sent.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Token Id",
+                    "description": "Id of the specific nft within the ERC721 collection which was transferred to another wallet",
+                    "recommendedTypes": []
+                }
+            ]
+        }
+    ],
+    "constructorDecorators": [
+        {
+            "signature": "constructor(string,string,string)",
+            "name": "Constructor",
+            "description": "Creates new ERC721 collection by defining token name, token symbol and the base URI to be used for calculating unique URIs for every collection item. For example having the same base url with different ids can point to different images stored on ipfs or some other storage service.",
+            "parameterDecorators": [
+                {
+                    "name": "Token name",
+                    "description": "Descriptive token name of this ERC721 nft collection. (for example, `Game Item`)",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Token symbol",
+                    "description": "Short token symbol to be used for this ERC721 nft collection. (for example, `GITM`)",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Base token URI",
+                    "description": "Base token URI to be used for calculating unique URI for every collection item, usually by apending the token id to the base uri defined here.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        }
+    ],
+    "functionDecorators": [
+        {
+            "signature": "paused()",
+            "name": "Paused",
+            "description": "Checks if the token transfers for this ERC721 collection are disabled.",
+            "parameterDecorators": [],
+            "returnDecorators": [
+                {
+                    "name": "Is paused",
+                    "description": "If this value is `true` the token transfers are in `paused` state.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "DEFAULT_ADMIN_ROLE()",
+            "name": "Default Admin role category",
+            "description": "Returns the default admin role category to be used for managing every new role category if no other value is specified. Admins of role category can grant and revoke role to wallets, and transfer role admin rights to other wallets.",
+            "parameterDecorators": [],
+            "returnDecorators": [
+                {
+                    "name": "Default Admin role category",
+                    "description": "Identifier of the Admin role group.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "MINTER_ROLE()",
+            "name": "Minter role category",
+            "description": "Returns the minter role category identifier. Members of the role with this identifier have rights to mint (create) new tokens for this ERC721 collection.",
+            "parameterDecorators": [],
+            "returnDecorators": [
+                {
+                    "name": "Minter role category",
+                    "description": "Identifier of the Minter role group.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "PAUSER_ROLE()",
+            "name": "Pauser role category",
+            "description": "Returns the pauser role category identifier. Members of the role with this identifier have rights to pause and unpause all token transfers for this ERC721 collection.",
+            "parameterDecorators": [],
+            "returnDecorators": [
+                {
+                    "name": "Pauser role category",
+                    "description": "Identifier of the Pauser role group.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "getRoleAdmin(bytes32)",
+            "name": "Get role admin",
+            "description": "Returns the role identifier whose members can manage the role given as the function parameter. Managing includes adding or removing the members from the given role group.",
+            "parameterDecorators": [
+                {
+                    "name": "Role identifier",
+                    "description": "Identifier of the role for which the admin role is queried.",
+                    "recommendedTypes": []
+                }
+            ],
+            "returnDecorators": [
+                {
+                    "name": "Admin Role identifier",
+                    "description": "Admin role for the given role group. If the admin role was not set then the default admin role group will be returned. Usually the default value is 0x0.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "getRoleMember(bytes32,uint256)",
+            "name": "Get role member",
+            "description": "Gets the wallet address of the role member at the given index position. One role can have many more than one members.",
+            "parameterDecorators": [
+                {
+                    "name": "Role identifier",
+                    "description": "Identifier of the role for which the member address is queried.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Member index",
+                    "description": "Position in the list of members. To find out the total members count for the role identifier the `getRoleMemberCount()` function can be usesd.",
+                    "recommendedTypes": []
+                }
+            ],
+            "returnDecorators": [
+                {
+                    "name": "Fetched role member",
+                    "description": "Address of the member fetched from the given role group at given index position.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "getRoleMemberCount(bytes32)",
+            "name": "Get role member count",
+            "description": "Returns the total number of members belonging to the role with the given role identifier",
+            "parameterDecorators": [
+                {
+                    "name": "Role identifier",
+                    "description": "Identifier of the role for which the members count is queried.",
+                    "recommendedTypes": []
+                }
+            ],
+            "returnDecorators": [
+                {
+                    "name": "Role member count",
+                    "description": "Total number of members belonging to the role",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "grantRole(bytes32,address)",
+            "name": "Grant role",
+            "description": "Adds new member to the given role group. Only role admin can call this function.",
+            "parameterDecorators": [
+                {
+                    "name": "Role identifier",
+                    "description": "Identifier of the role for which the new member is being added.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Member wallet",
+                    "description": "Wallet address of the new role member",
+                    "recommendedTypes": []
+                }
+            ],
+            "returnDecorators": [],
+            "emittableEvents": [
+                "RoleGranted(bytes32,address,address)"
+            ]
+        },
+        {
+            "signature": "hasRole(bytes32,address)",
+            "name": "Has role",
+            "description": "Checks if the given wallet address is a member of a given role group.",
+            "parameterDecorators": [
+                {
+                    "name": "Role identifier",
+                    "description": "Identifier of the role for which the membership is being checked.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Member wallet",
+                    "description": "Wallet address of the account for which the role membership is being checked.",
+                    "recommendedTypes": []
+                }
+            ],
+            "returnDecorators": [
+                {
+                    "name": "Has role",
+                    "description": "If value returned is `true`, then the given wallet address *IS* the member of the given role group.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "mint(address)",
+            "name": "Mint",
+            "description": "Creates a new token for the given owner wallet. Its token ID will be automatically assigned (and available on the emitted Transfer event), and the token URI autogenerated based on the base URI configured for this ERC721 collection. This function is only callable by the wallets with Minter role.",
+            "parameterDecorators": [
+                {
+                    "name": "Owner wallet",
+                    "description": "Wallet address which is going to become an owner of the newly created token.",
+                    "recommendedTypes": [
+                        "traits.erc721receivable",
+                        "traits.contractCaller"
+                    ]
+                }
+            ],
+            "returnDecorators": [],
+            "emittableEvents": [
+                "Transfer(address,address,uint256)"
+            ]
+        },
+        {
+            "signature": "mintMany(address,uint256)",
+            "name": "Mint many",
+            "description": "Creates a new amount of tokens for the given owner wallet. Its token IDs will be automatically assigned (and available on the emitted Transfer events), and the token URIs autogenerated based on the base URI configured for this ERC721 collection. This function is only callable by the wallets with Minter role.",
+            "parameterDecorators": [
+                {
+                    "name": "Owner wallet",
+                    "description": "Wallet address which is going to become an owner of the newly created token.",
+                    "recommendedTypes": [
+                        "traits.erc721receivable",
+                        "traits.contractCaller"
+                    ]
+                },
+                {
+                    "name": "Token amount",
+                    "description": "Amount of the tokens to mint",
+                    "recommendedTypes": []
+                }
+            ],
+            "returnDecorators": [],
+            "emittableEvents": [
+                "Transfer(address,address,uint256)"
+            ]
+        },
+        {
+            "signature": "pause()",
+            "name": "Pause transfers",
+            "description": "Freezes all of the token transfers until the next `unpause()` call. This is only callable by the wallets with the Pauser role.",
+            "parameterDecorators": [],
+            "returnDecorators": [],
+            "emittableEvents": [
+                "Paused(address)"
+            ]
+        },
+        {
+            "signature": "unpause()",
+            "name": "Enable token transfers",
+            "description": "Enables the token transfers again if the transfers were previously disabled. Only the wallets with the Pauser role can call this function or else the call will fail.",
+            "parameterDecorators": [],
+            "returnDecorators": [],
+            "emittableEvents": [
+                "Unpaused(address)"
+            ]
+        },
+        {
+            "signature": "renounceRole(bytes32,address)",
+            "name": "Renounce role",
+            "description": "Role member can call this function to renounce the given role.",
+            "parameterDecorators": [
+                {
+                    "name": "Role identifier",
+                    "description": "Role to renounce from",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Account address",
+                    "description": "Account address renouncing the given role. This parameter must be equal to the function caller address, since only role owner can renounce its membership.",
+                    "recommendedTypes": []
+                }
+            ],
+            "returnDecorators": [],
+            "emittableEvents": [
+                "RoleRevoked(bytes32,address,address)"
+            ]
+        },
+        {
+            "signature": "revokeRole(bytes32,address)",
+            "name": "Revoke role",
+            "description": "Removes the given account address (second parameter) from the role members of the given role category (first parameter). This is only callable by the members of the admin role group defined as a manager group for the given role. To find out what's the manager group for a given role, the `getRoleAdmin()` function can be called.",
+            "parameterDecorators": [
+                {
+                    "name": "Role identifier",
+                    "description": "Role to remove the member from",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Role member",
+                    "description": "Wallet address of the role member whose role membership is being removed.",
+                    "recommendedTypes": []
+                }
+            ],
+            "returnDecorators": [],
+            "emittableEvents": [
+                "RoleRevoked(bytes32,address,address)"
+            ]
+        }
+    ]
+}

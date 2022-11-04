@@ -1,0 +1,363 @@
+{
+    "$schema": "../../../schema.json",
+    "tags": [
+        "governance",
+        "token voting",
+        "quorum fraction voting",
+        "for-against-abstain voting",
+        "token based voting"
+    ],
+    "implements": [
+        "openzeppelin.governor",
+        "common.contract-caller",
+        "common.erc20-receiver",
+        "common.eth-receiver",
+        "erc.erc-721.receiver"
+    ],
+    "name": "Governor (powered by Voting Token)",
+    "description": "Enables proposal-based governance system using the voting tokens as voting power.",
+    "eventDecorators": [
+        {
+            "signature": "VoteCast(address,uint256,uint8,uint256,string)",
+            "name": "Vote cast",
+            "description": "Emitted when the new vote is casted for the proposal.",
+            "parameterDecorators": [
+                {
+                    "name": "Voter",
+                    "description": "Account casting the vote.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Proposal Id",
+                    "description": "Id of the proposal.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Support",
+                    "description": "Voting option chosen by the voter.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Weight",
+                    "description": "Voter's voting power,",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Reason",
+                    "description": "Reason provided by the voter when casting the vote.",
+                    "recommendedTypes": []
+                }
+            ]
+        },
+        {
+            "signature": "QuorumNumeratorUpdated(uint256,uint256)",
+            "name": "Quorum numerator updated",
+            "description": "Emitted when the quorum numerator parameter gets updated. Quorum is a percentage defined by its numerator and denominator.",
+            "parameterDecorators": [
+                {
+                    "name": "Old quorum numerator",
+                    "description": "Old quorum numerator",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "New quorum numerator",
+                    "description": "New quorum numerator",
+                    "recommendedTypes": []
+                }
+            ]
+        }
+    ],
+    "constructorDecorators": [
+        {
+            "signature": "constructor(string,address,uint256,uint256,uint256,uint256)",
+            "name": "Constructor",
+            "description": "Creates new Governance system based on the given voting token.",
+            "parameterDecorators": [
+                {
+                    "name": "Name",
+                    "description": "Governance system name",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Voting token",
+                    "description": "Voting token to be used as the voting power source.",
+                    "recommendedTypes": [
+                        "openzeppelin.votes"
+                    ]
+                },
+                {
+                    "name": "Voting delay",
+                    "description": "How long after a proposal is created should voting power be fixed. A large voting delay gives users time to unstake tokens if necessary.",
+                    "recommendedTypes": [
+                        "types.durationBlocks"
+                    ]
+                },
+                {
+                    "name": "Voting period",
+                    "description": "How long does a proposal remain open to votes.",
+                    "recommendedTypes": [
+                        "types.durationBlocks"
+                    ]
+                },
+                {
+                    "name": "Proposal threshold",
+                    "description": "The number of votes required in order for a voter to become a proposer.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Quorum percentage (0-100)",
+                    "description": "Minimum number of votes casted, as a percentage of total votes available in the system, required to reach a quorum.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        }
+    ],
+    "functionDecorators": [
+        {
+            "signature": "BALLOT_TYPEHASH()",
+            "name": "Ballot typehash",
+            "description": "Used for casting vote off chain by signing the vote message. This typehash must be included in the message when casting a simple vote (the one without additional params).",
+            "parameterDecorators": [],
+            "returnDecorators": [
+                {
+                    "name": "Ballot typehash",
+                    "description": "Ballot typehash",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "EXTENDED_BALLOT_TYPEHASH()",
+            "name": "Ballot typehash",
+            "description": "Used for casting vote off chain by signing the vote message. This typehash must be included in the message when casting an extended vote (the one containing additional params).",
+            "parameterDecorators": [],
+            "returnDecorators": [
+                {
+                    "name": "Extended ballot typehash",
+                    "description": "Extended ballot typehash",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "COUNTING_MODE()",
+            "name": "Counting mode",
+            "description": "Description of the possible vote options for castVote() and the way these votes are counted. This contract uses 'support=bravo&quorum=for,abstain' for this value. 'support=bravo' refers to the vote options 0 = Against, 1 = For, 2 = Abstain. 'quorum=for,abstain' means that both For and Abstain votes are counted towards quorum.",
+            "parameterDecorators": [],
+            "returnDecorators": [
+                {
+                    "name": "Counting mode",
+                    "description": "Counting used by this governance system.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "castVote(uint256,uint8)",
+            "name": "Cast vote",
+            "description": "Casts vote for provided proposal.",
+            "parameterDecorators": [
+                {
+                    "name": "Proposal Id",
+                    "description": "Id of the proposal for which the vote is being cast.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Vote decision",
+                    "description": "0 = Against, 1 = For, 2 = Abstain",
+                    "recommendedTypes": []
+                }
+            ],
+            "returnDecorators": [
+                {
+                    "name": "Voting power",
+                    "description": "Voter's voting power used when casting the vote.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [
+                "VoteCast(address,uint256,uint8,uint256,string)"      
+            ]
+        },
+        {
+            "signature": "castVoteBySig(uint256,uint8,uint8,bytes32,bytes32)",
+            "name": "Cast vote by signature",
+            "description": "Casts vote for proposal by providing the vote decision signed by the voter off-chain.",
+            "parameterDecorators": [
+                {
+                    "name": "Proposal Id",
+                    "description": "Id of the proposal for which the vote is being cast.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Vote decision",
+                    "description": "0 = Against, 1 = For, 2 = Abstain",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "V",
+                    "description": "V",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "R",
+                    "description": "R",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "S",
+                    "description": "S",
+                    "recommendedTypes": []
+                }
+            ],
+            "returnDecorators": [
+                {
+                    "name": "Voting power",
+                    "description": "Voter's voting power used when casting the vote.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [
+                "VoteCast(address,uint256,uint8,uint256,string)" 
+            ]
+        },
+        {
+            "signature": "castVoteWithReason(uint256,uint8,string)",
+            "name": "Cast vote with reason",
+            "description": "Casts vote for a proposal while also providing the reason for the vote.",
+            "parameterDecorators": [
+                {
+                    "name": "Proposal Id",
+                    "description": "Id of the proposal for which the vote is being cast.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Vote decision",
+                    "description": "0 = Against, 1 = For, 2 = Abstain",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Reason",
+                    "description": "Reason behind this vote decision - any textual value.",
+                    "recommendedTypes": []
+                }
+            ],
+            "returnDecorators": [
+                {
+                    "name": "Voting power",
+                    "description": "Voter's voting power used when casting the vote.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [
+                "VoteCast(address,uint256,uint8,uint256,string)"
+            ]
+        },
+        {
+            "signature": "proposalThreshold()",
+            "name": "Proposal threshold",
+            "description": "Returns the number of votes required in order for a voter to become a proposer.",
+            "parameterDecorators": [],
+            "returnDecorators": [
+                {
+                    "name": "Threshold",
+                    "description": "Minimum voting power required to become a proposer",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "proposalVotes(uint256)",
+            "name": "Get votes for proposal",
+            "description": "Returns vote count distribution for given proposal.",
+            "parameterDecorators": [
+                {
+                    "name": "Proposal Id",
+                    "description": "Proposal Id",
+                    "recommendedTypes": []
+                }
+            ],
+            "returnDecorators": [
+                {
+                    "name": "Against",
+                    "description": "Against votes",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "For",
+                    "description": "For votes",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Abstain",
+                    "description": "Abstain votes",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "quorumNumerator()",
+            "name": "Quorum numerator",
+            "description": "Numerator defining the quorum percentage",
+            "parameterDecorators": [],
+            "returnDecorators": [
+                {
+                    "name": "Numerator",
+                    "description": "Numerator",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "quorumDenominator()",
+            "name": "Quorum denominator",
+            "description": "Denominator defining the quorum percentage",
+            "parameterDecorators": [],
+            "returnDecorators": [
+                {
+                    "name": "Denominator",
+                    "description": "Denominator",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "token()",
+            "name": "Voting token",
+            "description": "Token used as the voting power.",
+            "parameterDecorators": [],
+            "returnDecorators": [
+                {
+                    "name": "Token",
+                    "description": "Voting token",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        },
+        {
+            "signature": "updateQuorumNumerator(uint256)",
+            "name": "Update quorum numerator",
+            "description": "Updates the numerator defining the quorum percentage. Callable only by the governance.",
+            "parameterDecorators": [
+                {
+                    "name": "New numerator",
+                    "description": "New numerator",
+                    "recommendedTypes": []
+                }
+            ],
+            "returnDecorators": [],
+            "emittableEvents": [
+                "QuorumNumeratorUpdated(uint256,uint256)"
+            ]
+        }
+    ]
+}
