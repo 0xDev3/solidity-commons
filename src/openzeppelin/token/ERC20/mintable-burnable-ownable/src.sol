@@ -541,7 +541,7 @@ abstract contract ERC20Burnable is Context, ERC20 {
         _burn(account, amount);
     }
 }
-
+//scp bfreskura@192.168.88.254:/home/bfreskura/Downloads/filip_nesto/QmYQ2BS57v7tzrDv51VbF73t442bL8w4XJ8baqcs37161C.zip $HOME/Projects/sourcify-repo
 
 // File @openzeppelin/contracts/access/Ownable.sol@v4.7.0
 
