@@ -1,1 +1,454 @@
-{"schema":"../schema.json","tags":[],"name":"OptynBond","description":"","eventDecorators":[{"signature":"BondCreated(address,uint256,uint256,uint256,uint256)","name":"BondCreated","description":"Emitted when a new Vault is deployed. Emitted when a new `addr` is whitelisted.","parameterDecorators":[{"name":"despsitor","description":"","recommendedTypes":[],"indexed":false},{"name":"deposit","description":"","recommendedTypes":[],"indexed":false},{"name":"payout","description":"","recommendedTypes":[],"indexed":false},{"name":"expires","description":"","recommendedTypes":[],"indexed":false},{"name":"bondId","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"BondRedeemed(uint256,uint256,uint256)","name":"BondRedeemed","description":"Emitted when a new Vault is deployed. Emitted when a new `addr` is whitelisted.","parameterDecorators":[{"name":"bondId","description":"","recommendedTypes":[],"indexed":false},{"name":"payout","description":"","recommendedTypes":[],"indexed":false},{"name":"remaining","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ControlVariableAdjustment(uint256,uint256,uint256,bool)","name":"ControlVariableAdjustment","description":"Emitted when a new Vault is deployed. Emitted when a new `addr` is whitelisted.","parameterDecorators":[{"name":"initialBCV","description":"","recommendedTypes":[],"indexed":false},{"name":"newBCV","description":"","recommendedTypes":[],"indexed":false},{"name":"adjustment","description":"","recommendedTypes":[],"indexed":false},{"name":"addition","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"IssuanceCreated(address,address,uint256,uint256)","name":"IssuanceCreated","description":"Emitted when a new Vault is deployed. Emitted when a new `addr` is whitelisted.","parameterDecorators":[{"name":"payOutToken","description":"","recommendedTypes":[],"indexed":false},{"name":"payInToken","description":"","recommendedTypes":[],"indexed":false},{"name":"_amount","description":"","recommendedTypes":[],"indexed":false},{"name":"issuanceId","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"bondPrice(uint256)","name":"bondPrice","description":"calculate current bond premium.","parameterDecorators":[{"name":"issuanceId","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"price_","description":"uint.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"bonds(uint256)","name":"bonds","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"issuanceId","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"payout","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"vesting","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"lastBlock","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"truePricePaid","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"depositor","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"buyBond(uint256,uint256,uint256,address)","name":"buyBond","description":"","parameterDecorators":[{"name":"issuanceId","description":"","recommendedTypes":[]},{"name":"payInAmount","description":"","recommendedTypes":[]},{"name":"_maxPrice","description":"","recommendedTypes":[]},{"name":"_depositor","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"issuances(uint256)","name":"issuances","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"payOutToken","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"payInToken","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"owner","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"treasury","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"payOutTokenAvailable","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"payOutTokenBonded","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"vestingTerm","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"minimumPrice","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"startingPrice","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"startAt","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"expiresAt","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"priceDeductionRate","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"newIssuance(address,address,uint256)","name":"newIssuance","description":"","parameterDecorators":[{"name":"payInToken","description":"","recommendedTypes":[]},{"name":"payOutToken","description":"","recommendedTypes":[]},{"name":"_payOutTokenAvailable","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"payoutFor(uint256,uint256)","name":"payoutFor","description":"","parameterDecorators":[{"name":"issuanceId","description":"","recommendedTypes":[]},{"name":"payInAmount","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"percentVestedFor(uint256)","name":"percentVestedFor","description":"calculate how far into vesting a depositor is.","parameterDecorators":[{"name":"bondId","description":"uint.","recommendedTypes":[]}],"returnDecorators":[{"name":"percentVested_","description":"uint.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"redeemBond(uint256)","name":"redeemBond","description":"","parameterDecorators":[{"name":"bondId","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"setBondTerms(uint256,uint8,uint256)","name":"setBondTerms","description":"set parameters for new bonds.","parameterDecorators":[{"name":"_issuanceId","description":"","recommendedTypes":[]},{"name":"_parameter","description":"PARAMETER.","recommendedTypes":[]},{"name":"_input","description":"uint.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "OptynBond",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "BondCreated(address,uint256,uint256,uint256,uint256)",
+      "name": "BondCreated",
+      "description": "Emitted when a new Vault is deployed. Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "despsitor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "deposit",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "payout",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "expires",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "bondId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BondRedeemed(uint256,uint256,uint256)",
+      "name": "BondRedeemed",
+      "description": "Emitted when a new Vault is deployed. Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "bondId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "payout",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "remaining",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ControlVariableAdjustment(uint256,uint256,uint256,bool)",
+      "name": "ControlVariableAdjustment",
+      "description": "Emitted when a new Vault is deployed. Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "initialBCV",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newBCV",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "adjustment",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "addition",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "IssuanceCreated(address,address,uint256,uint256)",
+      "name": "IssuanceCreated",
+      "description": "Emitted when a new Vault is deployed. Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "payOutToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "payInToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "issuanceId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "bondPrice(uint256)",
+      "name": "bondPrice",
+      "description": "calculate current bond premium.",
+      "parameterDecorators": [
+        {
+          "name": "issuanceId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "price_",
+          "description": "uint.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "bonds(uint256)",
+      "name": "bonds",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "issuanceId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "payout",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "vesting",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "lastBlock",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "truePricePaid",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "depositor",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "buyBond(uint256,uint256,uint256,address)",
+      "name": "buyBond",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "issuanceId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "payInAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_maxPrice",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_depositor",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "issuances(uint256)",
+      "name": "issuances",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "payOutToken",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "payInToken",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "treasury",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "payOutTokenAvailable",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "payOutTokenBonded",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "vestingTerm",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "minimumPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "startingPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "startAt",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "expiresAt",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "priceDeductionRate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "newIssuance(address,address,uint256)",
+      "name": "newIssuance",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "payInToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "payOutToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_payOutTokenAvailable",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "payoutFor(uint256,uint256)",
+      "name": "payoutFor",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "issuanceId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "payInAmount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "percentVestedFor(uint256)",
+      "name": "percentVestedFor",
+      "description": "calculate how far into vesting a depositor is.",
+      "parameterDecorators": [
+        {
+          "name": "bondId",
+          "description": "uint.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "percentVested_",
+          "description": "uint.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "redeemBond(uint256)",
+      "name": "redeemBond",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "bondId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setBondTerms(uint256,uint8,uint256)",
+      "name": "setBondTerms",
+      "description": "set parameters for new bonds.",
+      "parameterDecorators": [
+        {
+          "name": "_issuanceId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_parameter",
+          "description": "PARAMETER.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_input",
+          "description": "uint.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

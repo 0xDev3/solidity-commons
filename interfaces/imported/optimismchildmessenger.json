@@ -1,1 +1,251 @@
-{"schema":"../schema.json","tags":["optimism"],"name":"Optimism_ChildMessenger","description":"This contract is ownable via the onlyFromCrossDomainAccount. modifier, restricting ownership to the cross-domain parent messenger contract that lives on L1. Sends cross chain messages from Optimism L2 to Ethereum L1 network.","eventDecorators":[{"signature":"MessageReceivedFromParent(bytes,address,address)","name":"MessageReceivedFromParent","description":"Emitted every time the contract gets upgraded.","parameterDecorators":[{"name":"data","description":"","recommendedTypes":[],"indexed":false},{"name":"targetSpoke","description":"","recommendedTypes":[],"indexed":true},{"name":"parentAddress","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"MessageSentToParent(bytes,address,address,uint32)","name":"MessageSentToParent","description":"Emitted every time the contract gets upgraded.","parameterDecorators":[{"name":"data","description":"","recommendedTypes":[],"indexed":false},{"name":"parentAddress","description":"","recommendedTypes":[],"indexed":true},{"name":"oracleSpoke","description":"","recommendedTypes":[],"indexed":false},{"name":"gasLimit","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SetDefaultGasLimit(uint32)","name":"SetDefaultGasLimit","description":"Emitted every time the contract gets upgraded.","parameterDecorators":[{"name":"newDefaultGasLimit","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SetOracleSpoke(address)","name":"SetOracleSpoke","description":"Emitted every time the contract gets upgraded.","parameterDecorators":[{"name":"newOracleSpoke","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SetParentMessenger(address)","name":"SetParentMessenger","description":"Emitted every time the contract gets upgraded.","parameterDecorators":[{"name":"newParentMessenger","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"defaultGasLimit()","name":"defaultGasLimit","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"messenger()","name":"messenger","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"oracleSpoke()","name":"oracleSpoke","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"parentMessenger()","name":"parentMessenger","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"processMessageFromCrossChainParent(bytes,address)","name":"processMessageFromCrossChainParent","description":"Process a received message from the parent messenger via the canonical message bridge. The caller must be the the parent messenger, sent over the canonical message bridge.","parameterDecorators":[{"name":"data","description":"data message sent from the L1 messenger. Should be an encoded function call or packed data.","recommendedTypes":[]},{"name":"target","description":"desired recipient of `data`. Target must implement the `processMessageFromParent` function. Having this as a param enables the L1 Messenger to send messages to arbitrary addresses on the L2. This is primarily used to send messages to the OracleSpoke and GovernorSpoke on L2.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"sendMessageToParent(bytes)","name":"sendMessageToParent","description":"Sends a message to the parent messenger via the canonical message bridge. The caller must be the OracleSpoke on L2. No other contract is permissioned to call this function.The L1 target, the parent messenger, must implement processMessageFromChild to consume the message.","parameterDecorators":[{"name":"data","description":"data message sent to the L1 messenger. Should be an encoded function call or packed data.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setDefaultGasLimit(uint32)","name":"setDefaultGasLimit","description":"Changes the default gas limit that is sent along with transactions to Ethereum. The caller of this function must be the parent messenger, over the canonical bridge.","parameterDecorators":[{"name":"newDefaultGasLimit","description":"the new L1 gas limit to be set.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setOracleSpoke(address)","name":"setOracleSpoke","description":"Changes the stored address of the Oracle spoke, deployed on L2. The caller of this function must be the parent messenger, over the canonical bridge.","parameterDecorators":[{"name":"newOracleSpoke","description":"address of the new oracle spoke, deployed on L2.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setParentMessenger(address)","name":"setParentMessenger","description":"Changes the stored address of the parent messenger, deployed on L1. The caller of this function must be the parent messenger, over the canonical bridge.","parameterDecorators":[{"name":"newParentMessenger","description":"address of the new parent messenger, deployed on L1.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "optimism"
+  ],
+  "name": "Optimism_ChildMessenger",
+  "description": "This contract is ownable via the onlyFromCrossDomainAccount. modifier, restricting ownership to the cross-domain parent messenger contract that lives on L1. Sends cross chain messages from Optimism L2 to Ethereum L1 network.",
+  "eventDecorators": [
+    {
+      "signature": "MessageReceivedFromParent(bytes,address,address)",
+      "name": "MessageReceivedFromParent",
+      "description": "Emitted every time the contract gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "targetSpoke",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "parentAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "MessageSentToParent(bytes,address,address,uint32)",
+      "name": "MessageSentToParent",
+      "description": "Emitted every time the contract gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "parentAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "oracleSpoke",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "gasLimit",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SetDefaultGasLimit(uint32)",
+      "name": "SetDefaultGasLimit",
+      "description": "Emitted every time the contract gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "newDefaultGasLimit",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SetOracleSpoke(address)",
+      "name": "SetOracleSpoke",
+      "description": "Emitted every time the contract gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "newOracleSpoke",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SetParentMessenger(address)",
+      "name": "SetParentMessenger",
+      "description": "Emitted every time the contract gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "newParentMessenger",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "defaultGasLimit()",
+      "name": "defaultGasLimit",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "messenger()",
+      "name": "messenger",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "oracleSpoke()",
+      "name": "oracleSpoke",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "parentMessenger()",
+      "name": "parentMessenger",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "processMessageFromCrossChainParent(bytes,address)",
+      "name": "processMessageFromCrossChainParent",
+      "description": "Process a received message from the parent messenger via the canonical message bridge. The caller must be the the parent messenger, sent over the canonical message bridge.",
+      "parameterDecorators": [
+        {
+          "name": "data",
+          "description": "data message sent from the L1 messenger. Should be an encoded function call or packed data.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "target",
+          "description": "desired recipient of `data`. Target must implement the `processMessageFromParent` function. Having this as a param enables the L1 Messenger to send messages to arbitrary addresses on the L2. This is primarily used to send messages to the OracleSpoke and GovernorSpoke on L2.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "sendMessageToParent(bytes)",
+      "name": "sendMessageToParent",
+      "description": "Sends a message to the parent messenger via the canonical message bridge. The caller must be the OracleSpoke on L2. No other contract is permissioned to call this function.The L1 target, the parent messenger, must implement processMessageFromChild to consume the message.",
+      "parameterDecorators": [
+        {
+          "name": "data",
+          "description": "data message sent to the L1 messenger. Should be an encoded function call or packed data.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDefaultGasLimit(uint32)",
+      "name": "setDefaultGasLimit",
+      "description": "Changes the default gas limit that is sent along with transactions to Ethereum. The caller of this function must be the parent messenger, over the canonical bridge.",
+      "parameterDecorators": [
+        {
+          "name": "newDefaultGasLimit",
+          "description": "the new L1 gas limit to be set.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setOracleSpoke(address)",
+      "name": "setOracleSpoke",
+      "description": "Changes the stored address of the Oracle spoke, deployed on L2. The caller of this function must be the parent messenger, over the canonical bridge.",
+      "parameterDecorators": [
+        {
+          "name": "newOracleSpoke",
+          "description": "address of the new oracle spoke, deployed on L2.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setParentMessenger(address)",
+      "name": "setParentMessenger",
+      "description": "Changes the stored address of the parent messenger, deployed on L1. The caller of this function must be the parent messenger, over the canonical bridge.",
+      "parameterDecorators": [
+        {
+          "name": "newParentMessenger",
+          "description": "address of the new parent messenger, deployed on L1.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

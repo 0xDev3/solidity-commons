@@ -1,1 +1,219 @@
-{"schema":"../schema.json","tags":[],"name":"LongShortPairCreator","description":"Long Short Pair Contract Creator. Factory contract to create new instances of long short pair contracts. Responsible for constraining the parameters used to construct a new LSP. These constraints can evolve over time and are initially constrained to conservative values in this first iteration.","eventDecorators":[{"signature":"CreatedLongShortPair(address,address,address,address)","name":"CreatedLongShortPair","description":"Hash to mark updated provenance hash. Emitted when the factory deploys a trigger. The `trigger` is the address at which the trigger was deployed. For `triggerConfigId`, see the function of the same name in this contract. For other attributes, see the docs for the params of `deployTrigger` in this contract.","parameterDecorators":[{"name":"longShortPair","description":"","recommendedTypes":[],"indexed":true},{"name":"deployerAddress","description":"","recommendedTypes":[],"indexed":true},{"name":"longToken","description":"","recommendedTypes":[],"indexed":false},{"name":"shortToken","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"createLongShortPair(tuple(string,uint64,uint256,bytes32,bool,string,string,string,string,address,address,bytes,uint256,uint256,uint256))","name":"createLongShortPair","description":"Creates a longShortPair contract and associated long and short tokens.Created LSP is not registered within the registry as the LSP uses the Optimistic Oracle for settlement.The LSP constructor does a number of validations on input params. These are not repeated here.","parameterDecorators":[{"name":"params","description":"Constructor params used to initialize the LSP. Key-valued object with the following structure: - `pairName`: Name of the long short pair contract. - `expirationTimestamp`: Unix timestamp of when the contract will expire. - `collateralPerPair`: How many units of collateral are required to mint one pair of synthetic tokens. - `priceIdentifier`: Registered in the DVM for the synthetic. - `enableEarlyExpiration`: Enables the LSP contract to be settled early. - `longSynthName`: Name of the long synthetic tokens to be created. - `longSynthSymbol`: Symbol of the long synthetic tokens to be created. - `shortSynthName`: Name of the short synthetic tokens to be created. - `shortSynthSymbol`: Symbol of the short synthetic tokens to be created. - `collateralToken`: ERC20 token used as collateral in the LSP. - `financialProductLibrary`: Contract providing settlement payout logic. - `customAncillaryData`: Custom ancillary data to be passed along with the price request. If not needed, this should be left as a 0-length bytes array. - `proposerReward`: Optimistic oracle reward amount, pulled from the caller of the expire function. - `optimisticOracleLivenessTime`: Optimistic oracle liveness time for price requests. - `optimisticOracleProposerBond`: Optimistic oracle proposer bond for price requests.","recommendedTypes":[],"parameters":[{"name":"pairName","description":"","type":"string"},{"name":"expirationTimestamp","description":"","type":"uint64"},{"name":"collateralPerPair","description":"","type":"uint256"},{"name":"priceIdentifier","description":"","type":"bytes32"},{"name":"enableEarlyExpiration","description":"","type":"bool"},{"name":"longSynthName","description":"","type":"string"},{"name":"longSynthSymbol","description":"","type":"string"},{"name":"shortSynthName","description":"","type":"string"},{"name":"shortSynthSymbol","description":"","type":"string"},{"name":"collateralToken","description":"","type":"address"},{"name":"financialProductLibrary","description":"","type":"address"},{"name":"customAncillaryData","description":"","type":"bytes"},{"name":"proposerReward","description":"","type":"uint256"},{"name":"optimisticOracleLivenessTime","description":"","type":"uint256"},{"name":"optimisticOracleProposerBond","description":"","type":"uint256"}]}],"returnDecorators":[{"name":"_0","description":"lspAddress the deployed address of the new long short pair contract.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":false},{"signature":"finder()","name":"finder","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getCurrentTime()","name":"getCurrentTime","description":"Gets the current time. Will return the last time set in `setCurrentTime` if running in test mode. Otherwise, it will return the block timestamp.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"uint for the current Testable timestamp.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setCurrentTime(uint256)","name":"setCurrentTime","description":"Sets the current time. Will revert if not running in test mode.","parameterDecorators":[{"name":"time","description":"timestamp to set current Testable time to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"timerAddress()","name":"timerAddress","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"tokenFactory()","name":"tokenFactory","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "LongShortPairCreator",
+  "description": "Long Short Pair Contract Creator. Factory contract to create new instances of long short pair contracts. Responsible for constraining the parameters used to construct a new LSP. These constraints can evolve over time and are initially constrained to conservative values in this first iteration.",
+  "eventDecorators": [
+    {
+      "signature": "CreatedLongShortPair(address,address,address,address)",
+      "name": "CreatedLongShortPair",
+      "description": "Hash to mark updated provenance hash. Emitted when the factory deploys a trigger. The `trigger` is the address at which the trigger was deployed. For `triggerConfigId`, see the function of the same name in this contract. For other attributes, see the docs for the params of `deployTrigger` in this contract.",
+      "parameterDecorators": [
+        {
+          "name": "longShortPair",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "deployerAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "longToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "shortToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "createLongShortPair(tuple(string,uint64,uint256,bytes32,bool,string,string,string,string,address,address,bytes,uint256,uint256,uint256))",
+      "name": "createLongShortPair",
+      "description": "Creates a longShortPair contract and associated long and short tokens.Created LSP is not registered within the registry as the LSP uses the Optimistic Oracle for settlement.The LSP constructor does a number of validations on input params. These are not repeated here.",
+      "parameterDecorators": [
+        {
+          "name": "params",
+          "description": "Constructor params used to initialize the LSP. Key-valued object with the following structure: - `pairName`: Name of the long short pair contract. - `expirationTimestamp`: Unix timestamp of when the contract will expire. - `collateralPerPair`: How many units of collateral are required to mint one pair of synthetic tokens. - `priceIdentifier`: Registered in the DVM for the synthetic. - `enableEarlyExpiration`: Enables the LSP contract to be settled early. - `longSynthName`: Name of the long synthetic tokens to be created. - `longSynthSymbol`: Symbol of the long synthetic tokens to be created. - `shortSynthName`: Name of the short synthetic tokens to be created. - `shortSynthSymbol`: Symbol of the short synthetic tokens to be created. - `collateralToken`: ERC20 token used as collateral in the LSP. - `financialProductLibrary`: Contract providing settlement payout logic. - `customAncillaryData`: Custom ancillary data to be passed along with the price request. If not needed, this should be left as a 0-length bytes array. - `proposerReward`: Optimistic oracle reward amount, pulled from the caller of the expire function. - `optimisticOracleLivenessTime`: Optimistic oracle liveness time for price requests. - `optimisticOracleProposerBond`: Optimistic oracle proposer bond for price requests.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "pairName",
+              "description": "",
+              "type": "string"
+            },
+            {
+              "name": "expirationTimestamp",
+              "description": "",
+              "type": "uint64"
+            },
+            {
+              "name": "collateralPerPair",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "priceIdentifier",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "enableEarlyExpiration",
+              "description": "",
+              "type": "bool"
+            },
+            {
+              "name": "longSynthName",
+              "description": "",
+              "type": "string"
+            },
+            {
+              "name": "longSynthSymbol",
+              "description": "",
+              "type": "string"
+            },
+            {
+              "name": "shortSynthName",
+              "description": "",
+              "type": "string"
+            },
+            {
+              "name": "shortSynthSymbol",
+              "description": "",
+              "type": "string"
+            },
+            {
+              "name": "collateralToken",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "financialProductLibrary",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "customAncillaryData",
+              "description": "",
+              "type": "bytes"
+            },
+            {
+              "name": "proposerReward",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "optimisticOracleLivenessTime",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "optimisticOracleProposerBond",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "lspAddress the deployed address of the new long short pair contract.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "finder()",
+      "name": "finder",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentTime()",
+      "name": "getCurrentTime",
+      "description": "Gets the current time. Will return the last time set in `setCurrentTime` if running in test mode. Otherwise, it will return the block timestamp.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint for the current Testable timestamp.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setCurrentTime(uint256)",
+      "name": "setCurrentTime",
+      "description": "Sets the current time. Will revert if not running in test mode.",
+      "parameterDecorators": [
+        {
+          "name": "time",
+          "description": "timestamp to set current Testable time to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "timerAddress()",
+      "name": "timerAddress",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tokenFactory()",
+      "name": "tokenFactory",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

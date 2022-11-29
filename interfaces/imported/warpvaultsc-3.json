@@ -1,1 +1,947 @@
-{"schema":"../schema.json","tags":["tokens","borrowing","lending","vaults"],"name":"WarpVaultSC","description":"the WarpVaultSC contract is the main point of interface for a specific LP asset class and an end user in the Warp lending platform. This contract is responsible for distributing WarpWrapper tokens in exchange for stablecoin assets, holding and accounting of stablecoins and LP tokens and all associates lending/borrowing calculations for a specific Warp LP asset class. This contract inherits Ownership and ERC20 functionality from the Open Zeppelin Library as well as Exponential and the InterestRateModel contracts from the coumpound protocol.*.","eventDecorators":[{"signature":"InterestAccrued(uint256,uint256,uint256,uint256)","name":"InterestAccrued","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"accrualBlockNumber","description":"","recommendedTypes":[],"indexed":false},{"name":"borrowIndex","description":"","recommendedTypes":[],"indexed":false},{"name":"totalBorrows","description":"","recommendedTypes":[],"indexed":false},{"name":"totalReserves","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"InterestRateModelUpdate(address)","name":"InterestRateModelUpdate","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"_newIRM","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"InterestShortCircuit(uint256)","name":"InterestShortCircuit","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"_blockNumber","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LoanRepayed(address,uint256,uint256,uint256)","name":"LoanRepayed","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"_borrower","description":"","recommendedTypes":[],"indexed":false},{"name":"_repayAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"remainingPrinciple","description":"","recommendedTypes":[],"indexed":false},{"name":"remainingInterest","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ReserveFactorUpdated(uint256)","name":"ReserveFactorUpdated","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"_newRF","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ReserveWithdraw(uint256)","name":"ReserveWithdraw","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"_amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"StableCoinLent(address,uint256,uint256)","name":"StableCoinLent","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"newAmount","description":"new amount.","recommendedTypes":[],"indexed":false},{"name":"prevAmount","description":"previous amount.","recommendedTypes":[],"indexed":false},{"name":"token","description":"token address.","recommendedTypes":[],"indexed":false}]},{"signature":"StableCoinWithdraw(address,uint256,uint256)","name":"StableCoinWithdraw","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"newAmount","description":"new amount.","recommendedTypes":[],"indexed":false},{"name":"prevAmount","description":"previous amount.","recommendedTypes":[],"indexed":false},{"name":"token","description":"token address.","recommendedTypes":[],"indexed":false}]},{"signature":"WarpControlChanged(address,address)","name":"WarpControlChanged","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"_newControl","description":"","recommendedTypes":[],"indexed":false},{"name":"_oldControl","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"WarpTeamChanged(address,address)","name":"WarpTeamChanged","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"_newTeam","description":"","recommendedTypes":[],"indexed":false},{"name":"_newControl","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"InterestRate()","name":"InterestRate","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"_borrow(uint256,address)","name":"_borrow","description":"Sender borrows stablecoin assets from the protocol to their own address.","parameterDecorators":[{"name":"_borrowAmount","description":"The amount of the underlying asset to borrow.","recommendedTypes":[]},{"name":"_borrower","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"_repayLiquidatedLoan(address,address,uint256)","name":"_repayLiquidatedLoan","description":"repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator. this function uses the onlyWarpControl modifier which means it can only be called by the Warp Control contract*.","parameterDecorators":[{"name":"_borrower","description":"is the address of the borrower who took out the loan.","recommendedTypes":[]},{"name":"_liquidator","description":"is the address of the account who is liquidating the loan.","recommendedTypes":[]},{"name":"_amount","description":"is the amount of StableCoin being repayed.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"accountBorrows(address)","name":"accountBorrows","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"principal","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"interestIndex","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"principalLeft","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"accrualBlockNumber()","name":"accrualBlockNumber","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"accrueInterest()","name":"accrueInterest","description":"Applies accrued interest to total borrows and reserves. This calculates interest accrued from the last checkpointed block up to the current block and writes new checkpoint to storage.*.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"borrowBalanceCurrent(address)","name":"borrowBalanceCurrent","description":"Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex.","parameterDecorators":[{"name":"account","description":"The address whose balance should be calculated after updating borrowIndex.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The calculated balance*.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"borrowBalancePrior(address)","name":"borrowBalancePrior","description":"returns last calculated account's borrow balance using the prior borrowIndex.","parameterDecorators":[{"name":"account","description":"The address whose balance should be calculated after updating borrowIndex.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The calculated balance*.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"borrowIndex()","name":"borrowIndex","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"borrowRatePerBlock()","name":"borrowRatePerBlock","description":"Returns the current per-block borrow interest rate for this cToken.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"calculateFee(uint256)","name":"calculateFee","description":"calculateFee is used to calculate the fee earned by the Warp Platform.","parameterDecorators":[{"name":"_payedAmount","description":"is a uint representing the full amount of stablecoin earned as interest*.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"divisor()","name":"divisor","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"exchangeRateCurrent()","name":"exchangeRateCurrent","description":"Accrue interest then return the up-to-date exchange rate.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"exchangeRatePrior()","name":"exchangeRatePrior","description":"return the not up-to-date exchange rate.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getCash()","name":"getCash","description":"Get cash balance of this cToken in the underlying asset in other contracts.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getCashPrior()","name":"getCashPrior","description":"getCashPrior is a view funcion that returns the USD balance of all held underlying stablecoin assets*.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getSCAddress()","name":"getSCAddress","description":"getSCAddress allows for the easy retrieval of the vaults stablecoin address*.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getSCDecimals()","name":"getSCDecimals","description":"getSCDecimals allows for easy retrieval of the vaults stablecoin decimals*.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"historicalReward(address)","name":"historicalReward","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"lendToWarpVault(uint256)","name":"lendToWarpVault","description":"lendToWarpVault is used to lend stablecoin assets to a WaprVault. the user will need to first approve the transfer of the underlying asset*.","parameterDecorators":[{"name":"_amount","description":"is the amount of the asset being lent.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"percent()","name":"percent","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"principalBalance(address)","name":"principalBalance","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"redeem(uint256)","name":"redeem","description":"redeem allows a user to redeem their Warp Wrapper Token for the appropriate amount of underlying stablecoin asset.","parameterDecorators":[{"name":"_amount","description":"is the amount of StableCoin the user wishes to exchange*.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"repayBorrow(uint256)","name":"repayBorrow","description":"Sender repays their own borrow.","parameterDecorators":[{"name":"_repayAmount","description":"The amount to repay.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"reserveFactorMantissa()","name":"reserveFactorMantissa","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setNewInterestModel(address)","name":"setNewInterestModel","description":"setNewInterestModel allows for a new interest rate model to be set for this vault. this is a protected function that can only be called by the WarpControl contract*.","parameterDecorators":[{"name":"_newModel","description":"is the address of the new interest rate model contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"stablecoin()","name":"stablecoin","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"supplyRatePerBlock()","name":"supplyRatePerBlock","description":"Returns the current per-block supply interest rate for this cToken.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"timeWizard()","name":"timeWizard","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"totalBorrows()","name":"totalBorrows","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"totalBorrowsCurrent()","name":"totalBorrowsCurrent","description":"Returns the current total borrows plus accrued interest.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"totalReserves()","name":"totalReserves","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"updateReserve(uint256)","name":"updateReserve","description":"updateReserve allows for a new reserv percentage to be set.","parameterDecorators":[{"name":"_newReserveMantissa","description":"is the reserve percentage scaled by 1e18*.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateTeam(address)","name":"updateTeam","description":"","parameterDecorators":[{"name":"_team","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateWarpControl(address)","name":"updateWarpControl","description":"upgrade is used when upgrading to a new version of the WarpControl contracts. this is a protected function that can only be called by the WarpControl contract*.","parameterDecorators":[{"name":"_warpControl","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"viewAccountBalance(address)","name":"viewAccountBalance","description":"viewAccountBalance is used to view the current balance of an account.","parameterDecorators":[{"name":"_account","description":"is the account whos balance is being viewed*.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"viewHistoricalReward(address)","name":"viewHistoricalReward","description":"viewHistoricalReward is used to view the total gains of an account.","parameterDecorators":[{"name":"_account","description":"is the account whos gains are being viewed*.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"wStableCoin()","name":"wStableCoin","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"warpControl()","name":"warpControl","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"warpTeam()","name":"warpTeam","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"wbRewardCoin()","name":"wbRewardCoin","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"withdrawFees(uint256)","name":"withdrawFees","description":"withdrawFees allows the warp team to withdraw the reserves earned by fees. this is a protected function that can only be called by the warpTeam address*.","parameterDecorators":[{"name":"_amount","description":"is the amount of a stablecoin being withdrawn.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "borrowing",
+    "lending",
+    "vaults"
+  ],
+  "name": "WarpVaultSC",
+  "description": "the WarpVaultSC contract is the main point of interface for a specific LP asset class and an end user in the Warp lending platform. This contract is responsible for distributing WarpWrapper tokens in exchange for stablecoin assets, holding and accounting of stablecoins and LP tokens and all associates lending/borrowing calculations for a specific Warp LP asset class. This contract inherits Ownership and ERC20 functionality from the Open Zeppelin Library as well as Exponential and the InterestRateModel contracts from the coumpound protocol.*.",
+  "eventDecorators": [
+    {
+      "signature": "InterestAccrued(uint256,uint256,uint256,uint256)",
+      "name": "InterestAccrued",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "accrualBlockNumber",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "borrowIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalBorrows",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalReserves",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "InterestRateModelUpdate(address)",
+      "name": "InterestRateModelUpdate",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "_newIRM",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "InterestShortCircuit(uint256)",
+      "name": "InterestShortCircuit",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "_blockNumber",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LoanRepayed(address,uint256,uint256,uint256)",
+      "name": "LoanRepayed",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "_borrower",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_repayAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "remainingPrinciple",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "remainingInterest",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ReserveFactorUpdated(uint256)",
+      "name": "ReserveFactorUpdated",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "_newRF",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ReserveWithdraw(uint256)",
+      "name": "ReserveWithdraw",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "StableCoinLent(address,uint256,uint256)",
+      "name": "StableCoinLent",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "newAmount",
+          "description": "new amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "prevAmount",
+          "description": "previous amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "token",
+          "description": "token address.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "StableCoinWithdraw(address,uint256,uint256)",
+      "name": "StableCoinWithdraw",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "newAmount",
+          "description": "new amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "prevAmount",
+          "description": "previous amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "token",
+          "description": "token address.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WarpControlChanged(address,address)",
+      "name": "WarpControlChanged",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "_newControl",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_oldControl",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WarpTeamChanged(address,address)",
+      "name": "WarpTeamChanged",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "_newTeam",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_newControl",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "InterestRate()",
+      "name": "InterestRate",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "_borrow(uint256,address)",
+      "name": "_borrow",
+      "description": "Sender borrows stablecoin assets from the protocol to their own address.",
+      "parameterDecorators": [
+        {
+          "name": "_borrowAmount",
+          "description": "The amount of the underlying asset to borrow.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_borrower",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "_repayLiquidatedLoan(address,address,uint256)",
+      "name": "_repayLiquidatedLoan",
+      "description": "repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator. this function uses the onlyWarpControl modifier which means it can only be called by the Warp Control contract*.",
+      "parameterDecorators": [
+        {
+          "name": "_borrower",
+          "description": "is the address of the borrower who took out the loan.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_liquidator",
+          "description": "is the address of the account who is liquidating the loan.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "is the amount of StableCoin being repayed.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "accountBorrows(address)",
+      "name": "accountBorrows",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "principal",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "interestIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "principalLeft",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "accrualBlockNumber()",
+      "name": "accrualBlockNumber",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "accrueInterest()",
+      "name": "accrueInterest",
+      "description": "Applies accrued interest to total borrows and reserves. This calculates interest accrued from the last checkpointed block up to the current block and writes new checkpoint to storage.*.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "borrowBalanceCurrent(address)",
+      "name": "borrowBalanceCurrent",
+      "description": "Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "The address whose balance should be calculated after updating borrowIndex.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The calculated balance*.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "borrowBalancePrior(address)",
+      "name": "borrowBalancePrior",
+      "description": "returns last calculated account's borrow balance using the prior borrowIndex.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "The address whose balance should be calculated after updating borrowIndex.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The calculated balance*.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "borrowIndex()",
+      "name": "borrowIndex",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "borrowRatePerBlock()",
+      "name": "borrowRatePerBlock",
+      "description": "Returns the current per-block borrow interest rate for this cToken.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateFee(uint256)",
+      "name": "calculateFee",
+      "description": "calculateFee is used to calculate the fee earned by the Warp Platform.",
+      "parameterDecorators": [
+        {
+          "name": "_payedAmount",
+          "description": "is a uint representing the full amount of stablecoin earned as interest*.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "divisor()",
+      "name": "divisor",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "exchangeRateCurrent()",
+      "name": "exchangeRateCurrent",
+      "description": "Accrue interest then return the up-to-date exchange rate.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "exchangeRatePrior()",
+      "name": "exchangeRatePrior",
+      "description": "return the not up-to-date exchange rate.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCash()",
+      "name": "getCash",
+      "description": "Get cash balance of this cToken in the underlying asset in other contracts.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCashPrior()",
+      "name": "getCashPrior",
+      "description": "getCashPrior is a view funcion that returns the USD balance of all held underlying stablecoin assets*.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSCAddress()",
+      "name": "getSCAddress",
+      "description": "getSCAddress allows for the easy retrieval of the vaults stablecoin address*.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSCDecimals()",
+      "name": "getSCDecimals",
+      "description": "getSCDecimals allows for easy retrieval of the vaults stablecoin decimals*.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "historicalReward(address)",
+      "name": "historicalReward",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lendToWarpVault(uint256)",
+      "name": "lendToWarpVault",
+      "description": "lendToWarpVault is used to lend stablecoin assets to a WaprVault. the user will need to first approve the transfer of the underlying asset*.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "is the amount of the asset being lent.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "percent()",
+      "name": "percent",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "principalBalance(address)",
+      "name": "principalBalance",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "redeem(uint256)",
+      "name": "redeem",
+      "description": "redeem allows a user to redeem their Warp Wrapper Token for the appropriate amount of underlying stablecoin asset.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "is the amount of StableCoin the user wishes to exchange*.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "repayBorrow(uint256)",
+      "name": "repayBorrow",
+      "description": "Sender repays their own borrow.",
+      "parameterDecorators": [
+        {
+          "name": "_repayAmount",
+          "description": "The amount to repay.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "reserveFactorMantissa()",
+      "name": "reserveFactorMantissa",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setNewInterestModel(address)",
+      "name": "setNewInterestModel",
+      "description": "setNewInterestModel allows for a new interest rate model to be set for this vault. this is a protected function that can only be called by the WarpControl contract*.",
+      "parameterDecorators": [
+        {
+          "name": "_newModel",
+          "description": "is the address of the new interest rate model contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stablecoin()",
+      "name": "stablecoin",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "supplyRatePerBlock()",
+      "name": "supplyRatePerBlock",
+      "description": "Returns the current per-block supply interest rate for this cToken.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "timeWizard()",
+      "name": "timeWizard",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalBorrows()",
+      "name": "totalBorrows",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalBorrowsCurrent()",
+      "name": "totalBorrowsCurrent",
+      "description": "Returns the current total borrows plus accrued interest.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "totalReserves()",
+      "name": "totalReserves",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "updateReserve(uint256)",
+      "name": "updateReserve",
+      "description": "updateReserve allows for a new reserv percentage to be set.",
+      "parameterDecorators": [
+        {
+          "name": "_newReserveMantissa",
+          "description": "is the reserve percentage scaled by 1e18*.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateTeam(address)",
+      "name": "updateTeam",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_team",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateWarpControl(address)",
+      "name": "updateWarpControl",
+      "description": "upgrade is used when upgrading to a new version of the WarpControl contracts. this is a protected function that can only be called by the WarpControl contract*.",
+      "parameterDecorators": [
+        {
+          "name": "_warpControl",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "viewAccountBalance(address)",
+      "name": "viewAccountBalance",
+      "description": "viewAccountBalance is used to view the current balance of an account.",
+      "parameterDecorators": [
+        {
+          "name": "_account",
+          "description": "is the account whos balance is being viewed*.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "viewHistoricalReward(address)",
+      "name": "viewHistoricalReward",
+      "description": "viewHistoricalReward is used to view the total gains of an account.",
+      "parameterDecorators": [
+        {
+          "name": "_account",
+          "description": "is the account whos gains are being viewed*.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "wStableCoin()",
+      "name": "wStableCoin",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "warpControl()",
+      "name": "warpControl",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "warpTeam()",
+      "name": "warpTeam",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "wbRewardCoin()",
+      "name": "wbRewardCoin",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdrawFees(uint256)",
+      "name": "withdrawFees",
+      "description": "withdrawFees allows the warp team to withdraw the reserves earned by fees. this is a protected function that can only be called by the warpTeam address*.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "is the amount of a stablecoin being withdrawn.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

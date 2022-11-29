@@ -1,1 +1,518 @@
-{"schema":"../schema.json","tags":["strategies"],"name":"LPStrategy","description":"","eventDecorators":[{"signature":"LogConvert(address,address,address,uint256,uint256)","name":"LogConvert","description":"Emitted when tokens are redeemed.","parameterDecorators":[{"name":"account","description":"- The token recipient.","recommendedTypes":[],"indexed":true},{"name":"amount","description":"- The amount sent to unbundle.","recommendedTypes":[],"indexed":true},{"name":"bundleAddress","description":"- The bundle from which the token was unbundled.","recommendedTypes":[],"indexed":true},{"name":"receivedAmount","description":"- The amount after fees (these may change in the rakeback and are therefore explicit).","recommendedTypes":[],"indexed":false},{"name":"tokenAddress","description":"- The address of the vanilla underlying.","recommendedTypes":[],"indexed":false}]},{"signature":"LogSetStrategyExecutor(address,bool)","name":"LogSetStrategyExecutor","description":"Emitted when tokens are redeemed.","parameterDecorators":[{"name":"executor","description":"","recommendedTypes":[],"indexed":true},{"name":"allowed","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LpMinted(uint256,uint256,uint256)","name":"LpMinted","description":"Emitted when tokens are redeemed.","parameterDecorators":[{"name":"total","description":"","recommendedTypes":[],"indexed":false},{"name":"strategyAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"feeAmount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Emitted when tokens are redeemed.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"afterExit(address,uint256,bytes)","name":"afterExit","description":"After exited, the owner can perform ANY call. This is to rescue any funds that didn't get released during exit or got earned afterwards due to vesting or airdrops, etc.","parameterDecorators":[{"name":"to","description":"","recommendedTypes":[]},{"name":"value","description":"","recommendedTypes":[]},{"name":"data","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"success","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"bentoBox()","name":"bentoBox","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"bridgeToken()","name":"bridgeToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"exit(uint256)","name":"exit","description":"Withdraw all assets in the safest way possible. This shouldn't fail. do not use isActive modifier here; allow bentobox to call strategy.exit() multiple times.","parameterDecorators":[{"name":"balance","description":"The amount of tokens the caller thinks it has invested.","recommendedTypes":[]}],"returnDecorators":[{"name":"amountAdded","description":"The delta (+profit or -loss) that occured in contrast to `balance`.","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":false},{"signature":"exited()","name":"exited","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"factory()","name":"factory","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"feeCollector()","name":"feeCollector","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"harvest(uint256,address)","name":"harvest","description":"Harvest any profits made converted to the asset and pass them to the caller. Only BentoBox can call harvest on this strategy.Ensures that (1) the caller was this contract (called through the safeHarvest function) and (2) that we are not being frontrun by a large BentoBox deposit when harvesting profits.","parameterDecorators":[{"name":"balance","description":"The amount of tokens the caller thinks it has invested.","recommendedTypes":[]},{"name":"sender","description":"The address of the initiator of this transaction. Can be used for reimbursements, etc.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The delta (+profit or -loss) that occured in contrast to `balance`.","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":false},{"signature":"maxBentoBoxBalance()","name":"maxBentoBoxBalance","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"safeHarvest(uint256,bool,uint256,bool)","name":"safeHarvest","description":"Harvest profits while preventing a sandwich attack exploit. maxBalance can be set to 0 to keep the previous value.maxChangeAmount can be set to 0 to allow for full rebalancing.","parameterDecorators":[{"name":"maxBalance","description":"The maximum balance of the underlying token that is allowed to be in BentoBox.","recommendedTypes":[]},{"name":"rebalance","description":"Whether BentoBox should rebalance the strategy assets to acheive it's target allocation.","recommendedTypes":[]},{"name":"maxChangeAmount","description":"When rebalancing - the maximum amount that will be deposited to or withdrawn from a strategy to BentoBox.","recommendedTypes":[]},{"name":"harvestRewards","description":"If we want to claim any accrued reward tokens.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setFeeCollector(address)","name":"setFeeCollector","description":"","parameterDecorators":[{"name":"_feeCollector","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setStrategyExecutor(address,bool)","name":"setStrategyExecutor","description":"","parameterDecorators":[{"name":"executor","description":"","recommendedTypes":[]},{"name":"value","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"skim(uint256)","name":"skim","description":"Send the assets to the Strategy and call skim to invest them.","parameterDecorators":[{"name":"amount","description":"The amount of tokens to invest.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"strategyExecutors(address)","name":"strategyExecutors","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"strategyToken()","name":"strategyToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"swapExactTokensForUnderlying(uint256,address)","name":"swapExactTokensForUnderlying","description":"Swap some tokens in the contract for the underlying and deposits them to address(this).","parameterDecorators":[{"name":"amountOutMin","description":"","recommendedTypes":[]},{"name":"inputToken","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"amountOut","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"swapToLP(uint256)","name":"swapToLP","description":"Swap some tokens in the contract for the underlying and deposits them to address(this).","parameterDecorators":[{"name":"amountOutMin","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"amountOut","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdraw(uint256)","name":"withdraw","description":"Withdraw assets. The returned amount can differ from the requested amount due to rounding. The `actualAmount` should be very close to the amount. The difference should NOT be used to report a loss. That's what harvest is for.","parameterDecorators":[{"name":"amount","description":"The requested amount the caller wants to withdraw.","recommendedTypes":[]}],"returnDecorators":[{"name":"actualAmount","description":"The real amount that is withdrawn.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "strategies"
+  ],
+  "name": "LPStrategy",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "LogConvert(address,address,address,uint256,uint256)",
+      "name": "LogConvert",
+      "description": "Emitted when tokens are redeemed.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "- The token recipient.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "- The amount sent to unbundle.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "bundleAddress",
+          "description": "- The bundle from which the token was unbundled.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "receivedAmount",
+          "description": "- The amount after fees (these may change in the rakeback and are therefore explicit).",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenAddress",
+          "description": "- The address of the vanilla underlying.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogSetStrategyExecutor(address,bool)",
+      "name": "LogSetStrategyExecutor",
+      "description": "Emitted when tokens are redeemed.",
+      "parameterDecorators": [
+        {
+          "name": "executor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "allowed",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LpMinted(uint256,uint256,uint256)",
+      "name": "LpMinted",
+      "description": "Emitted when tokens are redeemed.",
+      "parameterDecorators": [
+        {
+          "name": "total",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "strategyAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "feeAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emitted when tokens are redeemed.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "afterExit(address,uint256,bytes)",
+      "name": "afterExit",
+      "description": "After exited, the owner can perform ANY call. This is to rescue any funds that didn't get released during exit or got earned afterwards due to vesting or airdrops, etc.",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "bentoBox()",
+      "name": "bentoBox",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "bridgeToken()",
+      "name": "bridgeToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "exit(uint256)",
+      "name": "exit",
+      "description": "Withdraw all assets in the safest way possible. This shouldn't fail. do not use isActive modifier here; allow bentobox to call strategy.exit() multiple times.",
+      "parameterDecorators": [
+        {
+          "name": "balance",
+          "description": "The amount of tokens the caller thinks it has invested.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountAdded",
+          "description": "The delta (+profit or -loss) that occured in contrast to `balance`.",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "exited()",
+      "name": "exited",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "factory()",
+      "name": "factory",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "feeCollector()",
+      "name": "feeCollector",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "harvest(uint256,address)",
+      "name": "harvest",
+      "description": "Harvest any profits made converted to the asset and pass them to the caller. Only BentoBox can call harvest on this strategy.Ensures that (1) the caller was this contract (called through the safeHarvest function) and (2) that we are not being frontrun by a large BentoBox deposit when harvesting profits.",
+      "parameterDecorators": [
+        {
+          "name": "balance",
+          "description": "The amount of tokens the caller thinks it has invested.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "sender",
+          "description": "The address of the initiator of this transaction. Can be used for reimbursements, etc.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The delta (+profit or -loss) that occured in contrast to `balance`.",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "maxBentoBoxBalance()",
+      "name": "maxBentoBoxBalance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "safeHarvest(uint256,bool,uint256,bool)",
+      "name": "safeHarvest",
+      "description": "Harvest profits while preventing a sandwich attack exploit. maxBalance can be set to 0 to keep the previous value.maxChangeAmount can be set to 0 to allow for full rebalancing.",
+      "parameterDecorators": [
+        {
+          "name": "maxBalance",
+          "description": "The maximum balance of the underlying token that is allowed to be in BentoBox.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "rebalance",
+          "description": "Whether BentoBox should rebalance the strategy assets to acheive it's target allocation.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxChangeAmount",
+          "description": "When rebalancing - the maximum amount that will be deposited to or withdrawn from a strategy to BentoBox.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "harvestRewards",
+          "description": "If we want to claim any accrued reward tokens.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setFeeCollector(address)",
+      "name": "setFeeCollector",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_feeCollector",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setStrategyExecutor(address,bool)",
+      "name": "setStrategyExecutor",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "executor",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "skim(uint256)",
+      "name": "skim",
+      "description": "Send the assets to the Strategy and call skim to invest them.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "The amount of tokens to invest.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "strategyExecutors(address)",
+      "name": "strategyExecutors",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "strategyToken()",
+      "name": "strategyToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "swapExactTokensForUnderlying(uint256,address)",
+      "name": "swapExactTokensForUnderlying",
+      "description": "Swap some tokens in the contract for the underlying and deposits them to address(this).",
+      "parameterDecorators": [
+        {
+          "name": "amountOutMin",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "inputToken",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountOut",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapToLP(uint256)",
+      "name": "swapToLP",
+      "description": "Swap some tokens in the contract for the underlying and deposits them to address(this).",
+      "parameterDecorators": [
+        {
+          "name": "amountOutMin",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountOut",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(uint256)",
+      "name": "withdraw",
+      "description": "Withdraw assets. The returned amount can differ from the requested amount due to rounding. The `actualAmount` should be very close to the amount. The difference should NOT be used to report a loss. That's what harvest is for.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "The requested amount the caller wants to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "actualAmount",
+          "description": "The real amount that is withdrawn.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

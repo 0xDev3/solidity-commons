@@ -1,1 +1,390 @@
-{"schema":"../schema.json","tags":[],"name":"LoserLotteryContract","description":"","eventDecorators":[{"signature":"LotteryReset()","name":"LotteryReset","description":"Emitted when owner withdraws `relayManager` funds.","parameterDecorators":[]},{"signature":"LotterySettled()","name":"LotterySettled","description":"Emitted when owner withdraws `relayManager` funds.","parameterDecorators":[]},{"signature":"LotteryStarted(uint256,uint256,uint256,uint256)","name":"LotteryStarted","description":"Emitted when owner withdraws `relayManager` funds.","parameterDecorators":[{"name":"playersLimit","description":"","recommendedTypes":[],"indexed":false},{"name":"numOfWinners","description":"","recommendedTypes":[],"indexed":false},{"name":"registrationAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"startedAt","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"MaxParticipationCompleted(address)","name":"MaxParticipationCompleted","description":"Emitted when owner withdraws `relayManager` funds.","parameterDecorators":[{"name":"_from","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"RandomNumberGenerated(uint256)","name":"RandomNumberGenerated","description":"Emitted when owner withdraws `relayManager` funds.","parameterDecorators":[{"name":"randomness","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"WinnersGenerated(uint256[])","name":"WinnersGenerated","description":"Emitted when owner withdraws `relayManager` funds.","parameterDecorators":[{"name":"winnerIndexes","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"adminAddress()","name":"adminAddress","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"adminFeesAmount()","name":"adminFeesAmount","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"changeAdmin(address)","name":"changeAdmin","description":"","parameterDecorators":[{"name":"_newAdmin","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"changeDistributionAmount(uint256)","name":"changeDistributionAmount","description":"","parameterDecorators":[{"name":"_newAmount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"changeDistributionToken(address)","name":"changeDistributionToken","description":"","parameterDecorators":[{"name":"_newDistributionToken","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"collectRewards()","name":"collectRewards","description":"The winners of the lottery can call this function to transfer their winnings from the lottery contract to their own address. The winners will need to burn their LOT tokens to claim the lottery rewards. This is executed by the lottery contract itself. Requirements: - The Lottery is settled i.e. the lotteryStatus is CLOSED.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"enterLottery()","name":"enterLottery","description":"Player enters the lottery and the registration amount is transferred from the player to the contract. Returns participant's index. This is similar to unique registration id. Emits an {MaxParticipationCompleted} event indicating that all the required players have entered the lottery. The participant is also issued an equal amount of LOT tokens once he registers for the lottery. This LOT tokens are fundamental to the lottery contract and are used internally. The winners will need to burn their LOT tokens to claim the lottery winnings. The other participants of the lottery can keep hold of these tokens and use for other applications. Requirements: - The player has set the necessary allowance to the Contract. - The Lottery is in progress. - Number of players allowed to enter in the lottery should be less than or equal to the allowed players `lotteryConfig.playersLimit`.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":["MaxParticipationCompleted(address)"],"readOnly":false},{"signature":"lotteryPlayers(uint256)","name":"lotteryPlayers","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"lotteryStatus()","name":"lotteryStatus","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"rawFulfillRandomness(bytes32,uint256)","name":"rawFulfillRandomness","description":"","parameterDecorators":[{"name":"requestId","description":"","recommendedTypes":[]},{"name":"randomness","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"resetLottery()","name":"resetLottery","description":"Resets the lottery, clears the existing state variable values and the lottery can be initialized again. Emits {LotteryReset} event indicating that the lottery config and contract state is reset. Requirements: - Only the address set at `adminAddress` can call this function. - The Lottery has closed.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":["LotteryReset()"],"readOnly":false},{"signature":"rewardPoolAmount()","name":"rewardPoolAmount","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setLotteryRules(uint256,uint256,uint256,uint256,uint256)","name":"setLotteryRules","description":"Sets the Lottery Config, initializes an instance of ERC20 contract that the lottery is based on and starts the lottery. Emits an {LotteryStarted} event indicating the Admin has started the Lottery. Requirements: - Cannot be called if the lottery is in progress. - Only the address set at `adminAddress` can call this function. - Number of winners `numOfWinners` should be less than or equal to half the number of players `playersLimit`.","parameterDecorators":[{"name":"numOfWinners","description":"","recommendedTypes":[]},{"name":"playersLimit","description":"","recommendedTypes":[]},{"name":"registrationAmount","description":"","recommendedTypes":[]},{"name":"adminFeePercentage","description":"","recommendedTypes":[]},{"name":"randomSeed","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":["LotteryStarted(uint256,uint256,uint256,uint256)"],"readOnly":false},{"signature":"settleLottery()","name":"settleLottery","description":"Settles the lottery, the winners are calculated based on the random number generated. The Admin fee is calculated and transferred back to Admin `adminAddress`. Emits an {WinnersGenerated} event indicating that the winners for the lottery have been generated. Emits {LotterySettled} event indicating that the winnings have been transferred to the Admin and the Lottery is closed. Requirements: - The random number has been generated - The Lottery is in progress.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":["WinnersGenerated(uint256[])","LotterySettled()"],"readOnly":false},{"signature":"totalLotteryPool()","name":"totalLotteryPool","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"winnerAddresses(uint256)","name":"winnerAddresses","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"winnerIndexes(uint256)","name":"winnerIndexes","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "LoserLotteryContract",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "LotteryReset()",
+      "name": "LotteryReset",
+      "description": "Emitted when owner withdraws `relayManager` funds.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "LotterySettled()",
+      "name": "LotterySettled",
+      "description": "Emitted when owner withdraws `relayManager` funds.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "LotteryStarted(uint256,uint256,uint256,uint256)",
+      "name": "LotteryStarted",
+      "description": "Emitted when owner withdraws `relayManager` funds.",
+      "parameterDecorators": [
+        {
+          "name": "playersLimit",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "numOfWinners",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "registrationAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "startedAt",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "MaxParticipationCompleted(address)",
+      "name": "MaxParticipationCompleted",
+      "description": "Emitted when owner withdraws `relayManager` funds.",
+      "parameterDecorators": [
+        {
+          "name": "_from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RandomNumberGenerated(uint256)",
+      "name": "RandomNumberGenerated",
+      "description": "Emitted when owner withdraws `relayManager` funds.",
+      "parameterDecorators": [
+        {
+          "name": "randomness",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "WinnersGenerated(uint256[])",
+      "name": "WinnersGenerated",
+      "description": "Emitted when owner withdraws `relayManager` funds.",
+      "parameterDecorators": [
+        {
+          "name": "winnerIndexes",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "adminAddress()",
+      "name": "adminAddress",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "adminFeesAmount()",
+      "name": "adminFeesAmount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "changeAdmin(address)",
+      "name": "changeAdmin",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_newAdmin",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeDistributionAmount(uint256)",
+      "name": "changeDistributionAmount",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_newAmount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeDistributionToken(address)",
+      "name": "changeDistributionToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_newDistributionToken",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "collectRewards()",
+      "name": "collectRewards",
+      "description": "The winners of the lottery can call this function to transfer their winnings from the lottery contract to their own address. The winners will need to burn their LOT tokens to claim the lottery rewards. This is executed by the lottery contract itself. Requirements: - The Lottery is settled i.e. the lotteryStatus is CLOSED.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "enterLottery()",
+      "name": "enterLottery",
+      "description": "Player enters the lottery and the registration amount is transferred from the player to the contract. Returns participant's index. This is similar to unique registration id. Emits an {MaxParticipationCompleted} event indicating that all the required players have entered the lottery. The participant is also issued an equal amount of LOT tokens once he registers for the lottery. This LOT tokens are fundamental to the lottery contract and are used internally. The winners will need to burn their LOT tokens to claim the lottery winnings. The other participants of the lottery can keep hold of these tokens and use for other applications. Requirements: - The player has set the necessary allowance to the Contract. - The Lottery is in progress. - Number of players allowed to enter in the lottery should be less than or equal to the allowed players `lotteryConfig.playersLimit`.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [
+        "MaxParticipationCompleted(address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "lotteryPlayers(uint256)",
+      "name": "lotteryPlayers",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lotteryStatus()",
+      "name": "lotteryStatus",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rawFulfillRandomness(bytes32,uint256)",
+      "name": "rawFulfillRandomness",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "requestId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "randomness",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "resetLottery()",
+      "name": "resetLottery",
+      "description": "Resets the lottery, clears the existing state variable values and the lottery can be initialized again. Emits {LotteryReset} event indicating that the lottery config and contract state is reset. Requirements: - Only the address set at `adminAddress` can call this function. - The Lottery has closed.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "LotteryReset()"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "rewardPoolAmount()",
+      "name": "rewardPoolAmount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setLotteryRules(uint256,uint256,uint256,uint256,uint256)",
+      "name": "setLotteryRules",
+      "description": "Sets the Lottery Config, initializes an instance of ERC20 contract that the lottery is based on and starts the lottery. Emits an {LotteryStarted} event indicating the Admin has started the Lottery. Requirements: - Cannot be called if the lottery is in progress. - Only the address set at `adminAddress` can call this function. - Number of winners `numOfWinners` should be less than or equal to half the number of players `playersLimit`.",
+      "parameterDecorators": [
+        {
+          "name": "numOfWinners",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "playersLimit",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "registrationAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "adminFeePercentage",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "randomSeed",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "LotteryStarted(uint256,uint256,uint256,uint256)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "settleLottery()",
+      "name": "settleLottery",
+      "description": "Settles the lottery, the winners are calculated based on the random number generated. The Admin fee is calculated and transferred back to Admin `adminAddress`. Emits an {WinnersGenerated} event indicating that the winners for the lottery have been generated. Emits {LotterySettled} event indicating that the winnings have been transferred to the Admin and the Lottery is closed. Requirements: - The random number has been generated - The Lottery is in progress.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "WinnersGenerated(uint256[])",
+        "LotterySettled()"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "totalLotteryPool()",
+      "name": "totalLotteryPool",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "winnerAddresses(uint256)",
+      "name": "winnerAddresses",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "winnerIndexes(uint256)",
+      "name": "winnerIndexes",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

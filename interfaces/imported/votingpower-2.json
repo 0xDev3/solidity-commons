@@ -1,1 +1,296 @@
-{"schema":"../schema.json","tags":["tokens","staking","locking","voting"],"name":"VotingPower","description":"Computes voting power based on staked and locked tokens. The deployer is responsible for supplying a token_ implementing ERC20 and ILOCKER. The deployer is trusted to know & have verified the token code token code is appropriate. A scaling factor is specified as a uint8 array of bytes which serves to reduce or increase the voting power of a class of token holder (locked tokens). The scaling factor changes over time, and is looked up based on the current epoch.","eventDecorators":[{"signature":"Staked(address,address,address,uint256)","name":"Staked","description":"Event `voter` the address that will cast votes weighted by the number of tokens staked for `voter` `staker` the address staking for `voter` - tokens are transferred from & returned to `staker` `proxy` is the Staking Proxy contract that is approved by `staker` to perform the token transfer `amount` is the value of tokens to be staked*.","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":true},{"name":"beneficiary","description":"who got the tokens.","recommendedTypes":[],"indexed":true},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":false},{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":false}]},{"signature":"Unstaked(address,address,address,uint256)","name":"Unstaked","description":"Event `voter` the address that will cast votes weighted by the number of tokens staked for `voter` `staker` the address staking for `voter` - tokens are transferred from & returned to `staker` `proxy` is the Staking Proxy contract that is approved by `staker` to perform the token transfer `amount` is the value of tokens to be staked*.","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":true},{"name":"beneficiary","description":"who got the tokens.","recommendedTypes":[],"indexed":true},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":false},{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"stake(uint256)","name":"stake","description":"Stakes the specified `amount` of tokens, this will attempt to transfer the given amount from the caller. It will count the actual number of tokens trasferred as being staked MUST trigger Staked event. Returns the number of tokens actually staked*.","parameterDecorators":[{"name":"amount","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"stakeFor(address,address,uint256)","name":"stakeFor","description":"Stakes the specified `amount` of tokens from `staker` on behalf of address `voter`, this will attempt to transfer the given amount from the caller. Must be called from an ISTAKINGPROXY contract that has been approved by `staker`. Tokens will be staked towards the voting power of address `voter` allowing one address to delegate voting power to another. It will count the actual number of tokens trasferred as being staked MUST trigger Staked event. Returns the number of tokens actually staked*.","parameterDecorators":[{"name":"voter","description":"","recommendedTypes":[]},{"name":"staker","description":"","recommendedTypes":[]},{"name":"amount","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"stakedFor(address,address)","name":"stakedFor","description":"Returns the current tokens staked by address `staker` for address `voter`.","parameterDecorators":[{"name":"voter","description":"","recommendedTypes":[]},{"name":"staker","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"stakes(address)","name":"stakes","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"totalStake","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"token()","name":"token","description":"address of the token being used by the staking interface.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"totalStaked()","name":"totalStaked","description":"Returns the number of current total tokens staked.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"totalStakedFor(address)","name":"totalStakedFor","description":"Returns the current total of tokens staked for address `addr`.","parameterDecorators":[{"name":"addr","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"unstake(uint256)","name":"unstake","description":"Unstakes the specified `amount` of tokens, this SHOULD return the given amount of tokens to the caller, MUST trigger Unstaked event.","parameterDecorators":[{"name":"amount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unstakeFor(address,address,uint256)","name":"unstakeFor","description":"Unstakes the specified `amount` of tokens currently staked by `staker` on behalf of `voter`, this SHOULD return the given amount of tokens to the calling contract calling contract is responsible for returning tokens to `staker` if applicable. MUST trigger Unstaked event.","parameterDecorators":[{"name":"voter","description":"","recommendedTypes":[]},{"name":"staker","description":"","recommendedTypes":[]},{"name":"amount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"votingPower(address)","name":"votingPower","description":"Returns the voting power for `who`.","parameterDecorators":[{"name":"who","description":"the address whose votingPower to compute.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the voting power for `who`*.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "staking",
+    "locking",
+    "voting"
+  ],
+  "name": "VotingPower",
+  "description": "Computes voting power based on staked and locked tokens. The deployer is responsible for supplying a token_ implementing ERC20 and ILOCKER. The deployer is trusted to know & have verified the token code token code is appropriate. A scaling factor is specified as a uint8 array of bytes which serves to reduce or increase the voting power of a class of token holder (locked tokens). The scaling factor changes over time, and is looked up based on the current epoch.",
+  "eventDecorators": [
+    {
+      "signature": "Staked(address,address,address,uint256)",
+      "name": "Staked",
+      "description": "Event `voter` the address that will cast votes weighted by the number of tokens staked for `voter` `staker` the address staking for `voter` - tokens are transferred from & returned to `staker` `proxy` is the Staking Proxy contract that is approved by `staker` to perform the token transfer `amount` is the value of tokens to be staked*.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "beneficiary",
+          "description": "who got the tokens.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unstaked(address,address,address,uint256)",
+      "name": "Unstaked",
+      "description": "Event `voter` the address that will cast votes weighted by the number of tokens staked for `voter` `staker` the address staking for `voter` - tokens are transferred from & returned to `staker` `proxy` is the Staking Proxy contract that is approved by `staker` to perform the token transfer `amount` is the value of tokens to be staked*.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "beneficiary",
+          "description": "who got the tokens.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "stake(uint256)",
+      "name": "stake",
+      "description": "Stakes the specified `amount` of tokens, this will attempt to transfer the given amount from the caller. It will count the actual number of tokens trasferred as being staked MUST trigger Staked event. Returns the number of tokens actually staked*.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stakeFor(address,address,uint256)",
+      "name": "stakeFor",
+      "description": "Stakes the specified `amount` of tokens from `staker` on behalf of address `voter`, this will attempt to transfer the given amount from the caller. Must be called from an ISTAKINGPROXY contract that has been approved by `staker`. Tokens will be staked towards the voting power of address `voter` allowing one address to delegate voting power to another. It will count the actual number of tokens trasferred as being staked MUST trigger Staked event. Returns the number of tokens actually staked*.",
+      "parameterDecorators": [
+        {
+          "name": "voter",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "staker",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stakedFor(address,address)",
+      "name": "stakedFor",
+      "description": "Returns the current tokens staked by address `staker` for address `voter`.",
+      "parameterDecorators": [
+        {
+          "name": "voter",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "staker",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "stakes(address)",
+      "name": "stakes",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalStake",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "address of the token being used by the staking interface.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalStaked()",
+      "name": "totalStaked",
+      "description": "Returns the number of current total tokens staked.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalStakedFor(address)",
+      "name": "totalStakedFor",
+      "description": "Returns the current total of tokens staked for address `addr`.",
+      "parameterDecorators": [
+        {
+          "name": "addr",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unstake(uint256)",
+      "name": "unstake",
+      "description": "Unstakes the specified `amount` of tokens, this SHOULD return the given amount of tokens to the caller, MUST trigger Unstaked event.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unstakeFor(address,address,uint256)",
+      "name": "unstakeFor",
+      "description": "Unstakes the specified `amount` of tokens currently staked by `staker` on behalf of `voter`, this SHOULD return the given amount of tokens to the calling contract calling contract is responsible for returning tokens to `staker` if applicable. MUST trigger Unstaked event.",
+      "parameterDecorators": [
+        {
+          "name": "voter",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "staker",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "votingPower(address)",
+      "name": "votingPower",
+      "description": "Returns the voting power for `who`.",
+      "parameterDecorators": [
+        {
+          "name": "who",
+          "description": "the address whose votingPower to compute.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the voting power for `who`*.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

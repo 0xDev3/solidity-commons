@@ -1,1 +1,375 @@
-{"schema":"../schema.json","tags":[],"name":"AutonomousConverter","description":"Autonomous Converter contract for MET <=> ETH exchange.","eventDecorators":[{"signature":"LogFundsIn(address,uint256)","name":"LogFundsIn","description":"event for token purchase logging.","parameterDecorators":[{"name":"from","description":"","recommendedTypes":[],"indexed":true},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":false}]},{"signature":"ConvertEthToMet(address,uint256,uint256)","name":"ConvertEthToMet","description":"event for token purchase logging.","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":true},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":false},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":false}]},{"signature":"ConvertMetToEth(address,uint256,uint256)","name":"ConvertMetToEth","description":"event for token purchase logging.","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":true},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":false},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipChanged(address,address)","name":"OwnershipChanged","description":"event for token purchase logging.","parameterDecorators":[{"name":"prevOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"convertMetToEth(uint256,uint256)","name":"convertMetToEth","description":"send MET and get ETH. Caller will be required to approve the AutonomousConverter to initiate the transfer.","parameterDecorators":[{"name":"_amount","description":"MET amount.","recommendedTypes":[]},{"name":"_mintReturn","description":"execute conversion only if return is equal or more than _mintReturn.","recommendedTypes":[]}],"returnDecorators":[{"name":"returnedEth","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"init(address,address,address)","name":"init","description":"","parameterDecorators":[{"name":"_reserveToken","description":"","recommendedTypes":[]},{"name":"_smartToken","description":"","recommendedTypes":[]},{"name":"_auctions","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"changeOwnership(address)","name":"changeOwnership","description":"Allows the current owner to transfer control of the contract to a newOwner.","parameterDecorators":[{"name":"_newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"getMetBalance()","name":"getMetBalance","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getEthForMetResult(uint256)","name":"getEthForMetResult","description":"return the expected ETH for MET.","parameterDecorators":[{"name":"_depositAmount","description":"MET.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getMetForEthResult(uint256)","name":"getMetForEthResult","description":"return the expected MET for ETH.","parameterDecorators":[{"name":"_depositAmount","description":"ETH.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getEthBalance()","name":"getEthBalance","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"handleFund()","name":"handleFund","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"acceptOwnership()","name":"acceptOwnership","description":"Allows the new owner to accept ownership of the contract.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"auctions()","name":"auctions","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"convertEthToMet(uint256)","name":"convertEthToMet","description":"send ETH and get MET.","parameterDecorators":[{"name":"_mintReturn","description":"execute conversion only if return is equal or more than _mintReturn.","recommendedTypes":[]}],"returnDecorators":[{"name":"returnedMet","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"smartToken()","name":"smartToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"newOwner()","name":"newOwner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"reserveToken()","name":"reserveToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "AutonomousConverter",
+  "description": "Autonomous Converter contract for MET <=> ETH exchange.",
+  "eventDecorators": [
+    {
+      "signature": "LogFundsIn(address,uint256)",
+      "name": "LogFundsIn",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ConvertEthToMet(address,uint256,uint256)",
+      "name": "ConvertEthToMet",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ConvertMetToEth(address,uint256,uint256)",
+      "name": "ConvertMetToEth",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipChanged(address,address)",
+      "name": "OwnershipChanged",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "prevOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "convertMetToEth(uint256,uint256)",
+      "name": "convertMetToEth",
+      "description": "send MET and get ETH. Caller will be required to approve the AutonomousConverter to initiate the transfer.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "MET amount.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_mintReturn",
+          "description": "execute conversion only if return is equal or more than _mintReturn.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "returnedEth",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "init(address,address,address)",
+      "name": "init",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_reserveToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_smartToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_auctions",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeOwnership(address)",
+      "name": "changeOwnership",
+      "description": "Allows the current owner to transfer control of the contract to a newOwner.",
+      "parameterDecorators": [
+        {
+          "name": "_newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getMetBalance()",
+      "name": "getMetBalance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getEthForMetResult(uint256)",
+      "name": "getEthForMetResult",
+      "description": "return the expected ETH for MET.",
+      "parameterDecorators": [
+        {
+          "name": "_depositAmount",
+          "description": "MET.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getMetForEthResult(uint256)",
+      "name": "getMetForEthResult",
+      "description": "return the expected MET for ETH.",
+      "parameterDecorators": [
+        {
+          "name": "_depositAmount",
+          "description": "ETH.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getEthBalance()",
+      "name": "getEthBalance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "handleFund()",
+      "name": "handleFund",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "acceptOwnership()",
+      "name": "acceptOwnership",
+      "description": "Allows the new owner to accept ownership of the contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "auctions()",
+      "name": "auctions",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "convertEthToMet(uint256)",
+      "name": "convertEthToMet",
+      "description": "send ETH and get MET.",
+      "parameterDecorators": [
+        {
+          "name": "_mintReturn",
+          "description": "execute conversion only if return is equal or more than _mintReturn.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "returnedMet",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "smartToken()",
+      "name": "smartToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "newOwner()",
+      "name": "newOwner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "reserveToken()",
+      "name": "reserveToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

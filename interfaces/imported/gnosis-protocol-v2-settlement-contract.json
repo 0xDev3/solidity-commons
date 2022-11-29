@@ -1,1 +1,610 @@
-{"schema":"../schema.json","tags":["gnosis"],"name":"GPv2Settlement","description":"Gnosis Protocol v2 Settlement Contract.","eventDecorators":[{"signature":"Interaction(address,uint256,bytes4)","name":"Interaction","description":"This event is emitted when a token swap is executed. Event emitted for each executed interaction. For gas effeciency, only the interaction calldata selector (first 4 bytes) is included in the event. For interactions without calldata or whose calldata is shorter than 4 bytes, the selector will be `0`.","parameterDecorators":[{"name":"target","description":"","recommendedTypes":[],"indexed":true},{"name":"value","description":"","recommendedTypes":[],"indexed":false},{"name":"selector","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OrderInvalidated(address,bytes)","name":"OrderInvalidated","description":"This event is emitted when a token swap is executed. Event emitted when an order is invalidated.","parameterDecorators":[{"name":"owner","description":"","recommendedTypes":[],"indexed":true},{"name":"orderUid","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PreSignature(address,bytes,bool)","name":"PreSignature","description":"This event is emitted when a token swap is executed.","parameterDecorators":[{"name":"owner","description":"","recommendedTypes":[],"indexed":true},{"name":"orderUid","description":"","recommendedTypes":[],"indexed":false},{"name":"signed","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Settlement(address)","name":"Settlement","description":"This event is emitted when a token swap is executed. Event emitted when a settlement complets.","parameterDecorators":[{"name":"solver","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Trade(address,address,address,uint256,uint256,uint256,bytes)","name":"Trade","description":"This event is emitted when a token swap is executed. Event emitted for each executed trade.","parameterDecorators":[{"name":"owner","description":"","recommendedTypes":[],"indexed":true},{"name":"sellToken","description":"","recommendedTypes":[],"indexed":false},{"name":"buyToken","description":"","recommendedTypes":[],"indexed":false},{"name":"sellAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"buyAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"feeAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"orderUid","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"authenticator()","name":"authenticator","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"domainSeparator()","name":"domainSeparator","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"filledAmount(bytes)","name":"filledAmount","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"freeFilledAmountStorage(bytes[])","name":"freeFilledAmountStorage","description":"Free storage from the filled amounts of **expired** orders to claim a gas refund. This method can only be called as an interaction.","parameterDecorators":[{"name":"orderUids","description":"The unique identifiers of the expired order to free storage for.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"freePreSignatureStorage(bytes[])","name":"freePreSignatureStorage","description":"Free storage from the pre signatures of **expired** orders to claim a gas refund. This method can only be called as an interaction.","parameterDecorators":[{"name":"orderUids","description":"The unique identifiers of the expired order to free storage for.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getStorageAt(uint256,uint256)","name":"getStorageAt","description":"Reads `length` bytes of storage in the currents contract.","parameterDecorators":[{"name":"offset","description":"- the offset in the current contract's storage in words to start reading from.","recommendedTypes":[]},{"name":"length","description":"- the number of words (32 bytes) of data to read.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the bytes that were read.","recommendedTypes":[],"solidityType":"bytes"}],"emittableEvents":[],"readOnly":true},{"signature":"invalidateOrder(bytes)","name":"invalidateOrder","description":"Invalidate onchain an order that has been signed offline.","parameterDecorators":[{"name":"orderUid","description":"The unique identifier of the order that is to be made invalid after calling this function. The user that created the order must be the the sender of this message. See [`extractOrderUidParams`] for details on orderUid.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"preSignature(bytes)","name":"preSignature","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setPreSignature(bytes,bool)","name":"setPreSignature","description":"Sets a presignature for the specified order UID.","parameterDecorators":[{"name":"orderUid","description":"The unique identifier of the order to pre-sign.","recommendedTypes":[]},{"name":"signed","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"settle(address[],uint256[],tuple(uint256,uint256,address,uint256,uint256,uint32,bytes32,uint256,uint256,uint256,bytes)[],tuple(address,uint256,bytes)[][3])","name":"settle","description":"Settle the specified orders at a clearing price. Note that it is the responsibility of the caller to ensure that all GPv2 invariants are upheld for the input settlement, otherwise this call will revert. Namely: - All orders are valid and signed - Accounts have sufficient balance and approval. - Settlement contract has sufficient balance to execute trades. Note this implies that the accumulated fees held in the contract can also be used for settlement. This is OK since: - Solvers need to be authorized - Misbehaving solvers will be slashed for abusing accumulated fees for settlement - Critically, user orders are entirely protected.","parameterDecorators":[{"name":"tokens","description":"An array of ERC20 tokens to be traded in the settlement. Trades encode tokens as indices into this array.","recommendedTypes":[]},{"name":"clearingPrices","description":"An array of clearing prices where the `i`-th price is for the `i`-th token in the [`tokens`] array.","recommendedTypes":[]},{"name":"trades","description":"Trades for signed orders.","recommendedTypes":[],"parameters":[{"name":"sellTokenIndex","description":"","type":"uint256"},{"name":"buyTokenIndex","description":"","type":"uint256"},{"name":"receiver","description":"","type":"address"},{"name":"sellAmount","description":"","type":"uint256"},{"name":"buyAmount","description":"","type":"uint256"},{"name":"validTo","description":"","type":"uint32"},{"name":"appData","description":"","type":"bytes32"},{"name":"feeAmount","description":"","type":"uint256"},{"name":"flags","description":"","type":"uint256"},{"name":"executedAmount","description":"","type":"uint256"},{"name":"signature","description":"","type":"bytes"}]},{"name":"interactions","description":"Smart contract interactions split into three separate lists to be run before the settlement, during the settlement and after the settlement respectively.","recommendedTypes":[],"parameters":[{"name":"target","description":"","type":"address"},{"name":"value","description":"","type":"uint256"},{"name":"callData","description":"","type":"bytes"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"simulateDelegatecall(address,bytes)","name":"simulateDelegatecall","description":"Performs a delegetecall on a targetContract in the context of self. Internally reverts execution to avoid side effects (making it static). Catches revert and returns encoded result as bytes.","parameterDecorators":[{"name":"targetContract","description":"Address of the contract containing the code to execute.","recommendedTypes":[]},{"name":"calldataPayload","description":"Calldata that should be sent to the target contract (encoded method name and arguments).","recommendedTypes":[]}],"returnDecorators":[{"name":"response","description":"","recommendedTypes":[],"solidityType":"bytes"}],"emittableEvents":[],"readOnly":false},{"signature":"simulateDelegatecallInternal(address,bytes)","name":"simulateDelegatecallInternal","description":"Performs a delegetecall on a targetContract in the context of self. Internally reverts execution to avoid side effects (making it static). Returns encoded result as revert message concatenated with the success flag of the inner call as a last byte.","parameterDecorators":[{"name":"targetContract","description":"Address of the contract containing the code to execute.","recommendedTypes":[]},{"name":"calldataPayload","description":"Calldata that should be sent to the target contract (encoded method name and arguments).","recommendedTypes":[]}],"returnDecorators":[{"name":"response","description":"","recommendedTypes":[],"solidityType":"bytes"}],"emittableEvents":[],"readOnly":false},{"signature":"swap(tuple(bytes32,uint256,uint256,uint256,bytes)[],address[],tuple(uint256,uint256,address,uint256,uint256,uint32,bytes32,uint256,uint256,uint256,bytes))","name":"swap","description":"Settle an order directly against Balancer V2 pools.","parameterDecorators":[{"name":"swaps","description":"The Balancer V2 swap steps to use for trading.","recommendedTypes":[],"parameters":[{"name":"poolId","description":"","type":"bytes32"},{"name":"assetInIndex","description":"","type":"uint256"},{"name":"assetOutIndex","description":"","type":"uint256"},{"name":"amount","description":"","type":"uint256"},{"name":"userData","description":"","type":"bytes"}]},{"name":"tokens","description":"An array of ERC20 tokens to be traded in the settlement. Swaps and the trade encode tokens as indices into this array.","recommendedTypes":[]},{"name":"trade","description":"The trade to match directly against Balancer liquidity. The order will always be fully executed, so the trade's `executedAmount` field is used to represent a swap limit amount.","recommendedTypes":[],"parameters":[{"name":"sellTokenIndex","description":"","type":"uint256"},{"name":"buyTokenIndex","description":"","type":"uint256"},{"name":"receiver","description":"","type":"address"},{"name":"sellAmount","description":"","type":"uint256"},{"name":"buyAmount","description":"","type":"uint256"},{"name":"validTo","description":"","type":"uint32"},{"name":"appData","description":"","type":"bytes32"},{"name":"feeAmount","description":"","type":"uint256"},{"name":"flags","description":"","type":"uint256"},{"name":"executedAmount","description":"","type":"uint256"},{"name":"signature","description":"","type":"bytes"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"vault()","name":"vault","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"vaultRelayer()","name":"vaultRelayer","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "gnosis"
+  ],
+  "name": "GPv2Settlement",
+  "description": "Gnosis Protocol v2 Settlement Contract.",
+  "eventDecorators": [
+    {
+      "signature": "Interaction(address,uint256,bytes4)",
+      "name": "Interaction",
+      "description": "This event is emitted when a token swap is executed. Event emitted for each executed interaction. For gas effeciency, only the interaction calldata selector (first 4 bytes) is included in the event. For interactions without calldata or whose calldata is shorter than 4 bytes, the selector will be `0`.",
+      "parameterDecorators": [
+        {
+          "name": "target",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "selector",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OrderInvalidated(address,bytes)",
+      "name": "OrderInvalidated",
+      "description": "This event is emitted when a token swap is executed. Event emitted when an order is invalidated.",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "orderUid",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PreSignature(address,bytes,bool)",
+      "name": "PreSignature",
+      "description": "This event is emitted when a token swap is executed.",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "orderUid",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "signed",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Settlement(address)",
+      "name": "Settlement",
+      "description": "This event is emitted when a token swap is executed. Event emitted when a settlement complets.",
+      "parameterDecorators": [
+        {
+          "name": "solver",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Trade(address,address,address,uint256,uint256,uint256,bytes)",
+      "name": "Trade",
+      "description": "This event is emitted when a token swap is executed. Event emitted for each executed trade.",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sellToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "buyToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "sellAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "buyAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "feeAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "orderUid",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "authenticator()",
+      "name": "authenticator",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "domainSeparator()",
+      "name": "domainSeparator",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "filledAmount(bytes)",
+      "name": "filledAmount",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "freeFilledAmountStorage(bytes[])",
+      "name": "freeFilledAmountStorage",
+      "description": "Free storage from the filled amounts of **expired** orders to claim a gas refund. This method can only be called as an interaction.",
+      "parameterDecorators": [
+        {
+          "name": "orderUids",
+          "description": "The unique identifiers of the expired order to free storage for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "freePreSignatureStorage(bytes[])",
+      "name": "freePreSignatureStorage",
+      "description": "Free storage from the pre signatures of **expired** orders to claim a gas refund. This method can only be called as an interaction.",
+      "parameterDecorators": [
+        {
+          "name": "orderUids",
+          "description": "The unique identifiers of the expired order to free storage for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getStorageAt(uint256,uint256)",
+      "name": "getStorageAt",
+      "description": "Reads `length` bytes of storage in the currents contract.",
+      "parameterDecorators": [
+        {
+          "name": "offset",
+          "description": "- the offset in the current contract's storage in words to start reading from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "length",
+          "description": "- the number of words (32 bytes) of data to read.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the bytes that were read.",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "invalidateOrder(bytes)",
+      "name": "invalidateOrder",
+      "description": "Invalidate onchain an order that has been signed offline.",
+      "parameterDecorators": [
+        {
+          "name": "orderUid",
+          "description": "The unique identifier of the order that is to be made invalid after calling this function. The user that created the order must be the the sender of this message. See [`extractOrderUidParams`] for details on orderUid.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "preSignature(bytes)",
+      "name": "preSignature",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setPreSignature(bytes,bool)",
+      "name": "setPreSignature",
+      "description": "Sets a presignature for the specified order UID.",
+      "parameterDecorators": [
+        {
+          "name": "orderUid",
+          "description": "The unique identifier of the order to pre-sign.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "signed",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "settle(address[],uint256[],tuple(uint256,uint256,address,uint256,uint256,uint32,bytes32,uint256,uint256,uint256,bytes)[],tuple(address,uint256,bytes)[][3])",
+      "name": "settle",
+      "description": "Settle the specified orders at a clearing price. Note that it is the responsibility of the caller to ensure that all GPv2 invariants are upheld for the input settlement, otherwise this call will revert. Namely: - All orders are valid and signed - Accounts have sufficient balance and approval. - Settlement contract has sufficient balance to execute trades. Note this implies that the accumulated fees held in the contract can also be used for settlement. This is OK since: - Solvers need to be authorized - Misbehaving solvers will be slashed for abusing accumulated fees for settlement - Critically, user orders are entirely protected.",
+      "parameterDecorators": [
+        {
+          "name": "tokens",
+          "description": "An array of ERC20 tokens to be traded in the settlement. Trades encode tokens as indices into this array.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "clearingPrices",
+          "description": "An array of clearing prices where the `i`-th price is for the `i`-th token in the [`tokens`] array.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "trades",
+          "description": "Trades for signed orders.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "sellTokenIndex",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "buyTokenIndex",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "receiver",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "sellAmount",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "buyAmount",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "validTo",
+              "description": "",
+              "type": "uint32"
+            },
+            {
+              "name": "appData",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "feeAmount",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "flags",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "executedAmount",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "signature",
+              "description": "",
+              "type": "bytes"
+            }
+          ]
+        },
+        {
+          "name": "interactions",
+          "description": "Smart contract interactions split into three separate lists to be run before the settlement, during the settlement and after the settlement respectively.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "target",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "value",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "callData",
+              "description": "",
+              "type": "bytes"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "simulateDelegatecall(address,bytes)",
+      "name": "simulateDelegatecall",
+      "description": "Performs a delegetecall on a targetContract in the context of self. Internally reverts execution to avoid side effects (making it static). Catches revert and returns encoded result as bytes.",
+      "parameterDecorators": [
+        {
+          "name": "targetContract",
+          "description": "Address of the contract containing the code to execute.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "calldataPayload",
+          "description": "Calldata that should be sent to the target contract (encoded method name and arguments).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "response",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "simulateDelegatecallInternal(address,bytes)",
+      "name": "simulateDelegatecallInternal",
+      "description": "Performs a delegetecall on a targetContract in the context of self. Internally reverts execution to avoid side effects (making it static). Returns encoded result as revert message concatenated with the success flag of the inner call as a last byte.",
+      "parameterDecorators": [
+        {
+          "name": "targetContract",
+          "description": "Address of the contract containing the code to execute.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "calldataPayload",
+          "description": "Calldata that should be sent to the target contract (encoded method name and arguments).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "response",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swap(tuple(bytes32,uint256,uint256,uint256,bytes)[],address[],tuple(uint256,uint256,address,uint256,uint256,uint32,bytes32,uint256,uint256,uint256,bytes))",
+      "name": "swap",
+      "description": "Settle an order directly against Balancer V2 pools.",
+      "parameterDecorators": [
+        {
+          "name": "swaps",
+          "description": "The Balancer V2 swap steps to use for trading.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "poolId",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "assetInIndex",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "assetOutIndex",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "userData",
+              "description": "",
+              "type": "bytes"
+            }
+          ]
+        },
+        {
+          "name": "tokens",
+          "description": "An array of ERC20 tokens to be traded in the settlement. Swaps and the trade encode tokens as indices into this array.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "trade",
+          "description": "The trade to match directly against Balancer liquidity. The order will always be fully executed, so the trade's `executedAmount` field is used to represent a swap limit amount.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "sellTokenIndex",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "buyTokenIndex",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "receiver",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "sellAmount",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "buyAmount",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "validTo",
+              "description": "",
+              "type": "uint32"
+            },
+            {
+              "name": "appData",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "feeAmount",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "flags",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "executedAmount",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "signature",
+              "description": "",
+              "type": "bytes"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "vault()",
+      "name": "vault",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "vaultRelayer()",
+      "name": "vaultRelayer",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

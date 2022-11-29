@@ -1,1 +1,359 @@
-{"schema":"../schema.json","tags":["swaps","uniswap"],"name":"UniswapV2Migrator","description":"","eventDecorators":[{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"** EVENTS ** ///.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"migratedIn(address,address,uint256)","name":"migratedIn","description":"** EVENTS ** ///.","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[],"indexed":true},{"name":"token","description":"","recommendedTypes":[],"indexed":true},{"name":"tokenAmt","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"migratedOut(address,address,uint256)","name":"migratedOut","description":"** EVENTS ** ///.","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[],"indexed":true},{"name":"token","description":"","recommendedTypes":[],"indexed":true},{"name":"tokenAmt","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"getPairs(uint8,address,address)","name":"getPairs","description":"","parameterDecorators":[{"name":"fromRouter","description":"","recommendedTypes":[]},{"name":"tokenA","description":"","recommendedTypes":[]},{"name":"tokenB","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"uniPair","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"uniReserveA","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"uniReserveB","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"nowPair","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"nowReserveA","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"nowReserveB","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getUserBalance(address)","name":"getUserBalance","description":"","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"migrateTokenPair(uint8,address,uint256,uint256)","name":"migrateTokenPair","description":"Migrate liquidity in both tokens from an existing pair.","parameterDecorators":[{"name":"fromRouterVer","description":"","recommendedTypes":[]},{"name":"fromTokenPair","description":"Token pair from which to remove liquidity.","recommendedTypes":[]},{"name":"incomingLP","description":"Amount of liquidity (LP token) to remove from pair, type(uint256).max to remove all.","recommendedTypes":[]},{"name":"deadline","description":"Unix timestamp after which the transaction will revert.","recommendedTypes":[]}],"returnDecorators":[{"name":"sentAmountA","description":"Amount of tokenA provided as new liquidity.","recommendedTypes":[],"solidityType":"uint256"},{"name":"sentAmountB","description":"Amount of tokenB provided as new liquidity.","recommendedTypes":[],"solidityType":"uint256"},{"name":"outgoingLP","description":"Amount of new liquidity token received.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"stopped()","name":"stopped","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"toggleContractActivity()","name":"toggleContractActivity","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"totalUserBalance(address)","name":"totalUserBalance","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"userBalance(address,address)","name":"userBalance","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"withdrawOwnerTokens(address[])","name":"withdrawOwnerTokens","description":"","parameterDecorators":[{"name":"tokens","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdrawUserTokens(address[])","name":"withdrawUserTokens","description":"","parameterDecorators":[{"name":"tokens","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "swaps",
+    "uniswap"
+  ],
+  "name": "UniswapV2Migrator",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "migratedIn(address,address,uint256)",
+      "name": "migratedIn",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenAmt",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "migratedOut(address,address,uint256)",
+      "name": "migratedOut",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenAmt",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "getPairs(uint8,address,address)",
+      "name": "getPairs",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "fromRouter",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenA",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenB",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "uniPair",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "uniReserveA",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "uniReserveB",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "nowPair",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "nowReserveA",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "nowReserveB",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUserBalance(address)",
+      "name": "getUserBalance",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "migrateTokenPair(uint8,address,uint256,uint256)",
+      "name": "migrateTokenPair",
+      "description": "Migrate liquidity in both tokens from an existing pair.",
+      "parameterDecorators": [
+        {
+          "name": "fromRouterVer",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fromTokenPair",
+          "description": "Token pair from which to remove liquidity.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "incomingLP",
+          "description": "Amount of liquidity (LP token) to remove from pair, type(uint256).max to remove all.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "Unix timestamp after which the transaction will revert.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "sentAmountA",
+          "description": "Amount of tokenA provided as new liquidity.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "sentAmountB",
+          "description": "Amount of tokenB provided as new liquidity.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "outgoingLP",
+          "description": "Amount of new liquidity token received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stopped()",
+      "name": "stopped",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "toggleContractActivity()",
+      "name": "toggleContractActivity",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "totalUserBalance(address)",
+      "name": "totalUserBalance",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "userBalance(address,address)",
+      "name": "userBalance",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdrawOwnerTokens(address[])",
+      "name": "withdrawOwnerTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "tokens",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawUserTokens(address[])",
+      "name": "withdrawUserTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "tokens",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

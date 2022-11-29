@@ -1,1 +1,260 @@
-{"schema":"../schema.json","tags":["swaps","staking","merkle proofs","uniswap"],"name":"ECDSARewardsDistributor","description":"ECDSA Rewards distributor. This contract can be used by stakers to claim their rewards for participation in the keep network for operating ECDSA nodes.","eventDecorators":[{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"RewardsAllocated(bytes32,uint256)","name":"RewardsAllocated","description":"","parameterDecorators":[{"name":"merkleRoot","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RewardsClaimed(bytes32,uint256,address,address,uint256)","name":"RewardsClaimed","description":"","parameterDecorators":[{"name":"merkleRoot","description":"","recommendedTypes":[],"indexed":true},{"name":"index","description":"","recommendedTypes":[],"indexed":true},{"name":"operator","description":"","recommendedTypes":[],"indexed":true},{"name":"beneficiary","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"allocate(bytes32,uint256)","name":"allocate","description":"Allocates amount of KEEP for a given merkle root.","parameterDecorators":[{"name":"merkleRoot","description":"Merkle root for a given interval.","recommendedTypes":[]},{"name":"amount","description":"The amount of KEEP tokens allocated for the merkle root.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claim(bytes32,uint256,address,uint256,bytes32[])","name":"claim","description":"Claim KEEP rewards for a given merkle root (interval) and the given operator address. Rewards will be sent to a beneficiary assigned to the operator.","parameterDecorators":[{"name":"merkleRoot","description":"Merkle root for a given interval.","recommendedTypes":[]},{"name":"index","description":"Index of the operator in the merkle tree.","recommendedTypes":[]},{"name":"operator","description":"Operator address that reward will be claimed.","recommendedTypes":[]},{"name":"amount","description":"The amount of KEEP reward to be claimed.","recommendedTypes":[]},{"name":"merkleProof","description":"Array of merkle proofs.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"isClaimed(bytes32,uint256)","name":"isClaimed","description":"","parameterDecorators":[{"name":"merkleRoot","description":"","recommendedTypes":[]},{"name":"index","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isOwner()","name":"isOwner","description":"Returns true if the caller is the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. * > Note: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"token()","name":"token","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"tokenStaking()","name":"tokenStaking","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "swaps",
+    "staking",
+    "merkle proofs",
+    "uniswap"
+  ],
+  "name": "ECDSARewardsDistributor",
+  "description": "ECDSA Rewards distributor. This contract can be used by stakers to claim their rewards for participation in the keep network for operating ECDSA nodes.",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RewardsAllocated(bytes32,uint256)",
+      "name": "RewardsAllocated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "merkleRoot",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RewardsClaimed(bytes32,uint256,address,address,uint256)",
+      "name": "RewardsClaimed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "merkleRoot",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "operator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "beneficiary",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "allocate(bytes32,uint256)",
+      "name": "allocate",
+      "description": "Allocates amount of KEEP for a given merkle root.",
+      "parameterDecorators": [
+        {
+          "name": "merkleRoot",
+          "description": "Merkle root for a given interval.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "The amount of KEEP tokens allocated for the merkle root.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claim(bytes32,uint256,address,uint256,bytes32[])",
+      "name": "claim",
+      "description": "Claim KEEP rewards for a given merkle root (interval) and the given operator address. Rewards will be sent to a beneficiary assigned to the operator.",
+      "parameterDecorators": [
+        {
+          "name": "merkleRoot",
+          "description": "Merkle root for a given interval.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "Index of the operator in the merkle tree.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "operator",
+          "description": "Operator address that reward will be claimed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "The amount of KEEP reward to be claimed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "merkleProof",
+          "description": "Array of merkle proofs.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isClaimed(bytes32,uint256)",
+      "name": "isClaimed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "merkleRoot",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isOwner()",
+      "name": "isOwner",
+      "description": "Returns true if the caller is the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. * > Note: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tokenStaking()",
+      "name": "tokenStaking",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

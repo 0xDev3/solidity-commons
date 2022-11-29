@@ -1,1 +1,879 @@
-{"schema":"../schema.json","tags":["tokens","borrowing","strategies","compound"],"name":"FlexibleLeverageStrategyAdapter","description":"FlexibleLeverageStrategyAdapter.","eventDecorators":[{"signature":"AnyoneTradeUpdated(bool)","name":"AnyoneTradeUpdated","description":"","parameterDecorators":[{"name":"_status","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"TraderStatusUpdated(address,bool)","name":"TraderStatusUpdated","description":"","parameterDecorators":[{"name":"_trader","description":"","recommendedTypes":[],"indexed":true},{"name":"_status","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"anyoneTrade()","name":"anyoneTrade","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"borrowAsset()","name":"borrowAsset","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"collateralAsset()","name":"collateralAsset","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"comptroller()","name":"comptroller","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"disengage()","name":"disengage","description":"OPERATOR ONLY: Return leverage ratio to 1x and delever to repay loan. This can be used for upgrading or shutting down the strategy. Note: due to rounding on trades, loan value may not be entirely repaid.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"engage()","name":"engage","description":"OPERATOR ONLY: Engage to target leverage ratio for the first time. SetToken will borrow debt position from Compound and trade for collateral asset. If target leverage ratio is above max borrow or max trade size, then TWAP is kicked off. To complete engage if TWAP, you must call rebalance until target is met.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"etherReward()","name":"etherReward","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"exchangeData()","name":"exchangeData","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes"}],"emittableEvents":[],"readOnly":true},{"signature":"exchangeName()","name":"exchangeName","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true},{"signature":"getCurrentEtherIncentive()","name":"getCurrentEtherIncentive","description":"Get current Ether incentive for when current leverage ratio exceeds incentivized leverage ratio and ripcord can be called return etherReward Quantity of ETH reward in base units (10e18).","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getCurrentLeverageRatio()","name":"getCurrentLeverageRatio","description":"Get current leverage ratio. Current leverage ratio is defined as the USD value of the collateral divided by the USD value of the SetToken. Prices for collateral and borrow asset are retrieved from the Compound Price Oracle. return currentLeverageRatio Current leverage ratio in precise units (10e18).","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"gulp()","name":"gulp","description":"ONLY EOA: Call gulp on the CompoundLeverageModule. Gulp will claim COMP from liquidity mining and sell for more collateral asset, which effectively distributes to SetToken holders and reduces the interest rate paid for borrowing. Rebalance must not be in progress. Anyone callable.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"incentivizedLeverageRatio()","name":"incentivizedLeverageRatio","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"incentivizedSlippageTolerance()","name":"incentivizedSlippageTolerance","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"incentivizedTwapCooldownPeriod()","name":"incentivizedTwapCooldownPeriod","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"incentivizedTwapMaxTradeSize()","name":"incentivizedTwapMaxTradeSize","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"lastTradeTimestamp()","name":"lastTradeTimestamp","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"leverageModule()","name":"leverageModule","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"manager()","name":"manager","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"maxLeverageRatio()","name":"maxLeverageRatio","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"minLeverageRatio()","name":"minLeverageRatio","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"priceOracle()","name":"priceOracle","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"rebalance()","name":"rebalance","description":"ONLY EOA AND ALLOWED TRADER: Rebalance according to flexible leverage methodology. If current leverage ratio is between the max and min bounds, then rebalance can only be called once the rebalance interval has elapsed since last timestamp. If outside the max and min, rebalance can be called anytime to bring leverage ratio back to the max or min bounds. The methodology will determine whether to delever or lever. Note: If the calculated current leverage ratio is above the incentivized leverage ratio then rebalance cannot be called. Instead, you must call ripcord() which is incentivized with a reward in Ether.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"rebalanceInterval()","name":"rebalanceInterval","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"recenteringSpeed()","name":"recenteringSpeed","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"ripcord()","name":"ripcord","description":"ONLY EOA: In case the current leverage ratio exceeds the incentivized leverage threshold, the ripcord function can be called by anyone to return leverage ratio back to the max leverage ratio. This function typically would only be called during times of high downside volatility and / or normal keeper malfunctions. The caller of ripcord() will receive a reward in Ether. The ripcord function uses it's own TWAP cooldown period, slippage tolerance and TWAP max trade size which are typically looser than in the rebalance() function.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setCooldownPeriod(uint256)","name":"setCooldownPeriod","description":"OPERATOR ONLY: Set TWAP cooldown period in seconds for regular rebalance. Rebalance must not be in progress.","parameterDecorators":[{"name":"_twapCooldownPeriod","description":"New TWAP cooldown period in seconds.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setEtherReward(uint256)","name":"setEtherReward","description":"OPERATOR ONLY: Set ETH reward for a single ripcord function call. Rebalance must not be in progress.","parameterDecorators":[{"name":"_etherReward","description":"Amount of Ether in base units (10e18) per ripcord call.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setExchange(string)","name":"setExchange","description":"OPERATOR ONLY: Set exchange name identifier used to execute trades. Rebalance must not be in progress.","parameterDecorators":[{"name":"_exchangeName","description":"Name of new exchange to set.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setExchangeData(bytes)","name":"setExchangeData","description":"OPERATOR ONLY: Set exchange data that is used by certain exchanges to execute trades. Rebalance must not be in progress.","parameterDecorators":[{"name":"_exchangeData","description":"Arbitrary exchange data.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setIncentivizedCooldownPeriod(uint256)","name":"setIncentivizedCooldownPeriod","description":"OPERATOR ONLY: Set cooldown period in seconds for ripcord function. Rebalance must not be in progress.","parameterDecorators":[{"name":"_incentivizedTwapCooldownPeriod","description":"TWAP cooldown period in seconds.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setIncentivizedLeverageRatio(uint256)","name":"setIncentivizedLeverageRatio","description":"OPERATOR ONLY: Set leverage ratio threshold at which keepers are eligible to call ripcord and receive an ETH reward. Rebalance must not be in progress.","parameterDecorators":[{"name":"_incentivizedLeverageRatio","description":"Leverage ratio required to receive lower tier of ETH rewards.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setIncentivizedMaxTradeSize(uint256)","name":"setIncentivizedMaxTradeSize","description":"OPERATOR ONLY: Set max trade size in collateral base units for ripcord function. Rebalance must not be in progress.","parameterDecorators":[{"name":"_incentivizedTwapMaxTradeSize","description":"Max trade size in collateral units.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setIncentivizedSlippageTolerance(uint256)","name":"setIncentivizedSlippageTolerance","description":"OPERATOR ONLY: Set slippage tolerance for when rebalance is incentivized. Rebalance must not be in progress.","parameterDecorators":[{"name":"_incentivizedSlippageTolerance","description":"Slippage tolerance in percentage in precise units. (1% = 1e16).","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMaxLeverageRatio(uint256)","name":"setMaxLeverageRatio","description":"OPERATOR ONLY: Set max leverage ratio. If current leverage ratio rises above, strategy will rebalance to this ratio. Rebalance must not be in progress.","parameterDecorators":[{"name":"_maxLeverageRatio","description":"New max leverage ratio for methodology.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMaxTradeSize(uint256)","name":"setMaxTradeSize","description":"OPERATOR ONLY: Set max trade size in collateral base units for regular rebalance. Rebalance must not be in progress.","parameterDecorators":[{"name":"_twapMaxTradeSize","description":"Max trade size in collateral units.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMinLeverageRatio(uint256)","name":"setMinLeverageRatio","description":"OPERATOR ONLY: Set min leverage ratio. If current leverage ratio falls below, strategy will rebalance to this ratio. Rebalance must not be in progress.","parameterDecorators":[{"name":"_minLeverageRatio","description":"New min leverage ratio for methodology.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setRebalanceInterval(uint256)","name":"setRebalanceInterval","description":"OPERATOR ONLY: Set rebalance interval in seconds. Rebalance must not be in progress.","parameterDecorators":[{"name":"_rebalanceInterval","description":"New rebalance interval in seconds.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setRecenteringSpeedPercentage(uint256)","name":"setRecenteringSpeedPercentage","description":"OPERATOR ONLY: Set recentering speed in percentage. Rebalance must not be in progress.","parameterDecorators":[{"name":"_recenteringSpeed","description":"New recentering speed in percentage (1% = 1e16).","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setSlippageTolerance(uint256)","name":"setSlippageTolerance","description":"OPERATOR ONLY: Set slippage tolerance in percentage for regular rebalance. Rebalance must not be in progress.","parameterDecorators":[{"name":"_slippageTolerance","description":"Slippage tolerance in percentage in precise units (1% = 1e16).","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setToken()","name":"setToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"setUnutilizedLeveragePercentage(uint256)","name":"setUnutilizedLeveragePercentage","description":"OPERATOR ONLY: Set percentage of max borrow left utilized. Rebalance must not be in progress.","parameterDecorators":[{"name":"_unutilizedLeveragePercentage","description":"New buffer percentage.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"shouldRebalance()","name":"shouldRebalance","description":"Helper that checks if conditions are met for rebalance or ripcord. Returns an enum with 0 = no rebalance, 1 = call rebalance(), 2 = call ripcord() return ShouldRebalance Enum detailing whether to rebalance, ripcord or no action.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"slippageTolerance()","name":"slippageTolerance","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"targetBorrowCToken()","name":"targetBorrowCToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"targetCollateralCToken()","name":"targetCollateralCToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"targetLeverageRatio()","name":"targetLeverageRatio","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"tradeAllowList(address)","name":"tradeAllowList","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"twapCooldownPeriod()","name":"twapCooldownPeriod","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"twapLeverageRatio()","name":"twapLeverageRatio","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"twapMaxTradeSize()","name":"twapMaxTradeSize","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"unutilizedLeveragePercentage()","name":"unutilizedLeveragePercentage","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"updateAnyoneTrade(bool)","name":"updateAnyoneTrade","description":"OPERATOR ONLY: Toggle whether anyone can trade, bypassing the traderAllowList.","parameterDecorators":[{"name":"_status","description":"Boolean indicating whether to allow anyone trade.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateTraderStatus(address[],bool[])","name":"updateTraderStatus","description":"OPERATOR ONLY: Toggle ability for passed addresses to trade from current state.","parameterDecorators":[{"name":"_traders","description":"Array trader addresses to toggle status.","recommendedTypes":[]},{"name":"_statuses","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdrawEtherBalance()","name":"withdrawEtherBalance","description":"OPERATOR ONLY: Withdraw entire balance of ETH in this contract to operator. Rebalance must not be in progress.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "borrowing",
+    "strategies",
+    "compound"
+  ],
+  "name": "FlexibleLeverageStrategyAdapter",
+  "description": "FlexibleLeverageStrategyAdapter.",
+  "eventDecorators": [
+    {
+      "signature": "AnyoneTradeUpdated(bool)",
+      "name": "AnyoneTradeUpdated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_status",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TraderStatusUpdated(address,bool)",
+      "name": "TraderStatusUpdated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_trader",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_status",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "anyoneTrade()",
+      "name": "anyoneTrade",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "borrowAsset()",
+      "name": "borrowAsset",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "collateralAsset()",
+      "name": "collateralAsset",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "comptroller()",
+      "name": "comptroller",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "disengage()",
+      "name": "disengage",
+      "description": "OPERATOR ONLY: Return leverage ratio to 1x and delever to repay loan. This can be used for upgrading or shutting down the strategy. Note: due to rounding on trades, loan value may not be entirely repaid.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "engage()",
+      "name": "engage",
+      "description": "OPERATOR ONLY: Engage to target leverage ratio for the first time. SetToken will borrow debt position from Compound and trade for collateral asset. If target leverage ratio is above max borrow or max trade size, then TWAP is kicked off. To complete engage if TWAP, you must call rebalance until target is met.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "etherReward()",
+      "name": "etherReward",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "exchangeData()",
+      "name": "exchangeData",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "exchangeName()",
+      "name": "exchangeName",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentEtherIncentive()",
+      "name": "getCurrentEtherIncentive",
+      "description": "Get current Ether incentive for when current leverage ratio exceeds incentivized leverage ratio and ripcord can be called return etherReward Quantity of ETH reward in base units (10e18).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentLeverageRatio()",
+      "name": "getCurrentLeverageRatio",
+      "description": "Get current leverage ratio. Current leverage ratio is defined as the USD value of the collateral divided by the USD value of the SetToken. Prices for collateral and borrow asset are retrieved from the Compound Price Oracle. return currentLeverageRatio Current leverage ratio in precise units (10e18).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "gulp()",
+      "name": "gulp",
+      "description": "ONLY EOA: Call gulp on the CompoundLeverageModule. Gulp will claim COMP from liquidity mining and sell for more collateral asset, which effectively distributes to SetToken holders and reduces the interest rate paid for borrowing. Rebalance must not be in progress. Anyone callable.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "incentivizedLeverageRatio()",
+      "name": "incentivizedLeverageRatio",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "incentivizedSlippageTolerance()",
+      "name": "incentivizedSlippageTolerance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "incentivizedTwapCooldownPeriod()",
+      "name": "incentivizedTwapCooldownPeriod",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "incentivizedTwapMaxTradeSize()",
+      "name": "incentivizedTwapMaxTradeSize",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastTradeTimestamp()",
+      "name": "lastTradeTimestamp",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "leverageModule()",
+      "name": "leverageModule",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "manager()",
+      "name": "manager",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxLeverageRatio()",
+      "name": "maxLeverageRatio",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minLeverageRatio()",
+      "name": "minLeverageRatio",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "priceOracle()",
+      "name": "priceOracle",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rebalance()",
+      "name": "rebalance",
+      "description": "ONLY EOA AND ALLOWED TRADER: Rebalance according to flexible leverage methodology. If current leverage ratio is between the max and min bounds, then rebalance can only be called once the rebalance interval has elapsed since last timestamp. If outside the max and min, rebalance can be called anytime to bring leverage ratio back to the max or min bounds. The methodology will determine whether to delever or lever. Note: If the calculated current leverage ratio is above the incentivized leverage ratio then rebalance cannot be called. Instead, you must call ripcord() which is incentivized with a reward in Ether.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rebalanceInterval()",
+      "name": "rebalanceInterval",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "recenteringSpeed()",
+      "name": "recenteringSpeed",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ripcord()",
+      "name": "ripcord",
+      "description": "ONLY EOA: In case the current leverage ratio exceeds the incentivized leverage threshold, the ripcord function can be called by anyone to return leverage ratio back to the max leverage ratio. This function typically would only be called during times of high downside volatility and / or normal keeper malfunctions. The caller of ripcord() will receive a reward in Ether. The ripcord function uses it's own TWAP cooldown period, slippage tolerance and TWAP max trade size which are typically looser than in the rebalance() function.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setCooldownPeriod(uint256)",
+      "name": "setCooldownPeriod",
+      "description": "OPERATOR ONLY: Set TWAP cooldown period in seconds for regular rebalance. Rebalance must not be in progress.",
+      "parameterDecorators": [
+        {
+          "name": "_twapCooldownPeriod",
+          "description": "New TWAP cooldown period in seconds.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setEtherReward(uint256)",
+      "name": "setEtherReward",
+      "description": "OPERATOR ONLY: Set ETH reward for a single ripcord function call. Rebalance must not be in progress.",
+      "parameterDecorators": [
+        {
+          "name": "_etherReward",
+          "description": "Amount of Ether in base units (10e18) per ripcord call.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setExchange(string)",
+      "name": "setExchange",
+      "description": "OPERATOR ONLY: Set exchange name identifier used to execute trades. Rebalance must not be in progress.",
+      "parameterDecorators": [
+        {
+          "name": "_exchangeName",
+          "description": "Name of new exchange to set.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setExchangeData(bytes)",
+      "name": "setExchangeData",
+      "description": "OPERATOR ONLY: Set exchange data that is used by certain exchanges to execute trades. Rebalance must not be in progress.",
+      "parameterDecorators": [
+        {
+          "name": "_exchangeData",
+          "description": "Arbitrary exchange data.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setIncentivizedCooldownPeriod(uint256)",
+      "name": "setIncentivizedCooldownPeriod",
+      "description": "OPERATOR ONLY: Set cooldown period in seconds for ripcord function. Rebalance must not be in progress.",
+      "parameterDecorators": [
+        {
+          "name": "_incentivizedTwapCooldownPeriod",
+          "description": "TWAP cooldown period in seconds.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setIncentivizedLeverageRatio(uint256)",
+      "name": "setIncentivizedLeverageRatio",
+      "description": "OPERATOR ONLY: Set leverage ratio threshold at which keepers are eligible to call ripcord and receive an ETH reward. Rebalance must not be in progress.",
+      "parameterDecorators": [
+        {
+          "name": "_incentivizedLeverageRatio",
+          "description": "Leverage ratio required to receive lower tier of ETH rewards.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setIncentivizedMaxTradeSize(uint256)",
+      "name": "setIncentivizedMaxTradeSize",
+      "description": "OPERATOR ONLY: Set max trade size in collateral base units for ripcord function. Rebalance must not be in progress.",
+      "parameterDecorators": [
+        {
+          "name": "_incentivizedTwapMaxTradeSize",
+          "description": "Max trade size in collateral units.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setIncentivizedSlippageTolerance(uint256)",
+      "name": "setIncentivizedSlippageTolerance",
+      "description": "OPERATOR ONLY: Set slippage tolerance for when rebalance is incentivized. Rebalance must not be in progress.",
+      "parameterDecorators": [
+        {
+          "name": "_incentivizedSlippageTolerance",
+          "description": "Slippage tolerance in percentage in precise units. (1% = 1e16).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMaxLeverageRatio(uint256)",
+      "name": "setMaxLeverageRatio",
+      "description": "OPERATOR ONLY: Set max leverage ratio. If current leverage ratio rises above, strategy will rebalance to this ratio. Rebalance must not be in progress.",
+      "parameterDecorators": [
+        {
+          "name": "_maxLeverageRatio",
+          "description": "New max leverage ratio for methodology.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMaxTradeSize(uint256)",
+      "name": "setMaxTradeSize",
+      "description": "OPERATOR ONLY: Set max trade size in collateral base units for regular rebalance. Rebalance must not be in progress.",
+      "parameterDecorators": [
+        {
+          "name": "_twapMaxTradeSize",
+          "description": "Max trade size in collateral units.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMinLeverageRatio(uint256)",
+      "name": "setMinLeverageRatio",
+      "description": "OPERATOR ONLY: Set min leverage ratio. If current leverage ratio falls below, strategy will rebalance to this ratio. Rebalance must not be in progress.",
+      "parameterDecorators": [
+        {
+          "name": "_minLeverageRatio",
+          "description": "New min leverage ratio for methodology.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRebalanceInterval(uint256)",
+      "name": "setRebalanceInterval",
+      "description": "OPERATOR ONLY: Set rebalance interval in seconds. Rebalance must not be in progress.",
+      "parameterDecorators": [
+        {
+          "name": "_rebalanceInterval",
+          "description": "New rebalance interval in seconds.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRecenteringSpeedPercentage(uint256)",
+      "name": "setRecenteringSpeedPercentage",
+      "description": "OPERATOR ONLY: Set recentering speed in percentage. Rebalance must not be in progress.",
+      "parameterDecorators": [
+        {
+          "name": "_recenteringSpeed",
+          "description": "New recentering speed in percentage (1% = 1e16).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setSlippageTolerance(uint256)",
+      "name": "setSlippageTolerance",
+      "description": "OPERATOR ONLY: Set slippage tolerance in percentage for regular rebalance. Rebalance must not be in progress.",
+      "parameterDecorators": [
+        {
+          "name": "_slippageTolerance",
+          "description": "Slippage tolerance in percentage in precise units (1% = 1e16).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setToken()",
+      "name": "setToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setUnutilizedLeveragePercentage(uint256)",
+      "name": "setUnutilizedLeveragePercentage",
+      "description": "OPERATOR ONLY: Set percentage of max borrow left utilized. Rebalance must not be in progress.",
+      "parameterDecorators": [
+        {
+          "name": "_unutilizedLeveragePercentage",
+          "description": "New buffer percentage.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "shouldRebalance()",
+      "name": "shouldRebalance",
+      "description": "Helper that checks if conditions are met for rebalance or ripcord. Returns an enum with 0 = no rebalance, 1 = call rebalance(), 2 = call ripcord() return ShouldRebalance Enum detailing whether to rebalance, ripcord or no action.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "slippageTolerance()",
+      "name": "slippageTolerance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "targetBorrowCToken()",
+      "name": "targetBorrowCToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "targetCollateralCToken()",
+      "name": "targetCollateralCToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "targetLeverageRatio()",
+      "name": "targetLeverageRatio",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tradeAllowList(address)",
+      "name": "tradeAllowList",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "twapCooldownPeriod()",
+      "name": "twapCooldownPeriod",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "twapLeverageRatio()",
+      "name": "twapLeverageRatio",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "twapMaxTradeSize()",
+      "name": "twapMaxTradeSize",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unutilizedLeveragePercentage()",
+      "name": "unutilizedLeveragePercentage",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "updateAnyoneTrade(bool)",
+      "name": "updateAnyoneTrade",
+      "description": "OPERATOR ONLY: Toggle whether anyone can trade, bypassing the traderAllowList.",
+      "parameterDecorators": [
+        {
+          "name": "_status",
+          "description": "Boolean indicating whether to allow anyone trade.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateTraderStatus(address[],bool[])",
+      "name": "updateTraderStatus",
+      "description": "OPERATOR ONLY: Toggle ability for passed addresses to trade from current state.",
+      "parameterDecorators": [
+        {
+          "name": "_traders",
+          "description": "Array trader addresses to toggle status.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_statuses",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawEtherBalance()",
+      "name": "withdrawEtherBalance",
+      "description": "OPERATOR ONLY: Withdraw entire balance of ETH in this contract to operator. Rebalance must not be in progress.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

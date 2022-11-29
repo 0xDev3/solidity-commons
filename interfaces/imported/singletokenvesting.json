@@ -1,1 +1,373 @@
-{"schema":"../schema.json","tags":["tokens","vesting"],"name":"SimpleVestingNonRevocable","description":"SingleTokenVesting. A token holder contract that can release its token balance gradually like a typical vesting scheme, with a cliff and vesting period. Optionally revocable by the guardian. Only tracks vesting for a single token, rather than all ERC20s.","eventDecorators":[{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Paused(address)","name":"Paused","description":"","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TokensReleased(address,uint256)","name":"TokensReleased","description":"","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Unpaused(address)","name":"Unpaused","description":"","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"__SingleTokenVestingNonRevocable_init(address,address,address,uint256,uint256,uint256)","name":"__SingleTokenVestingNonRevocable_init","description":"Creates a vesting contract that vests its balance of any ERC20 token to the beneficiary, gradually in a linear fashion until start + duration. By then all of the balance will have vested.","parameterDecorators":[{"name":"token","description":"address of the token to vest.","recommendedTypes":[]},{"name":"beneficiary","description":"address of the beneficiary to whom vested tokens are transferred.","recommendedTypes":[]},{"name":"guardian","description":"","recommendedTypes":[]},{"name":"start","description":"the time (as Unix time) at which point vesting starts.","recommendedTypes":[]},{"name":"cliffDuration","description":"duration in seconds of the cliff in which tokens will begin to vest.","recommendedTypes":[]},{"name":"duration","description":"duration in seconds of the period in which the tokens will vest.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"beneficiary()","name":"beneficiary","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"the beneficiary of the tokens.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"claimEther()","name":"claimEther","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claimToken(address)","name":"claimToken","description":"","parameterDecorators":[{"name":"tokenToClaim","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"cliff()","name":"cliff","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"the cliff time of the token vesting.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"duration()","name":"duration","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"the duration of the token vesting.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"guardian()","name":"guardian","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"migrateBeneficiary(address)","name":"migrateBeneficiary","description":"","parameterDecorators":[{"name":"newBeneficiary","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"pause()","name":"pause","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"paused()","name":"paused","description":"Returns true if the contract is paused, and false otherwise.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"releasableAmount()","name":"releasableAmount","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"release(uint256)","name":"release","description":"Transfers vested tokens to beneficiary.","parameterDecorators":[{"name":"amount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"released()","name":"released","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"the amount of the token released.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"start()","name":"start","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"the start time of the token vesting.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"token()","name":"token","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"the token being held.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unpause()","name":"unpause","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "vesting"
+  ],
+  "name": "SimpleVestingNonRevocable",
+  "description": "SingleTokenVesting. A token holder contract that can release its token balance gradually like a typical vesting scheme, with a cliff and vesting period. Optionally revocable by the guardian. Only tracks vesting for a single token, rather than all ERC20s.",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Paused(address)",
+      "name": "Paused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TokensReleased(address,uint256)",
+      "name": "TokensReleased",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unpaused(address)",
+      "name": "Unpaused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "__SingleTokenVestingNonRevocable_init(address,address,address,uint256,uint256,uint256)",
+      "name": "__SingleTokenVestingNonRevocable_init",
+      "description": "Creates a vesting contract that vests its balance of any ERC20 token to the beneficiary, gradually in a linear fashion until start + duration. By then all of the balance will have vested.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "address of the token to vest.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "beneficiary",
+          "description": "address of the beneficiary to whom vested tokens are transferred.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "guardian",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "start",
+          "description": "the time (as Unix time) at which point vesting starts.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "cliffDuration",
+          "description": "duration in seconds of the cliff in which tokens will begin to vest.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "duration",
+          "description": "duration in seconds of the period in which the tokens will vest.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "beneficiary()",
+      "name": "beneficiary",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the beneficiary of the tokens.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claimEther()",
+      "name": "claimEther",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimToken(address)",
+      "name": "claimToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "tokenToClaim",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cliff()",
+      "name": "cliff",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the cliff time of the token vesting.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "duration()",
+      "name": "duration",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the duration of the token vesting.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "guardian()",
+      "name": "guardian",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "migrateBeneficiary(address)",
+      "name": "migrateBeneficiary",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "newBeneficiary",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pause()",
+      "name": "pause",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "paused()",
+      "name": "paused",
+      "description": "Returns true if the contract is paused, and false otherwise.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "releasableAmount()",
+      "name": "releasableAmount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "release(uint256)",
+      "name": "release",
+      "description": "Transfers vested tokens to beneficiary.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "released()",
+      "name": "released",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the amount of the token released.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "start()",
+      "name": "start",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the start time of the token vesting.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the token being held.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unpause()",
+      "name": "unpause",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

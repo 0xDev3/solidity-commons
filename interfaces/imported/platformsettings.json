@@ -1,1 +1,384 @@
-{"schema":"../schema.json","tags":[],"name":"PlatformSettings","description":"","eventDecorators":[{"signature":"PlatformPaused(address)","name":"PlatformPaused","description":"","parameterDecorators":[{"name":"pauser","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"PlatformSettingCreated(bytes32,address,uint256,uint256,uint256)","name":"PlatformSettingCreated","description":"","parameterDecorators":[{"name":"name","description":"","recommendedTypes":[],"indexed":true},{"name":"creator","description":"","recommendedTypes":[],"indexed":true},{"name":"minValue","description":"","recommendedTypes":[],"indexed":false},{"name":"value","description":"","recommendedTypes":[],"indexed":false},{"name":"maxValue","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PlatformSettingRemoved(bytes32,address,uint256)","name":"PlatformSettingRemoved","description":"","parameterDecorators":[{"name":"name","description":"","recommendedTypes":[],"indexed":true},{"name":"remover","description":"","recommendedTypes":[],"indexed":true},{"name":"value","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PlatformSettingUpdated(bytes32,address,uint256,uint256)","name":"PlatformSettingUpdated","description":"","parameterDecorators":[{"name":"name","description":"","recommendedTypes":[],"indexed":true},{"name":"remover","description":"","recommendedTypes":[],"indexed":true},{"name":"oldValue","description":"","recommendedTypes":[],"indexed":false},{"name":"newValue","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PlatformUnpaused(address)","name":"PlatformUnpaused","description":"","parameterDecorators":[{"name":"unpauser","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"createSetting(bytes32,uint256,uint256,uint256)","name":"createSetting","description":"It creates a new platform setting given a name, value, min and max values.","parameterDecorators":[{"name":"name","description":"setting name to create.","recommendedTypes":[]},{"name":"value","description":"the initial value for the given setting name.","recommendedTypes":[]},{"name":"min","description":"the min value for the setting.","recommendedTypes":[]},{"name":"max","description":"the max value for the setting.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getSetting(bytes32)","name":"getSetting","description":"It gets the current platform setting for a given setting name.","parameterDecorators":[{"name":"name","description":"to get.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the current platform setting.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"getSettingValue(bytes32)","name":"getSettingValue","description":"It gets the current platform setting value for a given setting name.","parameterDecorators":[{"name":"name","description":"to get.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the current platform setting value.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"hasSetting(bytes32)","name":"hasSetting","description":"It tests whether a setting name is already configured.","parameterDecorators":[{"name":"name","description":"setting name to test.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"true if the setting is already configured. Otherwise it returns false.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isPaused()","name":"isPaused","description":"It gets whether the platform is paused or not.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"true if platform is paused. Otherwise it returns false.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"pause()","name":"pause","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"paused()","name":"paused","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"removeSetting(bytes32)","name":"removeSetting","description":"Removes a current platform setting given a setting name.","parameterDecorators":[{"name":"name","description":"to remove.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"requireIsNotPaused()","name":"requireIsNotPaused","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":true},{"signature":"requireIsPaused()","name":"requireIsPaused","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":true},{"signature":"rolesManager()","name":"rolesManager","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"settings(bytes32)","name":"settings","description":"This mapping represents the platform settings where: - The key is the platform setting name. - The value is the platform setting. It includes the value, minimum and maximum values.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"value","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"min","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"max","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"exists","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"unpause()","name":"unpause","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateSetting(bytes32,uint256)","name":"updateSetting","description":"It updates an existent platform setting given a setting name.It only allows to update the value (not the min or max values).In case you need to update the min or max values, you need to remove it, and create it again.","parameterDecorators":[{"name":"settingName","description":"setting name to update.","recommendedTypes":[]},{"name":"newValue","description":"the new value to set.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "PlatformSettings",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "PlatformPaused(address)",
+      "name": "PlatformPaused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "pauser",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "PlatformSettingCreated(bytes32,address,uint256,uint256,uint256)",
+      "name": "PlatformSettingCreated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "name",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "creator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "minValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "maxValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PlatformSettingRemoved(bytes32,address,uint256)",
+      "name": "PlatformSettingRemoved",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "name",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "remover",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PlatformSettingUpdated(bytes32,address,uint256,uint256)",
+      "name": "PlatformSettingUpdated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "name",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "remover",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "oldValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PlatformUnpaused(address)",
+      "name": "PlatformUnpaused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "unpauser",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "createSetting(bytes32,uint256,uint256,uint256)",
+      "name": "createSetting",
+      "description": "It creates a new platform setting given a name, value, min and max values.",
+      "parameterDecorators": [
+        {
+          "name": "name",
+          "description": "setting name to create.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "the initial value for the given setting name.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "min",
+          "description": "the min value for the setting.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "max",
+          "description": "the max value for the setting.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getSetting(bytes32)",
+      "name": "getSetting",
+      "description": "It gets the current platform setting for a given setting name.",
+      "parameterDecorators": [
+        {
+          "name": "name",
+          "description": "to get.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the current platform setting.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSettingValue(bytes32)",
+      "name": "getSettingValue",
+      "description": "It gets the current platform setting value for a given setting name.",
+      "parameterDecorators": [
+        {
+          "name": "name",
+          "description": "to get.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the current platform setting value.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "hasSetting(bytes32)",
+      "name": "hasSetting",
+      "description": "It tests whether a setting name is already configured.",
+      "parameterDecorators": [
+        {
+          "name": "name",
+          "description": "setting name to test.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "true if the setting is already configured. Otherwise it returns false.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isPaused()",
+      "name": "isPaused",
+      "description": "It gets whether the platform is paused or not.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "true if platform is paused. Otherwise it returns false.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pause()",
+      "name": "pause",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "paused()",
+      "name": "paused",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeSetting(bytes32)",
+      "name": "removeSetting",
+      "description": "Removes a current platform setting given a setting name.",
+      "parameterDecorators": [
+        {
+          "name": "name",
+          "description": "to remove.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "requireIsNotPaused()",
+      "name": "requireIsNotPaused",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "requireIsPaused()",
+      "name": "requireIsPaused",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rolesManager()",
+      "name": "rolesManager",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "settings(bytes32)",
+      "name": "settings",
+      "description": "This mapping represents the platform settings where: - The key is the platform setting name. - The value is the platform setting. It includes the value, minimum and maximum values.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "min",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "max",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "exists",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unpause()",
+      "name": "unpause",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateSetting(bytes32,uint256)",
+      "name": "updateSetting",
+      "description": "It updates an existent platform setting given a setting name.It only allows to update the value (not the min or max values).In case you need to update the min or max values, you need to remove it, and create it again.",
+      "parameterDecorators": [
+        {
+          "name": "settingName",
+          "description": "setting name to update.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newValue",
+          "description": "the new value to set.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

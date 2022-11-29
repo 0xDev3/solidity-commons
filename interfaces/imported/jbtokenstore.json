@@ -1,1 +1,642 @@
-{"schema":"../schema.json","tags":["tokens","swaps"],"name":"JBTokenStore","description":"Tokens can be either represented internally or claimed as ERC-20s. This contract manages these two representations and allows claiming.The total supply of a project's tokens and the balance of each account are calculated in this contract.Each project can bring their own token if they prefer, and swap between tokens at any time. Manage Token minting, burning, and account balances.","eventDecorators":[{"signature":"Burn(address,uint256,uint256,uint256,bool,address)","name":"Burn","description":"","parameterDecorators":[{"name":"holder","description":"","recommendedTypes":[],"indexed":true},{"name":"projectId","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"unclaimedTokenBalance","description":"","recommendedTypes":[],"indexed":false},{"name":"preferClaimedTokens","description":"","recommendedTypes":[],"indexed":false},{"name":"caller","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Change(uint256,address,address,address)","name":"Change","description":"","parameterDecorators":[{"name":"projectId","description":"","recommendedTypes":[],"indexed":true},{"name":"token","description":"","recommendedTypes":[],"indexed":true},{"name":"owner","description":"","recommendedTypes":[],"indexed":true},{"name":"caller","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Claim(address,uint256,uint256,address)","name":"Claim","description":"","parameterDecorators":[{"name":"holder","description":"","recommendedTypes":[],"indexed":true},{"name":"projectId","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"caller","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Issue(uint256,address,string,string,address)","name":"Issue","description":"","parameterDecorators":[{"name":"projectId","description":"","recommendedTypes":[],"indexed":true},{"name":"token","description":"","recommendedTypes":[],"indexed":true},{"name":"name","description":"","recommendedTypes":[],"indexed":false},{"name":"symbol","description":"","recommendedTypes":[],"indexed":false},{"name":"caller","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Mint(address,uint256,uint256,bool,bool,address)","name":"Mint","description":"","parameterDecorators":[{"name":"holder","description":"","recommendedTypes":[],"indexed":true},{"name":"projectId","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"tokensWereClaimed","description":"","recommendedTypes":[],"indexed":false},{"name":"preferClaimedTokens","description":"","recommendedTypes":[],"indexed":false},{"name":"caller","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ShouldRequireClaim(uint256,bool,address)","name":"ShouldRequireClaim","description":"","parameterDecorators":[{"name":"projectId","description":"","recommendedTypes":[],"indexed":true},{"name":"flag","description":"","recommendedTypes":[],"indexed":true},{"name":"caller","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Transfer(address,uint256,address,uint256,address)","name":"Transfer","description":"","parameterDecorators":[{"name":"holder","description":"","recommendedTypes":[],"indexed":true},{"name":"projectId","description":"","recommendedTypes":[],"indexed":true},{"name":"recipient","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"caller","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"balanceOf(address,uint256)","name":"balanceOf","description":"The total balance of token a holder has for a specified project, including claimed and unclaimed tokens.","parameterDecorators":[{"name":"_holder","description":"The token holder to get a balance for.","recommendedTypes":[]},{"name":"_projectId","description":"The project to get the `_hodler`s balance of.","recommendedTypes":[]}],"returnDecorators":[{"name":"balance","description":"The balance.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"burnFrom(address,uint256,uint256,bool)","name":"burnFrom","description":"Burns tokens. Only a project's current controller can burn its tokens.","parameterDecorators":[{"name":"_holder","description":"The address that owns the tokens being burned.","recommendedTypes":[]},{"name":"_projectId","description":"The ID of the project to which the burned tokens belong.","recommendedTypes":[]},{"name":"_amount","description":"The amount of tokens to burned.","recommendedTypes":[]},{"name":"_preferClaimedTokens","description":"A flag indicating if there's a preference to burn tokens that have been converted to ERC-20s.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"changeFor(uint256,address,address)","name":"changeFor","description":"Swap the current project's token that is minted and burned for another, and transfer ownership of the current token to another address if needed. Only a project's current controller can change its token.This JBTokenStore contract must have access to all IJBToken interface functions.","parameterDecorators":[{"name":"_projectId","description":"The ID of the project to which the changed token belongs.","recommendedTypes":[]},{"name":"_token","description":"The new token.","recommendedTypes":[]},{"name":"_newOwner","description":"An address to transfer the current token's ownership to. This is optional, but it cannot be done later.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claimFor(address,uint256,uint256)","name":"claimFor","description":"Claims internal tokens by minting and distributing ERC20 tokens. Anyone can claim tokens on behalf of a token owner.","parameterDecorators":[{"name":"_holder","description":"The owner of the tokens to claim.","recommendedTypes":[]},{"name":"_projectId","description":"The ID of the project whose tokens are being claimed.","recommendedTypes":[]},{"name":"_amount","description":"The amount of tokens to claim.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"directory()","name":"directory","description":"The directory of terminals and controllers for projects.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"issueFor(uint256,string,string)","name":"issueFor","description":"Issues an owner's ERC-20 Tokens that'll be used when claiming tokens. Deploys a project's ERC-20 token contract.Only a project's current controller can issue its token.","parameterDecorators":[{"name":"_projectId","description":"The ID of the project being issued tokens.","recommendedTypes":[]},{"name":"_name","description":"The ERC-20's name.","recommendedTypes":[]},{"name":"_symbol","description":"The ERC-20's symbol.","recommendedTypes":[]}],"returnDecorators":[{"name":"token","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":false},{"signature":"mintFor(address,uint256,uint256,bool)","name":"mintFor","description":"Mint new tokens. Only a project's current controller can mint its tokens.","parameterDecorators":[{"name":"_holder","description":"The address receiving the new tokens.","recommendedTypes":[]},{"name":"_projectId","description":"The ID of the project to which the tokens belong.","recommendedTypes":[]},{"name":"_amount","description":"The amount of tokens to mint.","recommendedTypes":[]},{"name":"_preferClaimedTokens","description":"A flag indicating whether there's a preference for ERC20's to be claimed automatically if they have been issued.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"operatorStore()","name":"operatorStore","description":"A contract storing operator assignments.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"projects()","name":"projects","description":"The Projects contract which mints ERC-721's that represent project ownership and transfers.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"requireClaimFor(uint256)","name":"requireClaimFor","description":"A flag indicating if tokens are required to be issued as claimed for a particular project. _projectId The ID of the project to which the requirement applies.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"shouldRequireClaimingFor(uint256,bool)","name":"shouldRequireClaimingFor","description":"Allows a project to force all future mints to be claimed into the holder's wallet, or revoke the flag if it's already set. Only a token holder or an operator can transfer its unclaimed tokens.","parameterDecorators":[{"name":"_projectId","description":"The ID of the project being affected.","recommendedTypes":[]},{"name":"_flag","description":"A flag indicating whether or not claiming should be required.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"tokenOf(uint256)","name":"tokenOf","description":"Each project's ERC20 Token tokens. _projectId The ID of the project to which the token belongs.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"totalSupplyOf(uint256)","name":"totalSupplyOf","description":"The total supply of tokens for each project, including claimed and unclaimed tokens.","parameterDecorators":[{"name":"_projectId","description":"The ID of the project to get the total token supply of.","recommendedTypes":[]}],"returnDecorators":[{"name":"supply","description":"The total supply.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferTo(address,address,uint256,uint256)","name":"transferTo","description":"Allows an unclaimed token holder to transfer them to another account, without claiming to ERC-20s. Only a token holder or an operator can transfer its unclaimed tokens.","parameterDecorators":[{"name":"_recipient","description":"The recipient of the tokens.","recommendedTypes":[]},{"name":"_holder","description":"The address to transfer tokens from.","recommendedTypes":[]},{"name":"_projectId","description":"The ID of the project whose tokens are being transferred.","recommendedTypes":[]},{"name":"_amount","description":"The amount of tokens to transfer.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unclaimedBalanceOf(address,uint256)","name":"unclaimedBalanceOf","description":"Each holder's balance of unclaimed Tokens for each project. _holder The holder of balance. _projectId The ID of the project to which the token belongs.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"unclaimedTotalSupplyOf(uint256)","name":"unclaimedTotalSupplyOf","description":"The total supply of unclaimed tokens for each project. _projectId The ID of the project to which the token belongs.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "swaps"
+  ],
+  "name": "JBTokenStore",
+  "description": "Tokens can be either represented internally or claimed as ERC-20s. This contract manages these two representations and allows claiming.The total supply of a project's tokens and the balance of each account are calculated in this contract.Each project can bring their own token if they prefer, and swap between tokens at any time. Manage Token minting, burning, and account balances.",
+  "eventDecorators": [
+    {
+      "signature": "Burn(address,uint256,uint256,uint256,bool,address)",
+      "name": "Burn",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "unclaimedTokenBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "preferClaimedTokens",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Change(uint256,address,address,address)",
+      "name": "Change",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Claim(address,uint256,uint256,address)",
+      "name": "Claim",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Issue(uint256,address,string,string,address)",
+      "name": "Issue",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "name",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "symbol",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Mint(address,uint256,uint256,bool,bool,address)",
+      "name": "Mint",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokensWereClaimed",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "preferClaimedTokens",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ShouldRequireClaim(uint256,bool,address)",
+      "name": "ShouldRequireClaim",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "flag",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Transfer(address,uint256,address,uint256,address)",
+      "name": "Transfer",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "balanceOf(address,uint256)",
+      "name": "balanceOf",
+      "description": "The total balance of token a holder has for a specified project, including claimed and unclaimed tokens.",
+      "parameterDecorators": [
+        {
+          "name": "_holder",
+          "description": "The token holder to get a balance for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_projectId",
+          "description": "The project to get the `_hodler`s balance of.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "balance",
+          "description": "The balance.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "burnFrom(address,uint256,uint256,bool)",
+      "name": "burnFrom",
+      "description": "Burns tokens. Only a project's current controller can burn its tokens.",
+      "parameterDecorators": [
+        {
+          "name": "_holder",
+          "description": "The address that owns the tokens being burned.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_projectId",
+          "description": "The ID of the project to which the burned tokens belong.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The amount of tokens to burned.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_preferClaimedTokens",
+          "description": "A flag indicating if there's a preference to burn tokens that have been converted to ERC-20s.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeFor(uint256,address,address)",
+      "name": "changeFor",
+      "description": "Swap the current project's token that is minted and burned for another, and transfer ownership of the current token to another address if needed. Only a project's current controller can change its token.This JBTokenStore contract must have access to all IJBToken interface functions.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project to which the changed token belongs.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_token",
+          "description": "The new token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newOwner",
+          "description": "An address to transfer the current token's ownership to. This is optional, but it cannot be done later.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimFor(address,uint256,uint256)",
+      "name": "claimFor",
+      "description": "Claims internal tokens by minting and distributing ERC20 tokens. Anyone can claim tokens on behalf of a token owner.",
+      "parameterDecorators": [
+        {
+          "name": "_holder",
+          "description": "The owner of the tokens to claim.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_projectId",
+          "description": "The ID of the project whose tokens are being claimed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The amount of tokens to claim.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "directory()",
+      "name": "directory",
+      "description": "The directory of terminals and controllers for projects.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "issueFor(uint256,string,string)",
+      "name": "issueFor",
+      "description": "Issues an owner's ERC-20 Tokens that'll be used when claiming tokens. Deploys a project's ERC-20 token contract.Only a project's current controller can issue its token.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project being issued tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_name",
+          "description": "The ERC-20's name.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_symbol",
+          "description": "The ERC-20's symbol.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "mintFor(address,uint256,uint256,bool)",
+      "name": "mintFor",
+      "description": "Mint new tokens. Only a project's current controller can mint its tokens.",
+      "parameterDecorators": [
+        {
+          "name": "_holder",
+          "description": "The address receiving the new tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_projectId",
+          "description": "The ID of the project to which the tokens belong.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The amount of tokens to mint.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_preferClaimedTokens",
+          "description": "A flag indicating whether there's a preference for ERC20's to be claimed automatically if they have been issued.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "operatorStore()",
+      "name": "operatorStore",
+      "description": "A contract storing operator assignments.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "projects()",
+      "name": "projects",
+      "description": "The Projects contract which mints ERC-721's that represent project ownership and transfers.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "requireClaimFor(uint256)",
+      "name": "requireClaimFor",
+      "description": "A flag indicating if tokens are required to be issued as claimed for a particular project. _projectId The ID of the project to which the requirement applies.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "shouldRequireClaimingFor(uint256,bool)",
+      "name": "shouldRequireClaimingFor",
+      "description": "Allows a project to force all future mints to be claimed into the holder's wallet, or revoke the flag if it's already set. Only a token holder or an operator can transfer its unclaimed tokens.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project being affected.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_flag",
+          "description": "A flag indicating whether or not claiming should be required.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tokenOf(uint256)",
+      "name": "tokenOf",
+      "description": "Each project's ERC20 Token tokens. _projectId The ID of the project to which the token belongs.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalSupplyOf(uint256)",
+      "name": "totalSupplyOf",
+      "description": "The total supply of tokens for each project, including claimed and unclaimed tokens.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project to get the total token supply of.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "supply",
+          "description": "The total supply.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferTo(address,address,uint256,uint256)",
+      "name": "transferTo",
+      "description": "Allows an unclaimed token holder to transfer them to another account, without claiming to ERC-20s. Only a token holder or an operator can transfer its unclaimed tokens.",
+      "parameterDecorators": [
+        {
+          "name": "_recipient",
+          "description": "The recipient of the tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_holder",
+          "description": "The address to transfer tokens from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_projectId",
+          "description": "The ID of the project whose tokens are being transferred.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The amount of tokens to transfer.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unclaimedBalanceOf(address,uint256)",
+      "name": "unclaimedBalanceOf",
+      "description": "Each holder's balance of unclaimed Tokens for each project. _holder The holder of balance. _projectId The ID of the project to which the token belongs.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unclaimedTotalSupplyOf(uint256)",
+      "name": "unclaimedTotalSupplyOf",
+      "description": "The total supply of unclaimed tokens for each project. _projectId The ID of the project to which the token belongs.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

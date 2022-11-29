@@ -1,1 +1,374 @@
-{"schema":"../schema.json","tags":[],"name":"Governance","description":"Governance Contract.","eventDecorators":[{"signature":"NewGovernor(address)","name":"NewGovernor","description":"Governor changed. Event emitted for each executed trade.","parameterDecorators":[{"name":"newGovernor","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"NewToken(address,uint16)","name":"NewToken","description":"Token added to Franklin net. Event emitted for each executed trade.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[],"indexed":true},{"name":"tokenId","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"TokenPausedUpdate(address,bool)","name":"TokenPausedUpdate","description":"Event emitted for each executed trade.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[],"indexed":true},{"name":"paused","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ValidatorStatusUpdate(address,bool)","name":"ValidatorStatusUpdate","description":"Validator's status changed. Event emitted for each executed trade.","parameterDecorators":[{"name":"validatorAddress","description":"","recommendedTypes":[],"indexed":true},{"name":"isActive","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"addToken(address)","name":"addToken","description":"Add token to the list of networks tokens.","parameterDecorators":[{"name":"_token","description":"Token address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"changeGovernor(address)","name":"changeGovernor","description":"Change current governor.","parameterDecorators":[{"name":"_newGovernor","description":"Address of the new governor.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"initialize(bytes)","name":"initialize","description":"Governance contract initialization. Can be external because Proxy contract intercepts illegal calls of this function.","parameterDecorators":[{"name":"initializationParameters","description":"Encoded representation of initialization parameters: _networkGovernor The address of network governor.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"isValidTokenId(uint16)","name":"isValidTokenId","description":"Validate token id (must be less than or equal to total tokens amount).","parameterDecorators":[{"name":"_tokenId","description":"Token id.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"bool flag that indicates if token id is less than or equal to total tokens amount.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"networkGovernor()","name":"networkGovernor","description":"Address which will exercise governance over the network i.e. add tokens, change validator set, conduct upgrades.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"pausedTokens(uint16)","name":"pausedTokens","description":"Paused tokens list, deposits are impossible to create for paused tokens.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"requireActiveValidator(address)","name":"requireActiveValidator","description":"Checks if validator is active.","parameterDecorators":[{"name":"_address","description":"Validator address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":true},{"signature":"requireGovernor(address)","name":"requireGovernor","description":"Check if specified address is is governor.","parameterDecorators":[{"name":"_address","description":"Address to check.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":true},{"signature":"setTokenPaused(address,bool)","name":"setTokenPaused","description":"Pause token deposits for the given token.","parameterDecorators":[{"name":"_tokenAddr","description":"Token address.","recommendedTypes":[]},{"name":"_tokenPaused","description":"Token paused status.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setValidator(address,bool)","name":"setValidator","description":"Change validator status (active or not active).","parameterDecorators":[{"name":"_validator","description":"Validator address.","recommendedTypes":[]},{"name":"_active","description":"Active flag.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"tokenAddresses(uint16)","name":"tokenAddresses","description":"List of registered tokens by tokenId.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"tokenIds(address)","name":"tokenIds","description":"List of registered tokens by address.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint16"}],"emittableEvents":[],"readOnly":true},{"signature":"totalTokens()","name":"totalTokens","description":"Total number of ERC20 tokens registered in the network (excluding ETH, which is hardcoded as tokenId = 0).","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint16"}],"emittableEvents":[],"readOnly":true},{"signature":"upgrade(bytes)","name":"upgrade","description":"Governance contract upgrade. Can be external because Proxy contract intercepts illegal calls of this function.","parameterDecorators":[{"name":"upgradeParameters","description":"Encoded representation of upgrade parameters.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"validateTokenAddress(address)","name":"validateTokenAddress","description":"Validate token address.","parameterDecorators":[{"name":"_tokenAddr","description":"Token address.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"tokens id.","recommendedTypes":[],"solidityType":"uint16"}],"emittableEvents":[],"readOnly":true},{"signature":"validators(address)","name":"validators","description":"List of permitted validators.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "Governance",
+  "description": "Governance Contract.",
+  "eventDecorators": [
+    {
+      "signature": "NewGovernor(address)",
+      "name": "NewGovernor",
+      "description": "Governor changed. Event emitted for each executed trade.",
+      "parameterDecorators": [
+        {
+          "name": "newGovernor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewToken(address,uint16)",
+      "name": "NewToken",
+      "description": "Token added to Franklin net. Event emitted for each executed trade.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TokenPausedUpdate(address,bool)",
+      "name": "TokenPausedUpdate",
+      "description": "Event emitted for each executed trade.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "paused",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ValidatorStatusUpdate(address,bool)",
+      "name": "ValidatorStatusUpdate",
+      "description": "Validator's status changed. Event emitted for each executed trade.",
+      "parameterDecorators": [
+        {
+          "name": "validatorAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "isActive",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addToken(address)",
+      "name": "addToken",
+      "description": "Add token to the list of networks tokens.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "Token address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeGovernor(address)",
+      "name": "changeGovernor",
+      "description": "Change current governor.",
+      "parameterDecorators": [
+        {
+          "name": "_newGovernor",
+          "description": "Address of the new governor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialize(bytes)",
+      "name": "initialize",
+      "description": "Governance contract initialization. Can be external because Proxy contract intercepts illegal calls of this function.",
+      "parameterDecorators": [
+        {
+          "name": "initializationParameters",
+          "description": "Encoded representation of initialization parameters: _networkGovernor The address of network governor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isValidTokenId(uint16)",
+      "name": "isValidTokenId",
+      "description": "Validate token id (must be less than or equal to total tokens amount).",
+      "parameterDecorators": [
+        {
+          "name": "_tokenId",
+          "description": "Token id.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "bool flag that indicates if token id is less than or equal to total tokens amount.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "networkGovernor()",
+      "name": "networkGovernor",
+      "description": "Address which will exercise governance over the network i.e. add tokens, change validator set, conduct upgrades.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pausedTokens(uint16)",
+      "name": "pausedTokens",
+      "description": "Paused tokens list, deposits are impossible to create for paused tokens.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "requireActiveValidator(address)",
+      "name": "requireActiveValidator",
+      "description": "Checks if validator is active.",
+      "parameterDecorators": [
+        {
+          "name": "_address",
+          "description": "Validator address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "requireGovernor(address)",
+      "name": "requireGovernor",
+      "description": "Check if specified address is is governor.",
+      "parameterDecorators": [
+        {
+          "name": "_address",
+          "description": "Address to check.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setTokenPaused(address,bool)",
+      "name": "setTokenPaused",
+      "description": "Pause token deposits for the given token.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenAddr",
+          "description": "Token address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenPaused",
+          "description": "Token paused status.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setValidator(address,bool)",
+      "name": "setValidator",
+      "description": "Change validator status (active or not active).",
+      "parameterDecorators": [
+        {
+          "name": "_validator",
+          "description": "Validator address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_active",
+          "description": "Active flag.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tokenAddresses(uint16)",
+      "name": "tokenAddresses",
+      "description": "List of registered tokens by tokenId.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tokenIds(address)",
+      "name": "tokenIds",
+      "description": "List of registered tokens by address.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalTokens()",
+      "name": "totalTokens",
+      "description": "Total number of ERC20 tokens registered in the network (excluding ETH, which is hardcoded as tokenId = 0).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "upgrade(bytes)",
+      "name": "upgrade",
+      "description": "Governance contract upgrade. Can be external because Proxy contract intercepts illegal calls of this function.",
+      "parameterDecorators": [
+        {
+          "name": "upgradeParameters",
+          "description": "Encoded representation of upgrade parameters.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "validateTokenAddress(address)",
+      "name": "validateTokenAddress",
+      "description": "Validate token address.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenAddr",
+          "description": "Token address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "tokens id.",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "validators(address)",
+      "name": "validators",
+      "description": "List of permitted validators.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

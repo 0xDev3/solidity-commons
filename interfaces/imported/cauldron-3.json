@@ -1,1 +1,814 @@
-{"schema":"../schema.json","tags":[],"name":"CauldronV2Multichain","description":"Cauldron. This contract allows contract calls to any contract (except BentoBox) from arbitrary callers thus, don't trust calls from this contract in any circumstances.","eventDecorators":[{"signature":"LogAccrue(uint128)","name":"LogAccrue","description":"Event when owner changes usdt rate.","parameterDecorators":[{"name":"accruedAmount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LogAddCollateral(address,address,uint256)","name":"LogAddCollateral","description":"Event when owner changes usdt rate.","parameterDecorators":[{"name":"from","description":"","recommendedTypes":[],"indexed":true},{"name":"to","description":"","recommendedTypes":[],"indexed":true},{"name":"share","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LogBorrow(address,address,uint256,uint256)","name":"LogBorrow","description":"Event when owner changes usdt rate.","parameterDecorators":[{"name":"from","description":"","recommendedTypes":[],"indexed":true},{"name":"to","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"part","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LogExchangeRate(uint256)","name":"LogExchangeRate","description":"Event when owner changes usdt rate.","parameterDecorators":[{"name":"rate","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LogFeeTo(address)","name":"LogFeeTo","description":"Event when owner changes usdt rate.","parameterDecorators":[{"name":"newFeeTo","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"LogRemoveCollateral(address,address,uint256)","name":"LogRemoveCollateral","description":"Event when owner changes usdt rate.","parameterDecorators":[{"name":"from","description":"","recommendedTypes":[],"indexed":true},{"name":"to","description":"","recommendedTypes":[],"indexed":true},{"name":"share","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LogRepay(address,address,uint256,uint256)","name":"LogRepay","description":"Event when owner changes usdt rate.","parameterDecorators":[{"name":"from","description":"","recommendedTypes":[],"indexed":true},{"name":"to","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"part","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LogWithdrawFees(address,uint256)","name":"LogWithdrawFees","description":"Event when owner changes usdt rate.","parameterDecorators":[{"name":"newRate","description":"new rate of usdt.","recommendedTypes":[],"indexed":true},{"name":"prevRate","description":"previous rate of usdt.","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Event when owner changes usdt rate.","parameterDecorators":[{"name":"newRate","description":"new rate of usdt.","recommendedTypes":[],"indexed":true},{"name":"prevRate","description":"previous rate of usdt.","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"BORROW_OPENING_FEE()","name":"BORROW_OPENING_FEE","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"COLLATERIZATION_RATE()","name":"COLLATERIZATION_RATE","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"LIQUIDATION_MULTIPLIER()","name":"LIQUIDATION_MULTIPLIER","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"accrue()","name":"accrue","description":"Accrues the interest on the borrowed tokens and handles the accumulation of fees.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"accrueInfo()","name":"accrueInfo","description":"","parameterDecorators":[],"returnDecorators":[{"name":"lastAccrued","description":"","recommendedTypes":[],"solidityType":"uint64"},{"name":"feesEarned","description":"","recommendedTypes":[],"solidityType":"uint128"},{"name":"INTEREST_PER_SECOND","description":"","recommendedTypes":[],"solidityType":"uint64"}],"emittableEvents":[],"readOnly":true},{"signature":"addCollateral(address,bool,uint256)","name":"addCollateral","description":"Adds `collateral` from msg.sender to the account `to`.","parameterDecorators":[{"name":"to","description":"The receiver of the tokens.","recommendedTypes":[]},{"name":"skim","description":"True if the amount should be skimmed from the deposit balance of msg.sender.x False if tokens from msg.sender in `bentoBox` should be transferred.","recommendedTypes":[]},{"name":"share","description":"The amount of shares to add for `to`.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"bentoBox()","name":"bentoBox","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"borrow(address,uint256)","name":"borrow","description":"Sender borrows `amount` and transfers it to `to`.","parameterDecorators":[{"name":"to","description":"","recommendedTypes":[]},{"name":"amount","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"part","description":"Total part of the debt held by borrowers.","recommendedTypes":[],"solidityType":"uint256"},{"name":"share","description":"Total amount in shares borrowed.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"claimOwnership()","name":"claimOwnership","description":"Needs to be called by `pendingOwner` to claim ownership.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"collateral()","name":"collateral","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"cook(uint8[],uint256[],bytes[])","name":"cook","description":"Executes a set of actions and allows composability (contract calls) to other contracts.","parameterDecorators":[{"name":"actions","description":"An array with a sequence of actions to execute (see ACTION_ declarations).","recommendedTypes":[]},{"name":"values","description":"A one-to-one mapped array to `actions`. ETH amounts to send along with the actions. Only applicable to `ACTION_CALL`, `ACTION_BENTO_DEPOSIT`.","recommendedTypes":[]},{"name":"datas","description":"A one-to-one mapped array to `actions`. Contains abi encoded data of function arguments.","recommendedTypes":[]}],"returnDecorators":[{"name":"value1","description":"May contain the first positioned return value of the last executed action (if applicable).","recommendedTypes":[],"solidityType":"uint256"},{"name":"value2","description":"May contain the second positioned return value of the last executed action which returns 2 values (if applicable).","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"exchangeRate()","name":"exchangeRate","description":"Exchange and interest rate tracking. This is 'cached' here because calls to Oracles can be very expensive.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"feeTo()","name":"feeTo","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"init(bytes)","name":"init","description":"Serves as the constructor for clones, as clones can't have a regular constructor. `data` is abi encoded in the format: (IERC20 collateral, IERC20 asset, IOracle oracle, bytes oracleData).","parameterDecorators":[{"name":"data","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"liquidate(address[],uint256[],address,address)","name":"liquidate","description":"Handles the liquidation of users' balances, once the users' amount of collateral is too low.","parameterDecorators":[{"name":"users","description":"An array of user addresses.","recommendedTypes":[]},{"name":"maxBorrowParts","description":"A one-to-one mapping to `users`, contains maximum (partial) borrow amounts (to liquidate) of the respective user.","recommendedTypes":[]},{"name":"to","description":"Address of the receiver in open liquidations if `swapper` is zero.","recommendedTypes":[]},{"name":"swapper","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"magicInternetMoney()","name":"magicInternetMoney","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"masterContract()","name":"masterContract","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"oracle()","name":"oracle","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"oracleData()","name":"oracleData","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"pendingOwner()","name":"pendingOwner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"reduceSupply(uint256)","name":"reduceSupply","description":"reduces the supply of MIM.","parameterDecorators":[{"name":"amount","description":"amount to reduce supply by.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"removeCollateral(address,uint256)","name":"removeCollateral","description":"Removes `share` amount of collateral and transfers it to `to`.","parameterDecorators":[{"name":"to","description":"The receiver of the shares.","recommendedTypes":[]},{"name":"share","description":"Amount of shares to remove.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"repay(address,bool,uint256)","name":"repay","description":"Repays a loan.","parameterDecorators":[{"name":"to","description":"Address of the user this payment should go.","recommendedTypes":[]},{"name":"skim","description":"True if the amount should be skimmed from the deposit balance of msg.sender. False if tokens from msg.sender in `bentoBox` should be transferred.","recommendedTypes":[]},{"name":"part","description":"The amount to repay. See `userBorrowPart`.","recommendedTypes":[]}],"returnDecorators":[{"name":"amount","description":"The total amount repayed.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"setFeeTo(address)","name":"setFeeTo","description":"Sets the beneficiary of interest accrued. MasterContract Only Admin function.","parameterDecorators":[{"name":"newFeeTo","description":"The address of the receiver.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"totalBorrow()","name":"totalBorrow","description":"","parameterDecorators":[],"returnDecorators":[{"name":"elastic","description":"","recommendedTypes":[],"solidityType":"uint128"},{"name":"base","description":"","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":true},{"signature":"totalCollateralShare()","name":"totalCollateralShare","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address,bool,bool)","name":"transferOwnership","description":"Transfers ownership to `newOwner`. Either directly or claimable by the new pending owner. Can only be invoked by the current `owner`.","parameterDecorators":[{"name":"newOwner","description":"Address of the new owner.","recommendedTypes":[]},{"name":"direct","description":"True if `newOwner` should be set immediately. False if `newOwner` needs to use `claimOwnership`.","recommendedTypes":[]},{"name":"renounce","description":"Allows the `newOwner` to be `address(0)` if `direct` and `renounce` is True. Has no effect otherwise.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateExchangeRate()","name":"updateExchangeRate","description":"Gets the exchange rate. I.e how much collateral to buy 1e18 asset. This function is supposed to be invoked if needed because Oracle queries can be expensive.","parameterDecorators":[],"returnDecorators":[{"name":"updated","description":"True if `exchangeRate` was updated.","recommendedTypes":[],"solidityType":"bool"},{"name":"rate","description":"The new exchange rate.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"userBorrowPart(address)","name":"userBorrowPart","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"userCollateralShare(address)","name":"userCollateralShare","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"withdrawFees()","name":"withdrawFees","description":"Withdraws the fees accumulated.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "CauldronV2Multichain",
+  "description": "Cauldron. This contract allows contract calls to any contract (except BentoBox) from arbitrary callers thus, don't trust calls from this contract in any circumstances.",
+  "eventDecorators": [
+    {
+      "signature": "LogAccrue(uint128)",
+      "name": "LogAccrue",
+      "description": "Event when owner changes usdt rate.",
+      "parameterDecorators": [
+        {
+          "name": "accruedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogAddCollateral(address,address,uint256)",
+      "name": "LogAddCollateral",
+      "description": "Event when owner changes usdt rate.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "share",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogBorrow(address,address,uint256,uint256)",
+      "name": "LogBorrow",
+      "description": "Event when owner changes usdt rate.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "part",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogExchangeRate(uint256)",
+      "name": "LogExchangeRate",
+      "description": "Event when owner changes usdt rate.",
+      "parameterDecorators": [
+        {
+          "name": "rate",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogFeeTo(address)",
+      "name": "LogFeeTo",
+      "description": "Event when owner changes usdt rate.",
+      "parameterDecorators": [
+        {
+          "name": "newFeeTo",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "LogRemoveCollateral(address,address,uint256)",
+      "name": "LogRemoveCollateral",
+      "description": "Event when owner changes usdt rate.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "share",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogRepay(address,address,uint256,uint256)",
+      "name": "LogRepay",
+      "description": "Event when owner changes usdt rate.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "part",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogWithdrawFees(address,uint256)",
+      "name": "LogWithdrawFees",
+      "description": "Event when owner changes usdt rate.",
+      "parameterDecorators": [
+        {
+          "name": "newRate",
+          "description": "new rate of usdt.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "prevRate",
+          "description": "previous rate of usdt.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Event when owner changes usdt rate.",
+      "parameterDecorators": [
+        {
+          "name": "newRate",
+          "description": "new rate of usdt.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "prevRate",
+          "description": "previous rate of usdt.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "BORROW_OPENING_FEE()",
+      "name": "BORROW_OPENING_FEE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "COLLATERIZATION_RATE()",
+      "name": "COLLATERIZATION_RATE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "LIQUIDATION_MULTIPLIER()",
+      "name": "LIQUIDATION_MULTIPLIER",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "accrue()",
+      "name": "accrue",
+      "description": "Accrues the interest on the borrowed tokens and handles the accumulation of fees.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "accrueInfo()",
+      "name": "accrueInfo",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "lastAccrued",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "feesEarned",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "INTEREST_PER_SECOND",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addCollateral(address,bool,uint256)",
+      "name": "addCollateral",
+      "description": "Adds `collateral` from msg.sender to the account `to`.",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "The receiver of the tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "skim",
+          "description": "True if the amount should be skimmed from the deposit balance of msg.sender.x False if tokens from msg.sender in `bentoBox` should be transferred.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "share",
+          "description": "The amount of shares to add for `to`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "bentoBox()",
+      "name": "bentoBox",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "borrow(address,uint256)",
+      "name": "borrow",
+      "description": "Sender borrows `amount` and transfers it to `to`.",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "part",
+          "description": "Total part of the debt held by borrowers.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "share",
+          "description": "Total amount in shares borrowed.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimOwnership()",
+      "name": "claimOwnership",
+      "description": "Needs to be called by `pendingOwner` to claim ownership.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "collateral()",
+      "name": "collateral",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "cook(uint8[],uint256[],bytes[])",
+      "name": "cook",
+      "description": "Executes a set of actions and allows composability (contract calls) to other contracts.",
+      "parameterDecorators": [
+        {
+          "name": "actions",
+          "description": "An array with a sequence of actions to execute (see ACTION_ declarations).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "values",
+          "description": "A one-to-one mapped array to `actions`. ETH amounts to send along with the actions. Only applicable to `ACTION_CALL`, `ACTION_BENTO_DEPOSIT`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "datas",
+          "description": "A one-to-one mapped array to `actions`. Contains abi encoded data of function arguments.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "value1",
+          "description": "May contain the first positioned return value of the last executed action (if applicable).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "value2",
+          "description": "May contain the second positioned return value of the last executed action which returns 2 values (if applicable).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "exchangeRate()",
+      "name": "exchangeRate",
+      "description": "Exchange and interest rate tracking. This is 'cached' here because calls to Oracles can be very expensive.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "feeTo()",
+      "name": "feeTo",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "init(bytes)",
+      "name": "init",
+      "description": "Serves as the constructor for clones, as clones can't have a regular constructor. `data` is abi encoded in the format: (IERC20 collateral, IERC20 asset, IOracle oracle, bytes oracleData).",
+      "parameterDecorators": [
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "liquidate(address[],uint256[],address,address)",
+      "name": "liquidate",
+      "description": "Handles the liquidation of users' balances, once the users' amount of collateral is too low.",
+      "parameterDecorators": [
+        {
+          "name": "users",
+          "description": "An array of user addresses.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxBorrowParts",
+          "description": "A one-to-one mapping to `users`, contains maximum (partial) borrow amounts (to liquidate) of the respective user.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "Address of the receiver in open liquidations if `swapper` is zero.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "swapper",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "magicInternetMoney()",
+      "name": "magicInternetMoney",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "masterContract()",
+      "name": "masterContract",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "oracle()",
+      "name": "oracle",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "oracleData()",
+      "name": "oracleData",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pendingOwner()",
+      "name": "pendingOwner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "reduceSupply(uint256)",
+      "name": "reduceSupply",
+      "description": "reduces the supply of MIM.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount to reduce supply by.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeCollateral(address,uint256)",
+      "name": "removeCollateral",
+      "description": "Removes `share` amount of collateral and transfers it to `to`.",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "The receiver of the shares.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "share",
+          "description": "Amount of shares to remove.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "repay(address,bool,uint256)",
+      "name": "repay",
+      "description": "Repays a loan.",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "Address of the user this payment should go.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "skim",
+          "description": "True if the amount should be skimmed from the deposit balance of msg.sender. False if tokens from msg.sender in `bentoBox` should be transferred.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "part",
+          "description": "The amount to repay. See `userBorrowPart`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amount",
+          "description": "The total amount repayed.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setFeeTo(address)",
+      "name": "setFeeTo",
+      "description": "Sets the beneficiary of interest accrued. MasterContract Only Admin function.",
+      "parameterDecorators": [
+        {
+          "name": "newFeeTo",
+          "description": "The address of the receiver.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "totalBorrow()",
+      "name": "totalBorrow",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "elastic",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "base",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalCollateralShare()",
+      "name": "totalCollateralShare",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address,bool,bool)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership to `newOwner`. Either directly or claimable by the new pending owner. Can only be invoked by the current `owner`.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "Address of the new owner.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "direct",
+          "description": "True if `newOwner` should be set immediately. False if `newOwner` needs to use `claimOwnership`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "renounce",
+          "description": "Allows the `newOwner` to be `address(0)` if `direct` and `renounce` is True. Has no effect otherwise.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateExchangeRate()",
+      "name": "updateExchangeRate",
+      "description": "Gets the exchange rate. I.e how much collateral to buy 1e18 asset. This function is supposed to be invoked if needed because Oracle queries can be expensive.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "updated",
+          "description": "True if `exchangeRate` was updated.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "rate",
+          "description": "The new exchange rate.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "userBorrowPart(address)",
+      "name": "userBorrowPart",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "userCollateralShare(address)",
+      "name": "userCollateralShare",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdrawFees()",
+      "name": "withdrawFees",
+      "description": "Withdraws the fees accumulated.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

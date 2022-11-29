@@ -1,1 +1,971 @@
-{"schema":"../schema.json","tags":["liquidity"],"name":"LiquidityPool","description":"LiquidityPool. Holds funds from LPs, which are used for the following purposes: 1. Collateralizing options sold by the OptionMarket. 2. Buying options from users. 3. Delta hedging the LPs. 4. Storing funds for expired in the money options.","eventDecorators":[{"signature":"BaseFreed(uint256,uint256)","name":"BaseFreed","description":"An event emitted when a transaction is executed. Emitted when base is freed.","parameterDecorators":[{"name":"baseFreed","description":"","recommendedTypes":[],"indexed":false},{"name":"lockedCollateralBase","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"BaseLocked(uint256,uint256)","name":"BaseLocked","description":"An event emitted when a transaction is executed. Emitted when base is locked.","parameterDecorators":[{"name":"baseLocked","description":"","recommendedTypes":[],"indexed":false},{"name":"lockedCollateralBase","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"BasePurchased(address,uint256,uint256)","name":"BasePurchased","description":"An event emitted when a transaction is executed. Emitted when base is purchased.","parameterDecorators":[{"name":"caller","description":"","recommendedTypes":[],"indexed":true},{"name":"quoteSpent","description":"","recommendedTypes":[],"indexed":false},{"name":"amountPurchased","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"BaseSold(address,uint256,uint256)","name":"BaseSold","description":"An event emitted when a transaction is executed. Emitted when base is sold.","parameterDecorators":[{"name":"caller","description":"","recommendedTypes":[],"indexed":true},{"name":"amountSold","description":"","recommendedTypes":[],"indexed":false},{"name":"quoteReceived","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"CollateralLiquidated(uint256,uint256,uint256,uint256)","name":"CollateralLiquidated","description":"An event emitted when a transaction is executed. Emitted when collateral is liquidated. This combines LP profit from short calls and freeing base collateral.","parameterDecorators":[{"name":"totalAmountToLiquidate","description":"","recommendedTypes":[],"indexed":false},{"name":"baseFreed","description":"","recommendedTypes":[],"indexed":false},{"name":"quoteReceived","description":"","recommendedTypes":[],"indexed":false},{"name":"lockedCollateralBase","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"CollateralQuoteTransferred(address,uint256)","name":"CollateralQuoteTransferred","description":"An event emitted when a transaction is executed. Emitted when collatQuote is transferred.","parameterDecorators":[{"name":"recipient","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"DeltaQuoteTransferredToPoolHedger(uint256)","name":"DeltaQuoteTransferredToPoolHedger","description":"An event emitted when a transaction is executed. Emitted when quote is transferred to hedge.","parameterDecorators":[{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Deposit(address,uint256,uint256)","name":"Deposit","description":"An event emitted when a transaction is executed. Emitted when liquidity is deposited.","parameterDecorators":[{"name":"beneficiary","description":"","recommendedTypes":[],"indexed":true},{"name":"certificateId","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"QuoteFreed(uint256,uint256)","name":"QuoteFreed","description":"An event emitted when a transaction is executed. Emitted when quote is freed.","parameterDecorators":[{"name":"quoteFreed","description":"","recommendedTypes":[],"indexed":false},{"name":"lockedCollateralQuote","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"QuoteLocked(uint256,uint256)","name":"QuoteLocked","description":"An event emitted when a transaction is executed. Emitted when quote is locked.","parameterDecorators":[{"name":"quoteLocked","description":"","recommendedTypes":[],"indexed":false},{"name":"lockedCollateralQuote","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"QuoteReserved(uint256,uint256)","name":"QuoteReserved","description":"An event emitted when a transaction is executed. Emitted when quote is reserved.","parameterDecorators":[{"name":"amountQuoteReserved","description":"","recommendedTypes":[],"indexed":false},{"name":"totalQuoteAmountReserved","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ReservedQuoteSent(address,uint256,uint256)","name":"ReservedQuoteSent","description":"An event emitted when a transaction is executed. Emitted when reserved quote is sent.","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"totalQuoteAmountReserved","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RoundEnded(uint256,uint256,uint256,uint256)","name":"RoundEnded","description":"An event emitted when a transaction is executed. Emitted when a round ends.","parameterDecorators":[{"name":"maxExpiryTimestamp","description":"","recommendedTypes":[],"indexed":true},{"name":"pricePerToken","description":"","recommendedTypes":[],"indexed":false},{"name":"totalQuoteAmountReserved","description":"","recommendedTypes":[],"indexed":false},{"name":"tokensBurnableForRound","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RoundStarted(uint256,uint256,uint256,uint256)","name":"RoundStarted","description":"An event emitted when a transaction is executed. Emitted when a round starts.","parameterDecorators":[{"name":"lastMaxExpiryTimestamp","description":"","recommendedTypes":[],"indexed":true},{"name":"newMaxExpiryTimestamp","description":"","recommendedTypes":[],"indexed":true},{"name":"totalTokenSupply","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenValue","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Withdraw(address,uint256,uint256,uint256)","name":"Withdraw","description":"An event emitted when a transaction is executed. Emitted when liquidity is withdrawn.","parameterDecorators":[{"name":"beneficiary","description":"","recommendedTypes":[],"indexed":true},{"name":"certificateId","description":"","recommendedTypes":[],"indexed":true},{"name":"value","description":"","recommendedTypes":[],"indexed":false},{"name":"totalQuoteAmountReserved","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"WithdrawSignaled(uint256,uint256)","name":"WithdrawSignaled","description":"An event emitted when a transaction is executed. Emitted when withdrawal is signaled.","parameterDecorators":[{"name":"certificateId","description":"","recommendedTypes":[],"indexed":true},{"name":"tokensBurnableForRound","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"WithdrawUnSignaled(uint256,uint256)","name":"WithdrawUnSignaled","description":"An event emitted when a transaction is executed. Emitted when a withdrawal is unsignaled.","parameterDecorators":[{"name":"certificateId","description":"","recommendedTypes":[],"indexed":true},{"name":"tokensBurnableForRound","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"boardLiquidation(uint256,uint256,uint256)","name":"boardLiquidation","description":"Manages collateral at the time of board liquidation, also converting base sent here from the OptionMarket.","parameterDecorators":[{"name":"amountQuoteFreed","description":"Total amount of base to convert to quote, including profits from short calls.","recommendedTypes":[]},{"name":"amountQuoteReserved","description":"Total amount of base to convert to quote, including profits from short calls.","recommendedTypes":[]},{"name":"amountBaseFreed","description":"Total amount of collateral to liquidate.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"deposit(address,uint256)","name":"deposit","description":"Deposits liquidity to the pool. This assumes users have authorised access to the quote ERC20 token. Will add any deposited amount to the queuedQuoteFunds until the next round begins.","parameterDecorators":[{"name":"beneficiary","description":"The account that will receive the liquidity certificate.","recommendedTypes":[]},{"name":"amount","description":"The amount of quoteAsset to deposit.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"endRound()","name":"endRound","description":"Ends a round. Should only be called after all boards have been liquidated.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"exchangeBase()","name":"exchangeBase","description":"external override function that will bring the base balance of this contract to match locked.base. This cannot be done in the same transaction as locking the base, as exchanging on synthetix is too costly gas-wise.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"expiryToTokenValue(uint256)","name":"expiryToTokenValue","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"freeBase(uint256)","name":"freeBase","description":"Sells base and frees the proceeds of the sale.","parameterDecorators":[{"name":"amountBase","description":"The amount of base to sell.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"freeQuoteCollateral(uint256)","name":"freeQuoteCollateral","description":"Frees quote when the system buys back a put from the user.","parameterDecorators":[{"name":"amount","description":"The amount of quote to free.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getLiquidity(uint256,address)","name":"getLiquidity","description":"Returns the used and free amounts for collateral and delta liquidity.","parameterDecorators":[{"name":"basePrice","description":"The price of the base asset.","recommendedTypes":[]},{"name":"short","description":"The address of the short contract.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"getTotalPoolValueQuote(uint256,uint256)","name":"getTotalPoolValueQuote","description":"Returns the total pool value in quoteAsset.","parameterDecorators":[{"name":"basePrice","description":"The price of the baseAsset.","recommendedTypes":[]},{"name":"usedDeltaLiquidity","description":"The amout of delta liquidity that has been used for hedging.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"init(address,address,address,address,address,address,address,string[])","name":"init","description":"Initialize the contract.","parameterDecorators":[{"name":"_globals","description":"","recommendedTypes":[]},{"name":"_optionMarket","description":"OptionMarket address.","recommendedTypes":[]},{"name":"_liquidityCertificate","description":"LiquidityCertificate address.","recommendedTypes":[]},{"name":"_poolHedger","description":"PoolHedger address.","recommendedTypes":[]},{"name":"_shortCollateral","description":"","recommendedTypes":[]},{"name":"_quoteAsset","description":"Quote Asset address.","recommendedTypes":[]},{"name":"_baseAsset","description":"","recommendedTypes":[]},{"name":"_errorMessages","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"lockBase(uint256,tuple(uint256,bytes32,bytes32,address,address,uint256,uint256),tuple(uint256,uint256,uint256,uint256))","name":"lockBase","description":"Purchases and locks base when the system sells a call option.","parameterDecorators":[{"name":"amount","description":"The amount of baseAsset to purchase and lock.","recommendedTypes":[]},{"name":"exchangeGlobals","description":"The exchangeGlobals.","recommendedTypes":[],"parameters":[{"name":"spotPrice","description":"","type":"uint256"},{"name":"quoteKey","description":"","type":"bytes32"},{"name":"baseKey","description":"","type":"bytes32"},{"name":"synthetix","description":"","type":"address"},{"name":"short","description":"","type":"address"},{"name":"quoteBaseFeeRate","description":"","type":"uint256"},{"name":"baseQuoteFeeRate","description":"","type":"uint256"}]},{"name":"liquidity","description":"Free and used liquidity amounts.","recommendedTypes":[],"parameters":[{"name":"freeCollatLiquidity","description":"","type":"uint256"},{"name":"usedCollatLiquidity","description":"","type":"uint256"},{"name":"freeDeltaLiquidity","description":"","type":"uint256"},{"name":"usedDeltaLiquidity","description":"","type":"uint256"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"lockQuote(uint256,uint256)","name":"lockQuote","description":"Locks quote when the system sells a put option.","parameterDecorators":[{"name":"amount","description":"The amount of quote to lock.","recommendedTypes":[]},{"name":"freeCollatLiq","description":"The amount of free collateral that can be locked.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"lockedCollateral()","name":"lockedCollateral","description":"","parameterDecorators":[],"returnDecorators":[{"name":"quote","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"base","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"queuedQuoteFunds()","name":"queuedQuoteFunds","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"sendPremium(address,uint256,uint256)","name":"sendPremium","description":"Sends the premium to a user who is selling an option to the pool. The caller must be the OptionMarket.","parameterDecorators":[{"name":"recipient","description":"The address of the recipient.","recommendedTypes":[]},{"name":"amount","description":"The amount to transfer.","recommendedTypes":[]},{"name":"freeCollatLiq","description":"The amount of free collateral liquidity.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"sendReservedQuote(address,uint256)","name":"sendReservedQuote","description":"Transfers reserved quote. Sends `amount` of reserved quoteAsset to `user`. Requirements: - the caller must be `OptionMarket`.","parameterDecorators":[{"name":"user","description":"The address of the user to send the quote.","recommendedTypes":[]},{"name":"amount","description":"The amount of quote to send.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"signalWithdrawal(uint256)","name":"signalWithdrawal","description":"Signals withdraw of liquidity from the pool. It is not possible to withdraw during a round, thus a user can signal to withdraw at the time the round ends.","parameterDecorators":[{"name":"certificateId","description":"The id of the LiquidityCertificate.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"startRound(uint256,uint256)","name":"startRound","description":"Starts a round. Can only be called by optionMarket contract when adding a board.","parameterDecorators":[{"name":"lastMaxExpiryTimestamp","description":"The time at which the previous round ended.","recommendedTypes":[]},{"name":"newMaxExpiryTimestamp","description":"The time which funds will be locked until.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"tokenPriceQuote()","name":"tokenPriceQuote","description":"Return Token value. This token price is only accurate within the period between rounds.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferQuoteToHedge(tuple(uint256,bytes32,bytes32,address,address,uint256,uint256),uint256)","name":"transferQuoteToHedge","description":"Sends quoteAsset to the PoolHedger. This function will transfer whatever free delta liquidity is available. The hedger must determine what to do with the amount received.","parameterDecorators":[{"name":"exchangeGlobals","description":"The exchangeGlobals.","recommendedTypes":[],"parameters":[{"name":"spotPrice","description":"","type":"uint256"},{"name":"quoteKey","description":"","type":"bytes32"},{"name":"baseKey","description":"","type":"bytes32"},{"name":"synthetix","description":"","type":"address"},{"name":"short","description":"","type":"address"},{"name":"quoteBaseFeeRate","description":"","type":"uint256"},{"name":"baseQuoteFeeRate","description":"","type":"uint256"}]},{"name":"amount","description":"The amount requested by the PoolHedger.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"unSignalWithdrawal(uint256)","name":"unSignalWithdrawal","description":"Undo a previously signalled withdraw. Certificate owner must have signalled withdraw to call this function, and cannot unsignal if the token is already burnable or burnt.","parameterDecorators":[{"name":"certificateId","description":"The id of the LiquidityCertificate.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdraw(address,uint256)","name":"withdraw","description":"Withdraws liquidity from the pool. This requires tokens to have been locked until the round ending at the burnableAt timestamp has been ended. This will burn the liquidityCertificates and have the quote asset equivalent at the time be reserved for the users.","parameterDecorators":[{"name":"beneficiary","description":"The account that will receive the withdrawn funds.","recommendedTypes":[]},{"name":"certificateId","description":"The id of the LiquidityCertificate.","recommendedTypes":[]}],"returnDecorators":[{"name":"value","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "liquidity"
+  ],
+  "name": "LiquidityPool",
+  "description": "LiquidityPool. Holds funds from LPs, which are used for the following purposes: 1. Collateralizing options sold by the OptionMarket. 2. Buying options from users. 3. Delta hedging the LPs. 4. Storing funds for expired in the money options.",
+  "eventDecorators": [
+    {
+      "signature": "BaseFreed(uint256,uint256)",
+      "name": "BaseFreed",
+      "description": "An event emitted when a transaction is executed. Emitted when base is freed.",
+      "parameterDecorators": [
+        {
+          "name": "baseFreed",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "lockedCollateralBase",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BaseLocked(uint256,uint256)",
+      "name": "BaseLocked",
+      "description": "An event emitted when a transaction is executed. Emitted when base is locked.",
+      "parameterDecorators": [
+        {
+          "name": "baseLocked",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "lockedCollateralBase",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BasePurchased(address,uint256,uint256)",
+      "name": "BasePurchased",
+      "description": "An event emitted when a transaction is executed. Emitted when base is purchased.",
+      "parameterDecorators": [
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "quoteSpent",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amountPurchased",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BaseSold(address,uint256,uint256)",
+      "name": "BaseSold",
+      "description": "An event emitted when a transaction is executed. Emitted when base is sold.",
+      "parameterDecorators": [
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amountSold",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "quoteReceived",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CollateralLiquidated(uint256,uint256,uint256,uint256)",
+      "name": "CollateralLiquidated",
+      "description": "An event emitted when a transaction is executed. Emitted when collateral is liquidated. This combines LP profit from short calls and freeing base collateral.",
+      "parameterDecorators": [
+        {
+          "name": "totalAmountToLiquidate",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "baseFreed",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "quoteReceived",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "lockedCollateralBase",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CollateralQuoteTransferred(address,uint256)",
+      "name": "CollateralQuoteTransferred",
+      "description": "An event emitted when a transaction is executed. Emitted when collatQuote is transferred.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DeltaQuoteTransferredToPoolHedger(uint256)",
+      "name": "DeltaQuoteTransferredToPoolHedger",
+      "description": "An event emitted when a transaction is executed. Emitted when quote is transferred to hedge.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Deposit(address,uint256,uint256)",
+      "name": "Deposit",
+      "description": "An event emitted when a transaction is executed. Emitted when liquidity is deposited.",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "certificateId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "QuoteFreed(uint256,uint256)",
+      "name": "QuoteFreed",
+      "description": "An event emitted when a transaction is executed. Emitted when quote is freed.",
+      "parameterDecorators": [
+        {
+          "name": "quoteFreed",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "lockedCollateralQuote",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "QuoteLocked(uint256,uint256)",
+      "name": "QuoteLocked",
+      "description": "An event emitted when a transaction is executed. Emitted when quote is locked.",
+      "parameterDecorators": [
+        {
+          "name": "quoteLocked",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "lockedCollateralQuote",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "QuoteReserved(uint256,uint256)",
+      "name": "QuoteReserved",
+      "description": "An event emitted when a transaction is executed. Emitted when quote is reserved.",
+      "parameterDecorators": [
+        {
+          "name": "amountQuoteReserved",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalQuoteAmountReserved",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ReservedQuoteSent(address,uint256,uint256)",
+      "name": "ReservedQuoteSent",
+      "description": "An event emitted when a transaction is executed. Emitted when reserved quote is sent.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalQuoteAmountReserved",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RoundEnded(uint256,uint256,uint256,uint256)",
+      "name": "RoundEnded",
+      "description": "An event emitted when a transaction is executed. Emitted when a round ends.",
+      "parameterDecorators": [
+        {
+          "name": "maxExpiryTimestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "pricePerToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalQuoteAmountReserved",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokensBurnableForRound",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RoundStarted(uint256,uint256,uint256,uint256)",
+      "name": "RoundStarted",
+      "description": "An event emitted when a transaction is executed. Emitted when a round starts.",
+      "parameterDecorators": [
+        {
+          "name": "lastMaxExpiryTimestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newMaxExpiryTimestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "totalTokenSupply",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Withdraw(address,uint256,uint256,uint256)",
+      "name": "Withdraw",
+      "description": "An event emitted when a transaction is executed. Emitted when liquidity is withdrawn.",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "certificateId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalQuoteAmountReserved",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WithdrawSignaled(uint256,uint256)",
+      "name": "WithdrawSignaled",
+      "description": "An event emitted when a transaction is executed. Emitted when withdrawal is signaled.",
+      "parameterDecorators": [
+        {
+          "name": "certificateId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokensBurnableForRound",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WithdrawUnSignaled(uint256,uint256)",
+      "name": "WithdrawUnSignaled",
+      "description": "An event emitted when a transaction is executed. Emitted when a withdrawal is unsignaled.",
+      "parameterDecorators": [
+        {
+          "name": "certificateId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokensBurnableForRound",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "boardLiquidation(uint256,uint256,uint256)",
+      "name": "boardLiquidation",
+      "description": "Manages collateral at the time of board liquidation, also converting base sent here from the OptionMarket.",
+      "parameterDecorators": [
+        {
+          "name": "amountQuoteFreed",
+          "description": "Total amount of base to convert to quote, including profits from short calls.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountQuoteReserved",
+          "description": "Total amount of base to convert to quote, including profits from short calls.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountBaseFreed",
+          "description": "Total amount of collateral to liquidate.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deposit(address,uint256)",
+      "name": "deposit",
+      "description": "Deposits liquidity to the pool. This assumes users have authorised access to the quote ERC20 token. Will add any deposited amount to the queuedQuoteFunds until the next round begins.",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "The account that will receive the liquidity certificate.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "The amount of quoteAsset to deposit.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "endRound()",
+      "name": "endRound",
+      "description": "Ends a round. Should only be called after all boards have been liquidated.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "exchangeBase()",
+      "name": "exchangeBase",
+      "description": "external override function that will bring the base balance of this contract to match locked.base. This cannot be done in the same transaction as locking the base, as exchanging on synthetix is too costly gas-wise.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "expiryToTokenValue(uint256)",
+      "name": "expiryToTokenValue",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "freeBase(uint256)",
+      "name": "freeBase",
+      "description": "Sells base and frees the proceeds of the sale.",
+      "parameterDecorators": [
+        {
+          "name": "amountBase",
+          "description": "The amount of base to sell.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "freeQuoteCollateral(uint256)",
+      "name": "freeQuoteCollateral",
+      "description": "Frees quote when the system buys back a put from the user.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "The amount of quote to free.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getLiquidity(uint256,address)",
+      "name": "getLiquidity",
+      "description": "Returns the used and free amounts for collateral and delta liquidity.",
+      "parameterDecorators": [
+        {
+          "name": "basePrice",
+          "description": "The price of the base asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "short",
+          "description": "The address of the short contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTotalPoolValueQuote(uint256,uint256)",
+      "name": "getTotalPoolValueQuote",
+      "description": "Returns the total pool value in quoteAsset.",
+      "parameterDecorators": [
+        {
+          "name": "basePrice",
+          "description": "The price of the baseAsset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "usedDeltaLiquidity",
+          "description": "The amout of delta liquidity that has been used for hedging.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "init(address,address,address,address,address,address,address,string[])",
+      "name": "init",
+      "description": "Initialize the contract.",
+      "parameterDecorators": [
+        {
+          "name": "_globals",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_optionMarket",
+          "description": "OptionMarket address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_liquidityCertificate",
+          "description": "LiquidityCertificate address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_poolHedger",
+          "description": "PoolHedger address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_shortCollateral",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_quoteAsset",
+          "description": "Quote Asset address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_baseAsset",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_errorMessages",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lockBase(uint256,tuple(uint256,bytes32,bytes32,address,address,uint256,uint256),tuple(uint256,uint256,uint256,uint256))",
+      "name": "lockBase",
+      "description": "Purchases and locks base when the system sells a call option.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "The amount of baseAsset to purchase and lock.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "exchangeGlobals",
+          "description": "The exchangeGlobals.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "spotPrice",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "quoteKey",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "baseKey",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "synthetix",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "short",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "quoteBaseFeeRate",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "baseQuoteFeeRate",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "name": "liquidity",
+          "description": "Free and used liquidity amounts.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "freeCollatLiquidity",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "usedCollatLiquidity",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "freeDeltaLiquidity",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "usedDeltaLiquidity",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lockQuote(uint256,uint256)",
+      "name": "lockQuote",
+      "description": "Locks quote when the system sells a put option.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "The amount of quote to lock.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "freeCollatLiq",
+          "description": "The amount of free collateral that can be locked.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lockedCollateral()",
+      "name": "lockedCollateral",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "quote",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "base",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "queuedQuoteFunds()",
+      "name": "queuedQuoteFunds",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "sendPremium(address,uint256,uint256)",
+      "name": "sendPremium",
+      "description": "Sends the premium to a user who is selling an option to the pool. The caller must be the OptionMarket.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "The address of the recipient.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "The amount to transfer.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "freeCollatLiq",
+          "description": "The amount of free collateral liquidity.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "sendReservedQuote(address,uint256)",
+      "name": "sendReservedQuote",
+      "description": "Transfers reserved quote. Sends `amount` of reserved quoteAsset to `user`. Requirements: - the caller must be `OptionMarket`.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "The address of the user to send the quote.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "The amount of quote to send.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "signalWithdrawal(uint256)",
+      "name": "signalWithdrawal",
+      "description": "Signals withdraw of liquidity from the pool. It is not possible to withdraw during a round, thus a user can signal to withdraw at the time the round ends.",
+      "parameterDecorators": [
+        {
+          "name": "certificateId",
+          "description": "The id of the LiquidityCertificate.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "startRound(uint256,uint256)",
+      "name": "startRound",
+      "description": "Starts a round. Can only be called by optionMarket contract when adding a board.",
+      "parameterDecorators": [
+        {
+          "name": "lastMaxExpiryTimestamp",
+          "description": "The time at which the previous round ended.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newMaxExpiryTimestamp",
+          "description": "The time which funds will be locked until.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tokenPriceQuote()",
+      "name": "tokenPriceQuote",
+      "description": "Return Token value. This token price is only accurate within the period between rounds.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferQuoteToHedge(tuple(uint256,bytes32,bytes32,address,address,uint256,uint256),uint256)",
+      "name": "transferQuoteToHedge",
+      "description": "Sends quoteAsset to the PoolHedger. This function will transfer whatever free delta liquidity is available. The hedger must determine what to do with the amount received.",
+      "parameterDecorators": [
+        {
+          "name": "exchangeGlobals",
+          "description": "The exchangeGlobals.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "spotPrice",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "quoteKey",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "baseKey",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "synthetix",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "short",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "quoteBaseFeeRate",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "baseQuoteFeeRate",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "name": "amount",
+          "description": "The amount requested by the PoolHedger.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unSignalWithdrawal(uint256)",
+      "name": "unSignalWithdrawal",
+      "description": "Undo a previously signalled withdraw. Certificate owner must have signalled withdraw to call this function, and cannot unsignal if the token is already burnable or burnt.",
+      "parameterDecorators": [
+        {
+          "name": "certificateId",
+          "description": "The id of the LiquidityCertificate.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(address,uint256)",
+      "name": "withdraw",
+      "description": "Withdraws liquidity from the pool. This requires tokens to have been locked until the round ending at the burnableAt timestamp has been ended. This will burn the liquidityCertificates and have the quote asset equivalent at the time be reserved for the users.",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "The account that will receive the withdrawn funds.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "certificateId",
+          "description": "The id of the LiquidityCertificate.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

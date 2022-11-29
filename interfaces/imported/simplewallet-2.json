@@ -1,1 +1,314 @@
-{"schema":"../schema.json","tags":[],"name":"SimpleWallet","description":"minimal wallet. this is sample minimal wallet. has execute, eth handling methods has a single signer that can send requests through the entryPoint.","eventDecorators":[{"signature":"EntryPointChanged(address,address)","name":"EntryPointChanged","description":"Event for token purchase logging.","parameterDecorators":[{"name":"oldEntryPoint","description":"","recommendedTypes":[],"indexed":true},{"name":"newEntryPoint","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"addDeposit()","name":"addDeposit","description":"deposit more funds for this wallet in the entryPoint.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"entryPoint()","name":"entryPoint","description":"return the entryPoint used by this wallet. subclass should return the current entryPoint used by this wallet.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"exec(address,uint256,bytes)","name":"exec","description":"execute a transaction (called directly from owner, not by entryPoint).","parameterDecorators":[{"name":"dest","description":"","recommendedTypes":[]},{"name":"value","description":"","recommendedTypes":[]},{"name":"func","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"execBatch(address[],bytes[])","name":"execBatch","description":"execute a sequence of transaction.","parameterDecorators":[{"name":"dest","description":"","recommendedTypes":[]},{"name":"func","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"execFromEntryPoint(address,uint256,bytes)","name":"execFromEntryPoint","description":"","parameterDecorators":[{"name":"dest","description":"","recommendedTypes":[]},{"name":"value","description":"","recommendedTypes":[]},{"name":"func","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getDeposit()","name":"getDeposit","description":"check current wallet deposit in the entryPoint.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"nonce()","name":"nonce","description":"return the wallet nonce. subclass should return a nonce value that is used both by _validateAndUpdateNonce, and by the external provider (to read the current nonce).","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"transfer(address,uint256)","name":"transfer","description":"transfer eth value to a destination address.","parameterDecorators":[{"name":"dest","description":"","recommendedTypes":[]},{"name":"amount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateEntryPoint(address)","name":"updateEntryPoint","description":"expose an api to modify the entryPoint. must be called by current \"admin\" of the wallet.","parameterDecorators":[{"name":"newEntryPoint","description":"the new entrypoint to trust.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"validateUserOp(tuple(address,uint256,bytes,bytes,uint256,uint256,uint256,uint256,uint256,address,bytes,bytes),bytes32,uint256)","name":"validateUserOp","description":"Validate user's signature and nonce. subclass doesn't override this method. instead, it should override the specific internal validation methods.","parameterDecorators":[{"name":"userOp","description":"","recommendedTypes":[],"parameters":[{"name":"sender","description":"","type":"address"},{"name":"nonce","description":"","type":"uint256"},{"name":"initCode","description":"","type":"bytes"},{"name":"callData","description":"","type":"bytes"},{"name":"callGas","description":"","type":"uint256"},{"name":"verificationGas","description":"","type":"uint256"},{"name":"preVerificationGas","description":"","type":"uint256"},{"name":"maxFeePerGas","description":"","type":"uint256"},{"name":"maxPriorityFeePerGas","description":"","type":"uint256"},{"name":"paymaster","description":"","type":"address"},{"name":"paymasterData","description":"","type":"bytes"},{"name":"signature","description":"","type":"bytes"}]},{"name":"requestId","description":"","recommendedTypes":[]},{"name":"missingWalletFunds","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdrawDepositTo(address,uint256)","name":"withdrawDepositTo","description":"withdraw value from the wallet's deposit.","parameterDecorators":[{"name":"withdrawAddress","description":"target to send to.","recommendedTypes":[]},{"name":"amount","description":"to withdraw.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "SimpleWallet",
+  "description": "minimal wallet. this is sample minimal wallet. has execute, eth handling methods has a single signer that can send requests through the entryPoint.",
+  "eventDecorators": [
+    {
+      "signature": "EntryPointChanged(address,address)",
+      "name": "EntryPointChanged",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "oldEntryPoint",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newEntryPoint",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addDeposit()",
+      "name": "addDeposit",
+      "description": "deposit more funds for this wallet in the entryPoint.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "entryPoint()",
+      "name": "entryPoint",
+      "description": "return the entryPoint used by this wallet. subclass should return the current entryPoint used by this wallet.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "exec(address,uint256,bytes)",
+      "name": "exec",
+      "description": "execute a transaction (called directly from owner, not by entryPoint).",
+      "parameterDecorators": [
+        {
+          "name": "dest",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "func",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "execBatch(address[],bytes[])",
+      "name": "execBatch",
+      "description": "execute a sequence of transaction.",
+      "parameterDecorators": [
+        {
+          "name": "dest",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "func",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "execFromEntryPoint(address,uint256,bytes)",
+      "name": "execFromEntryPoint",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "dest",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "func",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getDeposit()",
+      "name": "getDeposit",
+      "description": "check current wallet deposit in the entryPoint.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nonce()",
+      "name": "nonce",
+      "description": "return the wallet nonce. subclass should return a nonce value that is used both by _validateAndUpdateNonce, and by the external provider (to read the current nonce).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transfer(address,uint256)",
+      "name": "transfer",
+      "description": "transfer eth value to a destination address.",
+      "parameterDecorators": [
+        {
+          "name": "dest",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateEntryPoint(address)",
+      "name": "updateEntryPoint",
+      "description": "expose an api to modify the entryPoint. must be called by current \"admin\" of the wallet.",
+      "parameterDecorators": [
+        {
+          "name": "newEntryPoint",
+          "description": "the new entrypoint to trust.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "validateUserOp(tuple(address,uint256,bytes,bytes,uint256,uint256,uint256,uint256,uint256,address,bytes,bytes),bytes32,uint256)",
+      "name": "validateUserOp",
+      "description": "Validate user's signature and nonce. subclass doesn't override this method. instead, it should override the specific internal validation methods.",
+      "parameterDecorators": [
+        {
+          "name": "userOp",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "sender",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "nonce",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "initCode",
+              "description": "",
+              "type": "bytes"
+            },
+            {
+              "name": "callData",
+              "description": "",
+              "type": "bytes"
+            },
+            {
+              "name": "callGas",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "verificationGas",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "preVerificationGas",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "maxFeePerGas",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "maxPriorityFeePerGas",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "paymaster",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "paymasterData",
+              "description": "",
+              "type": "bytes"
+            },
+            {
+              "name": "signature",
+              "description": "",
+              "type": "bytes"
+            }
+          ]
+        },
+        {
+          "name": "requestId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "missingWalletFunds",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawDepositTo(address,uint256)",
+      "name": "withdrawDepositTo",
+      "description": "withdraw value from the wallet's deposit.",
+      "parameterDecorators": [
+        {
+          "name": "withdrawAddress",
+          "description": "target to send to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

@@ -1,1 +1,305 @@
-{"schema":"../schema.json","tags":["tokens","locking"],"name":"Timelock","description":"Timelock contract. Fixed token payout and timing. Can add recipients and multiple grants per recipient.","eventDecorators":[{"signature":"Claimed(address,uint256)","name":"Claimed","description":"SetLandOwner is emitted whenever the ownership of an land is transfered.","parameterDecorators":[{"name":"actor","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"GrantsAdded(address,address[])","name":"GrantsAdded","description":"SetLandOwner is emitted whenever the ownership of an land is transfered.","parameterDecorators":[{"name":"actor","description":"","recommendedTypes":[],"indexed":false},{"name":"newRecipients","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Recovered(address,uint256)","name":"Recovered","description":"SetLandOwner is emitted whenever the ownership of an land is transfered.","parameterDecorators":[{"name":"recipient","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Transfer(address,address,uint256)","name":"Transfer","description":"SetLandOwner is emitted whenever the ownership of an land is transfered.","parameterDecorators":[{"name":"from","description":"","recommendedTypes":[],"indexed":true},{"name":"to","description":"","recommendedTypes":[],"indexed":true},{"name":"tokens","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"addGrants(address[],uint256)","name":"addGrants","description":"Adds a grant to the timelock Grants can be added at any time before claim period.","parameterDecorators":[{"name":"newRecipients","description":"","recommendedTypes":[]},{"name":"grantSize","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"balanceOf(address)","name":"balanceOf","description":"Proxied token information for bookkeeping / discoverability Not implemented: 1. approvals 2. transfers etc.","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"claim()","name":"claim","description":"Allows a user to claim their grant. Claimee has to be msg.sender.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"decimals()","name":"decimals","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"getOwner()","name":"getOwner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getTimeRecover()","name":"getTimeRecover","description":"Returns the admin can recover unclaimed grants.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getTimeUnlock()","name":"getTimeUnlock","description":"Returns the time users can recieve the grant / when the timelock expires.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getToken()","name":"getToken","description":"Returns token for timelock and amount per recipient.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"grantedAmount(address)","name":"grantedAmount","description":"Returns the status of the grant.","parameterDecorators":[{"name":"recipient","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"name()","name":"name","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true},{"signature":"recover()","name":"recover","description":"The owner of the grant can recover after the recovery timestamp passes. This sweeps remaining funds and destroys the contract data.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"symbol()","name":"symbol","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true},{"signature":"totalSupply()","name":"totalSupply","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "locking"
+  ],
+  "name": "Timelock",
+  "description": "Timelock contract. Fixed token payout and timing. Can add recipients and multiple grants per recipient.",
+  "eventDecorators": [
+    {
+      "signature": "Claimed(address,uint256)",
+      "name": "Claimed",
+      "description": "SetLandOwner is emitted whenever the ownership of an land is transfered.",
+      "parameterDecorators": [
+        {
+          "name": "actor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "GrantsAdded(address,address[])",
+      "name": "GrantsAdded",
+      "description": "SetLandOwner is emitted whenever the ownership of an land is transfered.",
+      "parameterDecorators": [
+        {
+          "name": "actor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newRecipients",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Recovered(address,uint256)",
+      "name": "Recovered",
+      "description": "SetLandOwner is emitted whenever the ownership of an land is transfered.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Transfer(address,address,uint256)",
+      "name": "Transfer",
+      "description": "SetLandOwner is emitted whenever the ownership of an land is transfered.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokens",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addGrants(address[],uint256)",
+      "name": "addGrants",
+      "description": "Adds a grant to the timelock Grants can be added at any time before claim period.",
+      "parameterDecorators": [
+        {
+          "name": "newRecipients",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "grantSize",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "balanceOf(address)",
+      "name": "balanceOf",
+      "description": "Proxied token information for bookkeeping / discoverability Not implemented: 1. approvals 2. transfers etc.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claim()",
+      "name": "claim",
+      "description": "Allows a user to claim their grant. Claimee has to be msg.sender.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "decimals()",
+      "name": "decimals",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getOwner()",
+      "name": "getOwner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTimeRecover()",
+      "name": "getTimeRecover",
+      "description": "Returns the admin can recover unclaimed grants.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTimeUnlock()",
+      "name": "getTimeUnlock",
+      "description": "Returns the time users can recieve the grant / when the timelock expires.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getToken()",
+      "name": "getToken",
+      "description": "Returns token for timelock and amount per recipient.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "grantedAmount(address)",
+      "name": "grantedAmount",
+      "description": "Returns the status of the grant.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "name()",
+      "name": "name",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "recover()",
+      "name": "recover",
+      "description": "The owner of the grant can recover after the recovery timestamp passes. This sweeps remaining funds and destroys the contract data.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "symbol()",
+      "name": "symbol",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalSupply()",
+      "name": "totalSupply",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

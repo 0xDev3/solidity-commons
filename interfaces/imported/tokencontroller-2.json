@@ -1,1 +1,1438 @@
-{"schema":"../schema.json","tags":["tokens"],"name":"TokenController","description":"TokenController.","eventDecorators":[{"signature":"AllMintsPaused(bool)","name":"AllMintsPaused","description":"","parameterDecorators":[{"name":"status","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"CanBurn(address,bool)","name":"CanBurn","description":"","parameterDecorators":[{"name":"burner","description":"","recommendedTypes":[],"indexed":false},{"name":"canBurn","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"FastPauseSet(address)","name":"FastPauseSet","description":"","parameterDecorators":[{"name":"_newFastPause","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"FinalizeMint(address,uint256,uint256,address)","name":"FinalizeMint","description":"","parameterDecorators":[{"name":"to","description":"","recommendedTypes":[],"indexed":true},{"name":"value","description":"","recommendedTypes":[],"indexed":true},{"name":"opIndex","description":"","recommendedTypes":[],"indexed":false},{"name":"mintKey","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"InstantMint(address,uint256,address)","name":"InstantMint","description":"","parameterDecorators":[{"name":"to","description":"","recommendedTypes":[],"indexed":true},{"name":"value","description":"","recommendedTypes":[],"indexed":true},{"name":"mintKey","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"InstantPoolRefilled()","name":"InstantPoolRefilled","description":"","parameterDecorators":[]},{"signature":"MintApproved(address,uint256)","name":"MintApproved","description":"","parameterDecorators":[{"name":"approver","description":"","recommendedTypes":[],"indexed":false},{"name":"opIndex","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"MintLimitsChanged(uint256,uint256,uint256)","name":"MintLimitsChanged","description":"","parameterDecorators":[{"name":"instant","description":"","recommendedTypes":[],"indexed":false},{"name":"ratified","description":"","recommendedTypes":[],"indexed":false},{"name":"multiSig","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"MintPaused(uint256,bool)","name":"MintPaused","description":"","parameterDecorators":[{"name":"opIndex","description":"","recommendedTypes":[],"indexed":false},{"name":"status","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"MintRatified(uint256,address)","name":"MintRatified","description":"","parameterDecorators":[{"name":"opIndex","description":"","recommendedTypes":[],"indexed":true},{"name":"ratifier","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"MintThresholdChanged(uint256,uint256,uint256)","name":"MintThresholdChanged","description":"","parameterDecorators":[{"name":"instant","description":"","recommendedTypes":[],"indexed":false},{"name":"ratified","description":"","recommendedTypes":[],"indexed":false},{"name":"multiSig","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"MultiSigPoolRefilled()","name":"MultiSigPoolRefilled","description":"","parameterDecorators":[]},{"signature":"NewOwnerPending(address,address)","name":"NewOwnerPending","description":"","parameterDecorators":[{"name":"currentOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"pendingOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"RatifyPoolRefilled()","name":"RatifyPoolRefilled","description":"","parameterDecorators":[]},{"signature":"RequestMint(address,uint256,uint256,address)","name":"RequestMint","description":"","parameterDecorators":[{"name":"to","description":"","recommendedTypes":[],"indexed":true},{"name":"value","description":"","recommendedTypes":[],"indexed":true},{"name":"opIndex","description":"","recommendedTypes":[],"indexed":false},{"name":"mintKey","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RequestReclaimContract(address)","name":"RequestReclaimContract","description":"","parameterDecorators":[{"name":"other","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"RevokeMint(uint256)","name":"RevokeMint","description":"","parameterDecorators":[{"name":"opIndex","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SetRegistry(address)","name":"SetRegistry","description":"","parameterDecorators":[{"name":"registry","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"SetToken(address)","name":"SetToken","description":"","parameterDecorators":[{"name":"newContract","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TransferChild(address,address)","name":"TransferChild","description":"","parameterDecorators":[{"name":"child","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"TransferMintKey(address,address)","name":"TransferMintKey","description":"","parameterDecorators":[{"name":"previousMintKey","description":"","recommendedTypes":[],"indexed":true},{"name":"newMintKey","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"IS_MINT_PAUSER()","name":"IS_MINT_PAUSER","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"IS_MINT_RATIFIER()","name":"IS_MINT_RATIFIER","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"IS_REDEMPTION_ADMIN()","name":"IS_REDEMPTION_ADMIN","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"MULTISIG_MINT_SIGS()","name":"MULTISIG_MINT_SIGS","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"PAUSED_IMPLEMENTATION()","name":"PAUSED_IMPLEMENTATION","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"RATIFY_MINT_SIGS()","name":"RATIFY_MINT_SIGS","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"canFinalize(uint256)","name":"canFinalize","description":"compute if a mint request meets all the requirements to be finalized utility function for a front end.","parameterDecorators":[{"name":"_index","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"claimOwnership()","name":"claimOwnership","description":"Allows the pendingOwner address to finalize the transfer.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claimTrueCurrencyProxyOwnership()","name":"claimTrueCurrencyProxyOwnership","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"finalizeMint(uint256)","name":"finalizeMint","description":"finalize a mint request, mint the amount requested to the specified address.","parameterDecorators":[{"name":"_index","description":"of the request (visible in the RequestMint event accompanying the original request).","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"hasEnoughApproval(uint256,uint256)","name":"hasEnoughApproval","description":"compute if the number of approvals is enough for a given mint amount.","parameterDecorators":[{"name":"_numberOfApproval","description":"","recommendedTypes":[]},{"name":"_value","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"initialize()","name":"initialize","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"initialized()","name":"initialized","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"instantMint(address,uint256)","name":"instantMint","description":"Instant mint without ratification if the amount is less than instantMintThreshold and instantMintPool.","parameterDecorators":[{"name":"_to","description":"the address to mint to.","recommendedTypes":[]},{"name":"_value","description":"the amount minted.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"instantMintLimit()","name":"instantMintLimit","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"instantMintPool()","name":"instantMintPool","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"instantMintThreshold()","name":"instantMintThreshold","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"invalidateAllPendingMints()","name":"invalidateAllPendingMints","description":"invalidates all mint request initiated before the current block.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"issueClaimOwnership(address)","name":"issueClaimOwnership","description":"Claim ownership of an arbitrary IHasOwner contract.","parameterDecorators":[{"name":"_other","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"mintKey()","name":"mintKey","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"mintOperationCount()","name":"mintOperationCount","description":"get mint operatino count.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"mint operation count.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"mintOperations(uint256)","name":"mintOperations","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"to","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"value","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"requestedBlock","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"numberOfApproval","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"paused","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"mintPaused()","name":"mintPaused","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"mintReqInvalidBeforeThisBlock()","name":"mintReqInvalidBeforeThisBlock","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"multiSigMintLimit()","name":"multiSigMintLimit","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"multiSigMintPool()","name":"multiSigMintPool","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"multiSigMintThreshold()","name":"multiSigMintThreshold","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"pauseMint(uint256)","name":"pauseMint","description":"pause a specific mint request.","parameterDecorators":[{"name":"_opIndex","description":"the index of the mint request the caller wants to pause.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"pauseMints()","name":"pauseMints","description":"pause any further mint request and mint finalizations.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"pauseToken()","name":"pauseToken","description":"pause all pausable actions on TrueCurrency, mints/burn/transfer/approve.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"pendingOwner()","name":"pendingOwner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"ratifiedMintLimit()","name":"ratifiedMintLimit","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"ratifiedMintPool()","name":"ratifiedMintPool","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"ratifiedMintThreshold()","name":"ratifiedMintThreshold","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"ratifiedPoolRefillApprovals(uint256)","name":"ratifiedPoolRefillApprovals","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"ratifyMint(uint256,address,uint256)","name":"ratifyMint","description":"ratifier ratifies a request mint. If the number of ratifiers that signed off is greater than the number of approvals required, the request is finalized.","parameterDecorators":[{"name":"_index","description":"the index of the requestMint to ratify.","recommendedTypes":[]},{"name":"_to","description":"the address to mint to.","recommendedTypes":[]},{"name":"_value","description":"the amount requested.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"reclaimEther(address)","name":"reclaimEther","description":"Owner can send ether balance in contract address.","parameterDecorators":[{"name":"_to","description":"address to which the funds will be send to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"reclaimToken(address,address)","name":"reclaimToken","description":"Owner can send erc20 token balance in contract address.","parameterDecorators":[{"name":"_token","description":"address of the token to send.","recommendedTypes":[]},{"name":"_to","description":"address to which the funds will be send to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"refillInstantMintPool()","name":"refillInstantMintPool","description":"Ratifier can refill instant mint pool.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"refillMultiSigMintPool()","name":"refillMultiSigMintPool","description":"Owner can refill MultiSig Mint Pool.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"refillRatifiedMintPool()","name":"refillRatifiedMintPool","description":"Owner or 3 ratifiers can refill Ratified Mint Pool.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"registry()","name":"registry","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"registryAdmin()","name":"registryAdmin","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"requestMint(address,uint256)","name":"requestMint","description":"mintKey initiates a request to mint _value for account _to.","parameterDecorators":[{"name":"_to","description":"the address to mint to.","recommendedTypes":[]},{"name":"_value","description":"the amount requested.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"requestReclaimEther()","name":"requestReclaimEther","description":"send all ether in token address to the owner of tokenController.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"requestReclaimToken(address)","name":"requestReclaimToken","description":"transfer all tokens of a particular type in token address to the owner of tokenController.","parameterDecorators":[{"name":"_token","description":"token address of the token to transfer.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"revokeMint(uint256)","name":"revokeMint","description":"revoke a mint request, Delete the mintOperation.","parameterDecorators":[{"name":"_index","description":"of the request (visible in the RequestMint event accompanying the original request).","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setBlacklisted(address,bool)","name":"setBlacklisted","description":"Set blacklisted status for the account.","parameterDecorators":[{"name":"account","description":"address to set blacklist flag for.","recommendedTypes":[]},{"name":"isBlacklisted","description":"blacklist flag value.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setBurnBounds(uint256,uint256)","name":"setBurnBounds","description":"Change the minimum and maximum amounts that TrueCurrency users can burn to newMin and newMax.","parameterDecorators":[{"name":"_min","description":"minimum amount user can burn at a time.","recommendedTypes":[]},{"name":"_max","description":"maximum amount user can burn at a time.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setCanBurn(address,bool)","name":"setCanBurn","description":"Owner can allow address to burn tokens.","parameterDecorators":[{"name":"burner","description":"address of the token that can burn.","recommendedTypes":[]},{"name":"canBurn","description":"true if account is allowed to burn, false otherwise.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMintLimits(uint256,uint256,uint256)","name":"setMintLimits","description":"set the limit of each mint pool. For example can only instant mint up to the instant mint pool limit before needing to refill.","parameterDecorators":[{"name":"_instant","description":"","recommendedTypes":[]},{"name":"_ratified","description":"","recommendedTypes":[]},{"name":"_multiSig","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMintThresholds(uint256,uint256,uint256)","name":"setMintThresholds","description":"set the threshold for a mint to be considered an instant mint, ratify mint and multiSig mint. Instant mint requires no approval, ratify mint requires 1 approval and multiSig mint requires 3 approvals.","parameterDecorators":[{"name":"_instant","description":"","recommendedTypes":[]},{"name":"_ratified","description":"","recommendedTypes":[]},{"name":"_multiSig","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setRegistry(address)","name":"setRegistry","description":"Update this contract's registry pointer to _registry.","parameterDecorators":[{"name":"_registry","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setRegistryAdmin(address)","name":"setRegistryAdmin","description":"","parameterDecorators":[{"name":"admin","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setToken(address)","name":"setToken","description":"Update this contract's token pointer to newContract (e.g. if the contract is upgraded).","parameterDecorators":[{"name":"_newContract","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"token()","name":"token","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"transferChild(address,address)","name":"transferChild","description":"Transfer ownership of _child to _newOwner. Can be used e.g. to upgrade this TokenController contract.","parameterDecorators":[{"name":"_child","description":"contract that tokenController currently Owns.","recommendedTypes":[]},{"name":"_newOwner","description":"new owner/pending owner of _child.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferMintKey(address)","name":"transferMintKey","description":"Replace the current mintkey with new mintkey.","parameterDecorators":[{"name":"_newMintKey","description":"address of the new mintKey.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Allows the current owner to set the pendingOwner address.","parameterDecorators":[{"name":"newOwner","description":"The address to transfer ownership to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferTrueCurrencyProxyOwnership(address)","name":"transferTrueCurrencyProxyOwnership","description":"","parameterDecorators":[{"name":"_newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unpauseMint(uint256)","name":"unpauseMint","description":"unpause a specific mint request.","parameterDecorators":[{"name":"_opIndex","description":"the index of the mint request the caller wants to unpause.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unpauseMints()","name":"unpauseMints","description":"unpause any further mint request and mint finalizations.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"upgradeTrueCurrencyProxyImplTo(address)","name":"upgradeTrueCurrencyProxyImplTo","description":"","parameterDecorators":[{"name":"_implementation","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens"
+  ],
+  "name": "TokenController",
+  "description": "TokenController.",
+  "eventDecorators": [
+    {
+      "signature": "AllMintsPaused(bool)",
+      "name": "AllMintsPaused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "status",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CanBurn(address,bool)",
+      "name": "CanBurn",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "burner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "canBurn",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "FastPauseSet(address)",
+      "name": "FastPauseSet",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_newFastPause",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "FinalizeMint(address,uint256,uint256,address)",
+      "name": "FinalizeMint",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "opIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "mintKey",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "InstantMint(address,uint256,address)",
+      "name": "InstantMint",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "mintKey",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "InstantPoolRefilled()",
+      "name": "InstantPoolRefilled",
+      "description": "",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "MintApproved(address,uint256)",
+      "name": "MintApproved",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "approver",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "opIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "MintLimitsChanged(uint256,uint256,uint256)",
+      "name": "MintLimitsChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "instant",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "ratified",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "multiSig",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "MintPaused(uint256,bool)",
+      "name": "MintPaused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "opIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "status",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "MintRatified(uint256,address)",
+      "name": "MintRatified",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "opIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "ratifier",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "MintThresholdChanged(uint256,uint256,uint256)",
+      "name": "MintThresholdChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "instant",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "ratified",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "multiSig",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "MultiSigPoolRefilled()",
+      "name": "MultiSigPoolRefilled",
+      "description": "",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "NewOwnerPending(address,address)",
+      "name": "NewOwnerPending",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "currentOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "pendingOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RatifyPoolRefilled()",
+      "name": "RatifyPoolRefilled",
+      "description": "",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "RequestMint(address,uint256,uint256,address)",
+      "name": "RequestMint",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "opIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "mintKey",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RequestReclaimContract(address)",
+      "name": "RequestReclaimContract",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "other",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RevokeMint(uint256)",
+      "name": "RevokeMint",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "opIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SetRegistry(address)",
+      "name": "SetRegistry",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "registry",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "SetToken(address)",
+      "name": "SetToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "newContract",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TransferChild(address,address)",
+      "name": "TransferChild",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "child",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TransferMintKey(address,address)",
+      "name": "TransferMintKey",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousMintKey",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newMintKey",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "IS_MINT_PAUSER()",
+      "name": "IS_MINT_PAUSER",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "IS_MINT_RATIFIER()",
+      "name": "IS_MINT_RATIFIER",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "IS_REDEMPTION_ADMIN()",
+      "name": "IS_REDEMPTION_ADMIN",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MULTISIG_MINT_SIGS()",
+      "name": "MULTISIG_MINT_SIGS",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "PAUSED_IMPLEMENTATION()",
+      "name": "PAUSED_IMPLEMENTATION",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "RATIFY_MINT_SIGS()",
+      "name": "RATIFY_MINT_SIGS",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "canFinalize(uint256)",
+      "name": "canFinalize",
+      "description": "compute if a mint request meets all the requirements to be finalized utility function for a front end.",
+      "parameterDecorators": [
+        {
+          "name": "_index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claimOwnership()",
+      "name": "claimOwnership",
+      "description": "Allows the pendingOwner address to finalize the transfer.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimTrueCurrencyProxyOwnership()",
+      "name": "claimTrueCurrencyProxyOwnership",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "finalizeMint(uint256)",
+      "name": "finalizeMint",
+      "description": "finalize a mint request, mint the amount requested to the specified address.",
+      "parameterDecorators": [
+        {
+          "name": "_index",
+          "description": "of the request (visible in the RequestMint event accompanying the original request).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "hasEnoughApproval(uint256,uint256)",
+      "name": "hasEnoughApproval",
+      "description": "compute if the number of approvals is enough for a given mint amount.",
+      "parameterDecorators": [
+        {
+          "name": "_numberOfApproval",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_value",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize()",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialized()",
+      "name": "initialized",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "instantMint(address,uint256)",
+      "name": "instantMint",
+      "description": "Instant mint without ratification if the amount is less than instantMintThreshold and instantMintPool.",
+      "parameterDecorators": [
+        {
+          "name": "_to",
+          "description": "the address to mint to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_value",
+          "description": "the amount minted.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "instantMintLimit()",
+      "name": "instantMintLimit",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "instantMintPool()",
+      "name": "instantMintPool",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "instantMintThreshold()",
+      "name": "instantMintThreshold",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "invalidateAllPendingMints()",
+      "name": "invalidateAllPendingMints",
+      "description": "invalidates all mint request initiated before the current block.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "issueClaimOwnership(address)",
+      "name": "issueClaimOwnership",
+      "description": "Claim ownership of an arbitrary IHasOwner contract.",
+      "parameterDecorators": [
+        {
+          "name": "_other",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "mintKey()",
+      "name": "mintKey",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "mintOperationCount()",
+      "name": "mintOperationCount",
+      "description": "get mint operatino count.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "mint operation count.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "mintOperations(uint256)",
+      "name": "mintOperations",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "requestedBlock",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "numberOfApproval",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "paused",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "mintPaused()",
+      "name": "mintPaused",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "mintReqInvalidBeforeThisBlock()",
+      "name": "mintReqInvalidBeforeThisBlock",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "multiSigMintLimit()",
+      "name": "multiSigMintLimit",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "multiSigMintPool()",
+      "name": "multiSigMintPool",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "multiSigMintThreshold()",
+      "name": "multiSigMintThreshold",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pauseMint(uint256)",
+      "name": "pauseMint",
+      "description": "pause a specific mint request.",
+      "parameterDecorators": [
+        {
+          "name": "_opIndex",
+          "description": "the index of the mint request the caller wants to pause.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "pauseMints()",
+      "name": "pauseMints",
+      "description": "pause any further mint request and mint finalizations.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "pauseToken()",
+      "name": "pauseToken",
+      "description": "pause all pausable actions on TrueCurrency, mints/burn/transfer/approve.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "pendingOwner()",
+      "name": "pendingOwner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ratifiedMintLimit()",
+      "name": "ratifiedMintLimit",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ratifiedMintPool()",
+      "name": "ratifiedMintPool",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ratifiedMintThreshold()",
+      "name": "ratifiedMintThreshold",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ratifiedPoolRefillApprovals(uint256)",
+      "name": "ratifiedPoolRefillApprovals",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ratifyMint(uint256,address,uint256)",
+      "name": "ratifyMint",
+      "description": "ratifier ratifies a request mint. If the number of ratifiers that signed off is greater than the number of approvals required, the request is finalized.",
+      "parameterDecorators": [
+        {
+          "name": "_index",
+          "description": "the index of the requestMint to ratify.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "the address to mint to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_value",
+          "description": "the amount requested.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "reclaimEther(address)",
+      "name": "reclaimEther",
+      "description": "Owner can send ether balance in contract address.",
+      "parameterDecorators": [
+        {
+          "name": "_to",
+          "description": "address to which the funds will be send to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "reclaimToken(address,address)",
+      "name": "reclaimToken",
+      "description": "Owner can send erc20 token balance in contract address.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the token to send.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "address to which the funds will be send to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "refillInstantMintPool()",
+      "name": "refillInstantMintPool",
+      "description": "Ratifier can refill instant mint pool.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "refillMultiSigMintPool()",
+      "name": "refillMultiSigMintPool",
+      "description": "Owner can refill MultiSig Mint Pool.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "refillRatifiedMintPool()",
+      "name": "refillRatifiedMintPool",
+      "description": "Owner or 3 ratifiers can refill Ratified Mint Pool.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "registry()",
+      "name": "registry",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "registryAdmin()",
+      "name": "registryAdmin",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "requestMint(address,uint256)",
+      "name": "requestMint",
+      "description": "mintKey initiates a request to mint _value for account _to.",
+      "parameterDecorators": [
+        {
+          "name": "_to",
+          "description": "the address to mint to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_value",
+          "description": "the amount requested.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "requestReclaimEther()",
+      "name": "requestReclaimEther",
+      "description": "send all ether in token address to the owner of tokenController.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "requestReclaimToken(address)",
+      "name": "requestReclaimToken",
+      "description": "transfer all tokens of a particular type in token address to the owner of tokenController.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "token address of the token to transfer.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "revokeMint(uint256)",
+      "name": "revokeMint",
+      "description": "revoke a mint request, Delete the mintOperation.",
+      "parameterDecorators": [
+        {
+          "name": "_index",
+          "description": "of the request (visible in the RequestMint event accompanying the original request).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setBlacklisted(address,bool)",
+      "name": "setBlacklisted",
+      "description": "Set blacklisted status for the account.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "address to set blacklist flag for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "isBlacklisted",
+          "description": "blacklist flag value.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setBurnBounds(uint256,uint256)",
+      "name": "setBurnBounds",
+      "description": "Change the minimum and maximum amounts that TrueCurrency users can burn to newMin and newMax.",
+      "parameterDecorators": [
+        {
+          "name": "_min",
+          "description": "minimum amount user can burn at a time.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_max",
+          "description": "maximum amount user can burn at a time.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setCanBurn(address,bool)",
+      "name": "setCanBurn",
+      "description": "Owner can allow address to burn tokens.",
+      "parameterDecorators": [
+        {
+          "name": "burner",
+          "description": "address of the token that can burn.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "canBurn",
+          "description": "true if account is allowed to burn, false otherwise.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMintLimits(uint256,uint256,uint256)",
+      "name": "setMintLimits",
+      "description": "set the limit of each mint pool. For example can only instant mint up to the instant mint pool limit before needing to refill.",
+      "parameterDecorators": [
+        {
+          "name": "_instant",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_ratified",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_multiSig",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMintThresholds(uint256,uint256,uint256)",
+      "name": "setMintThresholds",
+      "description": "set the threshold for a mint to be considered an instant mint, ratify mint and multiSig mint. Instant mint requires no approval, ratify mint requires 1 approval and multiSig mint requires 3 approvals.",
+      "parameterDecorators": [
+        {
+          "name": "_instant",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_ratified",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_multiSig",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRegistry(address)",
+      "name": "setRegistry",
+      "description": "Update this contract's registry pointer to _registry.",
+      "parameterDecorators": [
+        {
+          "name": "_registry",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRegistryAdmin(address)",
+      "name": "setRegistryAdmin",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "admin",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setToken(address)",
+      "name": "setToken",
+      "description": "Update this contract's token pointer to newContract (e.g. if the contract is upgraded).",
+      "parameterDecorators": [
+        {
+          "name": "_newContract",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferChild(address,address)",
+      "name": "transferChild",
+      "description": "Transfer ownership of _child to _newOwner. Can be used e.g. to upgrade this TokenController contract.",
+      "parameterDecorators": [
+        {
+          "name": "_child",
+          "description": "contract that tokenController currently Owns.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newOwner",
+          "description": "new owner/pending owner of _child.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferMintKey(address)",
+      "name": "transferMintKey",
+      "description": "Replace the current mintkey with new mintkey.",
+      "parameterDecorators": [
+        {
+          "name": "_newMintKey",
+          "description": "address of the new mintKey.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Allows the current owner to set the pendingOwner address.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "The address to transfer ownership to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferTrueCurrencyProxyOwnership(address)",
+      "name": "transferTrueCurrencyProxyOwnership",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unpauseMint(uint256)",
+      "name": "unpauseMint",
+      "description": "unpause a specific mint request.",
+      "parameterDecorators": [
+        {
+          "name": "_opIndex",
+          "description": "the index of the mint request the caller wants to unpause.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unpauseMints()",
+      "name": "unpauseMints",
+      "description": "unpause any further mint request and mint finalizations.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeTrueCurrencyProxyImplTo(address)",
+      "name": "upgradeTrueCurrencyProxyImplTo",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_implementation",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

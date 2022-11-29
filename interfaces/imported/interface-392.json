@@ -1,1 +1,617 @@
-{"schema":"../schema.json","tags":["oracles"],"name":"PreCoordinator","description":"PreCoordinator is a contract that builds on-chain service agreements using the current architecture of 1 request to 1 oracle contract. This contract accepts requests as service agreement IDs and loops over the corresponding list of oracles to create distinct requests to each one.","eventDecorators":[{"signature":"AddedAccess(address)","name":"AddedAccess","description":"Event for token purchase logging.","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ChainlinkCancelled(bytes32)","name":"ChainlinkCancelled","description":"Event for token purchase logging.","parameterDecorators":[{"name":"id","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"ChainlinkFulfilled(bytes32)","name":"ChainlinkFulfilled","description":"Event for token purchase logging.","parameterDecorators":[{"name":"id","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"ChainlinkRequested(bytes32)","name":"ChainlinkRequested","description":"Event for token purchase logging.","parameterDecorators":[{"name":"id","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"CheckAccessDisabled()","name":"CheckAccessDisabled","description":"Event for token purchase logging.","parameterDecorators":[]},{"signature":"CheckAccessEnabled()","name":"CheckAccessEnabled","description":"Event for token purchase logging.","parameterDecorators":[]},{"signature":"NewServiceAgreement(bytes32,uint256,uint256)","name":"NewServiceAgreement","description":"Event for token purchase logging.","parameterDecorators":[{"name":"saId","description":"","recommendedTypes":[],"indexed":true},{"name":"payment","description":"","recommendedTypes":[],"indexed":false},{"name":"minresponses","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferRequested(address,address)","name":"OwnershipTransferRequested","description":"Event for token purchase logging.","parameterDecorators":[{"name":"from","description":"","recommendedTypes":[],"indexed":true},{"name":"to","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Event for token purchase logging.","parameterDecorators":[{"name":"from","description":"","recommendedTypes":[],"indexed":true},{"name":"to","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"RemovedAccess(address)","name":"RemovedAccess","description":"Event for token purchase logging.","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ServiceAgreementAnswerUpdated(bytes32,bytes32,int256)","name":"ServiceAgreementAnswerUpdated","description":"Event for token purchase logging.","parameterDecorators":[{"name":"saId","description":"","recommendedTypes":[],"indexed":true},{"name":"requestId","description":"","recommendedTypes":[],"indexed":true},{"name":"answer","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ServiceAgreementDeleted(bytes32)","name":"ServiceAgreementDeleted","description":"Event for token purchase logging.","parameterDecorators":[{"name":"saId","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"ServiceAgreementRequested(bytes32,bytes32,uint256)","name":"ServiceAgreementRequested","description":"Event for token purchase logging.","parameterDecorators":[{"name":"saId","description":"","recommendedTypes":[],"indexed":true},{"name":"requestId","description":"","recommendedTypes":[],"indexed":true},{"name":"payment","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ServiceAgreementResponseReceived(bytes32,bytes32,address,int256)","name":"ServiceAgreementResponseReceived","description":"Event for token purchase logging.","parameterDecorators":[{"name":"saId","description":"","recommendedTypes":[],"indexed":true},{"name":"requestId","description":"","recommendedTypes":[],"indexed":true},{"name":"oracle","description":"","recommendedTypes":[],"indexed":true},{"name":"answer","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"acceptOwnership()","name":"acceptOwnership","description":"Allows an ownership transfer to be completed by the recipient.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"addAccess(address)","name":"addAccess","description":"Adds an address to the access list.","parameterDecorators":[{"name":"_user","description":"The address to add.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"cancelOracleRequest(bytes32,uint256,bytes4,uint256)","name":"cancelOracleRequest","description":"Call this method if no response is received within 5 minutes.","parameterDecorators":[{"name":"_requestId","description":"The ID that was generated for the request to cancel.","recommendedTypes":[]},{"name":"_payment","description":"The payment specified for the request to cancel.","recommendedTypes":[]},{"name":"_callbackFunctionId","description":"The bytes4 callback function ID specified for the request to cancel.","recommendedTypes":[]},{"name":"_expiration","description":"The expiration generated for the request to cancel.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"chainlinkCallback(bytes32,int256)","name":"chainlinkCallback","description":"The fulfill method from requests created by this contract. The recordChainlinkFulfillment protects this function from being called by anyone other than the oracle address that the request was sent to.","parameterDecorators":[{"name":"_requestId","description":"The ID that was generated for the request.","recommendedTypes":[]},{"name":"_data","description":"The answer provided by the oracle.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"checkEnabled()","name":"checkEnabled","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"createServiceAgreement(uint256,address[],bytes32[],uint256[])","name":"createServiceAgreement","description":"Allows the owner of the contract to create new service agreements with multiple oracles. Each oracle will have their own Job ID and can have their own payment amount. The globalNonce keeps service agreement IDs unique. Assume one cannot create the max uint256 number of service agreements in the same block.","parameterDecorators":[{"name":"_minResponses","description":"The minimum number of responses before the requesting contract is called with the response data.","recommendedTypes":[]},{"name":"_oracles","description":"The list of oracle contract addresses.","recommendedTypes":[]},{"name":"_jobIds","description":"The corresponding list of Job IDs.","recommendedTypes":[]},{"name":"_payments","description":"The corresponding list of payment amounts.","recommendedTypes":[]}],"returnDecorators":[{"name":"saId","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":false},{"signature":"disableAccessCheck()","name":"disableAccessCheck","description":"makes the access check unenforced.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"enableAccessCheck()","name":"enableAccessCheck","description":"makes the access check enforced.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getChainlinkToken()","name":"getChainlinkToken","description":"Returns the address of the LINK token. This is the public implementation for chainlinkTokenAddress, which is an internal method of the ChainlinkClient contract.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getServiceAgreement(bytes32)","name":"getServiceAgreement","description":"This is a helper function to retrieve the details of a service agreement by its given service agreement ID. This function is used instead of the public mapping to return the values of the arrays: oracles, jobIds, and payments.","parameterDecorators":[{"name":"_saId","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"totalPayment","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"minResponses","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"oracles","description":"","recommendedTypes":[],"solidityType":"address[]"},{"name":"jobIds","description":"","recommendedTypes":[],"solidityType":"bytes32[]"},{"name":"payments","description":"","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"hasAccess(address,bytes)","name":"hasAccess","description":"Returns the access of an address.","parameterDecorators":[{"name":"_user","description":"The address to query.","recommendedTypes":[]},{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"onTokenTransfer(address,uint256,bytes)","name":"onTokenTransfer","description":"Called when LINK is sent to the contract via `transferAndCall`. The data payload's first 2 words will be overwritten by the `_sender` and `_amount` values to ensure correctness. Calls oracleRequest.","parameterDecorators":[{"name":"_sender","description":"Address of the sender.","recommendedTypes":[]},{"name":"_amount","description":"Amount of LINK sent (specified in wei).","recommendedTypes":[]},{"name":"_data","description":"Payload of the transaction.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"oracleRequest(address,uint256,bytes32,address,bytes4,uint256,uint256,bytes)","name":"oracleRequest","description":"Creates the Chainlink request. Stores the hash of the params as the on-chain commitment for the request. Emits OracleRequest event for the Chainlink node to detect.","parameterDecorators":[{"name":"_sender","description":"The sender of the request.","recommendedTypes":[]},{"name":"_payment","description":"The amount of payment given (specified in wei).","recommendedTypes":[]},{"name":"_saId","description":"The Job Specification ID.","recommendedTypes":[]},{"name":"_callbackAddress","description":"The callback address for the response.","recommendedTypes":[]},{"name":"_callbackFunctionId","description":"The callback function ID for the response.","recommendedTypes":[]},{"name":"_nonce","description":"The nonce sent by the requester.","recommendedTypes":[]},{"name":"param0","description":"","recommendedTypes":[]},{"name":"_data","description":"The CBOR payload of the request.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"removeAccess(address)","name":"removeAccess","description":"Removes an address from the access list.","parameterDecorators":[{"name":"_user","description":"The address to remove.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Allows an owner to begin transferring ownership to a new address, pending.","parameterDecorators":[{"name":"_to","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdrawLink()","name":"withdrawLink","description":"Allows the owner to withdraw any LINK balance on the contract. The only valid case for there to be remaining LINK on this contract is if a user accidentally sent LINK directly to this contract's address.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "oracles"
+  ],
+  "name": "PreCoordinator",
+  "description": "PreCoordinator is a contract that builds on-chain service agreements using the current architecture of 1 request to 1 oracle contract. This contract accepts requests as service agreement IDs and loops over the corresponding list of oracles to create distinct requests to each one.",
+  "eventDecorators": [
+    {
+      "signature": "AddedAccess(address)",
+      "name": "AddedAccess",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ChainlinkCancelled(bytes32)",
+      "name": "ChainlinkCancelled",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ChainlinkFulfilled(bytes32)",
+      "name": "ChainlinkFulfilled",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ChainlinkRequested(bytes32)",
+      "name": "ChainlinkRequested",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "CheckAccessDisabled()",
+      "name": "CheckAccessDisabled",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "CheckAccessEnabled()",
+      "name": "CheckAccessEnabled",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "NewServiceAgreement(bytes32,uint256,uint256)",
+      "name": "NewServiceAgreement",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "saId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "payment",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "minresponses",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferRequested(address,address)",
+      "name": "OwnershipTransferRequested",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RemovedAccess(address)",
+      "name": "RemovedAccess",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ServiceAgreementAnswerUpdated(bytes32,bytes32,int256)",
+      "name": "ServiceAgreementAnswerUpdated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "saId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "requestId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "answer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ServiceAgreementDeleted(bytes32)",
+      "name": "ServiceAgreementDeleted",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "saId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ServiceAgreementRequested(bytes32,bytes32,uint256)",
+      "name": "ServiceAgreementRequested",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "saId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "requestId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "payment",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ServiceAgreementResponseReceived(bytes32,bytes32,address,int256)",
+      "name": "ServiceAgreementResponseReceived",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "saId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "requestId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "oracle",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "answer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "acceptOwnership()",
+      "name": "acceptOwnership",
+      "description": "Allows an ownership transfer to be completed by the recipient.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addAccess(address)",
+      "name": "addAccess",
+      "description": "Adds an address to the access list.",
+      "parameterDecorators": [
+        {
+          "name": "_user",
+          "description": "The address to add.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cancelOracleRequest(bytes32,uint256,bytes4,uint256)",
+      "name": "cancelOracleRequest",
+      "description": "Call this method if no response is received within 5 minutes.",
+      "parameterDecorators": [
+        {
+          "name": "_requestId",
+          "description": "The ID that was generated for the request to cancel.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_payment",
+          "description": "The payment specified for the request to cancel.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_callbackFunctionId",
+          "description": "The bytes4 callback function ID specified for the request to cancel.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_expiration",
+          "description": "The expiration generated for the request to cancel.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "chainlinkCallback(bytes32,int256)",
+      "name": "chainlinkCallback",
+      "description": "The fulfill method from requests created by this contract. The recordChainlinkFulfillment protects this function from being called by anyone other than the oracle address that the request was sent to.",
+      "parameterDecorators": [
+        {
+          "name": "_requestId",
+          "description": "The ID that was generated for the request.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "The answer provided by the oracle.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "checkEnabled()",
+      "name": "checkEnabled",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "createServiceAgreement(uint256,address[],bytes32[],uint256[])",
+      "name": "createServiceAgreement",
+      "description": "Allows the owner of the contract to create new service agreements with multiple oracles. Each oracle will have their own Job ID and can have their own payment amount. The globalNonce keeps service agreement IDs unique. Assume one cannot create the max uint256 number of service agreements in the same block.",
+      "parameterDecorators": [
+        {
+          "name": "_minResponses",
+          "description": "The minimum number of responses before the requesting contract is called with the response data.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_oracles",
+          "description": "The list of oracle contract addresses.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_jobIds",
+          "description": "The corresponding list of Job IDs.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_payments",
+          "description": "The corresponding list of payment amounts.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "saId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "disableAccessCheck()",
+      "name": "disableAccessCheck",
+      "description": "makes the access check unenforced.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "enableAccessCheck()",
+      "name": "enableAccessCheck",
+      "description": "makes the access check enforced.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getChainlinkToken()",
+      "name": "getChainlinkToken",
+      "description": "Returns the address of the LINK token. This is the public implementation for chainlinkTokenAddress, which is an internal method of the ChainlinkClient contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getServiceAgreement(bytes32)",
+      "name": "getServiceAgreement",
+      "description": "This is a helper function to retrieve the details of a service agreement by its given service agreement ID. This function is used instead of the public mapping to return the values of the arrays: oracles, jobIds, and payments.",
+      "parameterDecorators": [
+        {
+          "name": "_saId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalPayment",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "minResponses",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "oracles",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "jobIds",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32[]"
+        },
+        {
+          "name": "payments",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "hasAccess(address,bytes)",
+      "name": "hasAccess",
+      "description": "Returns the access of an address.",
+      "parameterDecorators": [
+        {
+          "name": "_user",
+          "description": "The address to query.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "onTokenTransfer(address,uint256,bytes)",
+      "name": "onTokenTransfer",
+      "description": "Called when LINK is sent to the contract via `transferAndCall`. The data payload's first 2 words will be overwritten by the `_sender` and `_amount` values to ensure correctness. Calls oracleRequest.",
+      "parameterDecorators": [
+        {
+          "name": "_sender",
+          "description": "Address of the sender.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "Amount of LINK sent (specified in wei).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "Payload of the transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "oracleRequest(address,uint256,bytes32,address,bytes4,uint256,uint256,bytes)",
+      "name": "oracleRequest",
+      "description": "Creates the Chainlink request. Stores the hash of the params as the on-chain commitment for the request. Emits OracleRequest event for the Chainlink node to detect.",
+      "parameterDecorators": [
+        {
+          "name": "_sender",
+          "description": "The sender of the request.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_payment",
+          "description": "The amount of payment given (specified in wei).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_saId",
+          "description": "The Job Specification ID.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_callbackAddress",
+          "description": "The callback address for the response.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_callbackFunctionId",
+          "description": "The callback function ID for the response.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_nonce",
+          "description": "The nonce sent by the requester.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "The CBOR payload of the request.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeAccess(address)",
+      "name": "removeAccess",
+      "description": "Removes an address from the access list.",
+      "parameterDecorators": [
+        {
+          "name": "_user",
+          "description": "The address to remove.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Allows an owner to begin transferring ownership to a new address, pending.",
+      "parameterDecorators": [
+        {
+          "name": "_to",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawLink()",
+      "name": "withdrawLink",
+      "description": "Allows the owner to withdraw any LINK balance on the contract. The only valid case for there to be remaining LINK on this contract is if a user accidentally sent LINK directly to this contract's address.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

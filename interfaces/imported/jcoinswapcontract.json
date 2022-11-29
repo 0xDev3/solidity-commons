@@ -1,1 +1,410 @@
-{"schema":"../schema.json","tags":["swaps"],"name":"JCoinSwapContract","description":"","eventDecorators":[{"signature":"Swap(uint256,bool,bool,uint256,uint16,uint256,uint256)","name":"Swap","description":"Event emitted when a Uniswap V3 LP token has been unstaked.","parameterDecorators":[{"name":"fromAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"isFromEth","description":"","recommendedTypes":[],"indexed":false},{"name":"isToToken3","description":"","recommendedTypes":[],"indexed":false},{"name":"expectedToTokensAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"slippage","description":"","recommendedTypes":[],"indexed":false},{"name":"fromFeeAdd","description":"","recommendedTypes":[],"indexed":false},{"name":"actualToTokensAmount","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"calcSwap(uint256,bool,bool)","name":"calcSwap","description":"","parameterDecorators":[{"name":"_fromAmount","description":"","recommendedTypes":[]},{"name":"_isFromEth","description":"","recommendedTypes":[]},{"name":"_isToToken3","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"actualToTokensAmount_","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"fromFeeAdd_","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"actualFromAmount_","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"depositToken3()","name":"depositToken3","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"depositToken3Reserve()","name":"depositToken3Reserve","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"depositToken6()","name":"depositToken6","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"depositToken6Reserve()","name":"depositToken6Reserve","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"ethFee()","name":"ethFee","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"ethPrice()","name":"ethPrice","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"sendEarnings(address)","name":"sendEarnings","description":"","parameterDecorators":[{"name":"_to","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"ethReserveTaken_","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"ethFeeTaken_","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"usdtReserveTaken_","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"usdtFeeTaken_","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"sendReserves(address)","name":"sendReserves","description":"","parameterDecorators":[{"name":"_to","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setPrices(uint256,uint256)","name":"setPrices","description":"","parameterDecorators":[{"name":"_ethPrice","description":"","recommendedTypes":[]},{"name":"_usdtPrice","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setReserves(uint256,uint256)","name":"setReserves","description":"","parameterDecorators":[{"name":"_depositToken3Reserve","description":"","recommendedTypes":[]},{"name":"_depositToken6Reserve","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"swapEthToDepositToken(bool,uint256,uint16)","name":"swapEthToDepositToken","description":"","parameterDecorators":[{"name":"_isToToken3","description":"","recommendedTypes":[]},{"name":"_expectedToTokensAmount","description":"","recommendedTypes":[]},{"name":"_slippage","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"swapUsdtToDepositToken(bool,uint256,uint16)","name":"swapUsdtToDepositToken","description":"","parameterDecorators":[{"name":"_isToToken3","description":"","recommendedTypes":[]},{"name":"_expectedToTokensAmount","description":"","recommendedTypes":[]},{"name":"_slippage","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"usdtFee()","name":"usdtFee","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"usdtPrice()","name":"usdtPrice","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"usdtToken()","name":"usdtToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "swaps"
+  ],
+  "name": "JCoinSwapContract",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "Swap(uint256,bool,bool,uint256,uint16,uint256,uint256)",
+      "name": "Swap",
+      "description": "Event emitted when a Uniswap V3 LP token has been unstaked.",
+      "parameterDecorators": [
+        {
+          "name": "fromAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "isFromEth",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "isToToken3",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "expectedToTokensAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "slippage",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "fromFeeAdd",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "actualToTokensAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "calcSwap(uint256,bool,bool)",
+      "name": "calcSwap",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_fromAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isFromEth",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isToToken3",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "actualToTokensAmount_",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "fromFeeAdd_",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "actualFromAmount_",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "depositToken3()",
+      "name": "depositToken3",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "depositToken3Reserve()",
+      "name": "depositToken3Reserve",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "depositToken6()",
+      "name": "depositToken6",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "depositToken6Reserve()",
+      "name": "depositToken6Reserve",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ethFee()",
+      "name": "ethFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ethPrice()",
+      "name": "ethPrice",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "sendEarnings(address)",
+      "name": "sendEarnings",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_to",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "ethReserveTaken_",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "ethFeeTaken_",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "usdtReserveTaken_",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "usdtFeeTaken_",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "sendReserves(address)",
+      "name": "sendReserves",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_to",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setPrices(uint256,uint256)",
+      "name": "setPrices",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_ethPrice",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_usdtPrice",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setReserves(uint256,uint256)",
+      "name": "setReserves",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_depositToken3Reserve",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_depositToken6Reserve",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapEthToDepositToken(bool,uint256,uint16)",
+      "name": "swapEthToDepositToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_isToToken3",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_expectedToTokensAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_slippage",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapUsdtToDepositToken(bool,uint256,uint16)",
+      "name": "swapUsdtToDepositToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_isToToken3",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_expectedToTokensAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_slippage",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "usdtFee()",
+      "name": "usdtFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "usdtPrice()",
+      "name": "usdtPrice",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "usdtToken()",
+      "name": "usdtToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

@@ -1,1 +1,353 @@
-{"schema":"../schema.json","tags":["tokens","vesting"],"name":"RariGovernanceTokenVesting","description":"RariGovernanceTokenVesting. RariGovernanceTokenVesting distributes private RGT (Rari Governance Token) allocations to team/advisors/etc. with a vesting schedule.","eventDecorators":[{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"PrivateClaim(address,uint256,uint256,uint256)","name":"PrivateClaim","description":"","parameterDecorators":[{"name":"holder","description":"","recommendedTypes":[],"indexed":false},{"name":"claimed","description":"","recommendedTypes":[],"indexed":false},{"name":"transferred","description":"","recommendedTypes":[],"indexed":false},{"name":"burned","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"FINAL_PRIVATE_RGT_ALLOCATION()","name":"FINAL_PRIVATE_RGT_ALLOCATION","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"PRIVATE_VESTING_PERIOD()","name":"PRIVATE_VESTING_PERIOD","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"claimAllPrivateRgt()","name":"claimAllPrivateRgt","description":"Claims all unclaimed RGT allocated privately to `msg.sender`.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claimPrivateRgt(uint256)","name":"claimPrivateRgt","description":"Claims `amount` unclaimed RGT allocated privately to `msg.sender`.","parameterDecorators":[{"name":"amount","description":"The amount of RGT to claim.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getPrivateRgtClaimFee(uint256)","name":"getPrivateRgtClaimFee","description":"Returns the RGT transfer fee for team/advisors/etc. (scaled by 1e18).","parameterDecorators":[{"name":"timestamp","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getUnclaimedPrivateRgt(address)","name":"getUnclaimedPrivateRgt","description":"Returns the quantity of unclaimed RGT allocated privately to `holder`.","parameterDecorators":[{"name":"holder","description":"The holder of the unclaimed RGT allocated privately.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"initialize(address)","name":"initialize","description":"Initializes the contract setting the deployer as the initial owner.","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"initialize(uint256)","name":"initialize","description":"Initializer that configures private vesting start and end timestamps.","parameterDecorators":[{"name":"_privateVestingStartTimestamp","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"isOwner()","name":"isOwner","description":"Returns true if the caller is the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"privateRgtAllocations(address)","name":"privateRgtAllocations","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"privateVestingEndTimestamp()","name":"privateVestingEndTimestamp","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"privateVestingStartTimestamp()","name":"privateVestingStartTimestamp","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. * > Note: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setGovernanceToken(address)","name":"setGovernanceToken","description":"Sets the RariGovernanceToken distributed by ths RariGovernanceTokenDistributor.","parameterDecorators":[{"name":"governanceToken","description":"The new RariGovernanceToken contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setPrivateRgtAllocation(address,uint256)","name":"setPrivateRgtAllocation","description":"Sets the `amount` of RGT privately allocated to `holder`.","parameterDecorators":[{"name":"holder","description":"The new RariGovernanceToken contract.","recommendedTypes":[]},{"name":"amount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"upgrade(address)","name":"upgrade","description":"Forwards all RGT to a new RariGovernanceTokenVesting contract.","parameterDecorators":[{"name":"newContract","description":"The new RariGovernanceTokenVesting contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "vesting"
+  ],
+  "name": "RariGovernanceTokenVesting",
+  "description": "RariGovernanceTokenVesting. RariGovernanceTokenVesting distributes private RGT (Rari Governance Token) allocations to team/advisors/etc. with a vesting schedule.",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "PrivateClaim(address,uint256,uint256,uint256)",
+      "name": "PrivateClaim",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "claimed",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "transferred",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "burned",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "FINAL_PRIVATE_RGT_ALLOCATION()",
+      "name": "FINAL_PRIVATE_RGT_ALLOCATION",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "PRIVATE_VESTING_PERIOD()",
+      "name": "PRIVATE_VESTING_PERIOD",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claimAllPrivateRgt()",
+      "name": "claimAllPrivateRgt",
+      "description": "Claims all unclaimed RGT allocated privately to `msg.sender`.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimPrivateRgt(uint256)",
+      "name": "claimPrivateRgt",
+      "description": "Claims `amount` unclaimed RGT allocated privately to `msg.sender`.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "The amount of RGT to claim.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getPrivateRgtClaimFee(uint256)",
+      "name": "getPrivateRgtClaimFee",
+      "description": "Returns the RGT transfer fee for team/advisors/etc. (scaled by 1e18).",
+      "parameterDecorators": [
+        {
+          "name": "timestamp",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUnclaimedPrivateRgt(address)",
+      "name": "getUnclaimedPrivateRgt",
+      "description": "Returns the quantity of unclaimed RGT allocated privately to `holder`.",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "The holder of the unclaimed RGT allocated privately.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address)",
+      "name": "initialize",
+      "description": "Initializes the contract setting the deployer as the initial owner.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialize(uint256)",
+      "name": "initialize",
+      "description": "Initializer that configures private vesting start and end timestamps.",
+      "parameterDecorators": [
+        {
+          "name": "_privateVestingStartTimestamp",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isOwner()",
+      "name": "isOwner",
+      "description": "Returns true if the caller is the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "privateRgtAllocations(address)",
+      "name": "privateRgtAllocations",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "privateVestingEndTimestamp()",
+      "name": "privateVestingEndTimestamp",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "privateVestingStartTimestamp()",
+      "name": "privateVestingStartTimestamp",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. * > Note: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setGovernanceToken(address)",
+      "name": "setGovernanceToken",
+      "description": "Sets the RariGovernanceToken distributed by ths RariGovernanceTokenDistributor.",
+      "parameterDecorators": [
+        {
+          "name": "governanceToken",
+          "description": "The new RariGovernanceToken contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setPrivateRgtAllocation(address,uint256)",
+      "name": "setPrivateRgtAllocation",
+      "description": "Sets the `amount` of RGT privately allocated to `holder`.",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "The new RariGovernanceToken contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upgrade(address)",
+      "name": "upgrade",
+      "description": "Forwards all RGT to a new RariGovernanceTokenVesting contract.",
+      "parameterDecorators": [
+        {
+          "name": "newContract",
+          "description": "The new RariGovernanceTokenVesting contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

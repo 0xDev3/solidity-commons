@@ -1,1 +1,734 @@
-{"schema":"../schema.json","tags":["oracles","locking"],"name":"FluxAggregator","description":"The Prepaid Aggregator contract. Handles aggregating data pushed in from off-chain, and unlocks payment for oracles as they report. Oracles' submissions are gathered in rounds, with each round aggregating the submissions for each oracle into a single answer. The latest aggregated answer is exposed as well as historical answers and their updated at timestamp.","eventDecorators":[{"signature":"AnswerUpdated(int256,uint256,uint256)","name":"AnswerUpdated","description":"Event for token purchase logging.","parameterDecorators":[{"name":"access","description":"TRUE if the Watcher was given permissions, FALSE if permissions were removed.","recommendedTypes":[],"indexed":true},{"name":"domain","description":"the remote domain of the Home contract for the Replica.","recommendedTypes":[],"indexed":true},{"name":"watcher","description":"the address of the Watcher.","recommendedTypes":[],"indexed":false}]},{"signature":"AvailableFundsUpdated(uint256)","name":"AvailableFundsUpdated","description":"Event for token purchase logging.","parameterDecorators":[{"name":"amount","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"NewRound(uint256,address,uint256)","name":"NewRound","description":"Event for token purchase logging.","parameterDecorators":[{"name":"access","description":"TRUE if the Watcher was given permissions, FALSE if permissions were removed.","recommendedTypes":[],"indexed":true},{"name":"domain","description":"the remote domain of the Home contract for the Replica.","recommendedTypes":[],"indexed":true},{"name":"watcher","description":"the address of the Watcher.","recommendedTypes":[],"indexed":false}]},{"signature":"OracleAdminUpdateRequested(address,address,address)","name":"OracleAdminUpdateRequested","description":"Event for token purchase logging.","parameterDecorators":[{"name":"access","description":"TRUE if the Watcher was given permissions, FALSE if permissions were removed.","recommendedTypes":[],"indexed":true},{"name":"domain","description":"the remote domain of the Home contract for the Replica.","recommendedTypes":[],"indexed":false},{"name":"watcher","description":"the address of the Watcher.","recommendedTypes":[],"indexed":false}]},{"signature":"OracleAdminUpdated(address,address)","name":"OracleAdminUpdated","description":"Event for token purchase logging.","parameterDecorators":[{"name":"oracle","description":"","recommendedTypes":[],"indexed":true},{"name":"newAdmin","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OraclePermissionsUpdated(address,bool)","name":"OraclePermissionsUpdated","description":"Event for token purchase logging.","parameterDecorators":[{"name":"oracle","description":"","recommendedTypes":[],"indexed":true},{"name":"whitelisted","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnershipTransferRequested(address,address)","name":"OwnershipTransferRequested","description":"Event for token purchase logging.","parameterDecorators":[{"name":"from","description":"","recommendedTypes":[],"indexed":true},{"name":"to","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Event for token purchase logging.","parameterDecorators":[{"name":"from","description":"","recommendedTypes":[],"indexed":true},{"name":"to","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"RequesterPermissionsSet(address,bool,uint32)","name":"RequesterPermissionsSet","description":"Event for token purchase logging.","parameterDecorators":[{"name":"access","description":"TRUE if the Watcher was given permissions, FALSE if permissions were removed.","recommendedTypes":[],"indexed":true},{"name":"domain","description":"the remote domain of the Home contract for the Replica.","recommendedTypes":[],"indexed":false},{"name":"watcher","description":"the address of the Watcher.","recommendedTypes":[],"indexed":false}]},{"signature":"RoundDetailsUpdated(uint128,uint32,uint32,uint32,uint32)","name":"RoundDetailsUpdated","description":"Event for token purchase logging.","parameterDecorators":[{"name":"paymentAmount","description":"","recommendedTypes":[],"indexed":true},{"name":"minSubmissionCount","description":"","recommendedTypes":[],"indexed":true},{"name":"maxSubmissionCount","description":"","recommendedTypes":[],"indexed":true},{"name":"restartDelay","description":"","recommendedTypes":[],"indexed":false},{"name":"timeout","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SubmissionReceived(int256,uint32,address)","name":"SubmissionReceived","description":"Event for token purchase logging.","parameterDecorators":[{"name":"access","description":"TRUE if the Watcher was given permissions, FALSE if permissions were removed.","recommendedTypes":[],"indexed":true},{"name":"domain","description":"the remote domain of the Home contract for the Replica.","recommendedTypes":[],"indexed":true},{"name":"watcher","description":"the address of the Watcher.","recommendedTypes":[],"indexed":true}]},{"signature":"ValidatorUpdated(address,address)","name":"ValidatorUpdated","description":"Event for token purchase logging.","parameterDecorators":[{"name":"previous","description":"","recommendedTypes":[],"indexed":true},{"name":"current","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"acceptOwnership()","name":"acceptOwnership","description":"Allows an ownership transfer to be completed by the recipient.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"allocatedFunds()","name":"allocatedFunds","description":"the amount of payment yet to be withdrawn by oracles.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":true},{"signature":"availableFunds()","name":"availableFunds","description":"the amount of future funding available to oracles.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":true},{"signature":"decimals()","name":"decimals","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"description()","name":"description","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true},{"signature":"getAnswer(uint256)","name":"getAnswer","description":"get past rounds answers. #[deprecated] Use getRoundData instead. This does not error if no answer has been reached, it will simply return 0. Either wait to point to an already answered Aggregator or use the recommended getRoundData instead which includes better verification information.","parameterDecorators":[{"name":"_roundId","description":"the round number to retrieve the answer for.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":true},{"signature":"getOracles()","name":"getOracles","description":"returns an array of addresses containing the oracles on contract.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getRoundData(uint80)","name":"getRoundData","description":"get data about a round. Consumers are encouraged to check that they're receiving fresh data by inspecting the updatedAt and answeredInRound return values. Note that for in-progress rounds (i.e. rounds that haven't yet received maxSubmissions) answer and updatedAt may change between queries.","parameterDecorators":[{"name":"_roundId","description":"the round ID to retrieve the round data for.","recommendedTypes":[]}],"returnDecorators":[{"name":"roundId","description":"is the round ID for which data was retrieved.","recommendedTypes":[],"solidityType":"uint80"},{"name":"answer","description":"is the answer for the given round.","recommendedTypes":[],"solidityType":"int256"},{"name":"startedAt","description":"is the timestamp when the round was started. This is 0 if the round hasn't been started yet.","recommendedTypes":[],"solidityType":"uint256"},{"name":"updatedAt","description":"is the timestamp when the round last was updated (i.e. answer was last computed).","recommendedTypes":[],"solidityType":"uint256"},{"name":"answeredInRound","description":"is the round ID of the round in which the answer was computed. answeredInRound may be smaller than roundId when the round timed out. answeredInRound is equal to roundId when the round didn't time out and was completed regularly.","recommendedTypes":[],"solidityType":"uint80"}],"emittableEvents":[],"readOnly":true},{"signature":"getTimestamp(uint256)","name":"getTimestamp","description":"get timestamp when an answer was last updated. #[deprecated] Use getRoundData instead. This does not error if no answer has been reached, it will simply return 0. Either wait to point to an already answered Aggregator or use the recommended getRoundData instead which includes better verification information.","parameterDecorators":[{"name":"_roundId","description":"the round number to retrieve the updated timestamp for.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"latestAnswer()","name":"latestAnswer","description":"get the most recently reported answer. #[deprecated] Use latestRoundData instead. This does not error if no answer has been reached, it will simply return 0. Either wait to point to an already answered Aggregator or use the recommended latestRoundData instead which includes better verification information.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":true},{"signature":"latestRound()","name":"latestRound","description":"get the ID of the last updated round. #[deprecated] Use latestRoundData instead. This does not error if no answer has been reached, it will simply return 0. Either wait to point to an already answered Aggregator or use the recommended latestRoundData instead which includes better verification information.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"latestRoundData()","name":"latestRoundData","description":"get data about the latest round. Consumers are encouraged to check that they're receiving fresh data by inspecting the updatedAt and answeredInRound return values. Consumers are encouraged to use this more fully featured method over the \"legacy\" latestRound/ latestAnswer/latestTimestamp functions. Consumers are encouraged to check that they're receiving fresh data by inspecting the updatedAt and answeredInRound return values. Note that for in-progress rounds (i.e. rounds that haven't yet received maxSubmissions) answer and updatedAt may change between queries.","parameterDecorators":[],"returnDecorators":[{"name":"roundId","description":"is the round ID for which data was retrieved.","recommendedTypes":[],"solidityType":"uint80"},{"name":"answer","description":"is the answer for the given round.","recommendedTypes":[],"solidityType":"int256"},{"name":"startedAt","description":"is the timestamp when the round was started. This is 0 if the round hasn't been started yet.","recommendedTypes":[],"solidityType":"uint256"},{"name":"updatedAt","description":"is the timestamp when the round last was updated (i.e. answer was last computed).","recommendedTypes":[],"solidityType":"uint256"},{"name":"answeredInRound","description":"is the round ID of the round in which the answer was computed. answeredInRound may be smaller than roundId when the round timed out. answeredInRound is equal to roundId when the round didn't time out and was completed regularly.","recommendedTypes":[],"solidityType":"uint80"}],"emittableEvents":[],"readOnly":true},{"signature":"latestTimestamp()","name":"latestTimestamp","description":"get the most recent updated at timestamp. #[deprecated] Use latestRoundData instead. This does not error if no answer has been reached, it will simply return 0. Either wait to point to an already answered Aggregator or use the recommended latestRoundData instead which includes better verification information.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"linkToken()","name":"linkToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"maxSubmissionCount()","name":"maxSubmissionCount","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"minSubmissionCount()","name":"minSubmissionCount","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"oracleCount()","name":"oracleCount","description":"returns the number of oracles.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"paymentAmount()","name":"paymentAmount","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":true},{"signature":"restartDelay()","name":"restartDelay","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"timeout()","name":"timeout","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Allows an owner to begin transferring ownership to a new address, pending.","parameterDecorators":[{"name":"_to","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateAvailableFunds()","name":"updateAvailableFunds","description":"recalculate the amount of LINK available for payouts.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"validator()","name":"validator","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"version()","name":"version","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "oracles",
+    "locking"
+  ],
+  "name": "FluxAggregator",
+  "description": "The Prepaid Aggregator contract. Handles aggregating data pushed in from off-chain, and unlocks payment for oracles as they report. Oracles' submissions are gathered in rounds, with each round aggregating the submissions for each oracle into a single answer. The latest aggregated answer is exposed as well as historical answers and their updated at timestamp.",
+  "eventDecorators": [
+    {
+      "signature": "AnswerUpdated(int256,uint256,uint256)",
+      "name": "AnswerUpdated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "access",
+          "description": "TRUE if the Watcher was given permissions, FALSE if permissions were removed.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "domain",
+          "description": "the remote domain of the Home contract for the Replica.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "watcher",
+          "description": "the address of the Watcher.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AvailableFundsUpdated(uint256)",
+      "name": "AvailableFundsUpdated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "NewRound(uint256,address,uint256)",
+      "name": "NewRound",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "access",
+          "description": "TRUE if the Watcher was given permissions, FALSE if permissions were removed.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "domain",
+          "description": "the remote domain of the Home contract for the Replica.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "watcher",
+          "description": "the address of the Watcher.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OracleAdminUpdateRequested(address,address,address)",
+      "name": "OracleAdminUpdateRequested",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "access",
+          "description": "TRUE if the Watcher was given permissions, FALSE if permissions were removed.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "domain",
+          "description": "the remote domain of the Home contract for the Replica.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "watcher",
+          "description": "the address of the Watcher.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OracleAdminUpdated(address,address)",
+      "name": "OracleAdminUpdated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "oracle",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OraclePermissionsUpdated(address,bool)",
+      "name": "OraclePermissionsUpdated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "oracle",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "whitelisted",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferRequested(address,address)",
+      "name": "OwnershipTransferRequested",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RequesterPermissionsSet(address,bool,uint32)",
+      "name": "RequesterPermissionsSet",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "access",
+          "description": "TRUE if the Watcher was given permissions, FALSE if permissions were removed.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "domain",
+          "description": "the remote domain of the Home contract for the Replica.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "watcher",
+          "description": "the address of the Watcher.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RoundDetailsUpdated(uint128,uint32,uint32,uint32,uint32)",
+      "name": "RoundDetailsUpdated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "paymentAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "minSubmissionCount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "maxSubmissionCount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "restartDelay",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "timeout",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SubmissionReceived(int256,uint32,address)",
+      "name": "SubmissionReceived",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "access",
+          "description": "TRUE if the Watcher was given permissions, FALSE if permissions were removed.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "domain",
+          "description": "the remote domain of the Home contract for the Replica.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "watcher",
+          "description": "the address of the Watcher.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ValidatorUpdated(address,address)",
+      "name": "ValidatorUpdated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "previous",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "current",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "acceptOwnership()",
+      "name": "acceptOwnership",
+      "description": "Allows an ownership transfer to be completed by the recipient.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "allocatedFunds()",
+      "name": "allocatedFunds",
+      "description": "the amount of payment yet to be withdrawn by oracles.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "availableFunds()",
+      "name": "availableFunds",
+      "description": "the amount of future funding available to oracles.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "decimals()",
+      "name": "decimals",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "description()",
+      "name": "description",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAnswer(uint256)",
+      "name": "getAnswer",
+      "description": "get past rounds answers. #[deprecated] Use getRoundData instead. This does not error if no answer has been reached, it will simply return 0. Either wait to point to an already answered Aggregator or use the recommended getRoundData instead which includes better verification information.",
+      "parameterDecorators": [
+        {
+          "name": "_roundId",
+          "description": "the round number to retrieve the answer for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getOracles()",
+      "name": "getOracles",
+      "description": "returns an array of addresses containing the oracles on contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoundData(uint80)",
+      "name": "getRoundData",
+      "description": "get data about a round. Consumers are encouraged to check that they're receiving fresh data by inspecting the updatedAt and answeredInRound return values. Note that for in-progress rounds (i.e. rounds that haven't yet received maxSubmissions) answer and updatedAt may change between queries.",
+      "parameterDecorators": [
+        {
+          "name": "_roundId",
+          "description": "the round ID to retrieve the round data for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "roundId",
+          "description": "is the round ID for which data was retrieved.",
+          "recommendedTypes": [],
+          "solidityType": "uint80"
+        },
+        {
+          "name": "answer",
+          "description": "is the answer for the given round.",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "startedAt",
+          "description": "is the timestamp when the round was started. This is 0 if the round hasn't been started yet.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "updatedAt",
+          "description": "is the timestamp when the round last was updated (i.e. answer was last computed).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "answeredInRound",
+          "description": "is the round ID of the round in which the answer was computed. answeredInRound may be smaller than roundId when the round timed out. answeredInRound is equal to roundId when the round didn't time out and was completed regularly.",
+          "recommendedTypes": [],
+          "solidityType": "uint80"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTimestamp(uint256)",
+      "name": "getTimestamp",
+      "description": "get timestamp when an answer was last updated. #[deprecated] Use getRoundData instead. This does not error if no answer has been reached, it will simply return 0. Either wait to point to an already answered Aggregator or use the recommended getRoundData instead which includes better verification information.",
+      "parameterDecorators": [
+        {
+          "name": "_roundId",
+          "description": "the round number to retrieve the updated timestamp for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "latestAnswer()",
+      "name": "latestAnswer",
+      "description": "get the most recently reported answer. #[deprecated] Use latestRoundData instead. This does not error if no answer has been reached, it will simply return 0. Either wait to point to an already answered Aggregator or use the recommended latestRoundData instead which includes better verification information.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "latestRound()",
+      "name": "latestRound",
+      "description": "get the ID of the last updated round. #[deprecated] Use latestRoundData instead. This does not error if no answer has been reached, it will simply return 0. Either wait to point to an already answered Aggregator or use the recommended latestRoundData instead which includes better verification information.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "latestRoundData()",
+      "name": "latestRoundData",
+      "description": "get data about the latest round. Consumers are encouraged to check that they're receiving fresh data by inspecting the updatedAt and answeredInRound return values. Consumers are encouraged to use this more fully featured method over the \"legacy\" latestRound/ latestAnswer/latestTimestamp functions. Consumers are encouraged to check that they're receiving fresh data by inspecting the updatedAt and answeredInRound return values. Note that for in-progress rounds (i.e. rounds that haven't yet received maxSubmissions) answer and updatedAt may change between queries.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "roundId",
+          "description": "is the round ID for which data was retrieved.",
+          "recommendedTypes": [],
+          "solidityType": "uint80"
+        },
+        {
+          "name": "answer",
+          "description": "is the answer for the given round.",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "startedAt",
+          "description": "is the timestamp when the round was started. This is 0 if the round hasn't been started yet.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "updatedAt",
+          "description": "is the timestamp when the round last was updated (i.e. answer was last computed).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "answeredInRound",
+          "description": "is the round ID of the round in which the answer was computed. answeredInRound may be smaller than roundId when the round timed out. answeredInRound is equal to roundId when the round didn't time out and was completed regularly.",
+          "recommendedTypes": [],
+          "solidityType": "uint80"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "latestTimestamp()",
+      "name": "latestTimestamp",
+      "description": "get the most recent updated at timestamp. #[deprecated] Use latestRoundData instead. This does not error if no answer has been reached, it will simply return 0. Either wait to point to an already answered Aggregator or use the recommended latestRoundData instead which includes better verification information.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "linkToken()",
+      "name": "linkToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxSubmissionCount()",
+      "name": "maxSubmissionCount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minSubmissionCount()",
+      "name": "minSubmissionCount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "oracleCount()",
+      "name": "oracleCount",
+      "description": "returns the number of oracles.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "paymentAmount()",
+      "name": "paymentAmount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "restartDelay()",
+      "name": "restartDelay",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "timeout()",
+      "name": "timeout",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Allows an owner to begin transferring ownership to a new address, pending.",
+      "parameterDecorators": [
+        {
+          "name": "_to",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateAvailableFunds()",
+      "name": "updateAvailableFunds",
+      "description": "recalculate the amount of LINK available for payouts.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "validator()",
+      "name": "validator",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "version()",
+      "name": "version",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

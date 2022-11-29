@@ -1,1 +1,317 @@
-{"schema":"../schema.json","tags":["swaps","liquidity"],"name":"ParaSwapLiquiditySwapAdapter","description":"ParaSwapLiquiditySwapAdapter. Adapter to swap liquidity using ParaSwap.","eventDecorators":[{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Events ///.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Swapped(address,address,uint256,uint256)","name":"Swapped","description":"Events ///.","parameterDecorators":[{"name":"fromAsset","description":"","recommendedTypes":[],"indexed":true},{"name":"toAsset","description":"","recommendedTypes":[],"indexed":true},{"name":"fromAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"receivedAmount","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"ADDRESSES_PROVIDER()","name":"ADDRESSES_PROVIDER","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"AUGUSTUS_REGISTRY()","name":"AUGUSTUS_REGISTRY","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"LENDING_POOL()","name":"LENDING_POOL","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"MAX_SLIPPAGE_PERCENT()","name":"MAX_SLIPPAGE_PERCENT","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"ORACLE()","name":"ORACLE","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"executeOperation(address[],uint256[],uint256[],address,bytes)","name":"executeOperation","description":"Swaps the received reserve amount from the flash loan into the asset specified in the params. The received funds from the swap are then deposited into the protocol on behalf of the user. The user should give this contract allowance to pull the ATokens in order to withdraw the underlying asset and repay the flash loan.","parameterDecorators":[{"name":"assets","description":"Address of the underlying asset to be swapped from.","recommendedTypes":[]},{"name":"amounts","description":"Amount of the flash loan i.e. maximum amount to swap.","recommendedTypes":[]},{"name":"premiums","description":"Fee of the flash loan.","recommendedTypes":[]},{"name":"initiator","description":"Account that initiated the flash loan.","recommendedTypes":[]},{"name":"params","description":"Additional variadic field to include extra params. Expected parameters: address assetToSwapTo Address of the underlying asset to be swapped to and deposited uint256 minAmountToReceive Min amount to be received from the swap uint256 swapAllBalanceOffset Set to offset of fromAmount in Augustus calldata if wanting to swap all balance, otherwise 0 bytes swapCalldata Calldata for ParaSwap's AugustusSwapper contract address augustus Address of ParaSwap's AugustusSwapper contract PermitSignature permitParams Struct containing the permit signatures, set to all zeroes if not used.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"rescueTokens(address)","name":"rescueTokens","description":"Emergency rescue for token stucked on this contract, as failsafe mechanism - Funds should never remain in this contract more time than during transactions - Only callable by the owner.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"swapAndDeposit(address,address,uint256,uint256,uint256,bytes,address,tuple(uint256,uint256,uint8,bytes32,bytes32))","name":"swapAndDeposit","description":"Swaps an amount of an asset to another and deposits the new asset amount on behalf of the user without using a flash loan. This method can be used when the temporary transfer of the collateral asset to this contract does not affect the user position. The user should give this contract allowance to pull the ATokens in order to withdraw the underlying asset and perform the swap.","parameterDecorators":[{"name":"assetToSwapFrom","description":"Address of the underlying asset to be swapped from.","recommendedTypes":[]},{"name":"assetToSwapTo","description":"Address of the underlying asset to be swapped to and deposited.","recommendedTypes":[]},{"name":"amountToSwap","description":"Amount to be swapped, or maximum amount when swapping all balance.","recommendedTypes":[]},{"name":"minAmountToReceive","description":"Minimum amount to be received from the swap.","recommendedTypes":[]},{"name":"swapAllBalanceOffset","description":"Set to offset of fromAmount in Augustus calldata if wanting to swap all balance, otherwise 0.","recommendedTypes":[]},{"name":"swapCalldata","description":"Calldata for ParaSwap's AugustusSwapper contract.","recommendedTypes":[]},{"name":"augustus","description":"Address of ParaSwap's AugustusSwapper contract.","recommendedTypes":[]},{"name":"permitParams","description":"Struct containing the permit signatures, set to all zeroes if not used.","recommendedTypes":[],"parameters":[{"name":"amount","description":"","type":"uint256"},{"name":"deadline","description":"","type":"uint256"},{"name":"v","description":"","type":"uint8"},{"name":"r","description":"","type":"bytes32"},{"name":"s","description":"","type":"bytes32"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "swaps",
+    "liquidity"
+  ],
+  "name": "ParaSwapLiquiditySwapAdapter",
+  "description": "ParaSwapLiquiditySwapAdapter. Adapter to swap liquidity using ParaSwap.",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Events ///.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Swapped(address,address,uint256,uint256)",
+      "name": "Swapped",
+      "description": "Events ///.",
+      "parameterDecorators": [
+        {
+          "name": "fromAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "toAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "fromAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "receivedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "ADDRESSES_PROVIDER()",
+      "name": "ADDRESSES_PROVIDER",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "AUGUSTUS_REGISTRY()",
+      "name": "AUGUSTUS_REGISTRY",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "LENDING_POOL()",
+      "name": "LENDING_POOL",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MAX_SLIPPAGE_PERCENT()",
+      "name": "MAX_SLIPPAGE_PERCENT",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ORACLE()",
+      "name": "ORACLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "executeOperation(address[],uint256[],uint256[],address,bytes)",
+      "name": "executeOperation",
+      "description": "Swaps the received reserve amount from the flash loan into the asset specified in the params. The received funds from the swap are then deposited into the protocol on behalf of the user. The user should give this contract allowance to pull the ATokens in order to withdraw the underlying asset and repay the flash loan.",
+      "parameterDecorators": [
+        {
+          "name": "assets",
+          "description": "Address of the underlying asset to be swapped from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amounts",
+          "description": "Amount of the flash loan i.e. maximum amount to swap.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "premiums",
+          "description": "Fee of the flash loan.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "initiator",
+          "description": "Account that initiated the flash loan.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "params",
+          "description": "Additional variadic field to include extra params. Expected parameters: address assetToSwapTo Address of the underlying asset to be swapped to and deposited uint256 minAmountToReceive Min amount to be received from the swap uint256 swapAllBalanceOffset Set to offset of fromAmount in Augustus calldata if wanting to swap all balance, otherwise 0 bytes swapCalldata Calldata for ParaSwap's AugustusSwapper contract address augustus Address of ParaSwap's AugustusSwapper contract PermitSignature permitParams Struct containing the permit signatures, set to all zeroes if not used.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rescueTokens(address)",
+      "name": "rescueTokens",
+      "description": "Emergency rescue for token stucked on this contract, as failsafe mechanism - Funds should never remain in this contract more time than during transactions - Only callable by the owner.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapAndDeposit(address,address,uint256,uint256,uint256,bytes,address,tuple(uint256,uint256,uint8,bytes32,bytes32))",
+      "name": "swapAndDeposit",
+      "description": "Swaps an amount of an asset to another and deposits the new asset amount on behalf of the user without using a flash loan. This method can be used when the temporary transfer of the collateral asset to this contract does not affect the user position. The user should give this contract allowance to pull the ATokens in order to withdraw the underlying asset and perform the swap.",
+      "parameterDecorators": [
+        {
+          "name": "assetToSwapFrom",
+          "description": "Address of the underlying asset to be swapped from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "assetToSwapTo",
+          "description": "Address of the underlying asset to be swapped to and deposited.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountToSwap",
+          "description": "Amount to be swapped, or maximum amount when swapping all balance.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minAmountToReceive",
+          "description": "Minimum amount to be received from the swap.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "swapAllBalanceOffset",
+          "description": "Set to offset of fromAmount in Augustus calldata if wanting to swap all balance, otherwise 0.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "swapCalldata",
+          "description": "Calldata for ParaSwap's AugustusSwapper contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "augustus",
+          "description": "Address of ParaSwap's AugustusSwapper contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "permitParams",
+          "description": "Struct containing the permit signatures, set to all zeroes if not used.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "amount",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "deadline",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "v",
+              "description": "",
+              "type": "uint8"
+            },
+            {
+              "name": "r",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "s",
+              "description": "",
+              "type": "bytes32"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

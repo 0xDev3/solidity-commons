@@ -1,1 +1,900 @@
-{"schema":"../schema.json","tags":["tokens","swaps","liquidity","vaults","uniswap","compound"],"name":"ValueLiquidProfitCollectorV2","description":"This contract will collect profit of ValueLiquid (sent to BFactory), convert to VALUE (if needed) and forward to GovVault for auto-compounding. This new version converts tokens with lack of liquidity (pair with VALUE) (ie. DAI, BSD) to USDC or WETH on Uniswap - then swap to VALUE. Some tokens will need a multi-path route to swap to VALUE.","eventDecorators":[{"signature":"CollectInsurance(uint256)","name":"CollectInsurance","description":"","parameterDecorators":[{"name":"valueAmount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"CollectProfit(address,uint256,uint256)","name":"CollectProfit","description":"","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"valueAmount","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"_bpoolExchangeRate(address,address,address,uint256)","name":"_bpoolExchangeRate","description":"","parameterDecorators":[{"name":"_pool","description":"","recommendedTypes":[]},{"name":"_input","description":"","recommendedTypes":[]},{"name":"_output","description":"","recommendedTypes":[]},{"name":"_inputAmount","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"_outputAmount","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"_uniswapExchangeRate(uint256,address[])","name":"_uniswapExchangeRate","description":"","parameterDecorators":[{"name":"_tokenAmount","description":"","recommendedTypes":[]},{"name":"_path","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"addSupportedToken(address)","name":"addSupportedToken","description":"","parameterDecorators":[{"name":"_token","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"bFactory()","name":"bFactory","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"chi()","name":"chi","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"collectProfit(address,uint8)","name":"collectProfit","description":"","parameterDecorators":[{"name":"_token","description":"","recommendedTypes":[]},{"name":"flag","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"_profit","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"dai()","name":"dai","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getAvailableTokens()","name":"getAvailableTokens","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_tokens","description":"","recommendedTypes":[],"solidityType":"address[]"},{"name":"_amounts","description":"","recommendedTypes":[],"solidityType":"uint256[]"},{"name":"_values","description":"","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getExchangeRateToValue(address,uint256)","name":"getExchangeRateToValue","description":"","parameterDecorators":[{"name":"_inputToken","description":"","recommendedTypes":[]},{"name":"_tokenAmount","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"_valueAmount","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getOutputTokenToConvert(address)","name":"getOutputTokenToConvert","description":"","parameterDecorators":[{"name":"_inputToken","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"_outputToken","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"govVault()","name":"govVault","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"governance()","name":"governance","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"governanceRecoverUnsupported(address,uint256,address)","name":"governanceRecoverUnsupported","description":"This function allows governance to take unsupported tokens out of the contract. This is in an effort to make someone whole, should they seriously mess up. There is no guarantee governance will vote to return these. It also allows for removal of airdropped tokens.","parameterDecorators":[{"name":"_token","description":"","recommendedTypes":[]},{"name":"amount","description":"","recommendedTypes":[]},{"name":"to","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"insuranceFee()","name":"insuranceFee","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"insuranceFund()","name":"insuranceFund","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"removeSupportedToken(uint256)","name":"removeSupportedToken","description":"","parameterDecorators":[{"name":"_index","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setBFactory(address)","name":"setBFactory","description":"","parameterDecorators":[{"name":"_bFactory","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setBalancerPools(address,address)","name":"setBalancerPools","description":"","parameterDecorators":[{"name":"_input","description":"","recommendedTypes":[]},{"name":"_pool","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setBalancerPoolsToUsdc(address,address)","name":"setBalancerPoolsToUsdc","description":"","parameterDecorators":[{"name":"_input","description":"","recommendedTypes":[]},{"name":"_pool","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setBalancerPoolsToWeth(address,address)","name":"setBalancerPoolsToWeth","description":"","parameterDecorators":[{"name":"_input","description":"","recommendedTypes":[]},{"name":"_pool","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setGovVault(address)","name":"setGovVault","description":"","parameterDecorators":[{"name":"_govVault","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setGovernance(address)","name":"setGovernance","description":"","parameterDecorators":[{"name":"_governance","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setInsuranceFee(uint256)","name":"setInsuranceFee","description":"","parameterDecorators":[{"name":"_insuranceFee","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setInsuranceFund(address)","name":"setInsuranceFund","description":"","parameterDecorators":[{"name":"_insuranceFund","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setSupportedToken(uint256,address)","name":"setSupportedToken","description":"","parameterDecorators":[{"name":"_index","description":"","recommendedTypes":[]},{"name":"_token","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setSupportedTokenLength(uint256)","name":"setSupportedTokenLength","description":"","parameterDecorators":[{"name":"_length","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setUnirouter(address)","name":"setUnirouter","description":"","parameterDecorators":[{"name":"_unirouter","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setUnirouterPath(address,address[])","name":"setUnirouterPath","description":"","parameterDecorators":[{"name":"_input","description":"","recommendedTypes":[]},{"name":"_path","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setUniswapPathsToUsdc(address,address[])","name":"setUniswapPathsToUsdc","description":"","parameterDecorators":[{"name":"_input","description":"","recommendedTypes":[]},{"name":"_path","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setUniswapPathsToWeth(address,address[])","name":"setUniswapPathsToWeth","description":"","parameterDecorators":[{"name":"_input","description":"","recommendedTypes":[]},{"name":"_path","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"supportedTokenLength()","name":"supportedTokenLength","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"supportedTokens(uint256)","name":"supportedTokens","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"unirouter()","name":"unirouter","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"uniswapPaths(address,uint256)","name":"uniswapPaths","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"uniswapPathsToUsdc(address,uint256)","name":"uniswapPathsToUsdc","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"uniswapPathsToWeth(address,uint256)","name":"uniswapPathsToWeth","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"usdc()","name":"usdc","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"valueToken()","name":"valueToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"vliquidPools(address)","name":"vliquidPools","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"vliquidPoolsToUsdc(address)","name":"vliquidPoolsToUsdc","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"vliquidPoolsToWeth(address)","name":"vliquidPoolsToWeth","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"wbtc()","name":"wbtc","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"weth()","name":"weth","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "swaps",
+    "liquidity",
+    "vaults",
+    "uniswap",
+    "compound"
+  ],
+  "name": "ValueLiquidProfitCollectorV2",
+  "description": "This contract will collect profit of ValueLiquid (sent to BFactory), convert to VALUE (if needed) and forward to GovVault for auto-compounding. This new version converts tokens with lack of liquidity (pair with VALUE) (ie. DAI, BSD) to USDC or WETH on Uniswap - then swap to VALUE. Some tokens will need a multi-path route to swap to VALUE.",
+  "eventDecorators": [
+    {
+      "signature": "CollectInsurance(uint256)",
+      "name": "CollectInsurance",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "valueAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CollectProfit(address,uint256,uint256)",
+      "name": "CollectProfit",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "valueAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "_bpoolExchangeRate(address,address,address,uint256)",
+      "name": "_bpoolExchangeRate",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_pool",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_input",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_output",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_inputAmount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_outputAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "_uniswapExchangeRate(uint256,address[])",
+      "name": "_uniswapExchangeRate",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_path",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addSupportedToken(address)",
+      "name": "addSupportedToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "bFactory()",
+      "name": "bFactory",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "chi()",
+      "name": "chi",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "collectProfit(address,uint8)",
+      "name": "collectProfit",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "flag",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_profit",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "dai()",
+      "name": "dai",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAvailableTokens()",
+      "name": "getAvailableTokens",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_tokens",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "_amounts",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_values",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getExchangeRateToValue(address,uint256)",
+      "name": "getExchangeRateToValue",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_inputToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenAmount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_valueAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getOutputTokenToConvert(address)",
+      "name": "getOutputTokenToConvert",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_inputToken",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_outputToken",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "govVault()",
+      "name": "govVault",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "governance()",
+      "name": "governance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "governanceRecoverUnsupported(address,uint256,address)",
+      "name": "governanceRecoverUnsupported",
+      "description": "This function allows governance to take unsupported tokens out of the contract. This is in an effort to make someone whole, should they seriously mess up. There is no guarantee governance will vote to return these. It also allows for removal of airdropped tokens.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "insuranceFee()",
+      "name": "insuranceFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "insuranceFund()",
+      "name": "insuranceFund",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeSupportedToken(uint256)",
+      "name": "removeSupportedToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setBFactory(address)",
+      "name": "setBFactory",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_bFactory",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setBalancerPools(address,address)",
+      "name": "setBalancerPools",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_input",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_pool",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setBalancerPoolsToUsdc(address,address)",
+      "name": "setBalancerPoolsToUsdc",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_input",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_pool",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setBalancerPoolsToWeth(address,address)",
+      "name": "setBalancerPoolsToWeth",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_input",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_pool",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setGovVault(address)",
+      "name": "setGovVault",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_govVault",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setGovernance(address)",
+      "name": "setGovernance",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_governance",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setInsuranceFee(uint256)",
+      "name": "setInsuranceFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_insuranceFee",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setInsuranceFund(address)",
+      "name": "setInsuranceFund",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_insuranceFund",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setSupportedToken(uint256,address)",
+      "name": "setSupportedToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_index",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_token",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setSupportedTokenLength(uint256)",
+      "name": "setSupportedTokenLength",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_length",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setUnirouter(address)",
+      "name": "setUnirouter",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_unirouter",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setUnirouterPath(address,address[])",
+      "name": "setUnirouterPath",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_input",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_path",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setUniswapPathsToUsdc(address,address[])",
+      "name": "setUniswapPathsToUsdc",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_input",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_path",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setUniswapPathsToWeth(address,address[])",
+      "name": "setUniswapPathsToWeth",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_input",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_path",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "supportedTokenLength()",
+      "name": "supportedTokenLength",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "supportedTokens(uint256)",
+      "name": "supportedTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unirouter()",
+      "name": "unirouter",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "uniswapPaths(address,uint256)",
+      "name": "uniswapPaths",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "uniswapPathsToUsdc(address,uint256)",
+      "name": "uniswapPathsToUsdc",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "uniswapPathsToWeth(address,uint256)",
+      "name": "uniswapPathsToWeth",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "usdc()",
+      "name": "usdc",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "valueToken()",
+      "name": "valueToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "vliquidPools(address)",
+      "name": "vliquidPools",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "vliquidPoolsToUsdc(address)",
+      "name": "vliquidPoolsToUsdc",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "vliquidPoolsToWeth(address)",
+      "name": "vliquidPoolsToWeth",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "wbtc()",
+      "name": "wbtc",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "weth()",
+      "name": "weth",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

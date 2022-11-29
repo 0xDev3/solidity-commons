@@ -1,1 +1,403 @@
-{"schema":"../schema.json","tags":[],"name":"MetaHomepage","description":"MetaHomepage is same as the old one, but ported to solidity v0.8.","eventDecorators":[{"signature":"Buy(uint256,address,uint256,uint256,uint256,uint256)","name":"Buy","description":"Buy is emitted when an land unit is reserved.","parameterDecorators":[{"name":"idx","description":"","recommendedTypes":[],"indexed":true},{"name":"owner","description":"","recommendedTypes":[],"indexed":false},{"name":"x","description":"","recommendedTypes":[],"indexed":false},{"name":"y","description":"","recommendedTypes":[],"indexed":false},{"name":"width","description":"","recommendedTypes":[],"indexed":false},{"name":"height","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Publish(uint256,string,string,string,bool)","name":"Publish","description":"Publish is emitted whenever the contents of an land is changed.","parameterDecorators":[{"name":"idx","description":"","recommendedTypes":[],"indexed":true},{"name":"link","description":"","recommendedTypes":[],"indexed":false},{"name":"image","description":"","recommendedTypes":[],"indexed":false},{"name":"title","description":"","recommendedTypes":[],"indexed":false},{"name":"NSFW","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SetLandOwner(uint256,address,address)","name":"SetLandOwner","description":"SetLandOwner is emitted whenever the ownership of an land is transfered.","parameterDecorators":[{"name":"idx","description":"","recommendedTypes":[],"indexed":true},{"name":"from","description":"","recommendedTypes":[],"indexed":false},{"name":"to","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"buy(uint256,uint256,uint256,uint256)","name":"buy","description":"Land must be purchased in 10x10 pixel blocks.","parameterDecorators":[{"name":"_x","description":"","recommendedTypes":[]},{"name":"_y","description":"","recommendedTypes":[]},{"name":"_width","description":"","recommendedTypes":[]},{"name":"_height","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"idx","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"forceNSFW(uint256,bool)","name":"forceNSFW","description":"forceNSFW allows the owner to override the NSFW status for a specific land unit.","parameterDecorators":[{"name":"_idx","description":"","recommendedTypes":[]},{"name":"_NSFW","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getLandsLength()","name":"getLandsLength","description":"getLandLength tells you how many Land there are.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"grid(uint256,uint256)","name":"grid","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"lands(uint256)","name":"lands","description":"lands are stored in an array, the id of an land is its index in this array.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"owner","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"x","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"y","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"width","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"height","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"link","description":"","recommendedTypes":[],"solidityType":"string"},{"name":"image","description":"","recommendedTypes":[],"solidityType":"string"},{"name":"title","description":"","recommendedTypes":[],"solidityType":"string"},{"name":"NSFW","description":"","recommendedTypes":[],"solidityType":"bool"},{"name":"forceNSFW","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"pixelsPerCell()","name":"pixelsPerCell","description":"Each grid cell represents 100 pixels (10x10).","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"publish(uint256,string,string,string,bool)","name":"publish","description":"Publish allows for setting the link, image, and NSFW status for the land unit that is identified by the idx which was returned during the buy step. The link and image must be full web3-recognizeable URLs, such as: - bzz://a5c10851ef054c268a2438f10a21f6efe3dc3dcdcc2ea0e6a1a7a38bf8c91e23 - bzz://mydomain.eth/land.png - https://cdn.mydomain.com/land.png Images should be valid PNG.","parameterDecorators":[{"name":"_idx","description":"","recommendedTypes":[]},{"name":"_link","description":"","recommendedTypes":[]},{"name":"_image","description":"","recommendedTypes":[]},{"name":"_title","description":"","recommendedTypes":[]},{"name":"_NSFW","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setLandOwner(uint256,address)","name":"setLandOwner","description":"setLandOwner changes the owner of an land unit.","parameterDecorators":[{"name":"_idx","description":"","recommendedTypes":[]},{"name":"_newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"weiPixelPrice()","name":"weiPixelPrice","description":"Price is 1 Meta divided by 1,000,000 pixels.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"weiPixelPriceOwner()","name":"weiPixelPriceOwner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"withdraw()","name":"withdraw","description":"withdraw allows the owner to transfer out the balance of the contract.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "MetaHomepage",
+  "description": "MetaHomepage is same as the old one, but ported to solidity v0.8.",
+  "eventDecorators": [
+    {
+      "signature": "Buy(uint256,address,uint256,uint256,uint256,uint256)",
+      "name": "Buy",
+      "description": "Buy is emitted when an land unit is reserved.",
+      "parameterDecorators": [
+        {
+          "name": "idx",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "x",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "y",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "width",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "height",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Publish(uint256,string,string,string,bool)",
+      "name": "Publish",
+      "description": "Publish is emitted whenever the contents of an land is changed.",
+      "parameterDecorators": [
+        {
+          "name": "idx",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "link",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "image",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "title",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "NSFW",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SetLandOwner(uint256,address,address)",
+      "name": "SetLandOwner",
+      "description": "SetLandOwner is emitted whenever the ownership of an land is transfered.",
+      "parameterDecorators": [
+        {
+          "name": "idx",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "buy(uint256,uint256,uint256,uint256)",
+      "name": "buy",
+      "description": "Land must be purchased in 10x10 pixel blocks.",
+      "parameterDecorators": [
+        {
+          "name": "_x",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_y",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_width",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_height",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "idx",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "forceNSFW(uint256,bool)",
+      "name": "forceNSFW",
+      "description": "forceNSFW allows the owner to override the NSFW status for a specific land unit.",
+      "parameterDecorators": [
+        {
+          "name": "_idx",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_NSFW",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getLandsLength()",
+      "name": "getLandsLength",
+      "description": "getLandLength tells you how many Land there are.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "grid(uint256,uint256)",
+      "name": "grid",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lands(uint256)",
+      "name": "lands",
+      "description": "lands are stored in an array, the id of an land is its index in this array.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "x",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "y",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "width",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "height",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "link",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        },
+        {
+          "name": "image",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        },
+        {
+          "name": "title",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        },
+        {
+          "name": "NSFW",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "forceNSFW",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pixelsPerCell()",
+      "name": "pixelsPerCell",
+      "description": "Each grid cell represents 100 pixels (10x10).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "publish(uint256,string,string,string,bool)",
+      "name": "publish",
+      "description": "Publish allows for setting the link, image, and NSFW status for the land unit that is identified by the idx which was returned during the buy step. The link and image must be full web3-recognizeable URLs, such as: - bzz://a5c10851ef054c268a2438f10a21f6efe3dc3dcdcc2ea0e6a1a7a38bf8c91e23 - bzz://mydomain.eth/land.png - https://cdn.mydomain.com/land.png Images should be valid PNG.",
+      "parameterDecorators": [
+        {
+          "name": "_idx",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_link",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_image",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_title",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_NSFW",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setLandOwner(uint256,address)",
+      "name": "setLandOwner",
+      "description": "setLandOwner changes the owner of an land unit.",
+      "parameterDecorators": [
+        {
+          "name": "_idx",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "weiPixelPrice()",
+      "name": "weiPixelPrice",
+      "description": "Price is 1 Meta divided by 1,000,000 pixels.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "weiPixelPriceOwner()",
+      "name": "weiPixelPriceOwner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw()",
+      "name": "withdraw",
+      "description": "withdraw allows the owner to transfer out the balance of the contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

@@ -1,1 +1,414 @@
-{"schema":"../schema.json","tags":["lending","aave"],"name":"AaveAllocator","description":"Contract deploys reserves from treasury into the Aave lending pool, earning interest and $stkAAVE for the treasury.","eventDecorators":[{"signature":"OwnershipPulled(address,address)","name":"OwnershipPulled","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnershipPushed(address,address)","name":"OwnershipPushed","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"aTokens(address)","name":"aTokens","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"addToken(address,address,uint256)","name":"addToken","description":"adds asset and corresponding aToken to mapping.","parameterDecorators":[{"name":"token","description":"address.","recommendedTypes":[]},{"name":"aToken","description":"address.","recommendedTypes":[]},{"name":"max","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"allocated(address)","name":"allocated","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"changeMaxAllocationBlock(address)","name":"changeMaxAllocationBlock","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"changeMaxAllocationTimelock()","name":"changeMaxAllocationTimelock","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"deposit(address,uint256)","name":"deposit","description":"deposits asset from treasury into lending pool and returns aToken.","parameterDecorators":[{"name":"asset","description":"address.","recommendedTypes":[]},{"name":"amount","description":"uint.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"exceedsMaxAllocation(address,uint256)","name":"exceedsMaxAllocation","description":"checks to ensure deposit does not exceed max allocation for asset.","parameterDecorators":[{"name":"asset","description":"address.","recommendedTypes":[]},{"name":"amount","description":"uint.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"harvest()","name":"harvest","description":"claims accrued stkAave rewards.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"maxAllocation(address)","name":"maxAllocation","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"newMaxAllocation(address)","name":"newMaxAllocation","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"policy()","name":"policy","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"pullManagement()","name":"pullManagement","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"pushManagement(address)","name":"pushManagement","description":"","parameterDecorators":[{"name":"newOwner_","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"queueNewMaxAllocation(address,uint256)","name":"queueNewMaxAllocation","description":"starts timelock to change max allocation for asset.","parameterDecorators":[{"name":"asset","description":"address.","recommendedTypes":[]},{"name":"newMax","description":"uint.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"renounceManagement()","name":"renounceManagement","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"rewardsPending()","name":"rewardsPending","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setForProduction(address,uint256)","name":"setForProduction","description":"initialize for production.","parameterDecorators":[{"name":"_treasury","description":"address.","recommendedTypes":[]},{"name":"_timelock","description":"uint.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setNewMaxAllocation(address)","name":"setNewMaxAllocation","description":"changes max allocation for asset when timelock elapsed.","parameterDecorators":[{"name":"asset","description":"address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"totalAllocated()","name":"totalAllocated","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"withdraw(address,uint256)","name":"withdraw","description":"withdraws aToken from lending pool and asset to treasury.","parameterDecorators":[{"name":"asset","description":"address.","recommendedTypes":[]},{"name":"amount","description":"uint.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "lending",
+    "aave"
+  ],
+  "name": "AaveAllocator",
+  "description": "Contract deploys reserves from treasury into the Aave lending pool, earning interest and $stkAAVE for the treasury.",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipPulled(address,address)",
+      "name": "OwnershipPulled",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipPushed(address,address)",
+      "name": "OwnershipPushed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "aTokens(address)",
+      "name": "aTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addToken(address,address,uint256)",
+      "name": "addToken",
+      "description": "adds asset and corresponding aToken to mapping.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "aToken",
+          "description": "address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "max",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "allocated(address)",
+      "name": "allocated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "changeMaxAllocationBlock(address)",
+      "name": "changeMaxAllocationBlock",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "changeMaxAllocationTimelock()",
+      "name": "changeMaxAllocationTimelock",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deposit(address,uint256)",
+      "name": "deposit",
+      "description": "deposits asset from treasury into lending pool and returns aToken.",
+      "parameterDecorators": [
+        {
+          "name": "asset",
+          "description": "address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "uint.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "exceedsMaxAllocation(address,uint256)",
+      "name": "exceedsMaxAllocation",
+      "description": "checks to ensure deposit does not exceed max allocation for asset.",
+      "parameterDecorators": [
+        {
+          "name": "asset",
+          "description": "address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "uint.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "harvest()",
+      "name": "harvest",
+      "description": "claims accrued stkAave rewards.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "maxAllocation(address)",
+      "name": "maxAllocation",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "newMaxAllocation(address)",
+      "name": "newMaxAllocation",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "policy()",
+      "name": "policy",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pullManagement()",
+      "name": "pullManagement",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "pushManagement(address)",
+      "name": "pushManagement",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "newOwner_",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "queueNewMaxAllocation(address,uint256)",
+      "name": "queueNewMaxAllocation",
+      "description": "starts timelock to change max allocation for asset.",
+      "parameterDecorators": [
+        {
+          "name": "asset",
+          "description": "address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newMax",
+          "description": "uint.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceManagement()",
+      "name": "renounceManagement",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rewardsPending()",
+      "name": "rewardsPending",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setForProduction(address,uint256)",
+      "name": "setForProduction",
+      "description": "initialize for production.",
+      "parameterDecorators": [
+        {
+          "name": "_treasury",
+          "description": "address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_timelock",
+          "description": "uint.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setNewMaxAllocation(address)",
+      "name": "setNewMaxAllocation",
+      "description": "changes max allocation for asset when timelock elapsed.",
+      "parameterDecorators": [
+        {
+          "name": "asset",
+          "description": "address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "totalAllocated()",
+      "name": "totalAllocated",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw(address,uint256)",
+      "name": "withdraw",
+      "description": "withdraws aToken from lending pool and asset to treasury.",
+      "parameterDecorators": [
+        {
+          "name": "asset",
+          "description": "address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "uint.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

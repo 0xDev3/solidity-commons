@@ -1,1 +1,900 @@
-{"schema":"../schema.json","tags":["tokens","merkle proofs","liquidity"],"name":"TokenDistro","description":"Contract responsible for managing the release of tokens over time. The distributor is in charge of releasing the corresponding amounts to its recipients. This distributor is expected to be another smart contract, such as a merkledrop or the liquidity mining smart contract.","eventDecorators":[{"signature":"Allocate(address,address,uint256)","name":"Allocate","description":"","parameterDecorators":[{"name":"distributor","description":"","recommendedTypes":[],"indexed":true},{"name":"grantee","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Assign(address,address,uint256)","name":"Assign","description":"","parameterDecorators":[{"name":"admin","description":"","recommendedTypes":[],"indexed":true},{"name":"distributor","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ChangeAddress(address,address)","name":"ChangeAddress","description":"","parameterDecorators":[{"name":"oldAddress","description":"","recommendedTypes":[],"indexed":true},{"name":"newAddress","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Claim(address,uint256)","name":"Claim","description":"","parameterDecorators":[{"name":"grantee","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"DurationChanged(uint256)","name":"DurationChanged","description":"Emitted when the duration is changed.","parameterDecorators":[{"name":"newDuration","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"GivBackPaid(address)","name":"GivBackPaid","description":"Emitted when the DISTRIBUTOR allocate an amount of givBack to a recipient.","parameterDecorators":[{"name":"distributor","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RoleAdminChanged(bytes32,bytes32,bytes32)","name":"RoleAdminChanged","description":"","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[],"indexed":true},{"name":"previousAdminRole","description":"","recommendedTypes":[],"indexed":true},{"name":"newAdminRole","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"RoleGranted(bytes32,address,address)","name":"RoleGranted","description":"","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[],"indexed":true},{"name":"account","description":"","recommendedTypes":[],"indexed":true},{"name":"sender","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"RoleRevoked(bytes32,address,address)","name":"RoleRevoked","description":"","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[],"indexed":true},{"name":"account","description":"","recommendedTypes":[],"indexed":true},{"name":"sender","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"StartTimeChanged(uint256,uint256)","name":"StartTimeChanged","description":"","parameterDecorators":[{"name":"newStartTime","description":"","recommendedTypes":[],"indexed":false},{"name":"newCliffTime","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"DEFAULT_ADMIN_ROLE()","name":"DEFAULT_ADMIN_ROLE","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"DISTRIBUTOR_ROLE()","name":"DISTRIBUTOR_ROLE","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"allocate(address,uint256,bool)","name":"allocate","description":"Function that allows to the distributor address to allocate some amount of tokens to a specific recipient. Needs to be initialized: Nobody has the DEFAULT_ADMIN_ROLE and all available tokens have been assigned.","parameterDecorators":[{"name":"recipient","description":"of token allocation.","recommendedTypes":[]},{"name":"amount","description":"allocated amount.","recommendedTypes":[]},{"name":"claim","description":"whether claim after allocate.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"allocateMany(address[],uint256[])","name":"allocateMany","description":"Function that allows to the distributor address to allocate some amounts of tokens to specific recipients. Needs to be initialized: Nobody has the DEFAULT_ADMIN_ROLE and all available tokens have been assigned.","parameterDecorators":[{"name":"recipients","description":"of token allocation.","recommendedTypes":[]},{"name":"amounts","description":"allocated amount.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"assign(address,uint256)","name":"assign","description":"Function that allows the DEFAULT_ADMIN_ROLE to assign tokens to an address who later can distribute them. It is required that the DISTRIBUTOR_ROLE is already held by the address to which an amount will be assigned.","parameterDecorators":[{"name":"distributor","description":"the address, generally a smart contract, that will determine who gets how many tokens.","recommendedTypes":[]},{"name":"amount","description":"Total amount of tokens to assign to that address for distributing Emits a {Assign} event.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"balances(address)","name":"balances","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"allocatedTokens","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"claimed","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"cancelAllocation(address,address)","name":"cancelAllocation","description":"Function that allows the DEFAULT_ADMIN_ROLE to change a recipient in case it wants to cancel an allocation. The change can only be made when cancelable is true and to an address that has not previously received an allocation and the distributor cannot change its address Emits a {ChangeAddress} event.","parameterDecorators":[{"name":"prevRecipient","description":"","recommendedTypes":[]},{"name":"newRecipient","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":["ChangeAddress(address,address)"],"readOnly":false},{"signature":"cancelable()","name":"cancelable","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"changeAddress(address)","name":"changeAddress","description":"Function that allows a recipient to change its address. The change can only be made to an address that has not previously received an allocation & the distributor cannot change its address Emits a {ChangeAddress} event.","parameterDecorators":[{"name":"newAddress","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":["ChangeAddress(address,address)"],"readOnly":false},{"signature":"claim()","name":"claim","description":"Function to claim tokens for a specific address. It uses the current timestamp Emits a {claim} event.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claimTo(address)","name":"claimTo","description":"Function to claim tokens for a specific address. It uses the current timestamp Emits a {claim} event.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claimableAt(address,uint256)","name":"claimableAt","description":"Function to get the unlocked tokes at some moment for a specific address.","parameterDecorators":[{"name":"recipient","description":"account to query.","recommendedTypes":[]},{"name":"timestamp","description":"Instant of time in which the calculation is made.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"claimableNow(address)","name":"claimableNow","description":"Function to get the unlocked tokens for a specific address. It uses the current timestamp.","parameterDecorators":[{"name":"recipient","description":"account to query.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"cliffTime()","name":"cliffTime","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"duration()","name":"duration","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getRoleAdmin(bytes32)","name":"getRoleAdmin","description":"Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"getRoleMember(bytes32,uint256)","name":"getRoleMember","description":"Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]},{"name":"index","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getRoleMemberCount(bytes32)","name":"getRoleMemberCount","description":"Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getTimestamp()","name":"getTimestamp","description":"Function to get the current timestamp from the block.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"globallyClaimableAt(uint256)","name":"globallyClaimableAt","description":"Function to get the total claimable tokens at some moment.","parameterDecorators":[{"name":"timestamp","description":"Unix time to check the number of tokens claimable.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Number of tokens claimable at that timestamp.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"grantRole(bytes32,address)","name":"grantRole","description":"Overload {grantRole} to track enumerable memberships.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]},{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"hasRole(bytes32,address)","name":"hasRole","description":"Returns `true` if `account` has been granted `role`.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]},{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"initialAmount()","name":"initialAmount","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"initialize(uint256,uint256,uint256,uint256,uint256,address,bool)","name":"initialize","description":"Initially the deployer of the contract will be able to assign the tokens to one or several addresses, these addresses (EOA or Smart Contracts) are responsible to allocate tokens to specific addresses which can later claim them.","parameterDecorators":[{"name":"_totalTokens","description":"Total amount of tokens to distribute.","recommendedTypes":[]},{"name":"_startTime","description":"Unix time that the distribution begins.","recommendedTypes":[]},{"name":"_cliffPeriod","description":"Number of seconds to delay the claiming period for the tokens not initially released.","recommendedTypes":[]},{"name":"_duration","description":"Time it will take for all tokens to be distributed.","recommendedTypes":[]},{"name":"_initialPercentage","description":"Percentage of tokens initially released (2 decimals, 1/10000).","recommendedTypes":[]},{"name":"_token","description":"Address of the token to distribute.","recommendedTypes":[]},{"name":"_cancelable","description":"In case the owner wants to have the power to cancel an assignment.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"lockedAmount()","name":"lockedAmount","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceRole(bytes32,address)","name":"renounceRole","description":"Overload {renounceRole} to track enumerable memberships.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]},{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"revokeRole(bytes32,address)","name":"revokeRole","description":"Overload {revokeRole} to track enumerable memberships.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]},{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"sendGIVbacks(address[],uint256[])","name":"sendGIVbacks","description":"","parameterDecorators":[{"name":"recipients","description":"","recommendedTypes":[]},{"name":"amounts","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setDuration(uint256)","name":"setDuration","description":"Function to change the duration.","parameterDecorators":[{"name":"newDuration","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setStartTime(uint256)","name":"setStartTime","description":"Function that allows the DEFAULT_ADMIN_ROLE to assign set a new startTime if it hasn't started yet.","parameterDecorators":[{"name":"newStartTime","description":"new startTime Emits a {StartTimeChanged} event.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"startTime()","name":"startTime","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"supportsInterface(bytes4)","name":"supportsInterface","description":"See {IERC165-supportsInterface}.","parameterDecorators":[{"name":"interfaceId","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"token()","name":"token","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"totalTokens()","name":"totalTokens","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "merkle proofs",
+    "liquidity"
+  ],
+  "name": "TokenDistro",
+  "description": "Contract responsible for managing the release of tokens over time. The distributor is in charge of releasing the corresponding amounts to its recipients. This distributor is expected to be another smart contract, such as a merkledrop or the liquidity mining smart contract.",
+  "eventDecorators": [
+    {
+      "signature": "Allocate(address,address,uint256)",
+      "name": "Allocate",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "distributor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "grantee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Assign(address,address,uint256)",
+      "name": "Assign",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "admin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "distributor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ChangeAddress(address,address)",
+      "name": "ChangeAddress",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "oldAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Claim(address,uint256)",
+      "name": "Claim",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "grantee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DurationChanged(uint256)",
+      "name": "DurationChanged",
+      "description": "Emitted when the duration is changed.",
+      "parameterDecorators": [
+        {
+          "name": "newDuration",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "GivBackPaid(address)",
+      "name": "GivBackPaid",
+      "description": "Emitted when the DISTRIBUTOR allocate an amount of givBack to a recipient.",
+      "parameterDecorators": [
+        {
+          "name": "distributor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RoleAdminChanged(bytes32,bytes32,bytes32)",
+      "name": "RoleAdminChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "previousAdminRole",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newAdminRole",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RoleGranted(bytes32,address,address)",
+      "name": "RoleGranted",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RoleRevoked(bytes32,address,address)",
+      "name": "RoleRevoked",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "StartTimeChanged(uint256,uint256)",
+      "name": "StartTimeChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "newStartTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newCliffTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "DEFAULT_ADMIN_ROLE()",
+      "name": "DEFAULT_ADMIN_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "DISTRIBUTOR_ROLE()",
+      "name": "DISTRIBUTOR_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "allocate(address,uint256,bool)",
+      "name": "allocate",
+      "description": "Function that allows to the distributor address to allocate some amount of tokens to a specific recipient. Needs to be initialized: Nobody has the DEFAULT_ADMIN_ROLE and all available tokens have been assigned.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "of token allocation.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "allocated amount.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "claim",
+          "description": "whether claim after allocate.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "allocateMany(address[],uint256[])",
+      "name": "allocateMany",
+      "description": "Function that allows to the distributor address to allocate some amounts of tokens to specific recipients. Needs to be initialized: Nobody has the DEFAULT_ADMIN_ROLE and all available tokens have been assigned.",
+      "parameterDecorators": [
+        {
+          "name": "recipients",
+          "description": "of token allocation.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amounts",
+          "description": "allocated amount.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "assign(address,uint256)",
+      "name": "assign",
+      "description": "Function that allows the DEFAULT_ADMIN_ROLE to assign tokens to an address who later can distribute them. It is required that the DISTRIBUTOR_ROLE is already held by the address to which an amount will be assigned.",
+      "parameterDecorators": [
+        {
+          "name": "distributor",
+          "description": "the address, generally a smart contract, that will determine who gets how many tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "Total amount of tokens to assign to that address for distributing Emits a {Assign} event.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "balances(address)",
+      "name": "balances",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "allocatedTokens",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "claimed",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "cancelAllocation(address,address)",
+      "name": "cancelAllocation",
+      "description": "Function that allows the DEFAULT_ADMIN_ROLE to change a recipient in case it wants to cancel an allocation. The change can only be made when cancelable is true and to an address that has not previously received an allocation and the distributor cannot change its address Emits a {ChangeAddress} event.",
+      "parameterDecorators": [
+        {
+          "name": "prevRecipient",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newRecipient",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "ChangeAddress(address,address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "cancelable()",
+      "name": "cancelable",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "changeAddress(address)",
+      "name": "changeAddress",
+      "description": "Function that allows a recipient to change its address. The change can only be made to an address that has not previously received an allocation & the distributor cannot change its address Emits a {ChangeAddress} event.",
+      "parameterDecorators": [
+        {
+          "name": "newAddress",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "ChangeAddress(address,address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "claim()",
+      "name": "claim",
+      "description": "Function to claim tokens for a specific address. It uses the current timestamp Emits a {claim} event.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimTo(address)",
+      "name": "claimTo",
+      "description": "Function to claim tokens for a specific address. It uses the current timestamp Emits a {claim} event.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimableAt(address,uint256)",
+      "name": "claimableAt",
+      "description": "Function to get the unlocked tokes at some moment for a specific address.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "account to query.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "timestamp",
+          "description": "Instant of time in which the calculation is made.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claimableNow(address)",
+      "name": "claimableNow",
+      "description": "Function to get the unlocked tokens for a specific address. It uses the current timestamp.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "account to query.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "cliffTime()",
+      "name": "cliffTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "duration()",
+      "name": "duration",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoleAdmin(bytes32)",
+      "name": "getRoleAdmin",
+      "description": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoleMember(bytes32,uint256)",
+      "name": "getRoleMember",
+      "description": "Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoleMemberCount(bytes32)",
+      "name": "getRoleMemberCount",
+      "description": "Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTimestamp()",
+      "name": "getTimestamp",
+      "description": "Function to get the current timestamp from the block.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "globallyClaimableAt(uint256)",
+      "name": "globallyClaimableAt",
+      "description": "Function to get the total claimable tokens at some moment.",
+      "parameterDecorators": [
+        {
+          "name": "timestamp",
+          "description": "Unix time to check the number of tokens claimable.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Number of tokens claimable at that timestamp.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "grantRole(bytes32,address)",
+      "name": "grantRole",
+      "description": "Overload {grantRole} to track enumerable memberships.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "hasRole(bytes32,address)",
+      "name": "hasRole",
+      "description": "Returns `true` if `account` has been granted `role`.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialAmount()",
+      "name": "initialAmount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(uint256,uint256,uint256,uint256,uint256,address,bool)",
+      "name": "initialize",
+      "description": "Initially the deployer of the contract will be able to assign the tokens to one or several addresses, these addresses (EOA or Smart Contracts) are responsible to allocate tokens to specific addresses which can later claim them.",
+      "parameterDecorators": [
+        {
+          "name": "_totalTokens",
+          "description": "Total amount of tokens to distribute.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_startTime",
+          "description": "Unix time that the distribution begins.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_cliffPeriod",
+          "description": "Number of seconds to delay the claiming period for the tokens not initially released.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_duration",
+          "description": "Time it will take for all tokens to be distributed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_initialPercentage",
+          "description": "Percentage of tokens initially released (2 decimals, 1/10000).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_token",
+          "description": "Address of the token to distribute.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_cancelable",
+          "description": "In case the owner wants to have the power to cancel an assignment.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lockedAmount()",
+      "name": "lockedAmount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceRole(bytes32,address)",
+      "name": "renounceRole",
+      "description": "Overload {renounceRole} to track enumerable memberships.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "revokeRole(bytes32,address)",
+      "name": "revokeRole",
+      "description": "Overload {revokeRole} to track enumerable memberships.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "sendGIVbacks(address[],uint256[])",
+      "name": "sendGIVbacks",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "recipients",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amounts",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDuration(uint256)",
+      "name": "setDuration",
+      "description": "Function to change the duration.",
+      "parameterDecorators": [
+        {
+          "name": "newDuration",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setStartTime(uint256)",
+      "name": "setStartTime",
+      "description": "Function that allows the DEFAULT_ADMIN_ROLE to assign set a new startTime if it hasn't started yet.",
+      "parameterDecorators": [
+        {
+          "name": "newStartTime",
+          "description": "new startTime Emits a {StartTimeChanged} event.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "startTime()",
+      "name": "startTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "supportsInterface(bytes4)",
+      "name": "supportsInterface",
+      "description": "See {IERC165-supportsInterface}.",
+      "parameterDecorators": [
+        {
+          "name": "interfaceId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalTokens()",
+      "name": "totalTokens",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

@@ -1,1 +1,385 @@
-{"schema":"../schema.json","tags":["tokens"],"name":"TokenAllocator","description":"A contract that lets its beneficiaries receive tokens proportional to their predetermined, non-transferrable share.","eventDecorators":[{"signature":"BalanceUpdated(address,uint256,uint256,uint256)","name":"BalanceUpdated","description":"","parameterDecorators":[{"name":"owner","description":"","recommendedTypes":[],"indexed":true},{"name":"previous","description":"","recommendedTypes":[],"indexed":false},{"name":"next","description":"","recommendedTypes":[],"indexed":false},{"name":"totalSupply","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"BeneficiariesLocked()","name":"BeneficiariesLocked","description":"Emitted when the beneficiaries are locked.","parameterDecorators":[]},{"signature":"BeneficiaryAdded(address,uint256)","name":"BeneficiaryAdded","description":"Emitted when a beneficiary is added.","parameterDecorators":[{"name":"beneficiary","description":"","recommendedTypes":[],"indexed":true},{"name":"shares","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Redeemed(address,uint256)","name":"Redeemed","description":"Emitted when tokens are redeemed.","parameterDecorators":[{"name":"beneficiary","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"- The amount sent to unbundle.","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"addBeneficiary(address,uint256)","name":"addBeneficiary","description":"Add a beneficiary to the splitter.","parameterDecorators":[{"name":"_address","description":"","recommendedTypes":[]},{"name":"_shares","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"balanceAfterLastRedemption()","name":"balanceAfterLastRedemption","description":"Total number of tokens in the contract after the last redemption.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"balanceOf(address)","name":"balanceOf","description":"","parameterDecorators":[{"name":"_account","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"decimals()","name":"decimals","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"earned(address)","name":"earned","description":"Computes the pending reward.","parameterDecorators":[{"name":"_account","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"amount","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getReward()","name":"getReward","description":"Redeem tokens if the sender is the beneficiary.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"isLocked()","name":"isLocked","description":"If true, the cap table cannot be altered.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"lockBeneficiaries()","name":"lockBeneficiaries","description":"Locks in the beneficiaries, preventing them from being modified in the future.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"name()","name":"name","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"symbol()","name":"symbol","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true},{"signature":"token()","name":"token","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"totalSupply()","name":"totalSupply","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"totalTokensReceived()","name":"totalTokensReceived","description":"Total number of tokens this contract has ever received.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"totalTokensReceivedAtLastRedemption(address)","name":"totalTokensReceivedAtLastRedemption","description":"Value of `totalTokensReceived` at the last time this beneficiary redeemed tokens. This is used to calculate the marginal additional tokens that this user has.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens"
+  ],
+  "name": "TokenAllocator",
+  "description": "A contract that lets its beneficiaries receive tokens proportional to their predetermined, non-transferrable share.",
+  "eventDecorators": [
+    {
+      "signature": "BalanceUpdated(address,uint256,uint256,uint256)",
+      "name": "BalanceUpdated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "previous",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "next",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalSupply",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BeneficiariesLocked()",
+      "name": "BeneficiariesLocked",
+      "description": "Emitted when the beneficiaries are locked.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "BeneficiaryAdded(address,uint256)",
+      "name": "BeneficiaryAdded",
+      "description": "Emitted when a beneficiary is added.",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "shares",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Redeemed(address,uint256)",
+      "name": "Redeemed",
+      "description": "Emitted when tokens are redeemed.",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "- The amount sent to unbundle.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addBeneficiary(address,uint256)",
+      "name": "addBeneficiary",
+      "description": "Add a beneficiary to the splitter.",
+      "parameterDecorators": [
+        {
+          "name": "_address",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_shares",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "balanceAfterLastRedemption()",
+      "name": "balanceAfterLastRedemption",
+      "description": "Total number of tokens in the contract after the last redemption.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "balanceOf(address)",
+      "name": "balanceOf",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "decimals()",
+      "name": "decimals",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "earned(address)",
+      "name": "earned",
+      "description": "Computes the pending reward.",
+      "parameterDecorators": [
+        {
+          "name": "_account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getReward()",
+      "name": "getReward",
+      "description": "Redeem tokens if the sender is the beneficiary.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isLocked()",
+      "name": "isLocked",
+      "description": "If true, the cap table cannot be altered.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lockBeneficiaries()",
+      "name": "lockBeneficiaries",
+      "description": "Locks in the beneficiaries, preventing them from being modified in the future.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "name()",
+      "name": "name",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "symbol()",
+      "name": "symbol",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalSupply()",
+      "name": "totalSupply",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalTokensReceived()",
+      "name": "totalTokensReceived",
+      "description": "Total number of tokens this contract has ever received.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalTokensReceivedAtLastRedemption(address)",
+      "name": "totalTokensReceivedAtLastRedemption",
+      "description": "Value of `totalTokensReceived` at the last time this beneficiary redeemed tokens. This is used to calculate the marginal additional tokens that this user has.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

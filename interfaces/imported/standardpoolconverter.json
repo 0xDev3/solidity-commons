@@ -1,1 +1,1206 @@
-{"schema":"../schema.json","tags":["liquidity"],"name":"StandardPoolConverter","description":"This contract is a specialized version of the converter, which is optimized for a liquidity pool that has 2 reserves with 50%/50% weights.","eventDecorators":[{"signature":"Activation(uint16,address,bool)","name":"Activation","description":"An event emitted when a vote has been cast on a proposal.","parameterDecorators":[{"name":"_type","description":"","recommendedTypes":[],"indexed":true},{"name":"_anchor","description":"","recommendedTypes":[],"indexed":true},{"name":"_activated","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Conversion(address,address,address,uint256,uint256,int256)","name":"Conversion","description":"An event emitted when a vote has been cast on a proposal.","parameterDecorators":[{"name":"_fromToken","description":"","recommendedTypes":[],"indexed":true},{"name":"_toToken","description":"","recommendedTypes":[],"indexed":true},{"name":"_trader","description":"","recommendedTypes":[],"indexed":true},{"name":"_amount","description":"","recommendedTypes":[],"indexed":false},{"name":"_return","description":"","recommendedTypes":[],"indexed":false},{"name":"_conversionFee","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ConversionFeeUpdate(uint32,uint32)","name":"ConversionFeeUpdate","description":"An event emitted when a vote has been cast on a proposal.","parameterDecorators":[{"name":"_prevFee","description":"","recommendedTypes":[],"indexed":false},{"name":"_newFee","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LiquidityAdded(address,address,uint256,uint256,uint256)","name":"LiquidityAdded","description":"An event emitted when a vote has been cast on a proposal. triggered after liquidity is added.","parameterDecorators":[{"name":"_provider","description":"liquidity provider.","recommendedTypes":[],"indexed":true},{"name":"_reserveToken","description":"reserve token address.","recommendedTypes":[],"indexed":true},{"name":"_amount","description":"reserve token amount.","recommendedTypes":[],"indexed":false},{"name":"_newBalance","description":"reserve token new balance.","recommendedTypes":[],"indexed":false},{"name":"_newSupply","description":"pool token new supply.","recommendedTypes":[],"indexed":false}]},{"signature":"LiquidityRemoved(address,address,uint256,uint256,uint256)","name":"LiquidityRemoved","description":"An event emitted when a vote has been cast on a proposal. triggered after liquidity is removed.","parameterDecorators":[{"name":"_provider","description":"liquidity provider.","recommendedTypes":[],"indexed":true},{"name":"_reserveToken","description":"reserve token address.","recommendedTypes":[],"indexed":true},{"name":"_amount","description":"reserve token amount.","recommendedTypes":[],"indexed":false},{"name":"_newBalance","description":"reserve token new balance.","recommendedTypes":[],"indexed":false},{"name":"_newSupply","description":"pool token new supply.","recommendedTypes":[],"indexed":false}]},{"signature":"OwnerUpdate(address,address)","name":"OwnerUpdate","description":"An event emitted when a vote has been cast on a proposal.","parameterDecorators":[{"name":"_prevOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"_newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"TokenRateUpdate(address,address,uint256,uint256)","name":"TokenRateUpdate","description":"An event emitted when a vote has been cast on a proposal.","parameterDecorators":[{"name":"_token1","description":"","recommendedTypes":[],"indexed":true},{"name":"_token2","description":"","recommendedTypes":[],"indexed":true},{"name":"_rateN","description":"","recommendedTypes":[],"indexed":false},{"name":"_rateD","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"acceptAnchorOwnership()","name":"acceptAnchorOwnership","description":"accepts ownership of the anchor after an ownership transfer most converters are also activated as soon as they accept the anchor ownership can only be called by the contract owner note that prior to version 28, you should use 'acceptTokenOwnership' instead.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"acceptOwnership()","name":"acceptOwnership","description":"used by a new owner to accept an ownership transfer.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"acceptTokenOwnership()","name":"acceptTokenOwnership","description":"deprecated, backward compatibility.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"addLiquidity(uint256,uint256,uint256)","name":"addLiquidity","description":"increases the pool's liquidity and mints new shares in the pool to the caller this version receives the two reserve amounts as separate args.","parameterDecorators":[{"name":"_reserve1Amount","description":"amount of the first reserve token.","recommendedTypes":[]},{"name":"_reserve2Amount","description":"amount of the second reserve token.","recommendedTypes":[]},{"name":"_minReturn","description":"token minimum return-amount.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"amount of pool tokens issued.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"addLiquidity(address[],uint256[],uint256)","name":"addLiquidity","description":"increases the pool's liquidity and mints new shares in the pool to the caller.","parameterDecorators":[{"name":"_reserveTokens","description":"address of each reserve token.","recommendedTypes":[]},{"name":"_reserveAmounts","description":"amount of each reserve token.","recommendedTypes":[]},{"name":"_minReturn","description":"token minimum return-amount.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"amount of pool tokens issued.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"addLiquidityCost(address[],uint256,uint256)","name":"addLiquidityCost","description":"given the amount of one of the reserve tokens to add liquidity of, returns the required amount of each one of the other reserve tokens since an empty pool can be funded with any list of non-zero input amounts, this function assumes that the pool is not empty (has already been funded).","parameterDecorators":[{"name":"_reserveTokens","description":"address of each reserve token.","recommendedTypes":[]},{"name":"_reserveTokenIndex","description":"index of the relevant reserve token.","recommendedTypes":[]},{"name":"_reserveAmount","description":"amount of the relevant reserve token.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the required amount of each one of the reserve tokens.","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"addLiquidityReturn(address,uint256)","name":"addLiquidityReturn","description":"given the amount of one of the reserve tokens to add liquidity of, returns the amount of pool tokens entitled for it since an empty pool can be funded with any list of non-zero input amounts, this function assumes that the pool is not empty (has already been funded).","parameterDecorators":[{"name":"_reserveToken","description":"address of the reserve token.","recommendedTypes":[]},{"name":"_reserveAmount","description":"amount of the reserve token.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the amount of pool tokens entitled.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"addReserve(address,uint32)","name":"addReserve","description":"defines a new reserve token for the converter can only be called by the owner while the converter is inactive.","parameterDecorators":[{"name":"_token","description":"address of the reserve token.","recommendedTypes":[]},{"name":"_weight","description":"reserve weight, represented in ppm, 1-1000000.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"anchor()","name":"anchor","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"averageRateInfo()","name":"averageRateInfo","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"connectorTokenCount()","name":"connectorTokenCount","description":"deprecated, backward compatibility.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint16"}],"emittableEvents":[],"readOnly":true},{"signature":"connectorTokens(uint256)","name":"connectorTokens","description":"deprecated, backward compatibility.","parameterDecorators":[{"name":"_index","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"connectors(address)","name":"connectors","description":"deprecated, backward compatibility.","parameterDecorators":[{"name":"_address","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint32"},{"name":"param2","description":"","recommendedTypes":[],"solidityType":"bool"},{"name":"param3","description":"","recommendedTypes":[],"solidityType":"bool"},{"name":"param4","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"conversionFee()","name":"conversionFee","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"convert(address,address,uint256,address,address)","name":"convert","description":"converts a specific amount of source tokens to target tokens can only be called by the bancor network contract.","parameterDecorators":[{"name":"_sourceToken","description":"source ERC20 token.","recommendedTypes":[]},{"name":"_targetToken","description":"target ERC20 token.","recommendedTypes":[]},{"name":"_amount","description":"amount of tokens to convert (in units of the source token).","recommendedTypes":[]},{"name":"_trader","description":"address of the caller who executed the conversion.","recommendedTypes":[]},{"name":"_beneficiary","description":"wallet to receive the conversion result.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"amount of tokens received (in units of the target token).","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"converterType()","name":"converterType","description":"returns the converter type.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"see the converter types in the the main contract doc.","recommendedTypes":[],"solidityType":"uint16"}],"emittableEvents":[],"readOnly":true},{"signature":"getConnectorBalance(address)","name":"getConnectorBalance","description":"deprecated, backward compatibility.","parameterDecorators":[{"name":"_connectorToken","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getReturn(address,address,uint256)","name":"getReturn","description":"deprecated, backward compatibility.","parameterDecorators":[{"name":"_sourceToken","description":"","recommendedTypes":[]},{"name":"_targetToken","description":"","recommendedTypes":[]},{"name":"_amount","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"isActive()","name":"isActive","description":"returns true if the converter is active, false otherwise.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"true if the converter is active, false otherwise.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isV28OrHigher()","name":"isV28OrHigher","description":"checks whether or not the converter version is 28 or higher.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"true, since the converter version is 28 or higher.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"maxConversionFee()","name":"maxConversionFee","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"newOwner()","name":"newOwner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"onlyOwnerCanUpdateRegistry()","name":"onlyOwnerCanUpdateRegistry","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"prevRegistry()","name":"prevRegistry","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"recentAverageRate(address)","name":"recentAverageRate","description":"returns the recent average rate of 1 `_token` in the other reserve token units.","parameterDecorators":[{"name":"_token","description":"token to get the rate for.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"recent average rate between the reserves (numerator).","recommendedTypes":[],"solidityType":"uint256"},{"name":"_1","description":"recent average rate between the reserves (denominator).","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"registry()","name":"registry","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"removeLiquidity(uint256,uint256,uint256)","name":"removeLiquidity","description":"decreases the pool's liquidity and burns the caller's shares in the pool this version receives the two minimum return amounts as separate args.","parameterDecorators":[{"name":"_amount","description":"token amount.","recommendedTypes":[]},{"name":"_reserve1MinReturn","description":"minimum return for the first reserve token.","recommendedTypes":[]},{"name":"_reserve2MinReturn","description":"minimum return for the second reserve token.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the first reserve amount returned.","recommendedTypes":[],"solidityType":"uint256"},{"name":"_1","description":"the second reserve amount returned.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"removeLiquidity(uint256,address[],uint256[])","name":"removeLiquidity","description":"decreases the pool's liquidity and burns the caller's shares in the pool.","parameterDecorators":[{"name":"_amount","description":"token amount.","recommendedTypes":[]},{"name":"_reserveTokens","description":"address of each reserve token.","recommendedTypes":[]},{"name":"_reserveMinReturnAmounts","description":"minimum return-amount of each reserve token.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the amount of each reserve token granted for the given amount of pool tokens.","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":false},{"signature":"removeLiquidityReturn(uint256,address[])","name":"removeLiquidityReturn","description":"returns the amount of each reserve token entitled for a given amount of pool tokens.","parameterDecorators":[{"name":"_amount","description":"amount of pool tokens.","recommendedTypes":[]},{"name":"_reserveTokens","description":"address of each reserve token.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the amount of each reserve token entitled for the given amount of pool tokens.","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"reserveBalance(address)","name":"reserveBalance","description":"returns the balance of a given reserve token.","parameterDecorators":[{"name":"_reserveToken","description":"reserve token contract address.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the balance of the given reserve token.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"reserveBalances()","name":"reserveBalances","description":"returns the balances of both reserve tokens.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"reserveTokenCount()","name":"reserveTokenCount","description":"returns the number of reserve tokens note that prior to version 17, you should use 'connectorTokenCount' instead.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"number of reserve tokens.","recommendedTypes":[],"solidityType":"uint16"}],"emittableEvents":[],"readOnly":true},{"signature":"reserveTokens()","name":"reserveTokens","description":"returns the array of reserve tokens.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"array of reserve tokens.","recommendedTypes":[],"solidityType":"address[]"}],"emittableEvents":[],"readOnly":true},{"signature":"reserveWeight(address)","name":"reserveWeight","description":"returns the reserve's weight added in version 28.","parameterDecorators":[{"name":"_reserveToken","description":"reserve token contract address.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"reserve weight.","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"restoreRegistry()","name":"restoreRegistry","description":"restores the previous contract-registry.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"restrictRegistryUpdate(bool)","name":"restrictRegistryUpdate","description":"restricts the permission to update the contract-registry.","parameterDecorators":[{"name":"_onlyOwnerCanUpdateRegistry","description":"indicates whether or not permission is restricted to owner only.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setConversionFee(uint32)","name":"setConversionFee","description":"updates the current conversion fee can only be called by the contract owner.","parameterDecorators":[{"name":"_conversionFee","description":"new conversion fee, represented in ppm.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"targetAmountAndFee(address,address,uint256)","name":"targetAmountAndFee","description":"returns the expected target amount of converting one reserve to another along with the fee.","parameterDecorators":[{"name":"_sourceToken","description":"contract address of the source reserve token.","recommendedTypes":[]},{"name":"_targetToken","description":"contract address of the target reserve token.","recommendedTypes":[]},{"name":"_amount","description":"amount of tokens received from the user.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"expected target amount.","recommendedTypes":[],"solidityType":"uint256"},{"name":"_1","description":"expected fee.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"token()","name":"token","description":"deprecated since version 28, backward compatibility - use only for earlier versions.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"transferAnchorOwnership(address)","name":"transferAnchorOwnership","description":"transfers the anchor ownership the new owner needs to accept the transfer can only be called by the converter upgrder while the upgrader is the owner note that prior to version 28, you should use 'transferAnchorOwnership' instead.","parameterDecorators":[{"name":"_newOwner","description":"new token owner.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"allows transferring the contract ownership the new owner still needs to accept the transfer can only be called by the contract owner.","parameterDecorators":[{"name":"_newOwner","description":"new contract owner.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferTokenOwnership(address)","name":"transferTokenOwnership","description":"deprecated, backward compatibility.","parameterDecorators":[{"name":"_newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateRegistry()","name":"updateRegistry","description":"updates to the new contract-registry.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"upgrade()","name":"upgrade","description":"upgrades the converter to the latest version can only be called by the owner note that the owner needs to call acceptOwnership on the new converter after the upgrade.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"version()","name":"version","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint16"}],"emittableEvents":[],"readOnly":true},{"signature":"withdrawETH(address)","name":"withdrawETH","description":"withdraws ether can only be called by the owner if the converter is inactive or by upgrader contract can only be called after the upgrader contract has accepted the ownership of this contract can only be called if the converter has an ETH reserve.","parameterDecorators":[{"name":"_to","description":"address to send the ETH to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdrawTokens(address,address,uint256)","name":"withdrawTokens","description":"withdraws tokens held by the converter and sends them to an account can only be called by the owner note that reserve tokens can only be withdrawn by the owner while the converter is inactive unless the owner is the converter upgrader contract.","parameterDecorators":[{"name":"_token","description":"ERC20 token contract address.","recommendedTypes":[]},{"name":"_to","description":"account to receive the new amount.","recommendedTypes":[]},{"name":"_amount","description":"amount to withdraw.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "liquidity"
+  ],
+  "name": "StandardPoolConverter",
+  "description": "This contract is a specialized version of the converter, which is optimized for a liquidity pool that has 2 reserves with 50%/50% weights.",
+  "eventDecorators": [
+    {
+      "signature": "Activation(uint16,address,bool)",
+      "name": "Activation",
+      "description": "An event emitted when a vote has been cast on a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "_type",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_anchor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_activated",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Conversion(address,address,address,uint256,uint256,int256)",
+      "name": "Conversion",
+      "description": "An event emitted when a vote has been cast on a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "_fromToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_toToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_trader",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_return",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_conversionFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ConversionFeeUpdate(uint32,uint32)",
+      "name": "ConversionFeeUpdate",
+      "description": "An event emitted when a vote has been cast on a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "_prevFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_newFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LiquidityAdded(address,address,uint256,uint256,uint256)",
+      "name": "LiquidityAdded",
+      "description": "An event emitted when a vote has been cast on a proposal. triggered after liquidity is added.",
+      "parameterDecorators": [
+        {
+          "name": "_provider",
+          "description": "liquidity provider.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_reserveToken",
+          "description": "reserve token address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_amount",
+          "description": "reserve token amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_newBalance",
+          "description": "reserve token new balance.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_newSupply",
+          "description": "pool token new supply.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LiquidityRemoved(address,address,uint256,uint256,uint256)",
+      "name": "LiquidityRemoved",
+      "description": "An event emitted when a vote has been cast on a proposal. triggered after liquidity is removed.",
+      "parameterDecorators": [
+        {
+          "name": "_provider",
+          "description": "liquidity provider.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_reserveToken",
+          "description": "reserve token address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_amount",
+          "description": "reserve token amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_newBalance",
+          "description": "reserve token new balance.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_newSupply",
+          "description": "pool token new supply.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnerUpdate(address,address)",
+      "name": "OwnerUpdate",
+      "description": "An event emitted when a vote has been cast on a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "_prevOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TokenRateUpdate(address,address,uint256,uint256)",
+      "name": "TokenRateUpdate",
+      "description": "An event emitted when a vote has been cast on a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "_token1",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_token2",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_rateN",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_rateD",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "acceptAnchorOwnership()",
+      "name": "acceptAnchorOwnership",
+      "description": "accepts ownership of the anchor after an ownership transfer most converters are also activated as soon as they accept the anchor ownership can only be called by the contract owner note that prior to version 28, you should use 'acceptTokenOwnership' instead.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "acceptOwnership()",
+      "name": "acceptOwnership",
+      "description": "used by a new owner to accept an ownership transfer.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "acceptTokenOwnership()",
+      "name": "acceptTokenOwnership",
+      "description": "deprecated, backward compatibility.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addLiquidity(uint256,uint256,uint256)",
+      "name": "addLiquidity",
+      "description": "increases the pool's liquidity and mints new shares in the pool to the caller this version receives the two reserve amounts as separate args.",
+      "parameterDecorators": [
+        {
+          "name": "_reserve1Amount",
+          "description": "amount of the first reserve token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserve2Amount",
+          "description": "amount of the second reserve token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minReturn",
+          "description": "token minimum return-amount.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "amount of pool tokens issued.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addLiquidity(address[],uint256[],uint256)",
+      "name": "addLiquidity",
+      "description": "increases the pool's liquidity and mints new shares in the pool to the caller.",
+      "parameterDecorators": [
+        {
+          "name": "_reserveTokens",
+          "description": "address of each reserve token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserveAmounts",
+          "description": "amount of each reserve token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minReturn",
+          "description": "token minimum return-amount.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "amount of pool tokens issued.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addLiquidityCost(address[],uint256,uint256)",
+      "name": "addLiquidityCost",
+      "description": "given the amount of one of the reserve tokens to add liquidity of, returns the required amount of each one of the other reserve tokens since an empty pool can be funded with any list of non-zero input amounts, this function assumes that the pool is not empty (has already been funded).",
+      "parameterDecorators": [
+        {
+          "name": "_reserveTokens",
+          "description": "address of each reserve token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserveTokenIndex",
+          "description": "index of the relevant reserve token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserveAmount",
+          "description": "amount of the relevant reserve token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the required amount of each one of the reserve tokens.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addLiquidityReturn(address,uint256)",
+      "name": "addLiquidityReturn",
+      "description": "given the amount of one of the reserve tokens to add liquidity of, returns the amount of pool tokens entitled for it since an empty pool can be funded with any list of non-zero input amounts, this function assumes that the pool is not empty (has already been funded).",
+      "parameterDecorators": [
+        {
+          "name": "_reserveToken",
+          "description": "address of the reserve token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserveAmount",
+          "description": "amount of the reserve token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the amount of pool tokens entitled.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addReserve(address,uint32)",
+      "name": "addReserve",
+      "description": "defines a new reserve token for the converter can only be called by the owner while the converter is inactive.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the reserve token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_weight",
+          "description": "reserve weight, represented in ppm, 1-1000000.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "anchor()",
+      "name": "anchor",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "averageRateInfo()",
+      "name": "averageRateInfo",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "connectorTokenCount()",
+      "name": "connectorTokenCount",
+      "description": "deprecated, backward compatibility.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "connectorTokens(uint256)",
+      "name": "connectorTokens",
+      "description": "deprecated, backward compatibility.",
+      "parameterDecorators": [
+        {
+          "name": "_index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "connectors(address)",
+      "name": "connectors",
+      "description": "deprecated, backward compatibility.",
+      "parameterDecorators": [
+        {
+          "name": "_address",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "param3",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "param4",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "conversionFee()",
+      "name": "conversionFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "convert(address,address,uint256,address,address)",
+      "name": "convert",
+      "description": "converts a specific amount of source tokens to target tokens can only be called by the bancor network contract.",
+      "parameterDecorators": [
+        {
+          "name": "_sourceToken",
+          "description": "source ERC20 token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_targetToken",
+          "description": "target ERC20 token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "amount of tokens to convert (in units of the source token).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_trader",
+          "description": "address of the caller who executed the conversion.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_beneficiary",
+          "description": "wallet to receive the conversion result.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "amount of tokens received (in units of the target token).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "converterType()",
+      "name": "converterType",
+      "description": "returns the converter type.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "see the converter types in the the main contract doc.",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getConnectorBalance(address)",
+      "name": "getConnectorBalance",
+      "description": "deprecated, backward compatibility.",
+      "parameterDecorators": [
+        {
+          "name": "_connectorToken",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getReturn(address,address,uint256)",
+      "name": "getReturn",
+      "description": "deprecated, backward compatibility.",
+      "parameterDecorators": [
+        {
+          "name": "_sourceToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_targetToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isActive()",
+      "name": "isActive",
+      "description": "returns true if the converter is active, false otherwise.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "true if the converter is active, false otherwise.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isV28OrHigher()",
+      "name": "isV28OrHigher",
+      "description": "checks whether or not the converter version is 28 or higher.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "true, since the converter version is 28 or higher.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxConversionFee()",
+      "name": "maxConversionFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "newOwner()",
+      "name": "newOwner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "onlyOwnerCanUpdateRegistry()",
+      "name": "onlyOwnerCanUpdateRegistry",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "prevRegistry()",
+      "name": "prevRegistry",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "recentAverageRate(address)",
+      "name": "recentAverageRate",
+      "description": "returns the recent average rate of 1 `_token` in the other reserve token units.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "token to get the rate for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "recent average rate between the reserves (numerator).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_1",
+          "description": "recent average rate between the reserves (denominator).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "registry()",
+      "name": "registry",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeLiquidity(uint256,uint256,uint256)",
+      "name": "removeLiquidity",
+      "description": "decreases the pool's liquidity and burns the caller's shares in the pool this version receives the two minimum return amounts as separate args.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "token amount.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserve1MinReturn",
+          "description": "minimum return for the first reserve token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserve2MinReturn",
+          "description": "minimum return for the second reserve token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the first reserve amount returned.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_1",
+          "description": "the second reserve amount returned.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeLiquidity(uint256,address[],uint256[])",
+      "name": "removeLiquidity",
+      "description": "decreases the pool's liquidity and burns the caller's shares in the pool.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "token amount.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserveTokens",
+          "description": "address of each reserve token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserveMinReturnAmounts",
+          "description": "minimum return-amount of each reserve token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the amount of each reserve token granted for the given amount of pool tokens.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeLiquidityReturn(uint256,address[])",
+      "name": "removeLiquidityReturn",
+      "description": "returns the amount of each reserve token entitled for a given amount of pool tokens.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "amount of pool tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserveTokens",
+          "description": "address of each reserve token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the amount of each reserve token entitled for the given amount of pool tokens.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "reserveBalance(address)",
+      "name": "reserveBalance",
+      "description": "returns the balance of a given reserve token.",
+      "parameterDecorators": [
+        {
+          "name": "_reserveToken",
+          "description": "reserve token contract address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the balance of the given reserve token.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "reserveBalances()",
+      "name": "reserveBalances",
+      "description": "returns the balances of both reserve tokens.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "reserveTokenCount()",
+      "name": "reserveTokenCount",
+      "description": "returns the number of reserve tokens note that prior to version 17, you should use 'connectorTokenCount' instead.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "number of reserve tokens.",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "reserveTokens()",
+      "name": "reserveTokens",
+      "description": "returns the array of reserve tokens.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "array of reserve tokens.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "reserveWeight(address)",
+      "name": "reserveWeight",
+      "description": "returns the reserve's weight added in version 28.",
+      "parameterDecorators": [
+        {
+          "name": "_reserveToken",
+          "description": "reserve token contract address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "reserve weight.",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "restoreRegistry()",
+      "name": "restoreRegistry",
+      "description": "restores the previous contract-registry.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "restrictRegistryUpdate(bool)",
+      "name": "restrictRegistryUpdate",
+      "description": "restricts the permission to update the contract-registry.",
+      "parameterDecorators": [
+        {
+          "name": "_onlyOwnerCanUpdateRegistry",
+          "description": "indicates whether or not permission is restricted to owner only.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setConversionFee(uint32)",
+      "name": "setConversionFee",
+      "description": "updates the current conversion fee can only be called by the contract owner.",
+      "parameterDecorators": [
+        {
+          "name": "_conversionFee",
+          "description": "new conversion fee, represented in ppm.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "targetAmountAndFee(address,address,uint256)",
+      "name": "targetAmountAndFee",
+      "description": "returns the expected target amount of converting one reserve to another along with the fee.",
+      "parameterDecorators": [
+        {
+          "name": "_sourceToken",
+          "description": "contract address of the source reserve token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_targetToken",
+          "description": "contract address of the target reserve token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "amount of tokens received from the user.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "expected target amount.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_1",
+          "description": "expected fee.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "deprecated since version 28, backward compatibility - use only for earlier versions.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferAnchorOwnership(address)",
+      "name": "transferAnchorOwnership",
+      "description": "transfers the anchor ownership the new owner needs to accept the transfer can only be called by the converter upgrder while the upgrader is the owner note that prior to version 28, you should use 'transferAnchorOwnership' instead.",
+      "parameterDecorators": [
+        {
+          "name": "_newOwner",
+          "description": "new token owner.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "allows transferring the contract ownership the new owner still needs to accept the transfer can only be called by the contract owner.",
+      "parameterDecorators": [
+        {
+          "name": "_newOwner",
+          "description": "new contract owner.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferTokenOwnership(address)",
+      "name": "transferTokenOwnership",
+      "description": "deprecated, backward compatibility.",
+      "parameterDecorators": [
+        {
+          "name": "_newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateRegistry()",
+      "name": "updateRegistry",
+      "description": "updates to the new contract-registry.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upgrade()",
+      "name": "upgrade",
+      "description": "upgrades the converter to the latest version can only be called by the owner note that the owner needs to call acceptOwnership on the new converter after the upgrade.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "version()",
+      "name": "version",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdrawETH(address)",
+      "name": "withdrawETH",
+      "description": "withdraws ether can only be called by the owner if the converter is inactive or by upgrader contract can only be called after the upgrader contract has accepted the ownership of this contract can only be called if the converter has an ETH reserve.",
+      "parameterDecorators": [
+        {
+          "name": "_to",
+          "description": "address to send the ETH to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawTokens(address,address,uint256)",
+      "name": "withdrawTokens",
+      "description": "withdraws tokens held by the converter and sends them to an account can only be called by the owner note that reserve tokens can only be withdrawn by the owner while the converter is inactive unless the owner is the converter upgrader contract.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "ERC20 token contract address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "account to receive the new amount.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "amount to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

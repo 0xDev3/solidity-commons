@@ -1,1 +1,292 @@
-{"schema":"../schema.json","tags":["swaps"],"name":"QuoterV2","description":"Provides quotes for swaps. These functions are not gas efficient and should _not_ be called on chain. Instead, optimistically execute the swap and check the amounts in the callback. Allows getting the expected amount out or amount in for a given swap without executing the swap.","eventDecorators":[],"functionDecorators":[{"signature":"WETH9()","name":"WETH9","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"factory()","name":"factory","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"quoteExactInput(bytes,uint256)","name":"quoteExactInput","description":"Returns the amount out received for a given exact input swap without executing the swap.","parameterDecorators":[{"name":"path","description":"The path of the swap, i.e. each token pair and the pool fee.","recommendedTypes":[]},{"name":"amountIn","description":"The amount of the first token to swap.","recommendedTypes":[]}],"returnDecorators":[{"name":"amountOut","description":"The amount of the last token that would be received.","recommendedTypes":[],"solidityType":"uint256"},{"name":"sqrtPriceX96AfterList","description":"List of the sqrt price after the swap for each pool in the path.","recommendedTypes":[],"solidityType":"uint160[]"},{"name":"initializedTicksCrossedList","description":"List of the initialized ticks that the swap crossed for each pool in the path.","recommendedTypes":[],"solidityType":"uint32[]"},{"name":"gasEstimate","description":"The estimate of the gas that the swap consumes.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"quoteExactInputSingle(tuple(address,address,uint256,uint24,uint160))","name":"quoteExactInputSingle","description":"Returns the amount out received for a given exact input but for a swap of a single pool.","parameterDecorators":[{"name":"params","description":"The params for the quote, encoded as `QuoteExactInputSingleParams` tokenIn The token being swapped in tokenOut The token being swapped out fee The fee of the token pool to consider for the pair amountIn The desired input amount sqrtPriceLimitX96 The price limit of the pool that cannot be exceeded by the swap.","recommendedTypes":[],"parameters":[{"name":"tokenIn","description":"","type":"address"},{"name":"tokenOut","description":"","type":"address"},{"name":"amountIn","description":"","type":"uint256"},{"name":"fee","description":"","type":"uint24"},{"name":"sqrtPriceLimitX96","description":"","type":"uint160"}]}],"returnDecorators":[{"name":"amountOut","description":"The amount of `tokenOut` that would be received.","recommendedTypes":[],"solidityType":"uint256"},{"name":"sqrtPriceX96After","description":"The sqrt price of the pool after the swap.","recommendedTypes":[],"solidityType":"uint160"},{"name":"initializedTicksCrossed","description":"The number of initialized ticks that the swap crossed.","recommendedTypes":[],"solidityType":"uint32"},{"name":"gasEstimate","description":"The estimate of the gas that the swap consumes.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"quoteExactOutput(bytes,uint256)","name":"quoteExactOutput","description":"Returns the amount in required for a given exact output swap without executing the swap.","parameterDecorators":[{"name":"path","description":"The path of the swap, i.e. each token pair and the pool fee. Path must be provided in reverse order.","recommendedTypes":[]},{"name":"amountOut","description":"The amount of the last token to receive.","recommendedTypes":[]}],"returnDecorators":[{"name":"amountIn","description":"The amount of first token required to be paid.","recommendedTypes":[],"solidityType":"uint256"},{"name":"sqrtPriceX96AfterList","description":"List of the sqrt price after the swap for each pool in the path.","recommendedTypes":[],"solidityType":"uint160[]"},{"name":"initializedTicksCrossedList","description":"List of the initialized ticks that the swap crossed for each pool in the path.","recommendedTypes":[],"solidityType":"uint32[]"},{"name":"gasEstimate","description":"The estimate of the gas that the swap consumes.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"quoteExactOutputSingle(tuple(address,address,uint256,uint24,uint160))","name":"quoteExactOutputSingle","description":"Returns the amount in required to receive the given exact output amount but for a swap of a single pool.","parameterDecorators":[{"name":"params","description":"The params for the quote, encoded as `QuoteExactOutputSingleParams` tokenIn The token being swapped in tokenOut The token being swapped out fee The fee of the token pool to consider for the pair amountOut The desired output amount sqrtPriceLimitX96 The price limit of the pool that cannot be exceeded by the swap.","recommendedTypes":[],"parameters":[{"name":"tokenIn","description":"","type":"address"},{"name":"tokenOut","description":"","type":"address"},{"name":"amount","description":"","type":"uint256"},{"name":"fee","description":"","type":"uint24"},{"name":"sqrtPriceLimitX96","description":"","type":"uint160"}]}],"returnDecorators":[{"name":"amountIn","description":"The amount required as the input for the swap in order to receive `amountOut`.","recommendedTypes":[],"solidityType":"uint256"},{"name":"sqrtPriceX96After","description":"The sqrt price of the pool after the swap.","recommendedTypes":[],"solidityType":"uint160"},{"name":"initializedTicksCrossed","description":"The number of initialized ticks that the swap crossed.","recommendedTypes":[],"solidityType":"uint32"},{"name":"gasEstimate","description":"The estimate of the gas that the swap consumes.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"uniswapV3SwapCallback(int256,int256,bytes)","name":"uniswapV3SwapCallback","description":"Called to `msg.sender` after executing a swap via IUniswapV3Pool#swap. In the implementation you must pay the pool tokens owed for the swap. The caller of this method must be checked to be a UniswapV3Pool deployed by the canonical UniswapV3Factory. amount0Delta and amount1Delta can both be 0 if no tokens were swapped.","parameterDecorators":[{"name":"amount0Delta","description":"The amount of token0 that was sent (negative) or must be received (positive) by the pool by the end of the swap. If positive, the callback must send that amount of token0 to the pool.","recommendedTypes":[]},{"name":"amount1Delta","description":"The amount of token1 that was sent (negative) or must be received (positive) by the pool by the end of the swap. If positive, the callback must send that amount of token1 to the pool.","recommendedTypes":[]},{"name":"data","description":"Any data passed through by the caller via the IUniswapV3PoolActions#swap call.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "swaps"
+  ],
+  "name": "QuoterV2",
+  "description": "Provides quotes for swaps. These functions are not gas efficient and should _not_ be called on chain. Instead, optimistically execute the swap and check the amounts in the callback. Allows getting the expected amount out or amount in for a given swap without executing the swap.",
+  "eventDecorators": [],
+  "functionDecorators": [
+    {
+      "signature": "WETH9()",
+      "name": "WETH9",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "factory()",
+      "name": "factory",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "quoteExactInput(bytes,uint256)",
+      "name": "quoteExactInput",
+      "description": "Returns the amount out received for a given exact input swap without executing the swap.",
+      "parameterDecorators": [
+        {
+          "name": "path",
+          "description": "The path of the swap, i.e. each token pair and the pool fee.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountIn",
+          "description": "The amount of the first token to swap.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountOut",
+          "description": "The amount of the last token that would be received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "sqrtPriceX96AfterList",
+          "description": "List of the sqrt price after the swap for each pool in the path.",
+          "recommendedTypes": [],
+          "solidityType": "uint160[]"
+        },
+        {
+          "name": "initializedTicksCrossedList",
+          "description": "List of the initialized ticks that the swap crossed for each pool in the path.",
+          "recommendedTypes": [],
+          "solidityType": "uint32[]"
+        },
+        {
+          "name": "gasEstimate",
+          "description": "The estimate of the gas that the swap consumes.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "quoteExactInputSingle(tuple(address,address,uint256,uint24,uint160))",
+      "name": "quoteExactInputSingle",
+      "description": "Returns the amount out received for a given exact input but for a swap of a single pool.",
+      "parameterDecorators": [
+        {
+          "name": "params",
+          "description": "The params for the quote, encoded as `QuoteExactInputSingleParams` tokenIn The token being swapped in tokenOut The token being swapped out fee The fee of the token pool to consider for the pair amountIn The desired input amount sqrtPriceLimitX96 The price limit of the pool that cannot be exceeded by the swap.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "tokenIn",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "tokenOut",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "amountIn",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "fee",
+              "description": "",
+              "type": "uint24"
+            },
+            {
+              "name": "sqrtPriceLimitX96",
+              "description": "",
+              "type": "uint160"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountOut",
+          "description": "The amount of `tokenOut` that would be received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "sqrtPriceX96After",
+          "description": "The sqrt price of the pool after the swap.",
+          "recommendedTypes": [],
+          "solidityType": "uint160"
+        },
+        {
+          "name": "initializedTicksCrossed",
+          "description": "The number of initialized ticks that the swap crossed.",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        },
+        {
+          "name": "gasEstimate",
+          "description": "The estimate of the gas that the swap consumes.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "quoteExactOutput(bytes,uint256)",
+      "name": "quoteExactOutput",
+      "description": "Returns the amount in required for a given exact output swap without executing the swap.",
+      "parameterDecorators": [
+        {
+          "name": "path",
+          "description": "The path of the swap, i.e. each token pair and the pool fee. Path must be provided in reverse order.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountOut",
+          "description": "The amount of the last token to receive.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountIn",
+          "description": "The amount of first token required to be paid.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "sqrtPriceX96AfterList",
+          "description": "List of the sqrt price after the swap for each pool in the path.",
+          "recommendedTypes": [],
+          "solidityType": "uint160[]"
+        },
+        {
+          "name": "initializedTicksCrossedList",
+          "description": "List of the initialized ticks that the swap crossed for each pool in the path.",
+          "recommendedTypes": [],
+          "solidityType": "uint32[]"
+        },
+        {
+          "name": "gasEstimate",
+          "description": "The estimate of the gas that the swap consumes.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "quoteExactOutputSingle(tuple(address,address,uint256,uint24,uint160))",
+      "name": "quoteExactOutputSingle",
+      "description": "Returns the amount in required to receive the given exact output amount but for a swap of a single pool.",
+      "parameterDecorators": [
+        {
+          "name": "params",
+          "description": "The params for the quote, encoded as `QuoteExactOutputSingleParams` tokenIn The token being swapped in tokenOut The token being swapped out fee The fee of the token pool to consider for the pair amountOut The desired output amount sqrtPriceLimitX96 The price limit of the pool that cannot be exceeded by the swap.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "tokenIn",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "tokenOut",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "fee",
+              "description": "",
+              "type": "uint24"
+            },
+            {
+              "name": "sqrtPriceLimitX96",
+              "description": "",
+              "type": "uint160"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountIn",
+          "description": "The amount required as the input for the swap in order to receive `amountOut`.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "sqrtPriceX96After",
+          "description": "The sqrt price of the pool after the swap.",
+          "recommendedTypes": [],
+          "solidityType": "uint160"
+        },
+        {
+          "name": "initializedTicksCrossed",
+          "description": "The number of initialized ticks that the swap crossed.",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        },
+        {
+          "name": "gasEstimate",
+          "description": "The estimate of the gas that the swap consumes.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "uniswapV3SwapCallback(int256,int256,bytes)",
+      "name": "uniswapV3SwapCallback",
+      "description": "Called to `msg.sender` after executing a swap via IUniswapV3Pool#swap. In the implementation you must pay the pool tokens owed for the swap. The caller of this method must be checked to be a UniswapV3Pool deployed by the canonical UniswapV3Factory. amount0Delta and amount1Delta can both be 0 if no tokens were swapped.",
+      "parameterDecorators": [
+        {
+          "name": "amount0Delta",
+          "description": "The amount of token0 that was sent (negative) or must be received (positive) by the pool by the end of the swap. If positive, the callback must send that amount of token0 to the pool.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount1Delta",
+          "description": "The amount of token1 that was sent (negative) or must be received (positive) by the pool by the end of the swap. If positive, the callback must send that amount of token1 to the pool.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "Any data passed through by the caller via the IUniswapV3PoolActions#swap call.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

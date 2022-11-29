@@ -1,1 +1,814 @@
-{"schema":"../schema.json","tags":["tokens","borrowing","lending","compound"],"name":"CompoundLeverageModule","description":"CompoundLeverageModule.","eventDecorators":[{"signature":"BorrowAssetAdded(address,address)","name":"BorrowAssetAdded","description":"","parameterDecorators":[{"name":"_setToken","description":"","recommendedTypes":[],"indexed":true},{"name":"_asset","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"BorrowAssetRemoved(address,address)","name":"BorrowAssetRemoved","description":"","parameterDecorators":[{"name":"_setToken","description":"","recommendedTypes":[],"indexed":true},{"name":"_asset","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"CollateralAssetAdded(address,address)","name":"CollateralAssetAdded","description":"","parameterDecorators":[{"name":"_setToken","description":"","recommendedTypes":[],"indexed":true},{"name":"_asset","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"CollateralAssetRemoved(address,address)","name":"CollateralAssetRemoved","description":"","parameterDecorators":[{"name":"_setToken","description":"","recommendedTypes":[],"indexed":true},{"name":"_asset","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"CompGulped(address,address,address,uint256,uint256,uint256)","name":"CompGulped","description":"","parameterDecorators":[{"name":"_setToken","description":"","recommendedTypes":[],"indexed":true},{"name":"_collateralAsset","description":"","recommendedTypes":[],"indexed":true},{"name":"_exchangeAdapter","description":"","recommendedTypes":[],"indexed":false},{"name":"_totalCompClaimed","description":"","recommendedTypes":[],"indexed":false},{"name":"_totalReceiveAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"_protocolFee","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LeverageDecreased(address,address,address,address,uint256,uint256,uint256)","name":"LeverageDecreased","description":"","parameterDecorators":[{"name":"_setToken","description":"","recommendedTypes":[],"indexed":true},{"name":"_collateralAsset","description":"","recommendedTypes":[],"indexed":true},{"name":"_repayAsset","description":"","recommendedTypes":[],"indexed":true},{"name":"_exchangeAdapter","description":"","recommendedTypes":[],"indexed":false},{"name":"_totalRedeemAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"_totalRepayAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"_protocolFee","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LeverageIncreased(address,address,address,address,uint256,uint256,uint256)","name":"LeverageIncreased","description":"","parameterDecorators":[{"name":"_setToken","description":"","recommendedTypes":[],"indexed":true},{"name":"_borrowAsset","description":"","recommendedTypes":[],"indexed":true},{"name":"_collateralAsset","description":"","recommendedTypes":[],"indexed":true},{"name":"_exchangeAdapter","description":"","recommendedTypes":[],"indexed":false},{"name":"_totalBorrowAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"_totalReceiveAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"_protocolFee","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PositionsSynced(address,address)","name":"PositionsSynced","description":"","parameterDecorators":[{"name":"_setToken","description":"","recommendedTypes":[],"indexed":true},{"name":"_caller","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"addBorrowAsset(address,address)","name":"addBorrowAsset","description":"MANAGER ONLY: Add borrow asset. Only callable by manager. Borrow asset is tracked for syncing positions and entered in Compound markets.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken.","recommendedTypes":[]},{"name":"_newBorrowAsset","description":"Address of borrow underlying asset to add.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"addCollateralAsset(address,address)","name":"addCollateralAsset","description":"MANAGER ONLY: Add enabled collateral asset. Only callable by manager. Collateral asset is tracked for syncing positions and entered in Compound markets.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken.","recommendedTypes":[]},{"name":"_newCollateralAsset","description":"Address of new collateral underlying asset.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"addRegister(address,address)","name":"addRegister","description":"ANYONE CALLABLE: Add registration of this module on debt issuance module for the SetToken. Note: if the debt issuance module is not added to SetToken before this module is initialized, then this function needs to be called if the debt issuance module is later added and initialized to prevent state inconsistencies.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken.","recommendedTypes":[]},{"name":"_debtIssuanceModule","description":"Debt issuance module address to register.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"cEther()","name":"cEther","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"compToken()","name":"compToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"componentIssueHook(address,uint256,address)","name":"componentIssueHook","description":"MODULE ONLY: Hook called prior to looping through each component on issuance. Invokes borrow in order for module to return debt to issuer. Only callable by valid module.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken.","recommendedTypes":[]},{"name":"_setTokenQuantity","description":"Quantity of SetToken.","recommendedTypes":[]},{"name":"_component","description":"Address of component.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"componentRedeemHook(address,uint256,address)","name":"componentRedeemHook","description":"MODULE ONLY: Hook called prior to looping through each component on redemption. Invokes repay after issuance module transfers debt from issuer. Only callable by valid module.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken.","recommendedTypes":[]},{"name":"_setTokenQuantity","description":"Quantity of SetToken.","recommendedTypes":[]},{"name":"_component","description":"Address of component.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"comptroller()","name":"comptroller","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"controller()","name":"controller","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"delever(address,address,address,uint256,uint256,string,bytes)","name":"delever","description":"MANAGER ONLY: Decrease leverage for a given collateral position using a specified borrow asset that is enabled.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken.","recommendedTypes":[]},{"name":"_collateralAsset","description":"Address of collateral asset (underlying of cToken).","recommendedTypes":[]},{"name":"_repayAsset","description":"Address of asset being repaid.","recommendedTypes":[]},{"name":"_redeemQuantity","description":"Quantity of collateral asset to delever.","recommendedTypes":[]},{"name":"_minRepayQuantity","description":"Minimum amount of repay asset to receive post trade.","recommendedTypes":[]},{"name":"_tradeAdapterName","description":"Name of trade adapter.","recommendedTypes":[]},{"name":"_tradeData","description":"Arbitrary data for trade.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getEnabledAssets(address)","name":"getEnabledAssets","description":"","parameterDecorators":[{"name":"_setToken","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address[]"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"address[]"},{"name":"param2","description":"","recommendedTypes":[],"solidityType":"address[]"}],"emittableEvents":[],"readOnly":true},{"signature":"gulp(address,address,uint256,string,bytes)","name":"gulp","description":"MANAGER ONLY: Claims COMP and trades for specified collateral asset.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken.","recommendedTypes":[]},{"name":"_collateralAsset","description":"Address of collateral asset.","recommendedTypes":[]},{"name":"_minNotionalReceiveQuantity","description":"Minimum total amount of collateral asset to receive post trade.","recommendedTypes":[]},{"name":"_tradeAdapterName","description":"Name of trade adapter.","recommendedTypes":[]},{"name":"_tradeData","description":"Arbitrary data for trade.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"initialize(address,address[],address[])","name":"initialize","description":"MANAGER ONLY: Initializes this module to the SetToken. Only callable by the SetToken's manager. Note: managers can enable collateral and borrow assets that don't exist as positions on the SetToken.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken to initialize.","recommendedTypes":[]},{"name":"_collateralAssets","description":"Underlying tokens to be enabled as collateral in the SetToken.","recommendedTypes":[]},{"name":"_borrowAssets","description":"Underlying tokens to be enabled as borrow in the SetToken.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"isBorrowCTokenEnabled(address,address)","name":"isBorrowCTokenEnabled","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isCollateralCTokenEnabled(address,address)","name":"isCollateralCTokenEnabled","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"lever(address,address,address,uint256,uint256,string,bytes)","name":"lever","description":"MANAGER ONLY: Increases leverage for a given collateral position using a specified borrow asset that is enabled. Performs a DEX trade, exchanging the borrow asset for collateral asset.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken.","recommendedTypes":[]},{"name":"_borrowAsset","description":"Address of asset being borrowed for leverage.","recommendedTypes":[]},{"name":"_collateralAsset","description":"Address of collateral asset (underlying of cToken).","recommendedTypes":[]},{"name":"_borrowQuantity","description":"Borrow quantity of asset in position units.","recommendedTypes":[]},{"name":"_minReceiveQuantity","description":"Min receive quantity of collateral asset to receive post-trade in position units.","recommendedTypes":[]},{"name":"_tradeAdapterName","description":"Name of trade adapter.","recommendedTypes":[]},{"name":"_tradeData","description":"Arbitrary data for trade.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"moduleIssueHook(address,uint256)","name":"moduleIssueHook","description":"MODULE ONLY: Hook called prior to issuance to sync positions on SetToken. Only callable by valid module.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken.","recommendedTypes":[]},{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"moduleRedeemHook(address,uint256)","name":"moduleRedeemHook","description":"MODULE ONLY: Hook called prior to redemption to sync positions on SetToken. Only callable by valid module.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken.","recommendedTypes":[]},{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"removeBorrowAsset(address,address)","name":"removeBorrowAsset","description":"MANAGER ONLY: Remove borrow asset. Only callable by manager. Borrow asset is exited in Compound markets If there is a borrow balance, borrow asset cannot be removed.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken.","recommendedTypes":[]},{"name":"_borrowAsset","description":"Address of borrow underlying asset to remove.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"removeCollateralAsset(address,address)","name":"removeCollateralAsset","description":"MANAGER ONLY: Remove collateral asset. Only callable by manager. Collateral asset exited in Compound markets If there is a borrow balance, collateral asset cannot be removed.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken.","recommendedTypes":[]},{"name":"_collateralAsset","description":"Address of collateral underlying asset to remove.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"removeModule()","name":"removeModule","description":"MANAGER ONLY: Removes this module from the SetToken, via call by the SetToken. Only callable by SetToken manager. Compound Settings and manager enabled cTokens are deleted. Markets are exited on Comptroller (only valid if borrow balances are zero).","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"sync(address)","name":"sync","description":"CALLABLE BY ANYBODY: Sync Set positions with enabled Compound collateral and borrow positions. For collateral assets, update cToken default position. For borrow assets, update external borrow position. - Collateral assets may come out of sync when a position is liquidated - Borrow assets may come out of sync when interest is accrued or position is liquidated and borrow is repaid.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"syncCompoundMarkets()","name":"syncCompoundMarkets","description":"ANYONE CALLABLE: Sync Compound markets with stored underlying to cToken mapping in case of market additions to Compound.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"underlyingToCToken(address)","name":"underlyingToCToken","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"weth()","name":"weth","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "borrowing",
+    "lending",
+    "compound"
+  ],
+  "name": "CompoundLeverageModule",
+  "description": "CompoundLeverageModule.",
+  "eventDecorators": [
+    {
+      "signature": "BorrowAssetAdded(address,address)",
+      "name": "BorrowAssetAdded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_asset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BorrowAssetRemoved(address,address)",
+      "name": "BorrowAssetRemoved",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_asset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CollateralAssetAdded(address,address)",
+      "name": "CollateralAssetAdded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_asset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CollateralAssetRemoved(address,address)",
+      "name": "CollateralAssetRemoved",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_asset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CompGulped(address,address,address,uint256,uint256,uint256)",
+      "name": "CompGulped",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_collateralAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_exchangeAdapter",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_totalCompClaimed",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_totalReceiveAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_protocolFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LeverageDecreased(address,address,address,address,uint256,uint256,uint256)",
+      "name": "LeverageDecreased",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_collateralAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_repayAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_exchangeAdapter",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_totalRedeemAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_totalRepayAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_protocolFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LeverageIncreased(address,address,address,address,uint256,uint256,uint256)",
+      "name": "LeverageIncreased",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_borrowAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_collateralAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_exchangeAdapter",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_totalBorrowAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_totalReceiveAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_protocolFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PositionsSynced(address,address)",
+      "name": "PositionsSynced",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addBorrowAsset(address,address)",
+      "name": "addBorrowAsset",
+      "description": "MANAGER ONLY: Add borrow asset. Only callable by manager. Borrow asset is tracked for syncing positions and entered in Compound markets.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newBorrowAsset",
+          "description": "Address of borrow underlying asset to add.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addCollateralAsset(address,address)",
+      "name": "addCollateralAsset",
+      "description": "MANAGER ONLY: Add enabled collateral asset. Only callable by manager. Collateral asset is tracked for syncing positions and entered in Compound markets.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newCollateralAsset",
+          "description": "Address of new collateral underlying asset.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addRegister(address,address)",
+      "name": "addRegister",
+      "description": "ANYONE CALLABLE: Add registration of this module on debt issuance module for the SetToken. Note: if the debt issuance module is not added to SetToken before this module is initialized, then this function needs to be called if the debt issuance module is later added and initialized to prevent state inconsistencies.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_debtIssuanceModule",
+          "description": "Debt issuance module address to register.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cEther()",
+      "name": "cEther",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "compToken()",
+      "name": "compToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "componentIssueHook(address,uint256,address)",
+      "name": "componentIssueHook",
+      "description": "MODULE ONLY: Hook called prior to looping through each component on issuance. Invokes borrow in order for module to return debt to issuer. Only callable by valid module.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_setTokenQuantity",
+          "description": "Quantity of SetToken.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_component",
+          "description": "Address of component.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "componentRedeemHook(address,uint256,address)",
+      "name": "componentRedeemHook",
+      "description": "MODULE ONLY: Hook called prior to looping through each component on redemption. Invokes repay after issuance module transfers debt from issuer. Only callable by valid module.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_setTokenQuantity",
+          "description": "Quantity of SetToken.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_component",
+          "description": "Address of component.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "comptroller()",
+      "name": "comptroller",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "controller()",
+      "name": "controller",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "delever(address,address,address,uint256,uint256,string,bytes)",
+      "name": "delever",
+      "description": "MANAGER ONLY: Decrease leverage for a given collateral position using a specified borrow asset that is enabled.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_collateralAsset",
+          "description": "Address of collateral asset (underlying of cToken).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_repayAsset",
+          "description": "Address of asset being repaid.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_redeemQuantity",
+          "description": "Quantity of collateral asset to delever.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minRepayQuantity",
+          "description": "Minimum amount of repay asset to receive post trade.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tradeAdapterName",
+          "description": "Name of trade adapter.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tradeData",
+          "description": "Arbitrary data for trade.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getEnabledAssets(address)",
+      "name": "getEnabledAssets",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "gulp(address,address,uint256,string,bytes)",
+      "name": "gulp",
+      "description": "MANAGER ONLY: Claims COMP and trades for specified collateral asset.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_collateralAsset",
+          "description": "Address of collateral asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minNotionalReceiveQuantity",
+          "description": "Minimum total amount of collateral asset to receive post trade.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tradeAdapterName",
+          "description": "Name of trade adapter.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tradeData",
+          "description": "Arbitrary data for trade.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialize(address,address[],address[])",
+      "name": "initialize",
+      "description": "MANAGER ONLY: Initializes this module to the SetToken. Only callable by the SetToken's manager. Note: managers can enable collateral and borrow assets that don't exist as positions on the SetToken.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken to initialize.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_collateralAssets",
+          "description": "Underlying tokens to be enabled as collateral in the SetToken.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_borrowAssets",
+          "description": "Underlying tokens to be enabled as borrow in the SetToken.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isBorrowCTokenEnabled(address,address)",
+      "name": "isBorrowCTokenEnabled",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isCollateralCTokenEnabled(address,address)",
+      "name": "isCollateralCTokenEnabled",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lever(address,address,address,uint256,uint256,string,bytes)",
+      "name": "lever",
+      "description": "MANAGER ONLY: Increases leverage for a given collateral position using a specified borrow asset that is enabled. Performs a DEX trade, exchanging the borrow asset for collateral asset.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_borrowAsset",
+          "description": "Address of asset being borrowed for leverage.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_collateralAsset",
+          "description": "Address of collateral asset (underlying of cToken).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_borrowQuantity",
+          "description": "Borrow quantity of asset in position units.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minReceiveQuantity",
+          "description": "Min receive quantity of collateral asset to receive post-trade in position units.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tradeAdapterName",
+          "description": "Name of trade adapter.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tradeData",
+          "description": "Arbitrary data for trade.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "moduleIssueHook(address,uint256)",
+      "name": "moduleIssueHook",
+      "description": "MODULE ONLY: Hook called prior to issuance to sync positions on SetToken. Only callable by valid module.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "moduleRedeemHook(address,uint256)",
+      "name": "moduleRedeemHook",
+      "description": "MODULE ONLY: Hook called prior to redemption to sync positions on SetToken. Only callable by valid module.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeBorrowAsset(address,address)",
+      "name": "removeBorrowAsset",
+      "description": "MANAGER ONLY: Remove borrow asset. Only callable by manager. Borrow asset is exited in Compound markets If there is a borrow balance, borrow asset cannot be removed.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_borrowAsset",
+          "description": "Address of borrow underlying asset to remove.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeCollateralAsset(address,address)",
+      "name": "removeCollateralAsset",
+      "description": "MANAGER ONLY: Remove collateral asset. Only callable by manager. Collateral asset exited in Compound markets If there is a borrow balance, collateral asset cannot be removed.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_collateralAsset",
+          "description": "Address of collateral underlying asset to remove.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeModule()",
+      "name": "removeModule",
+      "description": "MANAGER ONLY: Removes this module from the SetToken, via call by the SetToken. Only callable by SetToken manager. Compound Settings and manager enabled cTokens are deleted. Markets are exited on Comptroller (only valid if borrow balances are zero).",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "sync(address)",
+      "name": "sync",
+      "description": "CALLABLE BY ANYBODY: Sync Set positions with enabled Compound collateral and borrow positions. For collateral assets, update cToken default position. For borrow assets, update external borrow position. - Collateral assets may come out of sync when a position is liquidated - Borrow assets may come out of sync when interest is accrued or position is liquidated and borrow is repaid.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "syncCompoundMarkets()",
+      "name": "syncCompoundMarkets",
+      "description": "ANYONE CALLABLE: Sync Compound markets with stored underlying to cToken mapping in case of market additions to Compound.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "underlyingToCToken(address)",
+      "name": "underlyingToCToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "weth()",
+      "name": "weth",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

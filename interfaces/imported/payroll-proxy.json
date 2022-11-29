@@ -1,1 +1,677 @@
-{"schema":"../schema.json","tags":[],"name":"Payroll","description":"Payroll Proxy.","eventDecorators":[{"signature":"CreateSalary(uint256,uint256,address)","name":"CreateSalary","description":"Emitted when a new Vault is deployed. Fired in updateTokenRegistry().","parameterDecorators":[{"name":"salaryId","description":"","recommendedTypes":[],"indexed":true},{"name":"streamId","description":"","recommendedTypes":[],"indexed":true},{"name":"company","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"WithdrawFromSalary(uint256,uint256,address)","name":"WithdrawFromSalary","description":"Emitted when a new Vault is deployed. Fired in updateTokenRegistry().","parameterDecorators":[{"name":"salaryId","description":"","recommendedTypes":[],"indexed":true},{"name":"streamId","description":"","recommendedTypes":[],"indexed":true},{"name":"company","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"CancelSalary(uint256,uint256,address)","name":"CancelSalary","description":"Emitted when a new Vault is deployed. Fired in updateTokenRegistry().","parameterDecorators":[{"name":"salaryId","description":"","recommendedTypes":[],"indexed":true},{"name":"streamId","description":"","recommendedTypes":[],"indexed":true},{"name":"company","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"RelayHubChanged(address,address)","name":"RelayHubChanged","description":"Emitted when a new Vault is deployed. Fired in updateTokenRegistry().","parameterDecorators":[{"name":"oldRelayHub","description":"","recommendedTypes":[],"indexed":true},{"name":"newRelayHub","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Emitted when a new Vault is deployed. Fired in updateTokenRegistry().","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"relayers(address,uint256)","name":"relayers","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"sablier()","name":"sablier","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"whitelistRelayer(address,uint256)","name":"whitelistRelayer","description":"Whitelists a relayer to process withdrawals so the employee doesn't have to pay gas. Throws if the caller is not the owner of the contract. Throws if the id does not point to a valid salary. Throws if the relayer is whitelisted.","parameterDecorators":[{"name":"relayer","description":"The address of the relayer account.","recommendedTypes":[]},{"name":"salaryId","description":"The id of the salary to whitelist the relayer for.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"discardRelayer(address,uint256)","name":"discardRelayer","description":"Discard a previously whitelisted relayer to prevent them from processing withdrawals. Throws if the caller is not the owner of the contract. Throws if the relayer is not whitelisted.","parameterDecorators":[{"name":"relayer","description":"The address of the relayer account.","recommendedTypes":[]},{"name":"salaryId","description":"The id of the salary to discard the relayer for.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"createCompoundingSalary(address,uint256,address,uint256,uint256,uint256,uint256)","name":"createCompoundingSalary","description":"Creates a new compounding salary funded by `msg.sender` and paid towards `employee`. There's a bit of redundancy between `createSalary` and this function, but one has to call `sablier.createStream` and the other `sablier.createCompoundingStream`, so it's not worth it to run DRY code. Throws if there is a math error. Throws if there is a token transfer failure.","parameterDecorators":[{"name":"employee","description":"The address of the employee who receives the salary.","recommendedTypes":[]},{"name":"salary","description":"The amount of tokens to be streamed.","recommendedTypes":[]},{"name":"tokenAddress","description":"The ERC20 token to use as streaming currency.","recommendedTypes":[]},{"name":"startTime","description":"The unix timestamp for when the stream starts.","recommendedTypes":[]},{"name":"stopTime","description":"The unix timestamp for when the stream stops.","recommendedTypes":[]},{"name":"senderSharePercentage","description":"The sender's share of the interest, as a percentage.","recommendedTypes":[]},{"name":"recipientSharePercentage","description":"The sender's share of the interest, as a percentage.","recommendedTypes":[]}],"returnDecorators":[{"name":"salaryId","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"getHubAddr()","name":"getHubAddr","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"preRelayedCall(bytes)","name":"preRelayedCall","description":"See `IRelayRecipient.preRelayedCall`. * This function should not be overriden directly, use `_preRelayedCall` instead. * * Requirements: * - the caller must be the `RelayHub` contract.","parameterDecorators":[{"name":"context","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":false},{"signature":"getSalary(uint256)","name":"getSalary","description":"Returns the salary object with all its properties. Throws if the id does not point to a valid salary.","parameterDecorators":[{"name":"salaryId","description":"The id of the salary to query.","recommendedTypes":[]}],"returnDecorators":[{"name":"company","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"employee","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"salary","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"tokenAddress","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"startTime","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"stopTime","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"remainingBalance","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"rate","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"initialize()","name":"initialize","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"acceptRelayedCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,uint256)","name":"acceptRelayedCall","description":"Called by {IRelayHub} to validate if this recipient accepts being charged for a relayed call. Note that the recipient will be charged regardless of the execution result of the relayed call (i.e. if it reverts or not). * The relay request was originated by `from` and will be served by `relay`. `encodedFunction` is the relayed call calldata, so its first four bytes are the function selector. The relayed call will be forwarded `gasLimit` gas, and the transaction executed with a gas price of at least `gasPrice`. `relay`'s fee is `transactionFee`, and the recipient will be charged at most `maxPossibleCharge` (in wei). `nonce` is the sender's (`from`) nonce for replay attack protection in {IRelayHub}, and `approvalData` is a optional parameter that can be used to hold a signature over all or some of the previous values. * Returns a tuple, where the first value is used to indicate approval (0) or rejection (custom non-zero error code, values 1 to 10 are reserved) and the second one is data to be passed to the other {IRelayRecipient} functions. * {acceptRelayedCall} is called with 50k gas: if it runs out during execution, the request will be considered rejected. A regular revert will also trigger a rejection.","parameterDecorators":[{"name":"relay","description":"","recommendedTypes":[]},{"name":"from","description":"","recommendedTypes":[]},{"name":"encodedFunction","description":"","recommendedTypes":[]},{"name":"transactionFee","description":"","recommendedTypes":[]},{"name":"gasPrice","description":"","recommendedTypes":[]},{"name":"gasLimit","description":"","recommendedTypes":[]},{"name":"nonce","description":"","recommendedTypes":[]},{"name":"approvalData","description":"","recommendedTypes":[]},{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"bytes"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"isOwner()","name":"isOwner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"relayHubVersion()","name":"relayHubVersion","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true},{"signature":"initialize(address,address,address)","name":"initialize","description":"Only called once after the contract is deployed. We ask for the owner and the signer address to be specified as parameters to avoid handling `msg.sender` directly. The `initializer` modifier ensures that the function can only be called once.","parameterDecorators":[{"name":"ownerAddress","description":"The address of the contract owner.","recommendedTypes":[]},{"name":"signerAddress","description":"The address of the account able to authorise relayed transactions.","recommendedTypes":[]},{"name":"sablierAddress","description":"The address of the Sablier contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"initialize(address)","name":"initialize","description":"","parameterDecorators":[{"name":"trustedSigner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"cancelSalary(uint256)","name":"cancelSalary","description":"Cancels the salary and transfers the tokens back on a pro rata basis. Throws if the id does not point to a valid salary. Throws if the caller is not the company or the employee. Throws if there is a token transfer failure.","parameterDecorators":[{"name":"salaryId","description":"The id of the salary to cancel.","recommendedTypes":[]}],"returnDecorators":[{"name":"success","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"createSalary(address,uint256,address,uint256,uint256)","name":"createSalary","description":"Creates a new salary funded by `msg.sender` and paid towards `employee`. Throws if there is a math error. Throws if there is a token transfer failure.","parameterDecorators":[{"name":"employee","description":"The address of the employee who receives the salary.","recommendedTypes":[]},{"name":"salary","description":"The amount of tokens to be streamed.","recommendedTypes":[]},{"name":"tokenAddress","description":"The ERC20 token to use as streaming currency.","recommendedTypes":[]},{"name":"startTime","description":"The unix timestamp for when the stream starts.","recommendedTypes":[]},{"name":"stopTime","description":"The unix timestamp for when the stream stops.","recommendedTypes":[]}],"returnDecorators":[{"name":"salaryId","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"nextSalaryId()","name":"nextSalaryId","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"postRelayedCall(bytes,bool,uint256,bytes32)","name":"postRelayedCall","description":"See `IRelayRecipient.postRelayedCall`. * This function should not be overriden directly, use `_postRelayedCall` instead. * * Requirements: * - the caller must be the `RelayHub` contract.","parameterDecorators":[{"name":"context","description":"","recommendedTypes":[]},{"name":"success","description":"","recommendedTypes":[]},{"name":"actualCharge","description":"","recommendedTypes":[]},{"name":"preRetVal","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Allows the current owner to transfer control of the contract to a newOwner.","parameterDecorators":[{"name":"newOwner","description":"The address to transfer ownership to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdrawFromSalary(uint256,uint256)","name":"withdrawFromSalary","description":"Withdraws from the contract to the employee's account. Throws if the id does not point to a valid salary. Throws if the caller is not the employee or a relayer. Throws if there is a token transfer failure.","parameterDecorators":[{"name":"salaryId","description":"The id of the salary to withdraw from.","recommendedTypes":[]},{"name":"amount","description":"The amount of tokens to withdraw.","recommendedTypes":[]}],"returnDecorators":[{"name":"success","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "Payroll",
+  "description": "Payroll Proxy.",
+  "eventDecorators": [
+    {
+      "signature": "CreateSalary(uint256,uint256,address)",
+      "name": "CreateSalary",
+      "description": "Emitted when a new Vault is deployed. Fired in updateTokenRegistry().",
+      "parameterDecorators": [
+        {
+          "name": "salaryId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "streamId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "company",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "WithdrawFromSalary(uint256,uint256,address)",
+      "name": "WithdrawFromSalary",
+      "description": "Emitted when a new Vault is deployed. Fired in updateTokenRegistry().",
+      "parameterDecorators": [
+        {
+          "name": "salaryId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "streamId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "company",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "CancelSalary(uint256,uint256,address)",
+      "name": "CancelSalary",
+      "description": "Emitted when a new Vault is deployed. Fired in updateTokenRegistry().",
+      "parameterDecorators": [
+        {
+          "name": "salaryId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "streamId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "company",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RelayHubChanged(address,address)",
+      "name": "RelayHubChanged",
+      "description": "Emitted when a new Vault is deployed. Fired in updateTokenRegistry().",
+      "parameterDecorators": [
+        {
+          "name": "oldRelayHub",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newRelayHub",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emitted when a new Vault is deployed. Fired in updateTokenRegistry().",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "relayers(address,uint256)",
+      "name": "relayers",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "sablier()",
+      "name": "sablier",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "whitelistRelayer(address,uint256)",
+      "name": "whitelistRelayer",
+      "description": "Whitelists a relayer to process withdrawals so the employee doesn't have to pay gas. Throws if the caller is not the owner of the contract. Throws if the id does not point to a valid salary. Throws if the relayer is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "relayer",
+          "description": "The address of the relayer account.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "salaryId",
+          "description": "The id of the salary to whitelist the relayer for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "discardRelayer(address,uint256)",
+      "name": "discardRelayer",
+      "description": "Discard a previously whitelisted relayer to prevent them from processing withdrawals. Throws if the caller is not the owner of the contract. Throws if the relayer is not whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "relayer",
+          "description": "The address of the relayer account.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "salaryId",
+          "description": "The id of the salary to discard the relayer for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createCompoundingSalary(address,uint256,address,uint256,uint256,uint256,uint256)",
+      "name": "createCompoundingSalary",
+      "description": "Creates a new compounding salary funded by `msg.sender` and paid towards `employee`. There's a bit of redundancy between `createSalary` and this function, but one has to call `sablier.createStream` and the other `sablier.createCompoundingStream`, so it's not worth it to run DRY code. Throws if there is a math error. Throws if there is a token transfer failure.",
+      "parameterDecorators": [
+        {
+          "name": "employee",
+          "description": "The address of the employee who receives the salary.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "salary",
+          "description": "The amount of tokens to be streamed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenAddress",
+          "description": "The ERC20 token to use as streaming currency.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "startTime",
+          "description": "The unix timestamp for when the stream starts.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "stopTime",
+          "description": "The unix timestamp for when the stream stops.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "senderSharePercentage",
+          "description": "The sender's share of the interest, as a percentage.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "recipientSharePercentage",
+          "description": "The sender's share of the interest, as a percentage.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "salaryId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getHubAddr()",
+      "name": "getHubAddr",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "preRelayedCall(bytes)",
+      "name": "preRelayedCall",
+      "description": "See `IRelayRecipient.preRelayedCall`. * This function should not be overriden directly, use `_preRelayedCall` instead. * * Requirements: * - the caller must be the `RelayHub` contract.",
+      "parameterDecorators": [
+        {
+          "name": "context",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getSalary(uint256)",
+      "name": "getSalary",
+      "description": "Returns the salary object with all its properties. Throws if the id does not point to a valid salary.",
+      "parameterDecorators": [
+        {
+          "name": "salaryId",
+          "description": "The id of the salary to query.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "company",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "employee",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "salary",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "tokenAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "startTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "stopTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "remainingBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "rate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize()",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "acceptRelayedCall(address,address,bytes,uint256,uint256,uint256,uint256,bytes,uint256)",
+      "name": "acceptRelayedCall",
+      "description": "Called by {IRelayHub} to validate if this recipient accepts being charged for a relayed call. Note that the recipient will be charged regardless of the execution result of the relayed call (i.e. if it reverts or not). * The relay request was originated by `from` and will be served by `relay`. `encodedFunction` is the relayed call calldata, so its first four bytes are the function selector. The relayed call will be forwarded `gasLimit` gas, and the transaction executed with a gas price of at least `gasPrice`. `relay`'s fee is `transactionFee`, and the recipient will be charged at most `maxPossibleCharge` (in wei). `nonce` is the sender's (`from`) nonce for replay attack protection in {IRelayHub}, and `approvalData` is a optional parameter that can be used to hold a signature over all or some of the previous values. * Returns a tuple, where the first value is used to indicate approval (0) or rejection (custom non-zero error code, values 1 to 10 are reserved) and the second one is data to be passed to the other {IRelayRecipient} functions. * {acceptRelayedCall} is called with 50k gas: if it runs out during execution, the request will be considered rejected. A regular revert will also trigger a rejection.",
+      "parameterDecorators": [
+        {
+          "name": "relay",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "encodedFunction",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "transactionFee",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "gasPrice",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "gasLimit",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "nonce",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "approvalData",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isOwner()",
+      "name": "isOwner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "relayHubVersion()",
+      "name": "relayHubVersion",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,address,address)",
+      "name": "initialize",
+      "description": "Only called once after the contract is deployed. We ask for the owner and the signer address to be specified as parameters to avoid handling `msg.sender` directly. The `initializer` modifier ensures that the function can only be called once.",
+      "parameterDecorators": [
+        {
+          "name": "ownerAddress",
+          "description": "The address of the contract owner.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "signerAddress",
+          "description": "The address of the account able to authorise relayed transactions.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "sablierAddress",
+          "description": "The address of the Sablier contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialize(address)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "trustedSigner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cancelSalary(uint256)",
+      "name": "cancelSalary",
+      "description": "Cancels the salary and transfers the tokens back on a pro rata basis. Throws if the id does not point to a valid salary. Throws if the caller is not the company or the employee. Throws if there is a token transfer failure.",
+      "parameterDecorators": [
+        {
+          "name": "salaryId",
+          "description": "The id of the salary to cancel.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createSalary(address,uint256,address,uint256,uint256)",
+      "name": "createSalary",
+      "description": "Creates a new salary funded by `msg.sender` and paid towards `employee`. Throws if there is a math error. Throws if there is a token transfer failure.",
+      "parameterDecorators": [
+        {
+          "name": "employee",
+          "description": "The address of the employee who receives the salary.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "salary",
+          "description": "The amount of tokens to be streamed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenAddress",
+          "description": "The ERC20 token to use as streaming currency.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "startTime",
+          "description": "The unix timestamp for when the stream starts.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "stopTime",
+          "description": "The unix timestamp for when the stream stops.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "salaryId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "nextSalaryId()",
+      "name": "nextSalaryId",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "postRelayedCall(bytes,bool,uint256,bytes32)",
+      "name": "postRelayedCall",
+      "description": "See `IRelayRecipient.postRelayedCall`. * This function should not be overriden directly, use `_postRelayedCall` instead. * * Requirements: * - the caller must be the `RelayHub` contract.",
+      "parameterDecorators": [
+        {
+          "name": "context",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "success",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "actualCharge",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "preRetVal",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Allows the current owner to transfer control of the contract to a newOwner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "The address to transfer ownership to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawFromSalary(uint256,uint256)",
+      "name": "withdrawFromSalary",
+      "description": "Withdraws from the contract to the employee's account. Throws if the id does not point to a valid salary. Throws if the caller is not the employee or a relayer. Throws if there is a token transfer failure.",
+      "parameterDecorators": [
+        {
+          "name": "salaryId",
+          "description": "The id of the salary to withdraw from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "The amount of tokens to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

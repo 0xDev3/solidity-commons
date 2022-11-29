@@ -1,1 +1,1165 @@
-{"schema":"../schema.json","tags":["tokens","bridges","nft"],"name":"ForeignNFTOmnibridge","description":"ForeignNFTOmnibridge. Foreign side implementation for multi-token ERC721 mediator intended to work on top of AMB bridge. It is designed to be used as an implementation contract of EternalStorageProxy contract.","eventDecorators":[{"signature":"FailedMessageFixed(bytes32,address)","name":"FailedMessageFixed","description":"Event for token purchase logging.","parameterDecorators":[{"name":"messageId","description":"","recommendedTypes":[],"indexed":true},{"name":"token","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"NewTokenRegistered(address,address)","name":"NewTokenRegistered","description":"Event for token purchase logging.","parameterDecorators":[{"name":"nativeToken","description":"","recommendedTypes":[],"indexed":true},{"name":"bridgedToken","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Event for token purchase logging.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":false},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TokenBridgingDisabled(address,bool)","name":"TokenBridgingDisabled","description":"Event for token purchase logging.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[],"indexed":true},{"name":"disabled","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TokenExecutionDisabled(address,bool)","name":"TokenExecutionDisabled","description":"Event for token purchase logging.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[],"indexed":true},{"name":"disabled","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TokensBridged(address,address,uint256[],uint256[],bytes32)","name":"TokensBridged","description":"Event for token purchase logging.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[],"indexed":true},{"name":"recipient","description":"","recommendedTypes":[],"indexed":true},{"name":"tokenIds","description":"","recommendedTypes":[],"indexed":false},{"name":"values","description":"","recommendedTypes":[],"indexed":false},{"name":"messageId","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"TokensBridgingInitiated(address,address,uint256[],uint256[],bytes32)","name":"TokensBridgingInitiated","description":"Event for token purchase logging.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[],"indexed":true},{"name":"sender","description":"","recommendedTypes":[],"indexed":true},{"name":"tokenIds","description":"","recommendedTypes":[],"indexed":false},{"name":"values","description":"","recommendedTypes":[],"indexed":false},{"name":"messageId","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"bridgeContract()","name":"bridgeContract","description":"Get the AMB interface for the bridge contract address.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"AMB interface for the bridge contract address.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"bridgedTokenAddress(address)","name":"bridgedTokenAddress","description":"Retrieves address of the bridged token contract associated with a specific native token contract on the other side.","parameterDecorators":[{"name":"_nativeToken","description":"address of the native token contract on the other side.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"address of the deployed bridged token contract.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"deployAndHandleBridgedNFT(address,string,string,address,uint256[],uint256[],string[])","name":"deployAndHandleBridgedNFT","description":"Handles the bridged token for the first time, includes deployment of new ERC721TokenProxy contract.","parameterDecorators":[{"name":"_token","description":"address of the native ERC721 token on the other side.","recommendedTypes":[]},{"name":"_name","description":"name of the native token, name suffix will be appended, if empty, symbol will be used instead.","recommendedTypes":[]},{"name":"_symbol","description":"symbol of the bridged token, if empty, name will be used instead.","recommendedTypes":[]},{"name":"_recipient","description":"address that will receive the tokens.","recommendedTypes":[]},{"name":"_tokenIds","description":"unique ids of the bridged tokens.","recommendedTypes":[]},{"name":"_values","description":"amounts of bridged tokens. Should be empty list for ERC721.","recommendedTypes":[]},{"name":"_tokenURIs","description":"URIs for the bridged token instances.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"disableTokenBridging(address,bool)","name":"disableTokenBridging","description":"Disabled bridging operations for the particular token.","parameterDecorators":[{"name":"_token","description":"address of the token contract, or address(0) for configuring the global restriction.","recommendedTypes":[]},{"name":"_disable","description":"true for disabling.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"disableTokenExecution(address,bool)","name":"disableTokenExecution","description":"Disabled execution operations for the particular token.","parameterDecorators":[{"name":"_token","description":"address of the token contract, or address(0) for configuring the global restriction.","recommendedTypes":[]},{"name":"_disable","description":"true for disabling.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"fixFailedMessage(bytes32,address,address,uint256[],uint256[])","name":"fixFailedMessage","description":"Handles the request to fix transferred assets which bridged message execution failed on the other network. Compares the reconstructed message checksum with the original one. Revert if message params were altered.","parameterDecorators":[{"name":"_messageId","description":"id of the message which execution failed on this side of the bridge.","recommendedTypes":[]},{"name":"_token","description":"address of the bridged token on this side of the bridge.","recommendedTypes":[]},{"name":"_sender","description":"address of the tokens sender on this side of the bridge.","recommendedTypes":[]},{"name":"_tokenIds","description":"ids of the sent tokens.","recommendedTypes":[]},{"name":"_values","description":"amounts of tokens sent.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"fixMediatorBalanceERC1155(address,address,uint256[],uint256[])","name":"fixMediatorBalanceERC1155","description":"Allows to send to the other network some ERC1155 token that can be forced into the contract without the invocation of the required methods. Before calling this method, it must be carefully investigated how imbalance happened in order to avoid an attempt to steal the funds from a token with double addresses.","parameterDecorators":[{"name":"_token","description":"address of the token contract.","recommendedTypes":[]},{"name":"_receiver","description":"the address that will receive the token on the other network.","recommendedTypes":[]},{"name":"_tokenIds","description":"unique ids of the bridged tokens.","recommendedTypes":[]},{"name":"_values","description":"corresponding amounts of the bridged tokens.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"fixMediatorBalanceERC721(address,address,uint256[])","name":"fixMediatorBalanceERC721","description":"Allows to send to the other network some ERC721 token that can be forced into the contract without the invocation of the required methods. (e. g. regular transferFrom without a call to onERC721Received) Before calling this method, it must be carefully investigated how imbalance happened in order to avoid an attempt to steal the funds from a token with double addresses.","parameterDecorators":[{"name":"_token","description":"address of the token contract.","recommendedTypes":[]},{"name":"_receiver","description":"the address that will receive the token on the other network.","recommendedTypes":[]},{"name":"_tokenIds","description":"unique ids of the bridged tokens.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getBridgeInterfacesVersion()","name":"getBridgeInterfacesVersion","description":"Tells the bridge interface version that this contract supports.","parameterDecorators":[],"returnDecorators":[{"name":"major","description":"value of the version.","recommendedTypes":[],"solidityType":"uint64"},{"name":"minor","description":"value of the version.","recommendedTypes":[],"solidityType":"uint64"},{"name":"patch","description":"value of the version.","recommendedTypes":[],"solidityType":"uint64"}],"emittableEvents":[],"readOnly":true},{"signature":"getBridgeMode()","name":"getBridgeMode","description":"Tells the bridge mode that this contract supports.","parameterDecorators":[],"returnDecorators":[{"name":"_data","description":"4 bytes representing the bridge mode.","recommendedTypes":[],"solidityType":"bytes4"}],"emittableEvents":[],"readOnly":true},{"signature":"handleBridgedNFT(address,address,uint256[],uint256[],string[])","name":"handleBridgedNFT","description":"Handles the bridged token for the already registered token pair. Checks that the bridged token is inside the execution limits and invokes the Mint accordingly.","parameterDecorators":[{"name":"_token","description":"address of the native ERC721 token on the other side.","recommendedTypes":[]},{"name":"_recipient","description":"address that will receive the tokens.","recommendedTypes":[]},{"name":"_tokenIds","description":"unique ids of the bridged tokens.","recommendedTypes":[]},{"name":"_values","description":"amounts of bridged tokens. Should be empty list for ERC721.","recommendedTypes":[]},{"name":"_tokenURIs","description":"URIs for the bridged token instances.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"handleNativeNFT(address,address,uint256[],uint256[])","name":"handleNativeNFT","description":"Handles the bridged token that are native to this chain. Checks that the bridged token is inside the execution limits and invokes the Unlock accordingly.","parameterDecorators":[{"name":"_token","description":"address of the native ERC721 token contract.","recommendedTypes":[]},{"name":"_recipient","description":"address that will receive the tokens.","recommendedTypes":[]},{"name":"_tokenIds","description":"unique ids of the bridged tokens.","recommendedTypes":[]},{"name":"_values","description":"amounts of bridged tokens. Should be empty list for ERC721.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"initialize(address,address,uint256,address,address,address)","name":"initialize","description":"Stores the initial parameters of the mediator.","parameterDecorators":[{"name":"_bridgeContract","description":"the address of the AMB bridge contract.","recommendedTypes":[]},{"name":"_mediatorContract","description":"the address of the mediator contract on the other network.","recommendedTypes":[]},{"name":"_requestGasLimit","description":"the gas limit for the message execution.","recommendedTypes":[]},{"name":"_owner","description":"address of the owner of the mediator contract.","recommendedTypes":[]},{"name":"_imageERC721","description":"address of the ERC721 token image.","recommendedTypes":[]},{"name":"_imageERC1155","description":"address of the ERC1155 token image.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"isBridgedTokenDeployAcknowledged(address)","name":"isBridgedTokenDeployAcknowledged","description":"Checks if for a given native token, the deployment of its bridged alternative was already acknowledged.","parameterDecorators":[{"name":"_token","description":"address of native token contract.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"true, if bridged token was already deployed.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isInitialized()","name":"isInitialized","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isRegisteredAsNativeToken(address)","name":"isRegisteredAsNativeToken","description":"Checks if a given token is a bridged token that is native to this side of the bridge.","parameterDecorators":[{"name":"_token","description":"address of token contract.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"message id of the send message.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isTokenBridgingAllowed(address)","name":"isTokenBridgingAllowed","description":"Tells if the bridging operations for the particular token are allowed.","parameterDecorators":[{"name":"_token","description":"address of the token contract.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"true, if bridging operations are allowed.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isTokenExecutionAllowed(address)","name":"isTokenExecutionAllowed","description":"Tells if the execution operations for the particular token are allowed.","parameterDecorators":[{"name":"_token","description":"address of the token contract.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"true, if execution operations are allowed.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isTokenRegistered(address)","name":"isTokenRegistered","description":"Checks if specified token was already bridged at least once and it is registered in the Omnibridge.","parameterDecorators":[{"name":"_token","description":"address of the token contract.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"true, if token was already bridged.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"mediatorContractOnOtherSide()","name":"mediatorContractOnOtherSide","description":"Tells the mediator contract address from the other network.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"the address of the mediator contract.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"mediatorOwns(address,uint256)","name":"mediatorOwns","description":"Tells amount of owned tokens recorded at this mediator. More strict than regular token.ownerOf()/token.balanceOf() checks, since does not take into account forced tokens.","parameterDecorators":[{"name":"_token","description":"address of token contract.","recommendedTypes":[]},{"name":"_tokenId","description":"id of the new owned token.","recommendedTypes":[]}],"returnDecorators":[{"name":"amount","description":"of owned tokens, 0 or 1 for ERC721 NFTs.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"messageFixed(bytes32)","name":"messageFixed","description":"Tells if a message sent to the AMB bridge has been fixed.","parameterDecorators":[{"name":"_messageId","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"bool indicating the status of the message.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"nativeTokenAddress(address)","name":"nativeTokenAddress","description":"Retrieves address of the native token contract associated with a specific bridged token contract.","parameterDecorators":[{"name":"_bridgedToken","description":"address of the created bridged token contract on this side.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"address of the native token contract on the other side of the bridge.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)","name":"onERC1155BatchReceived","description":"ERC1155 transfer callback function.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"_from","description":"address of token sender.","recommendedTypes":[]},{"name":"_tokenIds","description":"unique ids of the received tokens.","recommendedTypes":[]},{"name":"_values","description":"amounts of received tokens.","recommendedTypes":[]},{"name":"_data","description":"additional transfer data, can be used for passing alternative receiver address.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes4"}],"emittableEvents":[],"readOnly":false},{"signature":"onERC1155Received(address,address,uint256,uint256,bytes)","name":"onERC1155Received","description":"ERC1155 transfer callback function.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"_from","description":"address of token sender.","recommendedTypes":[]},{"name":"_tokenId","description":"id of the transferred token.","recommendedTypes":[]},{"name":"_value","description":"amount of received tokens.","recommendedTypes":[]},{"name":"_data","description":"additional transfer data, can be used for passing alternative receiver address.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes4"}],"emittableEvents":[],"readOnly":false},{"signature":"onERC721Received(address,address,uint256,bytes)","name":"onERC721Received","description":"ERC721 transfer callback function.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"_from","description":"address of token sender.","recommendedTypes":[]},{"name":"_tokenId","description":"id of the transferred token.","recommendedTypes":[]},{"name":"_data","description":"additional transfer data, can be used for passing alternative receiver address.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes4"}],"emittableEvents":[],"readOnly":false},{"signature":"owner()","name":"owner","description":"Tells the address of the owner.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"the address of the owner.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"relayToken(address,uint256)","name":"relayToken","description":"Initiate the bridge operation for some token from msg.sender to msg.sender on the other side. The user should first call Approve method of the ERC721 token.","parameterDecorators":[{"name":"token","description":"bridged token contract address.","recommendedTypes":[]},{"name":"_tokenId","description":"id of token to be transferred to the other network.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"relayToken(address,address,uint256)","name":"relayToken","description":"Initiate the bridge operation for some token from msg.sender. The user should first call Approve method of the ERC721 token.","parameterDecorators":[{"name":"token","description":"bridged token contract address.","recommendedTypes":[]},{"name":"_receiver","description":"address that will receive the token on the other network.","recommendedTypes":[]},{"name":"_tokenId","description":"id of the token to be transferred to the other network.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"requestFailedMessageFix(bytes32,address,address,uint256[],uint256[])","name":"requestFailedMessageFix","description":"Method to be called when a bridged message execution failed. It will generate a new message requesting to fix/roll back the transferred assets on the other network. It is important to specify parameters very carefully. Please, take exact values from the TokensBridgingInitiated event. Otherwise, execution will revert.","parameterDecorators":[{"name":"_messageId","description":"id of the message which execution failed.","recommendedTypes":[]},{"name":"_token","description":"address of the bridged token on the other side of the bridge.","recommendedTypes":[]},{"name":"_sender","description":"address of the tokens sender on the other side.","recommendedTypes":[]},{"name":"_tokenIds","description":"ids of the sent tokens.","recommendedTypes":[]},{"name":"_values","description":"amounts of tokens sent.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"requestGasLimit()","name":"requestGasLimit","description":"Tells the default gas limit to be used in the message execution by the AMB bridge on the other network.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"the gas limit for the message execution.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setBridgeContract(address)","name":"setBridgeContract","description":"Sets the AMB bridge contract address. Only the owner can call this method.","parameterDecorators":[{"name":"_bridgeContract","description":"the address of the bridge contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setCustomMetadata(address,string,string)","name":"setCustomMetadata","description":"Sets the custom metadata for the given ERC721/ERC1155 token. Only owner can call this method. Useful when original NFT token does not implement neither name() nor symbol() methods.","parameterDecorators":[{"name":"_token","description":"address of the token contract.","recommendedTypes":[]},{"name":"_name","description":"custom name for the token contract.","recommendedTypes":[]},{"name":"_symbol","description":"custom symbol for the token contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setCustomTokenAddressPair(address,address)","name":"setCustomTokenAddressPair","description":"Allows to pre-set the bridged token contract for not-yet bridged token. Only the owner can call this method.","parameterDecorators":[{"name":"_nativeToken","description":"address of the token contract on the other side that was not yet bridged.","recommendedTypes":[]},{"name":"_bridgedToken","description":"address of the bridged token contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMediatorContractOnOtherSide(address)","name":"setMediatorContractOnOtherSide","description":"Sets the mediator contract address from the other network. Only the owner can call this method.","parameterDecorators":[{"name":"_mediatorContract","description":"the address of the mediator contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setRequestGasLimit(uint256)","name":"setRequestGasLimit","description":"Sets the default gas limit to be used in the message execution by the AMB bridge on the other network. This value can't exceed the parameter maxGasPerTx defined on the AMB bridge. Only the owner can call this method.","parameterDecorators":[{"name":"_gasLimit","description":"the gas limit for the message execution.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setTokenImageERC1155(address)","name":"setTokenImageERC1155","description":"Updates address of the used ERC1155 token image. Only owner can call this method.","parameterDecorators":[{"name":"_image","description":"address of the new token image.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setTokenImageERC721(address)","name":"setTokenImageERC721","description":"Updates address of the used ERC721 token image. Only owner can call this method.","parameterDecorators":[{"name":"_image","description":"address of the new token image.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"tokenImageERC1155()","name":"tokenImageERC1155","description":"Tells the address of the used ERC1155 token image.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"address of the used token image.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"tokenImageERC721()","name":"tokenImageERC721","description":"Tells the address of the used ERC721 token image.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"address of the used token image.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Allows the current owner to transfer control of the contract to a newOwner.","parameterDecorators":[{"name":"newOwner","description":"the address to transfer ownership to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "bridges",
+    "nft"
+  ],
+  "name": "ForeignNFTOmnibridge",
+  "description": "ForeignNFTOmnibridge. Foreign side implementation for multi-token ERC721 mediator intended to work on top of AMB bridge. It is designed to be used as an implementation contract of EternalStorageProxy contract.",
+  "eventDecorators": [
+    {
+      "signature": "FailedMessageFixed(bytes32,address)",
+      "name": "FailedMessageFixed",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "messageId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewTokenRegistered(address,address)",
+      "name": "NewTokenRegistered",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "nativeToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "bridgedToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TokenBridgingDisabled(address,bool)",
+      "name": "TokenBridgingDisabled",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "disabled",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TokenExecutionDisabled(address,bool)",
+      "name": "TokenExecutionDisabled",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "disabled",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TokensBridged(address,address,uint256[],uint256[],bytes32)",
+      "name": "TokensBridged",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenIds",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "values",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "messageId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TokensBridgingInitiated(address,address,uint256[],uint256[],bytes32)",
+      "name": "TokensBridgingInitiated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenIds",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "values",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "messageId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "bridgeContract()",
+      "name": "bridgeContract",
+      "description": "Get the AMB interface for the bridge contract address.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "AMB interface for the bridge contract address.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "bridgedTokenAddress(address)",
+      "name": "bridgedTokenAddress",
+      "description": "Retrieves address of the bridged token contract associated with a specific native token contract on the other side.",
+      "parameterDecorators": [
+        {
+          "name": "_nativeToken",
+          "description": "address of the native token contract on the other side.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "address of the deployed bridged token contract.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deployAndHandleBridgedNFT(address,string,string,address,uint256[],uint256[],string[])",
+      "name": "deployAndHandleBridgedNFT",
+      "description": "Handles the bridged token for the first time, includes deployment of new ERC721TokenProxy contract.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the native ERC721 token on the other side.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_name",
+          "description": "name of the native token, name suffix will be appended, if empty, symbol will be used instead.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_symbol",
+          "description": "symbol of the bridged token, if empty, name will be used instead.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_recipient",
+          "description": "address that will receive the tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenIds",
+          "description": "unique ids of the bridged tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_values",
+          "description": "amounts of bridged tokens. Should be empty list for ERC721.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenURIs",
+          "description": "URIs for the bridged token instances.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "disableTokenBridging(address,bool)",
+      "name": "disableTokenBridging",
+      "description": "Disabled bridging operations for the particular token.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the token contract, or address(0) for configuring the global restriction.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_disable",
+          "description": "true for disabling.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "disableTokenExecution(address,bool)",
+      "name": "disableTokenExecution",
+      "description": "Disabled execution operations for the particular token.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the token contract, or address(0) for configuring the global restriction.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_disable",
+          "description": "true for disabling.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "fixFailedMessage(bytes32,address,address,uint256[],uint256[])",
+      "name": "fixFailedMessage",
+      "description": "Handles the request to fix transferred assets which bridged message execution failed on the other network. Compares the reconstructed message checksum with the original one. Revert if message params were altered.",
+      "parameterDecorators": [
+        {
+          "name": "_messageId",
+          "description": "id of the message which execution failed on this side of the bridge.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_token",
+          "description": "address of the bridged token on this side of the bridge.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_sender",
+          "description": "address of the tokens sender on this side of the bridge.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenIds",
+          "description": "ids of the sent tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_values",
+          "description": "amounts of tokens sent.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "fixMediatorBalanceERC1155(address,address,uint256[],uint256[])",
+      "name": "fixMediatorBalanceERC1155",
+      "description": "Allows to send to the other network some ERC1155 token that can be forced into the contract without the invocation of the required methods. Before calling this method, it must be carefully investigated how imbalance happened in order to avoid an attempt to steal the funds from a token with double addresses.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the token contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_receiver",
+          "description": "the address that will receive the token on the other network.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenIds",
+          "description": "unique ids of the bridged tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_values",
+          "description": "corresponding amounts of the bridged tokens.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "fixMediatorBalanceERC721(address,address,uint256[])",
+      "name": "fixMediatorBalanceERC721",
+      "description": "Allows to send to the other network some ERC721 token that can be forced into the contract without the invocation of the required methods. (e. g. regular transferFrom without a call to onERC721Received) Before calling this method, it must be carefully investigated how imbalance happened in order to avoid an attempt to steal the funds from a token with double addresses.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the token contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_receiver",
+          "description": "the address that will receive the token on the other network.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenIds",
+          "description": "unique ids of the bridged tokens.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getBridgeInterfacesVersion()",
+      "name": "getBridgeInterfacesVersion",
+      "description": "Tells the bridge interface version that this contract supports.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "major",
+          "description": "value of the version.",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "minor",
+          "description": "value of the version.",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "patch",
+          "description": "value of the version.",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getBridgeMode()",
+      "name": "getBridgeMode",
+      "description": "Tells the bridge mode that this contract supports.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_data",
+          "description": "4 bytes representing the bridge mode.",
+          "recommendedTypes": [],
+          "solidityType": "bytes4"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "handleBridgedNFT(address,address,uint256[],uint256[],string[])",
+      "name": "handleBridgedNFT",
+      "description": "Handles the bridged token for the already registered token pair. Checks that the bridged token is inside the execution limits and invokes the Mint accordingly.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the native ERC721 token on the other side.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_recipient",
+          "description": "address that will receive the tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenIds",
+          "description": "unique ids of the bridged tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_values",
+          "description": "amounts of bridged tokens. Should be empty list for ERC721.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenURIs",
+          "description": "URIs for the bridged token instances.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "handleNativeNFT(address,address,uint256[],uint256[])",
+      "name": "handleNativeNFT",
+      "description": "Handles the bridged token that are native to this chain. Checks that the bridged token is inside the execution limits and invokes the Unlock accordingly.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the native ERC721 token contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_recipient",
+          "description": "address that will receive the tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenIds",
+          "description": "unique ids of the bridged tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_values",
+          "description": "amounts of bridged tokens. Should be empty list for ERC721.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialize(address,address,uint256,address,address,address)",
+      "name": "initialize",
+      "description": "Stores the initial parameters of the mediator.",
+      "parameterDecorators": [
+        {
+          "name": "_bridgeContract",
+          "description": "the address of the AMB bridge contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_mediatorContract",
+          "description": "the address of the mediator contract on the other network.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_requestGasLimit",
+          "description": "the gas limit for the message execution.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_owner",
+          "description": "address of the owner of the mediator contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_imageERC721",
+          "description": "address of the ERC721 token image.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_imageERC1155",
+          "description": "address of the ERC1155 token image.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isBridgedTokenDeployAcknowledged(address)",
+      "name": "isBridgedTokenDeployAcknowledged",
+      "description": "Checks if for a given native token, the deployment of its bridged alternative was already acknowledged.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of native token contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "true, if bridged token was already deployed.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isInitialized()",
+      "name": "isInitialized",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isRegisteredAsNativeToken(address)",
+      "name": "isRegisteredAsNativeToken",
+      "description": "Checks if a given token is a bridged token that is native to this side of the bridge.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of token contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "message id of the send message.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isTokenBridgingAllowed(address)",
+      "name": "isTokenBridgingAllowed",
+      "description": "Tells if the bridging operations for the particular token are allowed.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the token contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "true, if bridging operations are allowed.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isTokenExecutionAllowed(address)",
+      "name": "isTokenExecutionAllowed",
+      "description": "Tells if the execution operations for the particular token are allowed.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the token contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "true, if execution operations are allowed.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isTokenRegistered(address)",
+      "name": "isTokenRegistered",
+      "description": "Checks if specified token was already bridged at least once and it is registered in the Omnibridge.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the token contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "true, if token was already bridged.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "mediatorContractOnOtherSide()",
+      "name": "mediatorContractOnOtherSide",
+      "description": "Tells the mediator contract address from the other network.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the address of the mediator contract.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "mediatorOwns(address,uint256)",
+      "name": "mediatorOwns",
+      "description": "Tells amount of owned tokens recorded at this mediator. More strict than regular token.ownerOf()/token.balanceOf() checks, since does not take into account forced tokens.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of token contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "id of the new owned token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amount",
+          "description": "of owned tokens, 0 or 1 for ERC721 NFTs.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "messageFixed(bytes32)",
+      "name": "messageFixed",
+      "description": "Tells if a message sent to the AMB bridge has been fixed.",
+      "parameterDecorators": [
+        {
+          "name": "_messageId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "bool indicating the status of the message.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nativeTokenAddress(address)",
+      "name": "nativeTokenAddress",
+      "description": "Retrieves address of the native token contract associated with a specific bridged token contract.",
+      "parameterDecorators": [
+        {
+          "name": "_bridgedToken",
+          "description": "address of the created bridged token contract on this side.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "address of the native token contract on the other side of the bridge.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)",
+      "name": "onERC1155BatchReceived",
+      "description": "ERC1155 transfer callback function.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_from",
+          "description": "address of token sender.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenIds",
+          "description": "unique ids of the received tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_values",
+          "description": "amounts of received tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "additional transfer data, can be used for passing alternative receiver address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes4"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "onERC1155Received(address,address,uint256,uint256,bytes)",
+      "name": "onERC1155Received",
+      "description": "ERC1155 transfer callback function.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_from",
+          "description": "address of token sender.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "id of the transferred token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_value",
+          "description": "amount of received tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "additional transfer data, can be used for passing alternative receiver address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes4"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "onERC721Received(address,address,uint256,bytes)",
+      "name": "onERC721Received",
+      "description": "ERC721 transfer callback function.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_from",
+          "description": "address of token sender.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "id of the transferred token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "additional transfer data, can be used for passing alternative receiver address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes4"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Tells the address of the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the address of the owner.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "relayToken(address,uint256)",
+      "name": "relayToken",
+      "description": "Initiate the bridge operation for some token from msg.sender to msg.sender on the other side. The user should first call Approve method of the ERC721 token.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "bridged token contract address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "id of token to be transferred to the other network.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "relayToken(address,address,uint256)",
+      "name": "relayToken",
+      "description": "Initiate the bridge operation for some token from msg.sender. The user should first call Approve method of the ERC721 token.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "bridged token contract address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_receiver",
+          "description": "address that will receive the token on the other network.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "id of the token to be transferred to the other network.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "requestFailedMessageFix(bytes32,address,address,uint256[],uint256[])",
+      "name": "requestFailedMessageFix",
+      "description": "Method to be called when a bridged message execution failed. It will generate a new message requesting to fix/roll back the transferred assets on the other network. It is important to specify parameters very carefully. Please, take exact values from the TokensBridgingInitiated event. Otherwise, execution will revert.",
+      "parameterDecorators": [
+        {
+          "name": "_messageId",
+          "description": "id of the message which execution failed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_token",
+          "description": "address of the bridged token on the other side of the bridge.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_sender",
+          "description": "address of the tokens sender on the other side.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenIds",
+          "description": "ids of the sent tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_values",
+          "description": "amounts of tokens sent.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "requestGasLimit()",
+      "name": "requestGasLimit",
+      "description": "Tells the default gas limit to be used in the message execution by the AMB bridge on the other network.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the gas limit for the message execution.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setBridgeContract(address)",
+      "name": "setBridgeContract",
+      "description": "Sets the AMB bridge contract address. Only the owner can call this method.",
+      "parameterDecorators": [
+        {
+          "name": "_bridgeContract",
+          "description": "the address of the bridge contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setCustomMetadata(address,string,string)",
+      "name": "setCustomMetadata",
+      "description": "Sets the custom metadata for the given ERC721/ERC1155 token. Only owner can call this method. Useful when original NFT token does not implement neither name() nor symbol() methods.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the token contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_name",
+          "description": "custom name for the token contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_symbol",
+          "description": "custom symbol for the token contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setCustomTokenAddressPair(address,address)",
+      "name": "setCustomTokenAddressPair",
+      "description": "Allows to pre-set the bridged token contract for not-yet bridged token. Only the owner can call this method.",
+      "parameterDecorators": [
+        {
+          "name": "_nativeToken",
+          "description": "address of the token contract on the other side that was not yet bridged.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_bridgedToken",
+          "description": "address of the bridged token contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMediatorContractOnOtherSide(address)",
+      "name": "setMediatorContractOnOtherSide",
+      "description": "Sets the mediator contract address from the other network. Only the owner can call this method.",
+      "parameterDecorators": [
+        {
+          "name": "_mediatorContract",
+          "description": "the address of the mediator contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRequestGasLimit(uint256)",
+      "name": "setRequestGasLimit",
+      "description": "Sets the default gas limit to be used in the message execution by the AMB bridge on the other network. This value can't exceed the parameter maxGasPerTx defined on the AMB bridge. Only the owner can call this method.",
+      "parameterDecorators": [
+        {
+          "name": "_gasLimit",
+          "description": "the gas limit for the message execution.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setTokenImageERC1155(address)",
+      "name": "setTokenImageERC1155",
+      "description": "Updates address of the used ERC1155 token image. Only owner can call this method.",
+      "parameterDecorators": [
+        {
+          "name": "_image",
+          "description": "address of the new token image.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setTokenImageERC721(address)",
+      "name": "setTokenImageERC721",
+      "description": "Updates address of the used ERC721 token image. Only owner can call this method.",
+      "parameterDecorators": [
+        {
+          "name": "_image",
+          "description": "address of the new token image.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tokenImageERC1155()",
+      "name": "tokenImageERC1155",
+      "description": "Tells the address of the used ERC1155 token image.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "address of the used token image.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tokenImageERC721()",
+      "name": "tokenImageERC721",
+      "description": "Tells the address of the used ERC721 token image.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "address of the used token image.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Allows the current owner to transfer control of the contract to a newOwner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "the address to transfer ownership to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

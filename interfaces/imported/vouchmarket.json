@@ -1,1 +1,369 @@
-{"schema":"../schema.json","tags":[],"name":"VouchMarket","description":"","eventDecorators":[{"signature":"LogClaimVouchNotPerformed(uint64)","name":"LogClaimVouchNotPerformed","description":"Emitted when IDLE rate is changed. Emitted when a vouch is not performed for this proposal.","parameterDecorators":[{"name":"idProposal","description":"Unique identifier of the proposal.","recommendedTypes":[],"indexed":true}]},{"signature":"LogProposal(uint64,address,uint256,uint64,address)","name":"LogProposal","description":"Emitted when IDLE rate is changed. To be emitted when a proposal is submitted.","parameterDecorators":[{"name":"idProposal","description":"Unique identifier of the proposal.","recommendedTypes":[],"indexed":true},{"name":"user","description":"The user that receives the vouch.","recommendedTypes":[],"indexed":true},{"name":"amount","description":"The ETH sent by the user.","recommendedTypes":[],"indexed":false},{"name":"timeLimit","description":"Time limit until the user can claim his own funds.","recommendedTypes":[],"indexed":false},{"name":"voucher","description":"The person who vouch.","recommendedTypes":[],"indexed":false}]},{"signature":"LogProposalLocked(uint64,address)","name":"LogProposalLocked","description":"Emitted when IDLE rate is changed. Emitted when a voucher locks a proposal.","parameterDecorators":[{"name":"idProposal","description":"Unique identifier of the proposal.","recommendedTypes":[],"indexed":true},{"name":"voucher","description":"The person who locks and vouch the proposal.","recommendedTypes":[],"indexed":true}]},{"signature":"LogRewardForVouchingClaimed(uint64,address)","name":"LogRewardForVouchingClaimed","description":"Emitted when IDLE rate is changed. Emitted when a proposal reward is claimed.","parameterDecorators":[{"name":"idProposal","description":"Unique identifier of the proposal.","recommendedTypes":[],"indexed":true},{"name":"voucher","description":"The person who vouch.","recommendedTypes":[],"indexed":true}]},{"signature":"LogWithdrawn(uint64,address,uint256,uint256)","name":"LogWithdrawn","description":"Emitted when IDLE rate is changed. To be emitted when a withdrawal occurs.","parameterDecorators":[{"name":"idProposal","description":"Unique identifier of the proposal.","recommendedTypes":[],"indexed":true},{"name":"withdrawer","description":"The person who withdraws.","recommendedTypes":[],"indexed":true},{"name":"fund","description":"The ETH sent to the person who withdraws.","recommendedTypes":[],"indexed":false},{"name":"fee","description":"The contract fee.","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"changeMaintainer(address)","name":"changeMaintainer","description":"Change maintainer.","parameterDecorators":[{"name":"_maintainer","description":"The address of the new maintainer.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"changeParameters(uint256,uint64,address)","name":"changeParameters","description":"Change Fee Divisor Commission Calculator and the cooldown time to wait after a proposal lock.","parameterDecorators":[{"name":"_feeDivisor","description":"The divisor to calculate the fee, the higher this value is, the lower the fee and the higher the reward for the voucher.","recommendedTypes":[]},{"name":"_cooldownTime","description":"Minimum waiting time to lock another proposal.","recommendedTypes":[]},{"name":"_UBIburner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claimRewardForVouching(uint64)","name":"claimRewardForVouching","description":"After vouch for a proposal, claim the proposal reward.","parameterDecorators":[{"name":"idProposal","description":"The ID of the proposal.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claimVouchNotPerformed(uint64)","name":"claimVouchNotPerformed","description":"If the user is not vouched in time limit, user can claim his own funds.","parameterDecorators":[{"name":"idProposal","description":"The ID of the proposal.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"cooldownTime()","name":"cooldownTime","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint64"}],"emittableEvents":[],"readOnly":true},{"signature":"feeDivisor()","name":"feeDivisor","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"lockProposal(uint64)","name":"lockProposal","description":"Lock the proposal before the vouch happens and only the locker will be able to claim it. Reducing the voucher race.","parameterDecorators":[{"name":"idProposal","description":"The ID of the proposal.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"proposalCounter()","name":"proposalCounter","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint64"}],"emittableEvents":[],"readOnly":true},{"signature":"proposalMap(uint64)","name":"proposalMap","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"user","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"timeLimit","description":"","recommendedTypes":[],"solidityType":"uint64"},{"name":"amount","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"voucher","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"submitProposal(uint64,address)","name":"submitProposal","description":"Submit proposal.","parameterDecorators":[{"name":"addedTime","description":"Time limit until the user can claim his own funds.","recommendedTypes":[]},{"name":"voucher","description":"(Optional) The person who give the vouch. Address 0 to denote that anyone can vouch.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"timeLastLockMap(address)","name":"timeLastLockMap","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint64"}],"emittableEvents":[],"readOnly":true},{"signature":"updateProposal(uint64,uint64,address)","name":"updateProposal","description":"Update the proposal to increase the reward and set a new time limit.","parameterDecorators":[{"name":"idProposal","description":"The ID of the proposal.","recommendedTypes":[]},{"name":"addedTime","description":"Time limit until the user can claim his own funds.","recommendedTypes":[]},{"name":"voucher","description":"(Optional) The person who vouch. Address 0 to denote that anyone can vouch.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "VouchMarket",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "LogClaimVouchNotPerformed(uint64)",
+      "name": "LogClaimVouchNotPerformed",
+      "description": "Emitted when IDLE rate is changed. Emitted when a vouch is not performed for this proposal.",
+      "parameterDecorators": [
+        {
+          "name": "idProposal",
+          "description": "Unique identifier of the proposal.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "LogProposal(uint64,address,uint256,uint64,address)",
+      "name": "LogProposal",
+      "description": "Emitted when IDLE rate is changed. To be emitted when a proposal is submitted.",
+      "parameterDecorators": [
+        {
+          "name": "idProposal",
+          "description": "Unique identifier of the proposal.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "user",
+          "description": "The user that receives the vouch.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "The ETH sent by the user.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "timeLimit",
+          "description": "Time limit until the user can claim his own funds.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "voucher",
+          "description": "The person who vouch.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogProposalLocked(uint64,address)",
+      "name": "LogProposalLocked",
+      "description": "Emitted when IDLE rate is changed. Emitted when a voucher locks a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "idProposal",
+          "description": "Unique identifier of the proposal.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "voucher",
+          "description": "The person who locks and vouch the proposal.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "LogRewardForVouchingClaimed(uint64,address)",
+      "name": "LogRewardForVouchingClaimed",
+      "description": "Emitted when IDLE rate is changed. Emitted when a proposal reward is claimed.",
+      "parameterDecorators": [
+        {
+          "name": "idProposal",
+          "description": "Unique identifier of the proposal.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "voucher",
+          "description": "The person who vouch.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "LogWithdrawn(uint64,address,uint256,uint256)",
+      "name": "LogWithdrawn",
+      "description": "Emitted when IDLE rate is changed. To be emitted when a withdrawal occurs.",
+      "parameterDecorators": [
+        {
+          "name": "idProposal",
+          "description": "Unique identifier of the proposal.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "withdrawer",
+          "description": "The person who withdraws.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "fund",
+          "description": "The ETH sent to the person who withdraws.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "fee",
+          "description": "The contract fee.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "changeMaintainer(address)",
+      "name": "changeMaintainer",
+      "description": "Change maintainer.",
+      "parameterDecorators": [
+        {
+          "name": "_maintainer",
+          "description": "The address of the new maintainer.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeParameters(uint256,uint64,address)",
+      "name": "changeParameters",
+      "description": "Change Fee Divisor Commission Calculator and the cooldown time to wait after a proposal lock.",
+      "parameterDecorators": [
+        {
+          "name": "_feeDivisor",
+          "description": "The divisor to calculate the fee, the higher this value is, the lower the fee and the higher the reward for the voucher.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_cooldownTime",
+          "description": "Minimum waiting time to lock another proposal.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_UBIburner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimRewardForVouching(uint64)",
+      "name": "claimRewardForVouching",
+      "description": "After vouch for a proposal, claim the proposal reward.",
+      "parameterDecorators": [
+        {
+          "name": "idProposal",
+          "description": "The ID of the proposal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimVouchNotPerformed(uint64)",
+      "name": "claimVouchNotPerformed",
+      "description": "If the user is not vouched in time limit, user can claim his own funds.",
+      "parameterDecorators": [
+        {
+          "name": "idProposal",
+          "description": "The ID of the proposal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cooldownTime()",
+      "name": "cooldownTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "feeDivisor()",
+      "name": "feeDivisor",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lockProposal(uint64)",
+      "name": "lockProposal",
+      "description": "Lock the proposal before the vouch happens and only the locker will be able to claim it. Reducing the voucher race.",
+      "parameterDecorators": [
+        {
+          "name": "idProposal",
+          "description": "The ID of the proposal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "proposalCounter()",
+      "name": "proposalCounter",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "proposalMap(uint64)",
+      "name": "proposalMap",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "timeLimit",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "voucher",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "submitProposal(uint64,address)",
+      "name": "submitProposal",
+      "description": "Submit proposal.",
+      "parameterDecorators": [
+        {
+          "name": "addedTime",
+          "description": "Time limit until the user can claim his own funds.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "voucher",
+          "description": "(Optional) The person who give the vouch. Address 0 to denote that anyone can vouch.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "timeLastLockMap(address)",
+      "name": "timeLastLockMap",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "updateProposal(uint64,uint64,address)",
+      "name": "updateProposal",
+      "description": "Update the proposal to increase the reward and set a new time limit.",
+      "parameterDecorators": [
+        {
+          "name": "idProposal",
+          "description": "The ID of the proposal.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "addedTime",
+          "description": "Time limit until the user can claim his own funds.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "voucher",
+          "description": "(Optional) The person who vouch. Address 0 to denote that anyone can vouch.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

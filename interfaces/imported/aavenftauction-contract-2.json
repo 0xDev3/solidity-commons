@@ -1,1 +1,388 @@
-{"schema":"../schema.json","tags":["staking","nft","aave"],"name":"AaveNFTAuction","description":"AaveNFTAuction Contract. This contract manages both a main NFT and its shards. It sets up a simple on-chain auction and implements three potential fee models: 1. An auction claim fee 2. A consistent allocation, claimed at any time from the staked deposit rewards 3. A redemption fee (To the artist, in this case).","eventDecorators":[],"functionDecorators":[{"signature":"URIController()","name":"URIController","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"auctionFeeTo()","name":"auctionFeeTo","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"bid(uint256,uint256)","name":"bid","description":"This function places a bid on the auction for the given shard ID. Requirements: 1. Auctions must be initialized 2. Auctions must have started 3. Auctions must not have concluded 4. Bid must be higher than the current bid Requires approval from the AAVE contract.","parameterDecorators":[{"name":"shardId","description":"The shard ID to bid on.","recommendedTypes":[]},{"name":"bidAmount","description":"the amount of AAVE to bid.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"changeURI(address,uint256,string)","name":"changeURI","description":"This function changes the shard/main NFT URI in case of a URI location update.","parameterDecorators":[{"name":"NFT","description":"The address of the shard/main NFT contract to alter the URI for.","recommendedTypes":[]},{"name":"id","description":"The ID of the shard/main NFT to alter the URI for.","recommendedTypes":[]},{"name":"URIString","description":"The new URI.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"changeURIController(address)","name":"changeURIController","description":"This function transfers the URI controlling role to a given address.","parameterDecorators":[{"name":"target","description":"The address to transfer the URIController role to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claimStakeFeeRewards(uint256)","name":"claimStakeFeeRewards","description":"","parameterDecorators":[{"name":"shardId","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claimWonShard(uint256)","name":"claimWonShard","description":"This function claims a shard won in an auction, sending the fee to the \"feeTo\" address in the process. Requirements: 1. The auctions must have been initialized 2. The auctions must be over 3. The caler must be the auction winner.","parameterDecorators":[{"name":"shardId","description":"The shard NFT ID to claim.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getAdjustedRewardsBalance(uint256)","name":"getAdjustedRewardsBalance","description":"Returns a tuple containing, first, the staked AAVE balance and second, the AAVE staking reward associated with that shard.","parameterDecorators":[{"name":"shardId","description":"The shard NFT ID to query rewards for.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getAuctionData(uint256)","name":"getAuctionData","description":"Returns the data on a given auction.","parameterDecorators":[{"name":"shardId","description":"The ERC721 ID of the shard to query the current bid price for.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param2","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param3","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param4","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param5","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"param6","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getShardAddress()","name":"getShardAddress","description":"Returns the address of this main NFT's associated shard address.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"initializeShards(address,address,uint256,uint256,uint256,string,string)","name":"initializeShards","description":"This function, which can only be called once by the URIController, initializes the shard contract as well as the shard auctions.","parameterDecorators":[{"name":"shardAddress","description":"","recommendedTypes":[]},{"name":"mainAddress","description":"","recommendedTypes":[]},{"name":"auctionStartTime","description":"The starting timestamps for the auctions.","recommendedTypes":[]},{"name":"auctionDuration","description":"The duration auctions should last for, in seconds.","recommendedTypes":[]},{"name":"auctionStartPrice","description":"The auction starting price, in AAVE.","recommendedTypes":[]},{"name":"mainURIString","description":"","recommendedTypes":[]},{"name":"shardURIString","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"initialized()","name":"initialized","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isOnlyOwner(address)","name":"isOnlyOwner","description":"This function returns true only if the queried address is the last holder of shard NFTs, other than this contract. This is done by comparing the balance of the query and this contract to the total shards amount.","parameterDecorators":[{"name":"query","description":"The address to query.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"redeemMain()","name":"redeemMain","description":"This function redeems the main NFT. This function sends back all of the redeemed shards, as well as any leftover Aave rewards and stkAAVE. Finally it transfers the main NFT itself. Requires the caller to be the last holder of any shard NFT, bar this contract.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"redeemShard(uint256)","name":"redeemShard","description":"This function redeems the caller's shard, transferring in their shard NFT and sending back their accrued rewards and stkAAVE. This is only call-able by the shard owner, and cannot be called if they are the ONLY owner. Requires approval from the shard contract.","parameterDecorators":[{"name":"shardId","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"shardStakes(uint256)","name":"shardStakes","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"stake","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"claimTimestamp","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"stakeFeeTo()","name":"stakeFeeTo","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "staking",
+    "nft",
+    "aave"
+  ],
+  "name": "AaveNFTAuction",
+  "description": "AaveNFTAuction Contract. This contract manages both a main NFT and its shards. It sets up a simple on-chain auction and implements three potential fee models: 1. An auction claim fee 2. A consistent allocation, claimed at any time from the staked deposit rewards 3. A redemption fee (To the artist, in this case).",
+  "eventDecorators": [],
+  "functionDecorators": [
+    {
+      "signature": "URIController()",
+      "name": "URIController",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "auctionFeeTo()",
+      "name": "auctionFeeTo",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "bid(uint256,uint256)",
+      "name": "bid",
+      "description": "This function places a bid on the auction for the given shard ID. Requirements: 1. Auctions must be initialized 2. Auctions must have started 3. Auctions must not have concluded 4. Bid must be higher than the current bid Requires approval from the AAVE contract.",
+      "parameterDecorators": [
+        {
+          "name": "shardId",
+          "description": "The shard ID to bid on.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "bidAmount",
+          "description": "the amount of AAVE to bid.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeURI(address,uint256,string)",
+      "name": "changeURI",
+      "description": "This function changes the shard/main NFT URI in case of a URI location update.",
+      "parameterDecorators": [
+        {
+          "name": "NFT",
+          "description": "The address of the shard/main NFT contract to alter the URI for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "id",
+          "description": "The ID of the shard/main NFT to alter the URI for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "URIString",
+          "description": "The new URI.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeURIController(address)",
+      "name": "changeURIController",
+      "description": "This function transfers the URI controlling role to a given address.",
+      "parameterDecorators": [
+        {
+          "name": "target",
+          "description": "The address to transfer the URIController role to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimStakeFeeRewards(uint256)",
+      "name": "claimStakeFeeRewards",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "shardId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimWonShard(uint256)",
+      "name": "claimWonShard",
+      "description": "This function claims a shard won in an auction, sending the fee to the \"feeTo\" address in the process. Requirements: 1. The auctions must have been initialized 2. The auctions must be over 3. The caler must be the auction winner.",
+      "parameterDecorators": [
+        {
+          "name": "shardId",
+          "description": "The shard NFT ID to claim.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getAdjustedRewardsBalance(uint256)",
+      "name": "getAdjustedRewardsBalance",
+      "description": "Returns a tuple containing, first, the staked AAVE balance and second, the AAVE staking reward associated with that shard.",
+      "parameterDecorators": [
+        {
+          "name": "shardId",
+          "description": "The shard NFT ID to query rewards for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAuctionData(uint256)",
+      "name": "getAuctionData",
+      "description": "Returns the data on a given auction.",
+      "parameterDecorators": [
+        {
+          "name": "shardId",
+          "description": "The ERC721 ID of the shard to query the current bid price for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param3",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param4",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param5",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "param6",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getShardAddress()",
+      "name": "getShardAddress",
+      "description": "Returns the address of this main NFT's associated shard address.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initializeShards(address,address,uint256,uint256,uint256,string,string)",
+      "name": "initializeShards",
+      "description": "This function, which can only be called once by the URIController, initializes the shard contract as well as the shard auctions.",
+      "parameterDecorators": [
+        {
+          "name": "shardAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "mainAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "auctionStartTime",
+          "description": "The starting timestamps for the auctions.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "auctionDuration",
+          "description": "The duration auctions should last for, in seconds.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "auctionStartPrice",
+          "description": "The auction starting price, in AAVE.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "mainURIString",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "shardURIString",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialized()",
+      "name": "initialized",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isOnlyOwner(address)",
+      "name": "isOnlyOwner",
+      "description": "This function returns true only if the queried address is the last holder of shard NFTs, other than this contract. This is done by comparing the balance of the query and this contract to the total shards amount.",
+      "parameterDecorators": [
+        {
+          "name": "query",
+          "description": "The address to query.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "redeemMain()",
+      "name": "redeemMain",
+      "description": "This function redeems the main NFT. This function sends back all of the redeemed shards, as well as any leftover Aave rewards and stkAAVE. Finally it transfers the main NFT itself. Requires the caller to be the last holder of any shard NFT, bar this contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "redeemShard(uint256)",
+      "name": "redeemShard",
+      "description": "This function redeems the caller's shard, transferring in their shard NFT and sending back their accrued rewards and stkAAVE. This is only call-able by the shard owner, and cannot be called if they are the ONLY owner. Requires approval from the shard contract.",
+      "parameterDecorators": [
+        {
+          "name": "shardId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "shardStakes(uint256)",
+      "name": "shardStakes",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "stake",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "claimTimestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "stakeFeeTo()",
+      "name": "stakeFeeTo",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

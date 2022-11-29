@@ -1,1 +1,572 @@
-{"schema":"../schema.json","tags":["tokens","nft"],"name":"Distributor","description":"Starterpack Distributor. The contract assumes Signer has verified an In-App Purchase Receipt, only 1 pack per address is allowed, unless the owner calls clearPurchases(). Attempts to deliver 1 and only 1 starterpack containing ETH, ERC20 Tokens and NFT Stickerpacks to an eligible recipient.","eventDecorators":[{"signature":"Distributed(address,address)","name":"Distributed","description":"Emitted when an array of wager tokens is updated.","parameterDecorators":[{"name":"recipient","description":"","recommendedTypes":[],"indexed":true},{"name":"attribution","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"RequireApproval(address)","name":"RequireApproval","description":"Emitted when an array of wager tokens is updated.","parameterDecorators":[{"name":"attribution","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"attributionCnt(address)","name":"attributionCnt","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"changeOwner(address)","name":"changeOwner","description":"Changes the owner of the contract.","parameterDecorators":[{"name":"_newOwner","description":"The new owner of the contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"changePromoPack(tuple(address,uint256,address[],uint256[],uint256[]),uint256)","name":"changePromoPack","description":"Set a promo configuration. The Owner can change the promo pack contents.","parameterDecorators":[{"name":"_newPromoPack","description":"Promo pack configuration.","recommendedTypes":[],"parameters":[{"name":"stickerMarket","description":"","type":"address"},{"name":"ethAmount","description":"","type":"uint256"},{"name":"tokens","description":"","type":"address[]"},{"name":"tokenAmounts","description":"","type":"uint256[]"},{"name":"stickerPackIds","description":"","type":"uint256[]"}]},{"name":"_numberOfPacks","description":"Max number of promo packs to be given before using the default config.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"changeSigner(address)","name":"changeSigner","description":"Changes the Signer of the contract.","parameterDecorators":[{"name":"_newSigner","description":"The new Signer of the contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"changeStarterPack(tuple(address,uint256,address[],uint256[],uint256[]))","name":"changeStarterPack","description":"Set a starter pack configuration. The Owner can change the default starterpack contents.","parameterDecorators":[{"name":"_newPack","description":"starter pack configuration.","recommendedTypes":[],"parameters":[{"name":"stickerMarket","description":"","type":"address"},{"name":"ethAmount","description":"","type":"uint256"},{"name":"tokens","description":"","type":"address[]"},{"name":"tokenAmounts","description":"","type":"uint256[]"},{"name":"stickerPackIds","description":"","type":"uint256[]"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"clearPurchases()","name":"clearPurchases","description":"Allows the owner to clear the purchase history. Recipients will be able to receive a starter pack again.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"distributePack(address,address)","name":"distributePack","description":"Distributes a starterpack to an eligible address. Either a promo pack or a default will be distributed depending on availability. Can only be called by signer, assumes signer has validated an IAP receipt, owner can block calling by pausing.","parameterDecorators":[{"name":"_recipient","description":"A payable address that is sent a starterpack after being checked for eligibility.","recommendedTypes":[]},{"name":"_attribution","description":"A payable address who referred the starterpack purchaser.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"eligible(address)","name":"eligible","description":"Check if an address is eligible for a starterpack. will return false if a transaction of distributePack for _recipient has been successfully executed.","parameterDecorators":[{"name":"_recipient","description":"The address to be checked for eligibility.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"getDefaultPack()","name":"getDefaultPack","description":"Get the starter pack configuration.","parameterDecorators":[],"returnDecorators":[{"name":"stickerMarket","description":"address Stickermarket contract address.","recommendedTypes":[],"solidityType":"address"},{"name":"ethAmount","description":"uint256 ETH amount in wei that will be sent to a recipient.","recommendedTypes":[],"solidityType":"uint256"},{"name":"tokens","description":"address[] List of tokens that will be sent to a recipient.","recommendedTypes":[],"solidityType":"address[]"},{"name":"tokenAmounts","description":"uint[] Amount of tokens that will be sent to a recipient.","recommendedTypes":[],"solidityType":"uint256[]"},{"name":"stickerPackIds","description":"uint[] List of sticker packs to send to a recipient.","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getPromoPack()","name":"getPromoPack","description":"Get the promo pack configuration.","parameterDecorators":[],"returnDecorators":[{"name":"stickerMarket","description":"address Stickermarket contract address.","recommendedTypes":[],"solidityType":"address"},{"name":"ethAmount","description":"uint256 ETH amount in wei that will be sent to a recipient.","recommendedTypes":[],"solidityType":"uint256"},{"name":"tokens","description":"address[] List of tokens that will be sent to a recipient.","recommendedTypes":[],"solidityType":"address[]"},{"name":"tokenAmounts","description":"uint[] Amount of tokens that will be sent to a recipient.","recommendedTypes":[],"solidityType":"uint256[]"},{"name":"stickerPackIds","description":"uint[] List of sticker packs to send to a recipient.","recommendedTypes":[],"solidityType":"uint256[]"},{"name":"available","description":"uint number of promo packs available.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getReferralReward(address,bool)","name":"getReferralReward","description":"Get rewards for specific referrer.","parameterDecorators":[{"name":"_account","description":"The address to obtain the attribution config.","recommendedTypes":[]},{"name":"_isPromo","description":"Indicates if the configuration for a promo should be returned or not.","recommendedTypes":[]}],"returnDecorators":[{"name":"ethAmount","description":"Amount of ETH in wei.","recommendedTypes":[],"solidityType":"uint256"},{"name":"tokenLen","description":"Number of tokens configured as part of the reward.","recommendedTypes":[],"solidityType":"uint256"},{"name":"maxThreshold","description":"If isPromo == true: Number of promo bonuses still available for that address else: Max number of attributions to pay before requiring approval.","recommendedTypes":[],"solidityType":"uint256"},{"name":"attribCount","description":"Number of referrals.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getReferralRewardTokens(address,bool,uint256)","name":"getReferralRewardTokens","description":"Get token rewards for specific address.","parameterDecorators":[{"name":"_account","description":"The address to obtain the attribution's token config.","recommendedTypes":[]},{"name":"_isPromo","description":"Indicates if the configuration for a promo should be returned or not.","recommendedTypes":[]},{"name":"_idx","description":"Index of token array in the attribution used to obtain the token config.","recommendedTypes":[]}],"returnDecorators":[{"name":"token","description":"ERC20 contract address.","recommendedTypes":[],"solidityType":"address"},{"name":"tokenAmount","description":"Amount of token configured in the attribution.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"ineligible(bytes32)","name":"ineligible","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"pause()","name":"pause","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"pendingAttributionCnt(address)","name":"pendingAttributionCnt","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"removePayoutAndThreshold(address[],bool)","name":"removePayoutAndThreshold","description":"Remove attribution configuration for addresses.","parameterDecorators":[{"name":"_assignedTo","description":"Array of addresses with an attribution configured.","recommendedTypes":[]},{"name":"_isPromo","description":"Indicates if the configuration to delete is the promo or default.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setPause(bool)","name":"setPause","description":"Allows the Owner to allow or prohibit Signer from calling distributePack(). setPause must be called before Signer can call distributePack().","parameterDecorators":[{"name":"_pause","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setPayoutAndThreshold(bool,uint256,address[],uint256[],uint256[],address[])","name":"setPayoutAndThreshold","description":"Set default/custom payout and threshold for referrals.","parameterDecorators":[{"name":"_isPromo","description":"indicates if this attribution config is a promo or default config.","recommendedTypes":[]},{"name":"_ethAmount","description":"Payout for referrals.","recommendedTypes":[]},{"name":"_tokens","description":"","recommendedTypes":[]},{"name":"_tokenAmounts","description":"","recommendedTypes":[]},{"name":"_thresholds","description":"Max number of referrals allowed beforee requiring approval.","recommendedTypes":[]},{"name":"_assignedTo","description":"Use a valid address here to set custom settings. To set the default payout and threshold, use address(0);.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"sntToken()","name":"sntToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"withdraw(address[])","name":"withdraw","description":"Safety function allowing the owner to immediately pause starterpack distribution and withdraw all balances in the the contract.","parameterDecorators":[{"name":"_tokens","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "nft"
+  ],
+  "name": "Distributor",
+  "description": "Starterpack Distributor. The contract assumes Signer has verified an In-App Purchase Receipt, only 1 pack per address is allowed, unless the owner calls clearPurchases(). Attempts to deliver 1 and only 1 starterpack containing ETH, ERC20 Tokens and NFT Stickerpacks to an eligible recipient.",
+  "eventDecorators": [
+    {
+      "signature": "Distributed(address,address)",
+      "name": "Distributed",
+      "description": "Emitted when an array of wager tokens is updated.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "attribution",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RequireApproval(address)",
+      "name": "RequireApproval",
+      "description": "Emitted when an array of wager tokens is updated.",
+      "parameterDecorators": [
+        {
+          "name": "attribution",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "attributionCnt(address)",
+      "name": "attributionCnt",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "changeOwner(address)",
+      "name": "changeOwner",
+      "description": "Changes the owner of the contract.",
+      "parameterDecorators": [
+        {
+          "name": "_newOwner",
+          "description": "The new owner of the contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changePromoPack(tuple(address,uint256,address[],uint256[],uint256[]),uint256)",
+      "name": "changePromoPack",
+      "description": "Set a promo configuration. The Owner can change the promo pack contents.",
+      "parameterDecorators": [
+        {
+          "name": "_newPromoPack",
+          "description": "Promo pack configuration.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "stickerMarket",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "ethAmount",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "tokens",
+              "description": "",
+              "type": "address[]"
+            },
+            {
+              "name": "tokenAmounts",
+              "description": "",
+              "type": "uint256[]"
+            },
+            {
+              "name": "stickerPackIds",
+              "description": "",
+              "type": "uint256[]"
+            }
+          ]
+        },
+        {
+          "name": "_numberOfPacks",
+          "description": "Max number of promo packs to be given before using the default config.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeSigner(address)",
+      "name": "changeSigner",
+      "description": "Changes the Signer of the contract.",
+      "parameterDecorators": [
+        {
+          "name": "_newSigner",
+          "description": "The new Signer of the contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeStarterPack(tuple(address,uint256,address[],uint256[],uint256[]))",
+      "name": "changeStarterPack",
+      "description": "Set a starter pack configuration. The Owner can change the default starterpack contents.",
+      "parameterDecorators": [
+        {
+          "name": "_newPack",
+          "description": "starter pack configuration.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "stickerMarket",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "ethAmount",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "tokens",
+              "description": "",
+              "type": "address[]"
+            },
+            {
+              "name": "tokenAmounts",
+              "description": "",
+              "type": "uint256[]"
+            },
+            {
+              "name": "stickerPackIds",
+              "description": "",
+              "type": "uint256[]"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "clearPurchases()",
+      "name": "clearPurchases",
+      "description": "Allows the owner to clear the purchase history. Recipients will be able to receive a starter pack again.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "distributePack(address,address)",
+      "name": "distributePack",
+      "description": "Distributes a starterpack to an eligible address. Either a promo pack or a default will be distributed depending on availability. Can only be called by signer, assumes signer has validated an IAP receipt, owner can block calling by pausing.",
+      "parameterDecorators": [
+        {
+          "name": "_recipient",
+          "description": "A payable address that is sent a starterpack after being checked for eligibility.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_attribution",
+          "description": "A payable address who referred the starterpack purchaser.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "eligible(address)",
+      "name": "eligible",
+      "description": "Check if an address is eligible for a starterpack. will return false if a transaction of distributePack for _recipient has been successfully executed.",
+      "parameterDecorators": [
+        {
+          "name": "_recipient",
+          "description": "The address to be checked for eligibility.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getDefaultPack()",
+      "name": "getDefaultPack",
+      "description": "Get the starter pack configuration.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "stickerMarket",
+          "description": "address Stickermarket contract address.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "ethAmount",
+          "description": "uint256 ETH amount in wei that will be sent to a recipient.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "tokens",
+          "description": "address[] List of tokens that will be sent to a recipient.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "tokenAmounts",
+          "description": "uint[] Amount of tokens that will be sent to a recipient.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "stickerPackIds",
+          "description": "uint[] List of sticker packs to send to a recipient.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPromoPack()",
+      "name": "getPromoPack",
+      "description": "Get the promo pack configuration.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "stickerMarket",
+          "description": "address Stickermarket contract address.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "ethAmount",
+          "description": "uint256 ETH amount in wei that will be sent to a recipient.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "tokens",
+          "description": "address[] List of tokens that will be sent to a recipient.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "tokenAmounts",
+          "description": "uint[] Amount of tokens that will be sent to a recipient.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "stickerPackIds",
+          "description": "uint[] List of sticker packs to send to a recipient.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "available",
+          "description": "uint number of promo packs available.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getReferralReward(address,bool)",
+      "name": "getReferralReward",
+      "description": "Get rewards for specific referrer.",
+      "parameterDecorators": [
+        {
+          "name": "_account",
+          "description": "The address to obtain the attribution config.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isPromo",
+          "description": "Indicates if the configuration for a promo should be returned or not.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "ethAmount",
+          "description": "Amount of ETH in wei.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "tokenLen",
+          "description": "Number of tokens configured as part of the reward.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "maxThreshold",
+          "description": "If isPromo == true: Number of promo bonuses still available for that address else: Max number of attributions to pay before requiring approval.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "attribCount",
+          "description": "Number of referrals.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getReferralRewardTokens(address,bool,uint256)",
+      "name": "getReferralRewardTokens",
+      "description": "Get token rewards for specific address.",
+      "parameterDecorators": [
+        {
+          "name": "_account",
+          "description": "The address to obtain the attribution's token config.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isPromo",
+          "description": "Indicates if the configuration for a promo should be returned or not.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_idx",
+          "description": "Index of token array in the attribution used to obtain the token config.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "token",
+          "description": "ERC20 contract address.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "tokenAmount",
+          "description": "Amount of token configured in the attribution.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ineligible(bytes32)",
+      "name": "ineligible",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pause()",
+      "name": "pause",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pendingAttributionCnt(address)",
+      "name": "pendingAttributionCnt",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removePayoutAndThreshold(address[],bool)",
+      "name": "removePayoutAndThreshold",
+      "description": "Remove attribution configuration for addresses.",
+      "parameterDecorators": [
+        {
+          "name": "_assignedTo",
+          "description": "Array of addresses with an attribution configured.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isPromo",
+          "description": "Indicates if the configuration to delete is the promo or default.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setPause(bool)",
+      "name": "setPause",
+      "description": "Allows the Owner to allow or prohibit Signer from calling distributePack(). setPause must be called before Signer can call distributePack().",
+      "parameterDecorators": [
+        {
+          "name": "_pause",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setPayoutAndThreshold(bool,uint256,address[],uint256[],uint256[],address[])",
+      "name": "setPayoutAndThreshold",
+      "description": "Set default/custom payout and threshold for referrals.",
+      "parameterDecorators": [
+        {
+          "name": "_isPromo",
+          "description": "indicates if this attribution config is a promo or default config.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_ethAmount",
+          "description": "Payout for referrals.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokens",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenAmounts",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_thresholds",
+          "description": "Max number of referrals allowed beforee requiring approval.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_assignedTo",
+          "description": "Use a valid address here to set custom settings. To set the default payout and threshold, use address(0);.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "sntToken()",
+      "name": "sntToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw(address[])",
+      "name": "withdraw",
+      "description": "Safety function allowing the owner to immediately pause starterpack distribution and withdraw all balances in the the contract.",
+      "parameterDecorators": [
+        {
+          "name": "_tokens",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

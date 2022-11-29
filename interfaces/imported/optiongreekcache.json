@@ -1,1 +1,781 @@
-{"schema":"../schema.json","tags":[],"name":"OptionGreekCache","description":"OptionGreekCache. Aggregates the netDelta and netStdVega of the OptionMarket by iterating over current listings. Needs to be called by an external override actor as it's not feasible to do all the computation during the trade flow and because delta/vega change over time and with movements in asset price and volatility.","eventDecorators":[{"signature":"GlobalCacheUpdated(int256,int256)","name":"GlobalCacheUpdated","description":"event for token purchase logging. Emitted when the GlobalCache is updated.","parameterDecorators":[{"name":"netDelta","description":"","recommendedTypes":[],"indexed":false},{"name":"netStdVega","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ListingExposureUpdated(uint256,int256,int256)","name":"ListingExposureUpdated","description":"event for token purchase logging. Emitted when the exposure of an OptionListing is updated.","parameterDecorators":[{"name":"listingId","description":"","recommendedTypes":[],"indexed":true},{"name":"newCallExposure","description":"","recommendedTypes":[],"indexed":false},{"name":"newPutExposure","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ListingGreeksUpdated(uint256,int256,int256,uint256,uint256,uint256,uint256)","name":"ListingGreeksUpdated","description":"event for token purchase logging. Emitted when the cache of an OptionListing is updated.","parameterDecorators":[{"name":"listingId","description":"","recommendedTypes":[],"indexed":true},{"name":"callDelta","description":"","recommendedTypes":[],"indexed":false},{"name":"putDelta","description":"","recommendedTypes":[],"indexed":false},{"name":"vega","description":"","recommendedTypes":[],"indexed":false},{"name":"price","description":"","recommendedTypes":[],"indexed":false},{"name":"baseIv","description":"","recommendedTypes":[],"indexed":false},{"name":"skew","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"event for token purchase logging.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"StaleCacheParametersUpdated(uint256,uint256,uint256,uint256)","name":"StaleCacheParametersUpdated","description":"event for token purchase logging. Emitted when stale cache parameters are updated.","parameterDecorators":[{"name":"priceScalingPeriod","description":"","recommendedTypes":[],"indexed":false},{"name":"minAcceptablePercent","description":"","recommendedTypes":[],"indexed":false},{"name":"maxAcceptablePercent","description":"","recommendedTypes":[],"indexed":false},{"name":"staleUpdateDuration","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"MAX_LISTINGS_PER_BOARD()","name":"MAX_LISTINGS_PER_BOARD","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"addBoard(uint256)","name":"addBoard","description":"Adds a new OptionBoardCache. Called by the OptionMarket when an OptionBoard is added.","parameterDecorators":[{"name":"boardId","description":"The id of the OptionBoard.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"addListingToBoard(uint256,uint256)","name":"addListingToBoard","description":"Add a new listing to the listingCaches and the listingId to the boardCache.","parameterDecorators":[{"name":"boardId","description":"The id of the Board.","recommendedTypes":[]},{"name":"listingId","description":"The id of the OptionListing.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"boardCaches(uint256)","name":"boardCaches","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"id","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"expiry","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"iv","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"minUpdatedAt","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"minUpdatedAtPrice","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"maxUpdatedAtPrice","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"netDelta","description":"","recommendedTypes":[],"solidityType":"int256"},{"name":"netStdVega","description":"","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":true},{"signature":"getGlobalNetDelta()","name":"getGlobalNetDelta","description":"Get the current cached global netDelta value.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":true},{"signature":"globalCache()","name":"globalCache","description":"","parameterDecorators":[],"returnDecorators":[{"name":"netDelta","description":"","recommendedTypes":[],"solidityType":"int256"},{"name":"netStdVega","description":"","recommendedTypes":[],"solidityType":"int256"},{"name":"minUpdatedAt","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"minUpdatedAtPrice","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"maxUpdatedAtPrice","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"minExpiryTimestamp","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"init(address,address,address,address)","name":"init","description":"Initialize the contract.","parameterDecorators":[{"name":"_globals","description":"LyraGlobals address.","recommendedTypes":[]},{"name":"_optionMarket","description":"OptionMarket address.","recommendedTypes":[]},{"name":"_optionPricer","description":"OptionMarketPricer address.","recommendedTypes":[]},{"name":"_blackScholes","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"isBoardCacheStale(uint256)","name":"isBoardCacheStale","description":"Checks if the OptionBoardCache is stale.","parameterDecorators":[{"name":"boardCacheId","description":"The OptionBoardCache id.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isGlobalCacheStale()","name":"isGlobalCacheStale","description":"Checks if the GlobalCache is stale.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"listingCaches(uint256)","name":"listingCaches","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"id","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"strike","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"skew","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"boardId","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"callDelta","description":"","recommendedTypes":[],"solidityType":"int256"},{"name":"putDelta","description":"","recommendedTypes":[],"solidityType":"int256"},{"name":"stdVega","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"callExposure","description":"","recommendedTypes":[],"solidityType":"int256"},{"name":"putExposure","description":"","recommendedTypes":[],"solidityType":"int256"},{"name":"updatedAt","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"updatedAtPrice","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"liveBoards(uint256)","name":"liveBoards","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"maxAcceptablePercent()","name":"maxAcceptablePercent","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"minAcceptablePercent()","name":"minAcceptablePercent","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"priceScalingPeriod()","name":"priceScalingPeriod","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"removeBoard(uint256)","name":"removeBoard","description":"Removes an OptionBoardCache. Called by the OptionMarket when an OptionBoard is liquidated.","parameterDecorators":[{"name":"boardId","description":"The id of the OptionBoard.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setBoardIv(uint256,uint256)","name":"setBoardIv","description":"modifies an OptionBoard's baseIv.","parameterDecorators":[{"name":"boardId","description":"The id of the OptionBoard.","recommendedTypes":[]},{"name":"newIv","description":"The baseIv of the OptionBoard.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setListingSkew(uint256,uint256)","name":"setListingSkew","description":"modifies an OptionListing's skew.","parameterDecorators":[{"name":"listingId","description":"The id of the OptionListing.","recommendedTypes":[]},{"name":"newSkew","description":"The skew of the OptionListing.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setStaleCacheParameters(uint256,uint256,uint256,uint256)","name":"setStaleCacheParameters","description":"","parameterDecorators":[{"name":"_staleUpdateDuration","description":"","recommendedTypes":[]},{"name":"_priceScalingPeriod","description":"","recommendedTypes":[]},{"name":"_maxAcceptablePercent","description":"","recommendedTypes":[]},{"name":"_minAcceptablePercent","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"staleUpdateDuration()","name":"staleUpdateDuration","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateAllStaleBoards()","name":"updateAllStaleBoards","description":"Updates all stale boards.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":false},{"signature":"updateBoardCachedGreeks(uint256)","name":"updateBoardCachedGreeks","description":"Updates the cached greeks for an OptionBoardCache.","parameterDecorators":[{"name":"boardCacheId","description":"The id of the OptionBoardCache.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateListingCacheAndGetPrice(tuple(int256,uint256),uint256,int256,int256,uint256,uint256)","name":"updateListingCacheAndGetPrice","description":"Updates the OptionListingCache to reflect the new exposure.","parameterDecorators":[{"name":"greekCacheGlobals","description":"The GreekCacheGlobals.","recommendedTypes":[],"parameters":[{"name":"rateAndCarry","description":"","type":"int256"},{"name":"spotPrice","description":"","type":"uint256"}]},{"name":"listingCacheId","description":"The id of the OptionListingCache.","recommendedTypes":[]},{"name":"newCallExposure","description":"The new call exposure of the OptionListing.","recommendedTypes":[]},{"name":"newPutExposure","description":"The new put exposure of the OptionListing.","recommendedTypes":[]},{"name":"iv","description":"The new iv of the OptionBoardCache.","recommendedTypes":[]},{"name":"skew","description":"The new skew of the OptionListingCache.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "OptionGreekCache",
+  "description": "OptionGreekCache. Aggregates the netDelta and netStdVega of the OptionMarket by iterating over current listings. Needs to be called by an external override actor as it's not feasible to do all the computation during the trade flow and because delta/vega change over time and with movements in asset price and volatility.",
+  "eventDecorators": [
+    {
+      "signature": "GlobalCacheUpdated(int256,int256)",
+      "name": "GlobalCacheUpdated",
+      "description": "event for token purchase logging. Emitted when the GlobalCache is updated.",
+      "parameterDecorators": [
+        {
+          "name": "netDelta",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "netStdVega",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ListingExposureUpdated(uint256,int256,int256)",
+      "name": "ListingExposureUpdated",
+      "description": "event for token purchase logging. Emitted when the exposure of an OptionListing is updated.",
+      "parameterDecorators": [
+        {
+          "name": "listingId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newCallExposure",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newPutExposure",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ListingGreeksUpdated(uint256,int256,int256,uint256,uint256,uint256,uint256)",
+      "name": "ListingGreeksUpdated",
+      "description": "event for token purchase logging. Emitted when the cache of an OptionListing is updated.",
+      "parameterDecorators": [
+        {
+          "name": "listingId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "callDelta",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "putDelta",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "vega",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "baseIv",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "skew",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "StaleCacheParametersUpdated(uint256,uint256,uint256,uint256)",
+      "name": "StaleCacheParametersUpdated",
+      "description": "event for token purchase logging. Emitted when stale cache parameters are updated.",
+      "parameterDecorators": [
+        {
+          "name": "priceScalingPeriod",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "minAcceptablePercent",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "maxAcceptablePercent",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "staleUpdateDuration",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "MAX_LISTINGS_PER_BOARD()",
+      "name": "MAX_LISTINGS_PER_BOARD",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addBoard(uint256)",
+      "name": "addBoard",
+      "description": "Adds a new OptionBoardCache. Called by the OptionMarket when an OptionBoard is added.",
+      "parameterDecorators": [
+        {
+          "name": "boardId",
+          "description": "The id of the OptionBoard.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addListingToBoard(uint256,uint256)",
+      "name": "addListingToBoard",
+      "description": "Add a new listing to the listingCaches and the listingId to the boardCache.",
+      "parameterDecorators": [
+        {
+          "name": "boardId",
+          "description": "The id of the Board.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "listingId",
+          "description": "The id of the OptionListing.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "boardCaches(uint256)",
+      "name": "boardCaches",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "expiry",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "iv",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "minUpdatedAt",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "minUpdatedAtPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "maxUpdatedAtPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "netDelta",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "netStdVega",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getGlobalNetDelta()",
+      "name": "getGlobalNetDelta",
+      "description": "Get the current cached global netDelta value.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "globalCache()",
+      "name": "globalCache",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "netDelta",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "netStdVega",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "minUpdatedAt",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "minUpdatedAtPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "maxUpdatedAtPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "minExpiryTimestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "init(address,address,address,address)",
+      "name": "init",
+      "description": "Initialize the contract.",
+      "parameterDecorators": [
+        {
+          "name": "_globals",
+          "description": "LyraGlobals address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_optionMarket",
+          "description": "OptionMarket address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_optionPricer",
+          "description": "OptionMarketPricer address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_blackScholes",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isBoardCacheStale(uint256)",
+      "name": "isBoardCacheStale",
+      "description": "Checks if the OptionBoardCache is stale.",
+      "parameterDecorators": [
+        {
+          "name": "boardCacheId",
+          "description": "The OptionBoardCache id.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isGlobalCacheStale()",
+      "name": "isGlobalCacheStale",
+      "description": "Checks if the GlobalCache is stale.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "listingCaches(uint256)",
+      "name": "listingCaches",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "strike",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "skew",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "boardId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "callDelta",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "putDelta",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "stdVega",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "callExposure",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "putExposure",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "updatedAt",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "updatedAtPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "liveBoards(uint256)",
+      "name": "liveBoards",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxAcceptablePercent()",
+      "name": "maxAcceptablePercent",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minAcceptablePercent()",
+      "name": "minAcceptablePercent",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "priceScalingPeriod()",
+      "name": "priceScalingPeriod",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeBoard(uint256)",
+      "name": "removeBoard",
+      "description": "Removes an OptionBoardCache. Called by the OptionMarket when an OptionBoard is liquidated.",
+      "parameterDecorators": [
+        {
+          "name": "boardId",
+          "description": "The id of the OptionBoard.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setBoardIv(uint256,uint256)",
+      "name": "setBoardIv",
+      "description": "modifies an OptionBoard's baseIv.",
+      "parameterDecorators": [
+        {
+          "name": "boardId",
+          "description": "The id of the OptionBoard.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newIv",
+          "description": "The baseIv of the OptionBoard.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setListingSkew(uint256,uint256)",
+      "name": "setListingSkew",
+      "description": "modifies an OptionListing's skew.",
+      "parameterDecorators": [
+        {
+          "name": "listingId",
+          "description": "The id of the OptionListing.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newSkew",
+          "description": "The skew of the OptionListing.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setStaleCacheParameters(uint256,uint256,uint256,uint256)",
+      "name": "setStaleCacheParameters",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_staleUpdateDuration",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_priceScalingPeriod",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_maxAcceptablePercent",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minAcceptablePercent",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "staleUpdateDuration()",
+      "name": "staleUpdateDuration",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateAllStaleBoards()",
+      "name": "updateAllStaleBoards",
+      "description": "Updates all stale boards.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateBoardCachedGreeks(uint256)",
+      "name": "updateBoardCachedGreeks",
+      "description": "Updates the cached greeks for an OptionBoardCache.",
+      "parameterDecorators": [
+        {
+          "name": "boardCacheId",
+          "description": "The id of the OptionBoardCache.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateListingCacheAndGetPrice(tuple(int256,uint256),uint256,int256,int256,uint256,uint256)",
+      "name": "updateListingCacheAndGetPrice",
+      "description": "Updates the OptionListingCache to reflect the new exposure.",
+      "parameterDecorators": [
+        {
+          "name": "greekCacheGlobals",
+          "description": "The GreekCacheGlobals.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "rateAndCarry",
+              "description": "",
+              "type": "int256"
+            },
+            {
+              "name": "spotPrice",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "name": "listingCacheId",
+          "description": "The id of the OptionListingCache.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newCallExposure",
+          "description": "The new call exposure of the OptionListing.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newPutExposure",
+          "description": "The new put exposure of the OptionListing.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "iv",
+          "description": "The new iv of the OptionBoardCache.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "skew",
+          "description": "The new skew of the OptionListingCache.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

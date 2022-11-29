@@ -1,1 +1,775 @@
-{"schema":"../schema.json","tags":[],"name":"Livepeer","description":"","eventDecorators":[{"signature":"Deposit(address,uint256)","name":"Deposit","description":"Deposit gets emitted when an accounts deposits underlying tokens.","parameterDecorators":[{"name":"caller","description":"- The account that called the function.","recommendedTypes":[],"indexed":true},{"name":"relayer","description":"- The relayer address to be added or removed.","recommendedTypes":[],"indexed":false}]},{"signature":"GovernanceUpdate(string,bytes,bytes)","name":"GovernanceUpdate","description":"GovernanceUpdate gets emitted when a parameter on the Tenderizer gets updated.","parameterDecorators":[{"name":"param","description":"","recommendedTypes":[],"indexed":false},{"name":"oldValue","description":"","recommendedTypes":[],"indexed":false},{"name":"newValue","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LiquidityFeeCollected(uint256)","name":"LiquidityFeeCollected","description":"LiquidityFeeCollected gets emitted when liquidity provider fees are moved to the TenderFarm.","parameterDecorators":[{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ProtocolFeeCollected(uint256)","name":"ProtocolFeeCollected","description":"ProtocolFeeCollected gets emitted when the treasury claims its outstanding protocol fees.","parameterDecorators":[{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RewardsClaimed(int256,uint256,uint256)","name":"RewardsClaimed","description":"RewardsClaimed gets emitted when the Tenderizer processes staking rewards (or slashing) from the underlying protocol.","parameterDecorators":[{"name":"stakeDiff","description":"","recommendedTypes":[],"indexed":false},{"name":"currentPrincipal","description":"","recommendedTypes":[],"indexed":false},{"name":"oldPrincipal","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Stake(address,uint256)","name":"Stake","description":"Stake gets emitted when funds are staked/delegated from the Tenderizer contract into the underlying protocol.","parameterDecorators":[{"name":"caller","description":"- The account that called the function.","recommendedTypes":[],"indexed":true},{"name":"relayer","description":"- The relayer address to be added or removed.","recommendedTypes":[],"indexed":false}]},{"signature":"Unstake(address,address,uint256,uint256)","name":"Unstake","description":"Unstake gets emitted when an account burns TenderTokens to unlock tokens staked through the Tenderizer.","parameterDecorators":[{"name":"from","description":"","recommendedTypes":[],"indexed":true},{"name":"node","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"unstakeLockID","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Withdraw(address,uint256,uint256)","name":"Withdraw","description":"Withdraw gets emitted when an account withdraws tokens that have been succesfully unstaked and thus unlocked for withdrawal.","parameterDecorators":[{"name":"from","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"unstakeLockID","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"calcDepositOut(uint256)","name":"calcDepositOut","description":"Returns the number of tenderTokens to be minted for amountIn deposit. used by controller to calculate tokens to be minted before depositing.to be used when there a delegation tax is deducted, for eg. in Graph.","parameterDecorators":[{"name":"_amountIn","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"number of tokens staked for `amountIn`.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"claimRewards()","name":"claimRewards","description":"Compound all the rewards and new deposits. Claim staking rewards and earned fees for the underlying protocol and stake any leftover token balance. Process Tender protocol fees if revenue is positive.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"currentPrincipal()","name":"currentPrincipal","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"deposit(uint256)","name":"deposit","description":"Deposit tokens in Tenderizer. doesn't actually stakes the tokens but aggregates the balance in the tenderizer awaiting to be staked.requires '_amount' to be approved by '_from'.","parameterDecorators":[{"name":"_amount","description":"amount deposited.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"depositWithPermit(uint256,uint256,uint8,bytes32,bytes32)","name":"depositWithPermit","description":"Deposit tokens in Tenderizer with permit. doesn't actually stakes the tokens but aggregates the balance in the tenderizer awaiting to be staked.requires '_amount' to be approved by '_from'.","parameterDecorators":[{"name":"_amount","description":"amount deposited.","recommendedTypes":[]},{"name":"_deadline","description":"deadline for the permit.","recommendedTypes":[]},{"name":"_v","description":"from ECDSA signature.","recommendedTypes":[]},{"name":"_r","description":"from ECDSA signature.","recommendedTypes":[]},{"name":"_s","description":"from ECDSA signature.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"gov()","name":"gov","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"initialize(address,string,address,address,uint256,uint256,address,address,address)","name":"initialize","description":"","parameterDecorators":[{"name":"_steak","description":"","recommendedTypes":[]},{"name":"_symbol","description":"","recommendedTypes":[]},{"name":"_livepeer","description":"","recommendedTypes":[]},{"name":"_node","description":"","recommendedTypes":[]},{"name":"_protocolFee","description":"","recommendedTypes":[]},{"name":"_liquidityFee","description":"","recommendedTypes":[]},{"name":"_tenderTokenTarget","description":"","recommendedTypes":[]},{"name":"_tenderFarmFactory","description":"","recommendedTypes":[]},{"name":"_tenderSwapFactory","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"liquidityFee()","name":"liquidityFee","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"node()","name":"node","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"protocolFee()","name":"protocolFee","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"rescueUnlock()","name":"rescueUnlock","description":"RescueUnstake unstakes all tokens from underlying protocol. Used to rescue all staked funds.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"unstake lockID generated for unstake.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"rescueWithdraw(uint256)","name":"rescueWithdraw","description":"RescueWithdraw withdraws all tokens into the Tenderizer from the underlying protocol after the unlock period ends. To be called after rescueUnlock() with the unstakeLockID returned there.Process unlocks/withdrawals before rescueWithdraw for integrations with WithdrawPools.","parameterDecorators":[{"name":"_unstakeLockID","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"selfPermit(address,uint256,uint256,uint8,bytes32,bytes32)","name":"selfPermit","description":"Permits this contract to spend a given token from `msg.sender`. The `owner` is always msg.sender and the `spender` is always address(this).","parameterDecorators":[{"name":"_token","description":"The address of the token spent.","recommendedTypes":[]},{"name":"_value","description":"The amount that can be spent of token.","recommendedTypes":[]},{"name":"_deadline","description":"A timestamp, the current blocktime must be less than or equal to this timestamp.","recommendedTypes":[]},{"name":"_v","description":"Must produce valid secp256k1 signature from the holder along with `r` and `s`.","recommendedTypes":[]},{"name":"_r","description":"Must produce valid secp256k1 signature from the holder along with `v` and `s`.","recommendedTypes":[]},{"name":"_s","description":"Must produce valid secp256k1 signature from the holder along with `r` and `v`.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"selfPermitIfNecessary(address,uint256,uint256,uint8,bytes32,bytes32)","name":"selfPermitIfNecessary","description":"Permits this contract to spend a given token from `msg.sender`. The `owner` is always msg.sender and the `spender` is always address(this). Can be used instead of #selfPermit to prevent calls from failing due to a frontrun of a call to #selfPermit.","parameterDecorators":[{"name":"_token","description":"The address of the token spent.","recommendedTypes":[]},{"name":"_value","description":"The amount that can be spent of token.","recommendedTypes":[]},{"name":"_deadline","description":"A timestamp, the current blocktime must be less than or equal to this timestamp.","recommendedTypes":[]},{"name":"_v","description":"Must produce valid secp256k1 signature from the holder along with `r` and `s`.","recommendedTypes":[]},{"name":"_r","description":"Must produce valid secp256k1 signature from the holder along with `v` and `s`.","recommendedTypes":[]},{"name":"_s","description":"Must produce valid secp256k1 signature from the holder along with `r` and `v`.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setGov(address)","name":"setGov","description":"","parameterDecorators":[{"name":"_gov","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setLiquidityFee(uint256)","name":"setLiquidityFee","description":"","parameterDecorators":[{"name":"_liquidityFee","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setNode(address)","name":"setNode","description":"","parameterDecorators":[{"name":"_node","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setProtocolFee(uint256)","name":"setProtocolFee","description":"","parameterDecorators":[{"name":"_protocolFee","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setStakingContract(address)","name":"setStakingContract","description":"","parameterDecorators":[{"name":"_stakingContract","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setSteak(address)","name":"setSteak","description":"","parameterDecorators":[{"name":"_steak","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setTenderFarm(address)","name":"setTenderFarm","description":"","parameterDecorators":[{"name":"_tenderFarm","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setUniswapRouter(address)","name":"setUniswapRouter","description":"","parameterDecorators":[{"name":"_uniswapRouter","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"stake(uint256)","name":"stake","description":"Stake '_amount' of tokens. Only callable by Gov.","parameterDecorators":[{"name":"_amount","description":"amount to stake.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"steak()","name":"steak","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"tenderFarm()","name":"tenderFarm","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"tenderSwap()","name":"tenderSwap","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"tenderToken()","name":"tenderToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"totalStakedTokens()","name":"totalStakedTokens","description":"Total Staked Tokens returns the total amount of underlying tokens staked by this Tenderizer.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"total amount staked by this Tenderizer.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"uniswapRouter()","name":"uniswapRouter","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"unstake(uint256)","name":"unstake","description":"Unstake '_amount' of tokens from '_account'. unstake from the default address.If '_amount' is 0, unstake the entire amount staked towards _account.","parameterDecorators":[{"name":"_amount","description":"amount to unstake.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"unstake lockID generated for unstake.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"withdraw(uint256)","name":"withdraw","description":"Withdraw '_amount' of tokens previously unstaked by '_account'. If '_amount' isn't specified all unstake tokens by '_account' will be withdrawn.Requires '_account' to have unstaked prior to calling withdraw.","parameterDecorators":[{"name":"_unstakeLockID","description":"ID for the lock to request the withdraw for.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "Livepeer",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "Deposit(address,uint256)",
+      "name": "Deposit",
+      "description": "Deposit gets emitted when an accounts deposits underlying tokens.",
+      "parameterDecorators": [
+        {
+          "name": "caller",
+          "description": "- The account that called the function.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "relayer",
+          "description": "- The relayer address to be added or removed.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "GovernanceUpdate(string,bytes,bytes)",
+      "name": "GovernanceUpdate",
+      "description": "GovernanceUpdate gets emitted when a parameter on the Tenderizer gets updated.",
+      "parameterDecorators": [
+        {
+          "name": "param",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "oldValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LiquidityFeeCollected(uint256)",
+      "name": "LiquidityFeeCollected",
+      "description": "LiquidityFeeCollected gets emitted when liquidity provider fees are moved to the TenderFarm.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ProtocolFeeCollected(uint256)",
+      "name": "ProtocolFeeCollected",
+      "description": "ProtocolFeeCollected gets emitted when the treasury claims its outstanding protocol fees.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RewardsClaimed(int256,uint256,uint256)",
+      "name": "RewardsClaimed",
+      "description": "RewardsClaimed gets emitted when the Tenderizer processes staking rewards (or slashing) from the underlying protocol.",
+      "parameterDecorators": [
+        {
+          "name": "stakeDiff",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "currentPrincipal",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "oldPrincipal",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Stake(address,uint256)",
+      "name": "Stake",
+      "description": "Stake gets emitted when funds are staked/delegated from the Tenderizer contract into the underlying protocol.",
+      "parameterDecorators": [
+        {
+          "name": "caller",
+          "description": "- The account that called the function.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "relayer",
+          "description": "- The relayer address to be added or removed.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unstake(address,address,uint256,uint256)",
+      "name": "Unstake",
+      "description": "Unstake gets emitted when an account burns TenderTokens to unlock tokens staked through the Tenderizer.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "node",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "unstakeLockID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Withdraw(address,uint256,uint256)",
+      "name": "Withdraw",
+      "description": "Withdraw gets emitted when an account withdraws tokens that have been succesfully unstaked and thus unlocked for withdrawal.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "unstakeLockID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "calcDepositOut(uint256)",
+      "name": "calcDepositOut",
+      "description": "Returns the number of tenderTokens to be minted for amountIn deposit. used by controller to calculate tokens to be minted before depositing.to be used when there a delegation tax is deducted, for eg. in Graph.",
+      "parameterDecorators": [
+        {
+          "name": "_amountIn",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "number of tokens staked for `amountIn`.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claimRewards()",
+      "name": "claimRewards",
+      "description": "Compound all the rewards and new deposits. Claim staking rewards and earned fees for the underlying protocol and stake any leftover token balance. Process Tender protocol fees if revenue is positive.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "currentPrincipal()",
+      "name": "currentPrincipal",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deposit(uint256)",
+      "name": "deposit",
+      "description": "Deposit tokens in Tenderizer. doesn't actually stakes the tokens but aggregates the balance in the tenderizer awaiting to be staked.requires '_amount' to be approved by '_from'.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "amount deposited.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "depositWithPermit(uint256,uint256,uint8,bytes32,bytes32)",
+      "name": "depositWithPermit",
+      "description": "Deposit tokens in Tenderizer with permit. doesn't actually stakes the tokens but aggregates the balance in the tenderizer awaiting to be staked.requires '_amount' to be approved by '_from'.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "amount deposited.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_deadline",
+          "description": "deadline for the permit.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_v",
+          "description": "from ECDSA signature.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_r",
+          "description": "from ECDSA signature.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_s",
+          "description": "from ECDSA signature.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "gov()",
+      "name": "gov",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,string,address,address,uint256,uint256,address,address,address)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_steak",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_symbol",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_livepeer",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_node",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_protocolFee",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_liquidityFee",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tenderTokenTarget",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tenderFarmFactory",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tenderSwapFactory",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "liquidityFee()",
+      "name": "liquidityFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "node()",
+      "name": "node",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "protocolFee()",
+      "name": "protocolFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rescueUnlock()",
+      "name": "rescueUnlock",
+      "description": "RescueUnstake unstakes all tokens from underlying protocol. Used to rescue all staked funds.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "unstake lockID generated for unstake.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rescueWithdraw(uint256)",
+      "name": "rescueWithdraw",
+      "description": "RescueWithdraw withdraws all tokens into the Tenderizer from the underlying protocol after the unlock period ends. To be called after rescueUnlock() with the unstakeLockID returned there.Process unlocks/withdrawals before rescueWithdraw for integrations with WithdrawPools.",
+      "parameterDecorators": [
+        {
+          "name": "_unstakeLockID",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "selfPermit(address,uint256,uint256,uint8,bytes32,bytes32)",
+      "name": "selfPermit",
+      "description": "Permits this contract to spend a given token from `msg.sender`. The `owner` is always msg.sender and the `spender` is always address(this).",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "The address of the token spent.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_value",
+          "description": "The amount that can be spent of token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_deadline",
+          "description": "A timestamp, the current blocktime must be less than or equal to this timestamp.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_v",
+          "description": "Must produce valid secp256k1 signature from the holder along with `r` and `s`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_r",
+          "description": "Must produce valid secp256k1 signature from the holder along with `v` and `s`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_s",
+          "description": "Must produce valid secp256k1 signature from the holder along with `r` and `v`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "selfPermitIfNecessary(address,uint256,uint256,uint8,bytes32,bytes32)",
+      "name": "selfPermitIfNecessary",
+      "description": "Permits this contract to spend a given token from `msg.sender`. The `owner` is always msg.sender and the `spender` is always address(this). Can be used instead of #selfPermit to prevent calls from failing due to a frontrun of a call to #selfPermit.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "The address of the token spent.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_value",
+          "description": "The amount that can be spent of token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_deadline",
+          "description": "A timestamp, the current blocktime must be less than or equal to this timestamp.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_v",
+          "description": "Must produce valid secp256k1 signature from the holder along with `r` and `s`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_r",
+          "description": "Must produce valid secp256k1 signature from the holder along with `v` and `s`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_s",
+          "description": "Must produce valid secp256k1 signature from the holder along with `r` and `v`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setGov(address)",
+      "name": "setGov",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_gov",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setLiquidityFee(uint256)",
+      "name": "setLiquidityFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_liquidityFee",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setNode(address)",
+      "name": "setNode",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_node",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setProtocolFee(uint256)",
+      "name": "setProtocolFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_protocolFee",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setStakingContract(address)",
+      "name": "setStakingContract",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_stakingContract",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setSteak(address)",
+      "name": "setSteak",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_steak",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setTenderFarm(address)",
+      "name": "setTenderFarm",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tenderFarm",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setUniswapRouter(address)",
+      "name": "setUniswapRouter",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_uniswapRouter",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stake(uint256)",
+      "name": "stake",
+      "description": "Stake '_amount' of tokens. Only callable by Gov.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "amount to stake.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "steak()",
+      "name": "steak",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tenderFarm()",
+      "name": "tenderFarm",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tenderSwap()",
+      "name": "tenderSwap",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tenderToken()",
+      "name": "tenderToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalStakedTokens()",
+      "name": "totalStakedTokens",
+      "description": "Total Staked Tokens returns the total amount of underlying tokens staked by this Tenderizer.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "total amount staked by this Tenderizer.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "uniswapRouter()",
+      "name": "uniswapRouter",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unstake(uint256)",
+      "name": "unstake",
+      "description": "Unstake '_amount' of tokens from '_account'. unstake from the default address.If '_amount' is 0, unstake the entire amount staked towards _account.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "amount to unstake.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "unstake lockID generated for unstake.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(uint256)",
+      "name": "withdraw",
+      "description": "Withdraw '_amount' of tokens previously unstaked by '_account'. If '_amount' isn't specified all unstake tokens by '_account' will be withdrawn.Requires '_account' to have unstaked prior to calling withdraw.",
+      "parameterDecorators": [
+        {
+          "name": "_unstakeLockID",
+          "description": "ID for the lock to request the withdraw for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

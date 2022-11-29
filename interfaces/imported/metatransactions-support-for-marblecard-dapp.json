@@ -1,1 +1,229 @@
-{"schema":"../schema.json","tags":[],"name":"MarbleMetatransactions","description":"Metatransactions support for Marble.Card Dapp. Since our original contracts do not support metatransactions, we have implemented this wrapper contract.","eventDecorators":[{"signature":"MetaTransactionExecuted(address,address,bytes)","name":"MetaTransactionExecuted","description":"Event emited when a user withdraws his tokens from the bank.","parameterDecorators":[{"name":"userAddress","description":"","recommendedTypes":[],"indexed":false},{"name":"relayerAddress","description":"","recommendedTypes":[],"indexed":false},{"name":"functionSignature","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Event emited when a user withdraws his tokens from the bank.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"createPageCandidateWithERC20(string,address)","name":"createPageCandidateWithERC20","description":"Creates page candidate using erc20 token for payment. Creates page candidate using the given uri for the given user. The user needs to have enough tokens deposited in the erc20 bank which is used by the candidate contract. The full chain works as following: ---> user A signs the transaction ---> relayer executes this method and extract address of A ---> this method initiates candidate creation for A on the candidate contract (requires permission so it cannot be called by anyone and waste someone else's tokens) ---> candidate contract issues payment to the bank contract (requires permission so it cannot be issued by anyone and waste someone else's tokens) ---> if A has enough tokens in the bank, they are used to pay for the candidate creation (else it reverts).","parameterDecorators":[{"name":"uri","description":"Uri of the candidate.","recommendedTypes":[]},{"name":"erc20Token","description":"Address of the token in which the candidate creation should be paid.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"executeMetaTransaction(address,bytes,bytes32,bytes32,uint8)","name":"executeMetaTransaction","description":"","parameterDecorators":[{"name":"userAddress","description":"","recommendedTypes":[]},{"name":"functionSignature","description":"","recommendedTypes":[]},{"name":"sigR","description":"","recommendedTypes":[]},{"name":"sigS","description":"","recommendedTypes":[]},{"name":"sigV","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes"}],"emittableEvents":[],"readOnly":false},{"signature":"getNonce(address)","name":"getNonce","description":"","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"nonce","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"marbleNFTFactoryContract()","name":"marbleNFTFactoryContract","description":"Address of the marbl nft factory contract.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMarbleFactoryContract(address)","name":"setMarbleFactoryContract","description":"Sets the marble nft factory contract. Can be called only by the owner of this contract.","parameterDecorators":[{"name":"_marbleNFTFactoryContract","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferNft(address,uint256)","name":"transferNft","description":"Transfer NFT to another address. Transfers nft from its current owner to new owner. This requires that this contract is admin of the NFT contract and that the signer owns the given token.","parameterDecorators":[{"name":"toAddress","description":"Address of the new owner of the NFT.","recommendedTypes":[]},{"name":"tokenId","description":"Id of the token to be transfered.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "MarbleMetatransactions",
+  "description": "Metatransactions support for Marble.Card Dapp. Since our original contracts do not support metatransactions, we have implemented this wrapper contract.",
+  "eventDecorators": [
+    {
+      "signature": "MetaTransactionExecuted(address,address,bytes)",
+      "name": "MetaTransactionExecuted",
+      "description": "Event emited when a user withdraws his tokens from the bank.",
+      "parameterDecorators": [
+        {
+          "name": "userAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "relayerAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "functionSignature",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Event emited when a user withdraws his tokens from the bank.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "createPageCandidateWithERC20(string,address)",
+      "name": "createPageCandidateWithERC20",
+      "description": "Creates page candidate using erc20 token for payment. Creates page candidate using the given uri for the given user. The user needs to have enough tokens deposited in the erc20 bank which is used by the candidate contract. The full chain works as following: ---> user A signs the transaction ---> relayer executes this method and extract address of A ---> this method initiates candidate creation for A on the candidate contract (requires permission so it cannot be called by anyone and waste someone else's tokens) ---> candidate contract issues payment to the bank contract (requires permission so it cannot be issued by anyone and waste someone else's tokens) ---> if A has enough tokens in the bank, they are used to pay for the candidate creation (else it reverts).",
+      "parameterDecorators": [
+        {
+          "name": "uri",
+          "description": "Uri of the candidate.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "erc20Token",
+          "description": "Address of the token in which the candidate creation should be paid.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "executeMetaTransaction(address,bytes,bytes32,bytes32,uint8)",
+      "name": "executeMetaTransaction",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "userAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "functionSignature",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "sigR",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "sigS",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "sigV",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getNonce(address)",
+      "name": "getNonce",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "nonce",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "marbleNFTFactoryContract()",
+      "name": "marbleNFTFactoryContract",
+      "description": "Address of the marbl nft factory contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMarbleFactoryContract(address)",
+      "name": "setMarbleFactoryContract",
+      "description": "Sets the marble nft factory contract. Can be called only by the owner of this contract.",
+      "parameterDecorators": [
+        {
+          "name": "_marbleNFTFactoryContract",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferNft(address,uint256)",
+      "name": "transferNft",
+      "description": "Transfer NFT to another address. Transfers nft from its current owner to new owner. This requires that this contract is admin of the NFT contract and that the signer owns the given token.",
+      "parameterDecorators": [
+        {
+          "name": "toAddress",
+          "description": "Address of the new owner of the NFT.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenId",
+          "description": "Id of the token to be transfered.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

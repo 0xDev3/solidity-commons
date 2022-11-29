@@ -1,1 +1,607 @@
-{"schema":"../schema.json","tags":["tokens","locking"],"name":"GraphTokenLockManager","description":"GraphTokenLockManager. This contract manages a list of authorized function calls and targets that can be called by any TokenLockWallet contract and it is a factory of TokenLockWallet contracts. This contract receives funds to make the process of creating TokenLockWallet contracts easier by distributing them the initial tokens to be managed. The owner can setup a list of token destinations that will be used by TokenLock contracts to approve the pulling of funds, this way in can be guaranteed that only protocol contracts will manipulate users funds.","eventDecorators":[{"signature":"FunctionCallAuth(address,bytes4,address,string)","name":"FunctionCallAuth","description":"","parameterDecorators":[{"name":"caller","description":"","recommendedTypes":[],"indexed":true},{"name":"sigHash","description":"","recommendedTypes":[],"indexed":true},{"name":"target","description":"","recommendedTypes":[],"indexed":true},{"name":"signature","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"MasterCopyUpdated(address)","name":"MasterCopyUpdated","description":"","parameterDecorators":[{"name":"masterCopy","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"reporter","description":"The address of the entity that reported the updater misbehavior.","recommendedTypes":[],"indexed":true},{"name":"updater","description":"The address of the updater.","recommendedTypes":[],"indexed":true}]},{"signature":"ProxyCreated(address)","name":"ProxyCreated","description":"","parameterDecorators":[{"name":"proxy","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"TokenDestinationAllowed(address,bool)","name":"TokenDestinationAllowed","description":"","parameterDecorators":[{"name":"reporter","description":"The address of the entity that reported the updater misbehavior.","recommendedTypes":[],"indexed":true},{"name":"updater","description":"The address of the updater.","recommendedTypes":[],"indexed":false}]},{"signature":"TokenLockCreated(address,bytes32,address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)","name":"TokenLockCreated","description":"","parameterDecorators":[{"name":"contractAddress","description":"","recommendedTypes":[],"indexed":true},{"name":"initHash","description":"","recommendedTypes":[],"indexed":true},{"name":"beneficiary","description":"","recommendedTypes":[],"indexed":true},{"name":"token","description":"","recommendedTypes":[],"indexed":false},{"name":"managedAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"startTime","description":"","recommendedTypes":[],"indexed":false},{"name":"endTime","description":"","recommendedTypes":[],"indexed":false},{"name":"periods","description":"","recommendedTypes":[],"indexed":false},{"name":"releaseStartTime","description":"","recommendedTypes":[],"indexed":false},{"name":"vestingCliffTime","description":"","recommendedTypes":[],"indexed":false},{"name":"revocable","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TokensDeposited(address,uint256)","name":"TokensDeposited","description":"","parameterDecorators":[{"name":"reporter","description":"The address of the entity that reported the updater misbehavior.","recommendedTypes":[],"indexed":true},{"name":"updater","description":"The address of the updater.","recommendedTypes":[],"indexed":false}]},{"signature":"TokensWithdrawn(address,uint256)","name":"TokensWithdrawn","description":"","parameterDecorators":[{"name":"reporter","description":"The address of the entity that reported the updater misbehavior.","recommendedTypes":[],"indexed":true},{"name":"updater","description":"The address of the updater.","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"addTokenDestination(address)","name":"addTokenDestination","description":"Adds an address that can be allowed by a token lock to pull funds.","parameterDecorators":[{"name":"_dst","description":"Destination address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"authFnCalls(bytes4)","name":"authFnCalls","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"createTokenLockWallet(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)","name":"createTokenLockWallet","description":"Creates and fund a new token lock wallet using a minimum proxy.","parameterDecorators":[{"name":"_owner","description":"Address of the contract owner.","recommendedTypes":[]},{"name":"_beneficiary","description":"Address of the beneficiary of locked tokens.","recommendedTypes":[]},{"name":"_managedAmount","description":"Amount of tokens to be managed by the lock contract.","recommendedTypes":[]},{"name":"_startTime","description":"Start time of the release schedule.","recommendedTypes":[]},{"name":"_endTime","description":"End time of the release schedule.","recommendedTypes":[]},{"name":"_periods","description":"Number of periods between start time and end time.","recommendedTypes":[]},{"name":"_releaseStartTime","description":"Override time for when the releases start.","recommendedTypes":[]},{"name":"_vestingCliffTime","description":"","recommendedTypes":[]},{"name":"_revocable","description":"Whether the contract is revocable.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"deposit(uint256)","name":"deposit","description":"Deposits tokens into the contract. Even if the ERC20 token can be transferred directly to the contract this function provide a safe interface to do the transfer and avoid mistakes.","parameterDecorators":[{"name":"_amount","description":"Amount to deposit.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getAuthFunctionCallTarget(bytes4)","name":"getAuthFunctionCallTarget","description":"Gets the target contract to call for a particular function signature.","parameterDecorators":[{"name":"_sigHash","description":"Function signature hash.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Address of the target contract where to send the call.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getDeploymentAddress(bytes32,address)","name":"getDeploymentAddress","description":"Gets the deterministic CREATE2 address for MinimalProxy with a particular implementation.","parameterDecorators":[{"name":"_salt","description":"Bytes32 salt to use for CREATE2.","recommendedTypes":[]},{"name":"_implementation","description":"Address of the proxy target implementation.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Address of the counterfactual MinimalProxy.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getTokenDestinations()","name":"getTokenDestinations","description":"Returns an array of authorized destination addresses.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Array of addresses authorized to pull funds from a token lock.","recommendedTypes":[],"solidityType":"address[]"}],"emittableEvents":[],"readOnly":true},{"signature":"isAuthFunctionCall(bytes4)","name":"isAuthFunctionCall","description":"Returns true if the function call is authorized.","parameterDecorators":[{"name":"_sigHash","description":"Function signature hash.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"True if authorized.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isTokenDestination(address)","name":"isTokenDestination","description":"Returns True if the address is authorized to be a destination of tokens.","parameterDecorators":[{"name":"_dst","description":"Destination address.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"True if authorized.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"masterCopy()","name":"masterCopy","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"removeTokenDestination(address)","name":"removeTokenDestination","description":"Removes an address that can be allowed by a token lock to pull funds.","parameterDecorators":[{"name":"_dst","description":"Destination address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setAuthFunctionCall(string,address)","name":"setAuthFunctionCall","description":"Sets an authorized function call to target. Input expected is the function signature as 'transfer(address,uint256)'.","parameterDecorators":[{"name":"_signature","description":"Function signature.","recommendedTypes":[]},{"name":"_target","description":"Address of the destination contract to call.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setAuthFunctionCallMany(string[],address[])","name":"setAuthFunctionCallMany","description":"Sets an authorized function call to target in bulk. Input expected is the function signature as 'transfer(address,uint256)'.","parameterDecorators":[{"name":"_signatures","description":"Function signatures.","recommendedTypes":[]},{"name":"_targets","description":"Address of the destination contract to call.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMasterCopy(address)","name":"setMasterCopy","description":"Sets the masterCopy bytecode to use to create clones of TokenLock contracts.","parameterDecorators":[{"name":"_masterCopy","description":"Address of contract bytecode to factory clone.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"token()","name":"token","description":"Gets the GRT token address.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Token used for transfers and approvals.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unsetAuthFunctionCall(string)","name":"unsetAuthFunctionCall","description":"Unsets an authorized function call to target. Input expected is the function signature as 'transfer(address,uint256)'.","parameterDecorators":[{"name":"_signature","description":"Function signature.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdraw(uint256)","name":"withdraw","description":"Withdraws tokens from the contract. Escape hatch in case of mistakes or to recover remaining funds.","parameterDecorators":[{"name":"_amount","description":"Amount of tokens to withdraw.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "locking"
+  ],
+  "name": "GraphTokenLockManager",
+  "description": "GraphTokenLockManager. This contract manages a list of authorized function calls and targets that can be called by any TokenLockWallet contract and it is a factory of TokenLockWallet contracts. This contract receives funds to make the process of creating TokenLockWallet contracts easier by distributing them the initial tokens to be managed. The owner can setup a list of token destinations that will be used by TokenLock contracts to approve the pulling of funds, this way in can be guaranteed that only protocol contracts will manipulate users funds.",
+  "eventDecorators": [
+    {
+      "signature": "FunctionCallAuth(address,bytes4,address,string)",
+      "name": "FunctionCallAuth",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sigHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "target",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "signature",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "MasterCopyUpdated(address)",
+      "name": "MasterCopyUpdated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "masterCopy",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "reporter",
+          "description": "The address of the entity that reported the updater misbehavior.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "updater",
+          "description": "The address of the updater.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ProxyCreated(address)",
+      "name": "ProxyCreated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "proxy",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TokenDestinationAllowed(address,bool)",
+      "name": "TokenDestinationAllowed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "reporter",
+          "description": "The address of the entity that reported the updater misbehavior.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "updater",
+          "description": "The address of the updater.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TokenLockCreated(address,bytes32,address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)",
+      "name": "TokenLockCreated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "contractAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "initHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "beneficiary",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "managedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "startTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "endTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "periods",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "releaseStartTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "vestingCliffTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "revocable",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TokensDeposited(address,uint256)",
+      "name": "TokensDeposited",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "reporter",
+          "description": "The address of the entity that reported the updater misbehavior.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "updater",
+          "description": "The address of the updater.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TokensWithdrawn(address,uint256)",
+      "name": "TokensWithdrawn",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "reporter",
+          "description": "The address of the entity that reported the updater misbehavior.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "updater",
+          "description": "The address of the updater.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addTokenDestination(address)",
+      "name": "addTokenDestination",
+      "description": "Adds an address that can be allowed by a token lock to pull funds.",
+      "parameterDecorators": [
+        {
+          "name": "_dst",
+          "description": "Destination address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "authFnCalls(bytes4)",
+      "name": "authFnCalls",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "createTokenLockWallet(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint8)",
+      "name": "createTokenLockWallet",
+      "description": "Creates and fund a new token lock wallet using a minimum proxy.",
+      "parameterDecorators": [
+        {
+          "name": "_owner",
+          "description": "Address of the contract owner.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_beneficiary",
+          "description": "Address of the beneficiary of locked tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_managedAmount",
+          "description": "Amount of tokens to be managed by the lock contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_startTime",
+          "description": "Start time of the release schedule.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_endTime",
+          "description": "End time of the release schedule.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_periods",
+          "description": "Number of periods between start time and end time.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_releaseStartTime",
+          "description": "Override time for when the releases start.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_vestingCliffTime",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_revocable",
+          "description": "Whether the contract is revocable.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deposit(uint256)",
+      "name": "deposit",
+      "description": "Deposits tokens into the contract. Even if the ERC20 token can be transferred directly to the contract this function provide a safe interface to do the transfer and avoid mistakes.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "Amount to deposit.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getAuthFunctionCallTarget(bytes4)",
+      "name": "getAuthFunctionCallTarget",
+      "description": "Gets the target contract to call for a particular function signature.",
+      "parameterDecorators": [
+        {
+          "name": "_sigHash",
+          "description": "Function signature hash.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Address of the target contract where to send the call.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getDeploymentAddress(bytes32,address)",
+      "name": "getDeploymentAddress",
+      "description": "Gets the deterministic CREATE2 address for MinimalProxy with a particular implementation.",
+      "parameterDecorators": [
+        {
+          "name": "_salt",
+          "description": "Bytes32 salt to use for CREATE2.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_implementation",
+          "description": "Address of the proxy target implementation.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Address of the counterfactual MinimalProxy.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokenDestinations()",
+      "name": "getTokenDestinations",
+      "description": "Returns an array of authorized destination addresses.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Array of addresses authorized to pull funds from a token lock.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isAuthFunctionCall(bytes4)",
+      "name": "isAuthFunctionCall",
+      "description": "Returns true if the function call is authorized.",
+      "parameterDecorators": [
+        {
+          "name": "_sigHash",
+          "description": "Function signature hash.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "True if authorized.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isTokenDestination(address)",
+      "name": "isTokenDestination",
+      "description": "Returns True if the address is authorized to be a destination of tokens.",
+      "parameterDecorators": [
+        {
+          "name": "_dst",
+          "description": "Destination address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "True if authorized.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "masterCopy()",
+      "name": "masterCopy",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeTokenDestination(address)",
+      "name": "removeTokenDestination",
+      "description": "Removes an address that can be allowed by a token lock to pull funds.",
+      "parameterDecorators": [
+        {
+          "name": "_dst",
+          "description": "Destination address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setAuthFunctionCall(string,address)",
+      "name": "setAuthFunctionCall",
+      "description": "Sets an authorized function call to target. Input expected is the function signature as 'transfer(address,uint256)'.",
+      "parameterDecorators": [
+        {
+          "name": "_signature",
+          "description": "Function signature.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_target",
+          "description": "Address of the destination contract to call.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setAuthFunctionCallMany(string[],address[])",
+      "name": "setAuthFunctionCallMany",
+      "description": "Sets an authorized function call to target in bulk. Input expected is the function signature as 'transfer(address,uint256)'.",
+      "parameterDecorators": [
+        {
+          "name": "_signatures",
+          "description": "Function signatures.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_targets",
+          "description": "Address of the destination contract to call.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMasterCopy(address)",
+      "name": "setMasterCopy",
+      "description": "Sets the masterCopy bytecode to use to create clones of TokenLock contracts.",
+      "parameterDecorators": [
+        {
+          "name": "_masterCopy",
+          "description": "Address of contract bytecode to factory clone.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "Gets the GRT token address.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Token used for transfers and approvals.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unsetAuthFunctionCall(string)",
+      "name": "unsetAuthFunctionCall",
+      "description": "Unsets an authorized function call to target. Input expected is the function signature as 'transfer(address,uint256)'.",
+      "parameterDecorators": [
+        {
+          "name": "_signature",
+          "description": "Function signature.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(uint256)",
+      "name": "withdraw",
+      "description": "Withdraws tokens from the contract. Escape hatch in case of mistakes or to recover remaining funds.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "Amount of tokens to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

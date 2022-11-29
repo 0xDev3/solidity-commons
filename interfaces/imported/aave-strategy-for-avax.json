@@ -1,1 +1,964 @@
-{"schema":"../schema.json","tags":["lending","strategies","aave","avalanche"],"name":"AVEEAVAXRecLev","description":"Aave strategy for AVAX. No need to _enterMarket() as LendingPool already defaults collateral to true. See https://github.com/aave/protocol-v2/blob/master/contracts/protocol/lendingpool/LendingPool.sol#L123-L126.","eventDecorators":[{"signature":"AllowDepositor(address)","name":"AllowDepositor","description":"Event emitted when a user withdraws their original funds + rewards from the rewards manager.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Deposit(address,uint256)","name":"Deposit","description":"Event emitted when a user withdraws their original funds + rewards from the rewards manager.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"DepositsEnabled(bool)","name":"DepositsEnabled","description":"Event emitted when a user withdraws their original funds + rewards from the rewards manager.","parameterDecorators":[{"name":"newValue","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Event emitted when a user withdraws their original funds + rewards from the rewards manager.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Recovered(address,uint256)","name":"Recovered","description":"Event emitted when a user withdraws their original funds + rewards from the rewards manager.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Reinvest(uint256,uint256)","name":"Reinvest","description":"Event emitted when a user withdraws their original funds + rewards from the rewards manager.","parameterDecorators":[{"name":"newTotalDeposits","description":"","recommendedTypes":[],"indexed":false},{"name":"newTotalSupply","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RemoveDepositor(address)","name":"RemoveDepositor","description":"Event emitted when a user withdraws their original funds + rewards from the rewards manager.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"UpdateAdminFee(uint256,uint256)","name":"UpdateAdminFee","description":"Event emitted when a user withdraws their original funds + rewards from the rewards manager.","parameterDecorators":[{"name":"oldValue","description":"","recommendedTypes":[],"indexed":false},{"name":"newValue","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"UpdateDevAddr(address,address)","name":"UpdateDevAddr","description":"Event emitted when a user withdraws their original funds + rewards from the rewards manager.","parameterDecorators":[{"name":"oldValue","description":"","recommendedTypes":[],"indexed":false},{"name":"newValue","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"UpdateDevFee(uint256,uint256)","name":"UpdateDevFee","description":"Event emitted when a user withdraws their original funds + rewards from the rewards manager.","parameterDecorators":[{"name":"oldValue","description":"","recommendedTypes":[],"indexed":false},{"name":"newValue","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"UpdateMaxTokensToDepositWithoutReinvest(uint256,uint256)","name":"UpdateMaxTokensToDepositWithoutReinvest","description":"Event emitted when a user withdraws their original funds + rewards from the rewards manager.","parameterDecorators":[{"name":"oldValue","description":"","recommendedTypes":[],"indexed":false},{"name":"newValue","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"UpdateMinTokensToReinvest(uint256,uint256)","name":"UpdateMinTokensToReinvest","description":"Event emitted when a user withdraws their original funds + rewards from the rewards manager.","parameterDecorators":[{"name":"oldValue","description":"","recommendedTypes":[],"indexed":false},{"name":"newValue","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"UpdateReinvestReward(uint256,uint256)","name":"UpdateReinvestReward","description":"Event emitted when a user withdraws their original funds + rewards from the rewards manager.","parameterDecorators":[{"name":"oldValue","description":"","recommendedTypes":[],"indexed":false},{"name":"newValue","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Withdraw(address,uint256)","name":"Withdraw","description":"Event emitted when a user withdraws their original funds + rewards from the rewards manager.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"ADMIN_FEE_BIPS()","name":"ADMIN_FEE_BIPS","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"DEPOSITS_ENABLED()","name":"DEPOSITS_ENABLED","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"DEV_FEE_BIPS()","name":"DEV_FEE_BIPS","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"MAX_TOKENS_TO_DEPOSIT_WITHOUT_REINVEST()","name":"MAX_TOKENS_TO_DEPOSIT_WITHOUT_REINVEST","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"MIN_TOKENS_TO_REINVEST()","name":"MIN_TOKENS_TO_REINVEST","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"REINVEST_REWARD_BIPS()","name":"REINVEST_REWARD_BIPS","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"allowDepositor(address)","name":"allowDepositor","description":"Add an allowed depositor.","parameterDecorators":[{"name":"depositor","description":"address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"allowedDepositors(address)","name":"allowedDepositors","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"checkReward()","name":"checkReward","description":"Reward tokens avialable to strategy, including balance.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"reward tokens.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"deposit(uint256)","name":"deposit","description":"Deposit and deploy deposits tokens to the strategy. Must mint receipt tokens to `msg.sender`.","parameterDecorators":[{"name":"amount","description":"deposit tokens.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"deposit()","name":"deposit","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"depositFor(address,uint256)","name":"depositFor","description":"Deposit on behalf of another account. Must mint receipt tokens to `account`.","parameterDecorators":[{"name":"account","description":"address to receive receipt tokens.","recommendedTypes":[]},{"name":"amount","description":"deposit tokens.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"depositFor(address)","name":"depositFor","description":"","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"depositToken()","name":"depositToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"depositWithPermit(uint256,uint256,uint8,bytes32,bytes32)","name":"depositWithPermit","description":"Deposit using Permit. Should revert for tokens without Permit.","parameterDecorators":[{"name":"amount","description":"Amount of tokens to deposit.","recommendedTypes":[]},{"name":"deadline","description":"The time at which to expire the signature.","recommendedTypes":[]},{"name":"v","description":"The recovery byte of the signature.","recommendedTypes":[]},{"name":"r","description":"Half of the ECDSA signature pair.","recommendedTypes":[]},{"name":"s","description":"Half of the ECDSA signature pair.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"devAddr()","name":"devAddr","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"developerUser()","name":"developerUser","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"estimateDeployedBalance()","name":"estimateDeployedBalance","description":"Estimated deposit token balance deployed by strategy, excluding balance.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"deposit tokens.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"estimateReinvestReward()","name":"estimateReinvestReward","description":"Estimate reinvest reward.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"reward tokens.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getActualLeverage()","name":"getActualLeverage","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"numberOfAllowedDepositors()","name":"numberOfAllowedDepositors","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"ownerUser()","name":"ownerUser","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"recoverAVAX(uint256)","name":"recoverAVAX","description":"Recover AVAX from contract.","parameterDecorators":[{"name":"amount","description":"amount.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"recoverERC20(address,uint256)","name":"recoverERC20","description":"Recover ERC20 from contract.","parameterDecorators":[{"name":"tokenAddress","description":"token address.","recommendedTypes":[]},{"name":"tokenAmount","description":"amount to recover.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"reinvest()","name":"reinvest","description":"Reinvest reward tokens into deposit tokens.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"removeDepositor(address)","name":"removeDepositor","description":"Remove an allowed depositor.","parameterDecorators":[{"name":"depositor","description":"address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"rescueDeployedFunds(uint256,bool)","name":"rescueDeployedFunds","description":"Rescue all available deployed deposit tokens back to Strategy.","parameterDecorators":[{"name":"minReturnAmountAccepted","description":"min deposit tokens to receive.","recommendedTypes":[]},{"name":"disableDeposits","description":"bool.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"revokeAllowance(address,address)","name":"revokeAllowance","description":"Revoke token allowance.","parameterDecorators":[{"name":"token","description":"address.","recommendedTypes":[]},{"name":"spender","description":"address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"rewardToken()","name":"rewardToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"setAllowances()","name":"setAllowances","description":"Approve tokens for use in Strategy. Should use modifier `onlyOwner` to avoid griefing.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"totalDeposits()","name":"totalDeposits","description":"This function returns a snapshot of last available quotes.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"total deposits available on the contract.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateAdminFee(uint256)","name":"updateAdminFee","description":"Update admin fee.","parameterDecorators":[{"name":"newValue","description":"fee in BIPS.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateDepositsEnabled(bool)","name":"updateDepositsEnabled","description":"Enable/disable deposits.","parameterDecorators":[{"name":"newValue","description":"bool.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateDevAddr(address)","name":"updateDevAddr","description":"Update devAddr.","parameterDecorators":[{"name":"newValue","description":"address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateDevFee(uint256)","name":"updateDevFee","description":"Update developer fee.","parameterDecorators":[{"name":"newValue","description":"fee in BIPS.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateLeverage(uint256,uint256,uint256,uint256)","name":"updateLeverage","description":"","parameterDecorators":[{"name":"_leverageLevel","description":"","recommendedTypes":[]},{"name":"_safetyFactor","description":"","recommendedTypes":[]},{"name":"_minMinting","description":"","recommendedTypes":[]},{"name":"_leverageBips","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateMaxTokensToDepositWithoutReinvest(uint256)","name":"updateMaxTokensToDepositWithoutReinvest","description":"Update reinvest max threshold before a deposit.","parameterDecorators":[{"name":"newValue","description":"threshold.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateMinTokensToReinvest(uint256)","name":"updateMinTokensToReinvest","description":"Update reinvest min threshold.","parameterDecorators":[{"name":"newValue","description":"threshold.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateReinvestReward(uint256)","name":"updateReinvestReward","description":"Update reinvest reward.","parameterDecorators":[{"name":"newValue","description":"fee in BIPS.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdraw(uint256)","name":"withdraw","description":"Redeem receipt tokens for deposit tokens.","parameterDecorators":[{"name":"amount","description":"receipt tokens.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "lending",
+    "strategies",
+    "aave",
+    "avalanche"
+  ],
+  "name": "AVEEAVAXRecLev",
+  "description": "Aave strategy for AVAX. No need to _enterMarket() as LendingPool already defaults collateral to true. See https://github.com/aave/protocol-v2/blob/master/contracts/protocol/lendingpool/LendingPool.sol#L123-L126.",
+  "eventDecorators": [
+    {
+      "signature": "AllowDepositor(address)",
+      "name": "AllowDepositor",
+      "description": "Event emitted when a user withdraws their original funds + rewards from the rewards manager.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Deposit(address,uint256)",
+      "name": "Deposit",
+      "description": "Event emitted when a user withdraws their original funds + rewards from the rewards manager.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DepositsEnabled(bool)",
+      "name": "DepositsEnabled",
+      "description": "Event emitted when a user withdraws their original funds + rewards from the rewards manager.",
+      "parameterDecorators": [
+        {
+          "name": "newValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Event emitted when a user withdraws their original funds + rewards from the rewards manager.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Recovered(address,uint256)",
+      "name": "Recovered",
+      "description": "Event emitted when a user withdraws their original funds + rewards from the rewards manager.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Reinvest(uint256,uint256)",
+      "name": "Reinvest",
+      "description": "Event emitted when a user withdraws their original funds + rewards from the rewards manager.",
+      "parameterDecorators": [
+        {
+          "name": "newTotalDeposits",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newTotalSupply",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RemoveDepositor(address)",
+      "name": "RemoveDepositor",
+      "description": "Event emitted when a user withdraws their original funds + rewards from the rewards manager.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "UpdateAdminFee(uint256,uint256)",
+      "name": "UpdateAdminFee",
+      "description": "Event emitted when a user withdraws their original funds + rewards from the rewards manager.",
+      "parameterDecorators": [
+        {
+          "name": "oldValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UpdateDevAddr(address,address)",
+      "name": "UpdateDevAddr",
+      "description": "Event emitted when a user withdraws their original funds + rewards from the rewards manager.",
+      "parameterDecorators": [
+        {
+          "name": "oldValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UpdateDevFee(uint256,uint256)",
+      "name": "UpdateDevFee",
+      "description": "Event emitted when a user withdraws their original funds + rewards from the rewards manager.",
+      "parameterDecorators": [
+        {
+          "name": "oldValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UpdateMaxTokensToDepositWithoutReinvest(uint256,uint256)",
+      "name": "UpdateMaxTokensToDepositWithoutReinvest",
+      "description": "Event emitted when a user withdraws their original funds + rewards from the rewards manager.",
+      "parameterDecorators": [
+        {
+          "name": "oldValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UpdateMinTokensToReinvest(uint256,uint256)",
+      "name": "UpdateMinTokensToReinvest",
+      "description": "Event emitted when a user withdraws their original funds + rewards from the rewards manager.",
+      "parameterDecorators": [
+        {
+          "name": "oldValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UpdateReinvestReward(uint256,uint256)",
+      "name": "UpdateReinvestReward",
+      "description": "Event emitted when a user withdraws their original funds + rewards from the rewards manager.",
+      "parameterDecorators": [
+        {
+          "name": "oldValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Withdraw(address,uint256)",
+      "name": "Withdraw",
+      "description": "Event emitted when a user withdraws their original funds + rewards from the rewards manager.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "ADMIN_FEE_BIPS()",
+      "name": "ADMIN_FEE_BIPS",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "DEPOSITS_ENABLED()",
+      "name": "DEPOSITS_ENABLED",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "DEV_FEE_BIPS()",
+      "name": "DEV_FEE_BIPS",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MAX_TOKENS_TO_DEPOSIT_WITHOUT_REINVEST()",
+      "name": "MAX_TOKENS_TO_DEPOSIT_WITHOUT_REINVEST",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MIN_TOKENS_TO_REINVEST()",
+      "name": "MIN_TOKENS_TO_REINVEST",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "REINVEST_REWARD_BIPS()",
+      "name": "REINVEST_REWARD_BIPS",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "allowDepositor(address)",
+      "name": "allowDepositor",
+      "description": "Add an allowed depositor.",
+      "parameterDecorators": [
+        {
+          "name": "depositor",
+          "description": "address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "allowedDepositors(address)",
+      "name": "allowedDepositors",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "checkReward()",
+      "name": "checkReward",
+      "description": "Reward tokens avialable to strategy, including balance.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "reward tokens.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deposit(uint256)",
+      "name": "deposit",
+      "description": "Deposit and deploy deposits tokens to the strategy. Must mint receipt tokens to `msg.sender`.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "deposit tokens.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deposit()",
+      "name": "deposit",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "depositFor(address,uint256)",
+      "name": "depositFor",
+      "description": "Deposit on behalf of another account. Must mint receipt tokens to `account`.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "address to receive receipt tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "deposit tokens.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "depositFor(address)",
+      "name": "depositFor",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "depositToken()",
+      "name": "depositToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "depositWithPermit(uint256,uint256,uint8,bytes32,bytes32)",
+      "name": "depositWithPermit",
+      "description": "Deposit using Permit. Should revert for tokens without Permit.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "Amount of tokens to deposit.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The time at which to expire the signature.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "v",
+          "description": "The recovery byte of the signature.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "r",
+          "description": "Half of the ECDSA signature pair.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "s",
+          "description": "Half of the ECDSA signature pair.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "devAddr()",
+      "name": "devAddr",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "developerUser()",
+      "name": "developerUser",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "estimateDeployedBalance()",
+      "name": "estimateDeployedBalance",
+      "description": "Estimated deposit token balance deployed by strategy, excluding balance.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "deposit tokens.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "estimateReinvestReward()",
+      "name": "estimateReinvestReward",
+      "description": "Estimate reinvest reward.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "reward tokens.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getActualLeverage()",
+      "name": "getActualLeverage",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "numberOfAllowedDepositors()",
+      "name": "numberOfAllowedDepositors",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ownerUser()",
+      "name": "ownerUser",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "recoverAVAX(uint256)",
+      "name": "recoverAVAX",
+      "description": "Recover AVAX from contract.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "recoverERC20(address,uint256)",
+      "name": "recoverERC20",
+      "description": "Recover ERC20 from contract.",
+      "parameterDecorators": [
+        {
+          "name": "tokenAddress",
+          "description": "token address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenAmount",
+          "description": "amount to recover.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "reinvest()",
+      "name": "reinvest",
+      "description": "Reinvest reward tokens into deposit tokens.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeDepositor(address)",
+      "name": "removeDepositor",
+      "description": "Remove an allowed depositor.",
+      "parameterDecorators": [
+        {
+          "name": "depositor",
+          "description": "address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rescueDeployedFunds(uint256,bool)",
+      "name": "rescueDeployedFunds",
+      "description": "Rescue all available deployed deposit tokens back to Strategy.",
+      "parameterDecorators": [
+        {
+          "name": "minReturnAmountAccepted",
+          "description": "min deposit tokens to receive.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "disableDeposits",
+          "description": "bool.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "revokeAllowance(address,address)",
+      "name": "revokeAllowance",
+      "description": "Revoke token allowance.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "spender",
+          "description": "address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rewardToken()",
+      "name": "rewardToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setAllowances()",
+      "name": "setAllowances",
+      "description": "Approve tokens for use in Strategy. Should use modifier `onlyOwner` to avoid griefing.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "totalDeposits()",
+      "name": "totalDeposits",
+      "description": "This function returns a snapshot of last available quotes.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "total deposits available on the contract.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateAdminFee(uint256)",
+      "name": "updateAdminFee",
+      "description": "Update admin fee.",
+      "parameterDecorators": [
+        {
+          "name": "newValue",
+          "description": "fee in BIPS.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateDepositsEnabled(bool)",
+      "name": "updateDepositsEnabled",
+      "description": "Enable/disable deposits.",
+      "parameterDecorators": [
+        {
+          "name": "newValue",
+          "description": "bool.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateDevAddr(address)",
+      "name": "updateDevAddr",
+      "description": "Update devAddr.",
+      "parameterDecorators": [
+        {
+          "name": "newValue",
+          "description": "address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateDevFee(uint256)",
+      "name": "updateDevFee",
+      "description": "Update developer fee.",
+      "parameterDecorators": [
+        {
+          "name": "newValue",
+          "description": "fee in BIPS.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateLeverage(uint256,uint256,uint256,uint256)",
+      "name": "updateLeverage",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_leverageLevel",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_safetyFactor",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minMinting",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_leverageBips",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateMaxTokensToDepositWithoutReinvest(uint256)",
+      "name": "updateMaxTokensToDepositWithoutReinvest",
+      "description": "Update reinvest max threshold before a deposit.",
+      "parameterDecorators": [
+        {
+          "name": "newValue",
+          "description": "threshold.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateMinTokensToReinvest(uint256)",
+      "name": "updateMinTokensToReinvest",
+      "description": "Update reinvest min threshold.",
+      "parameterDecorators": [
+        {
+          "name": "newValue",
+          "description": "threshold.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateReinvestReward(uint256)",
+      "name": "updateReinvestReward",
+      "description": "Update reinvest reward.",
+      "parameterDecorators": [
+        {
+          "name": "newValue",
+          "description": "fee in BIPS.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(uint256)",
+      "name": "withdraw",
+      "description": "Redeem receipt tokens for deposit tokens.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "receipt tokens.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

@@ -1,1 +1,729 @@
-{"schema":"../schema.json","tags":["voting","aave"],"name":"AaveGovernanceV2","description":"Governance V2 contract. Main point of interaction with Aave protocol's governance - Create a Proposal - Cancel a Proposal - Queue a Proposal - Execute a Proposal - Submit Vote to a Proposal Proposal States : Pending => Active => Succeeded(/Failed) => Queued => Executed(/Expired) The transition to \"Canceled\" can appear in multiple states.","eventDecorators":[{"signature":"ExecutorAuthorized(address)","name":"ExecutorAuthorized","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"executor","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ExecutorUnauthorized(address)","name":"ExecutorUnauthorized","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"executor","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"GovernanceStrategyChanged(address,address)","name":"GovernanceStrategyChanged","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"newStrategy","description":"","recommendedTypes":[],"indexed":true},{"name":"initiatorChange","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"ProposalCanceled(uint256)","name":"ProposalCanceled","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"id","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ProposalCreated(uint256,address,address,address[],uint256[],string[],bytes[],bool[],uint256,uint256,address,bytes32)","name":"ProposalCreated","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"id","description":"","recommendedTypes":[],"indexed":false},{"name":"creator","description":"","recommendedTypes":[],"indexed":true},{"name":"executor","description":"","recommendedTypes":[],"indexed":true},{"name":"targets","description":"","recommendedTypes":[],"indexed":false},{"name":"values","description":"","recommendedTypes":[],"indexed":false},{"name":"signatures","description":"","recommendedTypes":[],"indexed":false},{"name":"calldatas","description":"","recommendedTypes":[],"indexed":false},{"name":"withDelegatecalls","description":"","recommendedTypes":[],"indexed":false},{"name":"startBlock","description":"","recommendedTypes":[],"indexed":false},{"name":"endBlock","description":"","recommendedTypes":[],"indexed":false},{"name":"strategy","description":"","recommendedTypes":[],"indexed":false},{"name":"ipfsHash","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ProposalExecuted(uint256,address)","name":"ProposalExecuted","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"id","description":"","recommendedTypes":[],"indexed":false},{"name":"initiatorExecution","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"ProposalQueued(uint256,uint256,address)","name":"ProposalQueued","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"id","description":"","recommendedTypes":[],"indexed":false},{"name":"executionTime","description":"","recommendedTypes":[],"indexed":false},{"name":"initiatorQueueing","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"VoteEmitted(uint256,address,bool,uint256)","name":"VoteEmitted","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"id","description":"","recommendedTypes":[],"indexed":false},{"name":"voter","description":"","recommendedTypes":[],"indexed":true},{"name":"support","description":"","recommendedTypes":[],"indexed":false},{"name":"votingPower","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"VotingDelayChanged(uint256,address)","name":"VotingDelayChanged","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"newVotingDelay","description":"","recommendedTypes":[],"indexed":false},{"name":"initiatorChange","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"DOMAIN_TYPEHASH()","name":"DOMAIN_TYPEHASH","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"NAME()","name":"NAME","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true},{"signature":"VOTE_EMITTED_TYPEHASH()","name":"VOTE_EMITTED_TYPEHASH","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"__abdicate()","name":"__abdicate","description":"Let the guardian abdicate from its priviledged rights*.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"authorizeExecutors(address[])","name":"authorizeExecutors","description":"Add new addresses to the list of authorized executors.","parameterDecorators":[{"name":"executors","description":"list of new addresses to be authorized executors*.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"cancel(uint256)","name":"cancel","description":"Cancels a Proposal. - Callable by the _guardian with relaxed conditions, or by anybody if the conditions of cancellation on the executor are fulfilled.","parameterDecorators":[{"name":"proposalId","description":"id of the proposal*.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"create(address,address[],uint256[],string[],bytes[],bool[],bytes32)","name":"create","description":"Creates a Proposal (needs to be validated by the Proposal Validator).","parameterDecorators":[{"name":"executor","description":"The ExecutorWithTimelock contract that will execute the proposal.","recommendedTypes":[]},{"name":"targets","description":"list of contracts called by proposal's associated transactions.","recommendedTypes":[]},{"name":"values","description":"list of value in wei for each propoposal's associated transaction.","recommendedTypes":[]},{"name":"signatures","description":"list of function signatures (can be empty) to be used when created the callData.","recommendedTypes":[]},{"name":"calldatas","description":"list of calldatas: if associated signature empty, calldata ready, else calldata is arguments.","recommendedTypes":[]},{"name":"withDelegatecalls","description":"boolean, true = transaction delegatecalls the taget, else calls the target.","recommendedTypes":[]},{"name":"ipfsHash","description":"IPFS hash of the proposal*.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"execute(uint256)","name":"execute","description":"Execute the proposal (If Proposal Queued).","parameterDecorators":[{"name":"proposalId","description":"id of the proposal to execute*.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getGovernanceStrategy()","name":"getGovernanceStrategy","description":"Getter of the current GovernanceStrategy address.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The address of the current GovernanceStrategy contracts*.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getGuardian()","name":"getGuardian","description":"Getter the address of the guardian, that can mainly cancel proposals.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The address of the guardian*.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getProposalById(uint256)","name":"getProposalById","description":"Getter of a proposal by id.","parameterDecorators":[{"name":"proposalId","description":"id of the proposal to get.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the proposal as ProposalWithoutVotes memory object*.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"getProposalState(uint256)","name":"getProposalState","description":"Get the current state of a proposal.","parameterDecorators":[{"name":"proposalId","description":"id of the proposal.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The current state if the proposal*.","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"getProposalsCount()","name":"getProposalsCount","description":"Getter of the proposal count (the current number of proposals ever created).","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"the proposal count*.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getVoteOnProposal(uint256,address)","name":"getVoteOnProposal","description":"Getter of the Vote of a voter about a proposal Note: Vote is a struct: ({bool support, uint248 votingPower}).","parameterDecorators":[{"name":"proposalId","description":"id of the proposal.","recommendedTypes":[]},{"name":"voter","description":"address of the voter.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The associated Vote memory object*.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"getVotingDelay()","name":"getVotingDelay","description":"Getter of the current Voting Delay (delay before a created proposal can be voted on) Different from the voting duration.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The voting delay in number of blocks*.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"isExecutorAuthorized(address)","name":"isExecutorAuthorized","description":"Returns whether an address is an authorized executor.","parameterDecorators":[{"name":"executor","description":"address to evaluate as authorized executor.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"true if authorized*.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"queue(uint256)","name":"queue","description":"Queue the proposal (If Proposal Succeeded).","parameterDecorators":[{"name":"proposalId","description":"id of the proposal to queue*.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setGovernanceStrategy(address)","name":"setGovernanceStrategy","description":"Set new GovernanceStrategy Note: owner should be a timelocked executor, so needs to make a proposal.","parameterDecorators":[{"name":"governanceStrategy","description":"new Address of the GovernanceStrategy contract*.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setVotingDelay(uint256)","name":"setVotingDelay","description":"Set new Voting Delay (delay before a newly created proposal can be voted on) Note: owner should be a timelocked executor, so needs to make a proposal.","parameterDecorators":[{"name":"votingDelay","description":"new voting delay in terms of blocks*.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"submitVote(uint256,bool)","name":"submitVote","description":"Function allowing msg.sender to vote for/against a proposal.","parameterDecorators":[{"name":"proposalId","description":"id of the proposal.","recommendedTypes":[]},{"name":"support","description":"boolean, true = vote for, false = vote against*.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"submitVoteBySignature(uint256,bool,uint8,bytes32,bytes32)","name":"submitVoteBySignature","description":"Function to register the vote of user that has voted offchain via signature.","parameterDecorators":[{"name":"proposalId","description":"id of the proposal.","recommendedTypes":[]},{"name":"support","description":"boolean, true = vote for, false = vote against.","recommendedTypes":[]},{"name":"v","description":"v part of the voter signature.","recommendedTypes":[]},{"name":"r","description":"r part of the voter signature.","recommendedTypes":[]},{"name":"s","description":"s part of the voter signature*.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unauthorizeExecutors(address[])","name":"unauthorizeExecutors","description":"Remove addresses to the list of authorized executors.","parameterDecorators":[{"name":"executors","description":"list of addresses to be removed as authorized executors*.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "voting",
+    "aave"
+  ],
+  "name": "AaveGovernanceV2",
+  "description": "Governance V2 contract. Main point of interaction with Aave protocol's governance - Create a Proposal - Cancel a Proposal - Queue a Proposal - Execute a Proposal - Submit Vote to a Proposal Proposal States : Pending => Active => Succeeded(/Failed) => Queued => Executed(/Expired) The transition to \"Canceled\" can appear in multiple states.",
+  "eventDecorators": [
+    {
+      "signature": "ExecutorAuthorized(address)",
+      "name": "ExecutorAuthorized",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "executor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ExecutorUnauthorized(address)",
+      "name": "ExecutorUnauthorized",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "executor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "GovernanceStrategyChanged(address,address)",
+      "name": "GovernanceStrategyChanged",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "newStrategy",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "initiatorChange",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ProposalCanceled(uint256)",
+      "name": "ProposalCanceled",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ProposalCreated(uint256,address,address,address[],uint256[],string[],bytes[],bool[],uint256,uint256,address,bytes32)",
+      "name": "ProposalCreated",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "creator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "executor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "targets",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "values",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "signatures",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "calldatas",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "withDelegatecalls",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "startBlock",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "endBlock",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "strategy",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "ipfsHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ProposalExecuted(uint256,address)",
+      "name": "ProposalExecuted",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "initiatorExecution",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ProposalQueued(uint256,uint256,address)",
+      "name": "ProposalQueued",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "executionTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "initiatorQueueing",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "VoteEmitted(uint256,address,bool,uint256)",
+      "name": "VoteEmitted",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "voter",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "support",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "votingPower",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "VotingDelayChanged(uint256,address)",
+      "name": "VotingDelayChanged",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "newVotingDelay",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "initiatorChange",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "DOMAIN_TYPEHASH()",
+      "name": "DOMAIN_TYPEHASH",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "NAME()",
+      "name": "NAME",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "VOTE_EMITTED_TYPEHASH()",
+      "name": "VOTE_EMITTED_TYPEHASH",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "__abdicate()",
+      "name": "__abdicate",
+      "description": "Let the guardian abdicate from its priviledged rights*.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "authorizeExecutors(address[])",
+      "name": "authorizeExecutors",
+      "description": "Add new addresses to the list of authorized executors.",
+      "parameterDecorators": [
+        {
+          "name": "executors",
+          "description": "list of new addresses to be authorized executors*.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cancel(uint256)",
+      "name": "cancel",
+      "description": "Cancels a Proposal. - Callable by the _guardian with relaxed conditions, or by anybody if the conditions of cancellation on the executor are fulfilled.",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "id of the proposal*.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "create(address,address[],uint256[],string[],bytes[],bool[],bytes32)",
+      "name": "create",
+      "description": "Creates a Proposal (needs to be validated by the Proposal Validator).",
+      "parameterDecorators": [
+        {
+          "name": "executor",
+          "description": "The ExecutorWithTimelock contract that will execute the proposal.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "targets",
+          "description": "list of contracts called by proposal's associated transactions.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "values",
+          "description": "list of value in wei for each propoposal's associated transaction.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "signatures",
+          "description": "list of function signatures (can be empty) to be used when created the callData.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "calldatas",
+          "description": "list of calldatas: if associated signature empty, calldata ready, else calldata is arguments.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "withDelegatecalls",
+          "description": "boolean, true = transaction delegatecalls the taget, else calls the target.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ipfsHash",
+          "description": "IPFS hash of the proposal*.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "execute(uint256)",
+      "name": "execute",
+      "description": "Execute the proposal (If Proposal Queued).",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "id of the proposal to execute*.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getGovernanceStrategy()",
+      "name": "getGovernanceStrategy",
+      "description": "Getter of the current GovernanceStrategy address.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The address of the current GovernanceStrategy contracts*.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getGuardian()",
+      "name": "getGuardian",
+      "description": "Getter the address of the guardian, that can mainly cancel proposals.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The address of the guardian*.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getProposalById(uint256)",
+      "name": "getProposalById",
+      "description": "Getter of a proposal by id.",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "id of the proposal to get.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the proposal as ProposalWithoutVotes memory object*.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getProposalState(uint256)",
+      "name": "getProposalState",
+      "description": "Get the current state of a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "id of the proposal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The current state if the proposal*.",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getProposalsCount()",
+      "name": "getProposalsCount",
+      "description": "Getter of the proposal count (the current number of proposals ever created).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the proposal count*.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVoteOnProposal(uint256,address)",
+      "name": "getVoteOnProposal",
+      "description": "Getter of the Vote of a voter about a proposal Note: Vote is a struct: ({bool support, uint248 votingPower}).",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "id of the proposal.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "voter",
+          "description": "address of the voter.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The associated Vote memory object*.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVotingDelay()",
+      "name": "getVotingDelay",
+      "description": "Getter of the current Voting Delay (delay before a created proposal can be voted on) Different from the voting duration.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The voting delay in number of blocks*.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isExecutorAuthorized(address)",
+      "name": "isExecutorAuthorized",
+      "description": "Returns whether an address is an authorized executor.",
+      "parameterDecorators": [
+        {
+          "name": "executor",
+          "description": "address to evaluate as authorized executor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "true if authorized*.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "queue(uint256)",
+      "name": "queue",
+      "description": "Queue the proposal (If Proposal Succeeded).",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "id of the proposal to queue*.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setGovernanceStrategy(address)",
+      "name": "setGovernanceStrategy",
+      "description": "Set new GovernanceStrategy Note: owner should be a timelocked executor, so needs to make a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "governanceStrategy",
+          "description": "new Address of the GovernanceStrategy contract*.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setVotingDelay(uint256)",
+      "name": "setVotingDelay",
+      "description": "Set new Voting Delay (delay before a newly created proposal can be voted on) Note: owner should be a timelocked executor, so needs to make a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "votingDelay",
+          "description": "new voting delay in terms of blocks*.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "submitVote(uint256,bool)",
+      "name": "submitVote",
+      "description": "Function allowing msg.sender to vote for/against a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "id of the proposal.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "support",
+          "description": "boolean, true = vote for, false = vote against*.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "submitVoteBySignature(uint256,bool,uint8,bytes32,bytes32)",
+      "name": "submitVoteBySignature",
+      "description": "Function to register the vote of user that has voted offchain via signature.",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "id of the proposal.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "support",
+          "description": "boolean, true = vote for, false = vote against.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "v",
+          "description": "v part of the voter signature.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "r",
+          "description": "r part of the voter signature.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "s",
+          "description": "s part of the voter signature*.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unauthorizeExecutors(address[])",
+      "name": "unauthorizeExecutors",
+      "description": "Remove addresses to the list of authorized executors.",
+      "parameterDecorators": [
+        {
+          "name": "executors",
+          "description": "list of addresses to be removed as authorized executors*.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

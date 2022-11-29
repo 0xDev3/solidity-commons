@@ -1,1 +1,335 @@
-{"schema":"../schema.json","tags":["swaps"],"name":"ImpossibleSwapFactory","description":"Swap Factory for Impossible Swap V3. See documentation at: https://docs.impossible.finance/impossible-swap/overview. This factory builds upon basic Uni V2 factory by changing \"feeToSetter\" to \"governance\" and adding a whitelist.","eventDecorators":[{"signature":"PairCreated(address,address,address,uint256)","name":"PairCreated","description":"Emitted every time the contract gets upgraded.","parameterDecorators":[{"name":"token0","description":"","recommendedTypes":[],"indexed":true},{"name":"token1","description":"","recommendedTypes":[],"indexed":true},{"name":"pair","description":"","recommendedTypes":[],"indexed":false},{"name":"param0","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"UpdatedGovernance(address)","name":"UpdatedGovernance","description":"Emitted every time the contract gets upgraded.","parameterDecorators":[{"name":"governance","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"allPairs(uint256)","name":"allPairs","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"allPairsLength()","name":"allPairsLength","description":"The constructor for the IF swap factory. _governance The address for IF Governance.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"uint256 The current number of pairs in the IF swap.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"approvedTokens(address)","name":"approvedTokens","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"changeTokenAccess(address,bool)","name":"changeTokenAccess","description":"Either allow or stop a token from being a valid token for new pair contracts. Changes can only be made by IF governance.","parameterDecorators":[{"name":"token","description":"The address of the token.","recommendedTypes":[]},{"name":"allowed","description":"The boolean to include/exclude this token in the whitelist.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"createPair(address,address)","name":"createPair","description":"Creates a new Impossible Pair contract. If whitelist is on, can only use approved tokens in whitelisttokenA must not be equal to tokenB.","parameterDecorators":[{"name":"tokenA","description":"The address of token A. Token A will be in the new Pair contract.","recommendedTypes":[]},{"name":"tokenB","description":"The address of token B. Token B will be in the new Pair contract.","recommendedTypes":[]}],"returnDecorators":[{"name":"pair","description":"The address of the created pair containing token A and token B.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":false},{"signature":"feeTo()","name":"feeTo","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getPair(address,address)","name":"getPair","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"governance()","name":"governance","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"router()","name":"router","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"routerExtension()","name":"routerExtension","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"setFeeTo(address)","name":"setFeeTo","description":"Sets the address that fees from the swap are paid to. Can only be called by IF governance.","parameterDecorators":[{"name":"_feeTo","description":"The address that will receive swap fees.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setGovernance(address)","name":"setGovernance","description":"Sets the address for IF governance. Can only be called by IF governance.","parameterDecorators":[{"name":"_governance","description":"The address of the new IF governance.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setRouterAndExtension(address,address)","name":"setRouterAndExtension","description":"Sets router address in factory. Router is checked in pair contracts to ensure calls are from IF routers onlyCan only be set by IF governance.","parameterDecorators":[{"name":"_router","description":"The address of the IF router.","recommendedTypes":[]},{"name":"_routerExtension","description":"The address of the IF router extension.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setWhitelist(bool)","name":"setWhitelist","description":"Turns on or turns off the whitelist feature. Can only be set by IF governance.","parameterDecorators":[{"name":"b","description":"The boolean that whitelist is set to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"whitelist()","name":"whitelist","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "swaps"
+  ],
+  "name": "ImpossibleSwapFactory",
+  "description": "Swap Factory for Impossible Swap V3. See documentation at: https://docs.impossible.finance/impossible-swap/overview. This factory builds upon basic Uni V2 factory by changing \"feeToSetter\" to \"governance\" and adding a whitelist.",
+  "eventDecorators": [
+    {
+      "signature": "PairCreated(address,address,address,uint256)",
+      "name": "PairCreated",
+      "description": "Emitted every time the contract gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "token0",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token1",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "pair",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UpdatedGovernance(address)",
+      "name": "UpdatedGovernance",
+      "description": "Emitted every time the contract gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "governance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "allPairs(uint256)",
+      "name": "allPairs",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "allPairsLength()",
+      "name": "allPairsLength",
+      "description": "The constructor for the IF swap factory. _governance The address for IF Governance.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint256 The current number of pairs in the IF swap.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "approvedTokens(address)",
+      "name": "approvedTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "changeTokenAccess(address,bool)",
+      "name": "changeTokenAccess",
+      "description": "Either allow or stop a token from being a valid token for new pair contracts. Changes can only be made by IF governance.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "The address of the token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "allowed",
+          "description": "The boolean to include/exclude this token in the whitelist.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createPair(address,address)",
+      "name": "createPair",
+      "description": "Creates a new Impossible Pair contract. If whitelist is on, can only use approved tokens in whitelisttokenA must not be equal to tokenB.",
+      "parameterDecorators": [
+        {
+          "name": "tokenA",
+          "description": "The address of token A. Token A will be in the new Pair contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenB",
+          "description": "The address of token B. Token B will be in the new Pair contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "pair",
+          "description": "The address of the created pair containing token A and token B.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "feeTo()",
+      "name": "feeTo",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPair(address,address)",
+      "name": "getPair",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "governance()",
+      "name": "governance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "router()",
+      "name": "router",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "routerExtension()",
+      "name": "routerExtension",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setFeeTo(address)",
+      "name": "setFeeTo",
+      "description": "Sets the address that fees from the swap are paid to. Can only be called by IF governance.",
+      "parameterDecorators": [
+        {
+          "name": "_feeTo",
+          "description": "The address that will receive swap fees.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setGovernance(address)",
+      "name": "setGovernance",
+      "description": "Sets the address for IF governance. Can only be called by IF governance.",
+      "parameterDecorators": [
+        {
+          "name": "_governance",
+          "description": "The address of the new IF governance.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRouterAndExtension(address,address)",
+      "name": "setRouterAndExtension",
+      "description": "Sets router address in factory. Router is checked in pair contracts to ensure calls are from IF routers onlyCan only be set by IF governance.",
+      "parameterDecorators": [
+        {
+          "name": "_router",
+          "description": "The address of the IF router.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_routerExtension",
+          "description": "The address of the IF router extension.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setWhitelist(bool)",
+      "name": "setWhitelist",
+      "description": "Turns on or turns off the whitelist feature. Can only be set by IF governance.",
+      "parameterDecorators": [
+        {
+          "name": "b",
+          "description": "The boolean that whitelist is set to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "whitelist()",
+      "name": "whitelist",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

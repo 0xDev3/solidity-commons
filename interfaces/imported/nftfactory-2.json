@@ -1,1 +1,376 @@
-{"schema":"../schema.json","tags":["nft"],"name":"NFTFactory","description":"","eventDecorators":[{"signature":"Claimed(address,uint256)","name":"Claimed","description":"","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ShowTimestamp(uint256)","name":"ShowTimestamp","description":"","parameterDecorators":[{"name":"timestamp","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TierAdded(uint256)","name":"TierAdded","description":"","parameterDecorators":[{"name":"index","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"_updateImplementationStored()","name":"_updateImplementationStored","description":"Updates the current implementation logic address for the stored logic name. It uses the LogicVersionsRegistry contract to get the logic address or the cached address if valid.It caches the current logic address for the proxy to reduce gas on subsequent calls within the same block.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"addTier(bytes32)","name":"addTier","description":"","parameterDecorators":[{"name":"merkleRoot","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claim(uint256,address,uint256)","name":"claim","description":"","parameterDecorators":[{"name":"tierIndex","description":"","recommendedTypes":[]},{"name":"account","description":"","recommendedTypes":[]},{"name":"amount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claimedBitMap(uint256,uint256)","name":"claimedBitMap","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"endBlockTimestamp()","name":"endBlockTimestamp","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getTierMerkleRoots()","name":"getTierMerkleRoots","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32[]"}],"emittableEvents":[],"readOnly":true},{"signature":"implementationStored()","name":"implementationStored","description":"It stores the last known logic address locally to reduce gas costs.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"initialize(address,uint256,uint256,address,uint256)","name":"initialize","description":"","parameterDecorators":[{"name":"nftAddress","description":"","recommendedTypes":[]},{"name":"start","description":"","recommendedTypes":[]},{"name":"end","description":"","recommendedTypes":[]},{"name":"payment","description":"","recommendedTypes":[]},{"name":"weiAmount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"isClaimed(uint256,uint256)","name":"isClaimed","description":"","parameterDecorators":[{"name":"tierIndex","description":"","recommendedTypes":[]},{"name":"index","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"logicName()","name":"logicName","description":"It represent the logic name (key) used for this proxy.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"logicRegistry()","name":"logicRegistry","description":"It returns the logic registry that is used to determine the implementation logic for this proxy.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"nft()","name":"nft","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"saleAmountInWei()","name":"saleAmountInWei","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"startBlockTimestamp()","name":"startBlockTimestamp","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"strictDynamic()","name":"strictDynamic","description":"Boolean indicating if the proxy must check the registry for a new implementation.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"tierMerkleRoots(uint256)","name":"tierMerkleRoots","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"upgradeProxyTo(address)","name":"upgradeProxyTo","description":"It updates a proxy's cached implementation address.It must only be called by the LogicVersionsRegistry for non strict DynamicProxy.","parameterDecorators":[{"name":"newImplementation","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "nft"
+  ],
+  "name": "NFTFactory",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "Claimed(address,uint256)",
+      "name": "Claimed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ShowTimestamp(uint256)",
+      "name": "ShowTimestamp",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "timestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TierAdded(uint256)",
+      "name": "TierAdded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "_updateImplementationStored()",
+      "name": "_updateImplementationStored",
+      "description": "Updates the current implementation logic address for the stored logic name. It uses the LogicVersionsRegistry contract to get the logic address or the cached address if valid.It caches the current logic address for the proxy to reduce gas on subsequent calls within the same block.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addTier(bytes32)",
+      "name": "addTier",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "merkleRoot",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claim(uint256,address,uint256)",
+      "name": "claim",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "tierIndex",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimedBitMap(uint256,uint256)",
+      "name": "claimedBitMap",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "endBlockTimestamp()",
+      "name": "endBlockTimestamp",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTierMerkleRoots()",
+      "name": "getTierMerkleRoots",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "implementationStored()",
+      "name": "implementationStored",
+      "description": "It stores the last known logic address locally to reduce gas costs.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,uint256,uint256,address,uint256)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "nftAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "start",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "end",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "payment",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "weiAmount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isClaimed(uint256,uint256)",
+      "name": "isClaimed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "tierIndex",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "logicName()",
+      "name": "logicName",
+      "description": "It represent the logic name (key) used for this proxy.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "logicRegistry()",
+      "name": "logicRegistry",
+      "description": "It returns the logic registry that is used to determine the implementation logic for this proxy.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nft()",
+      "name": "nft",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "saleAmountInWei()",
+      "name": "saleAmountInWei",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "startBlockTimestamp()",
+      "name": "startBlockTimestamp",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "strictDynamic()",
+      "name": "strictDynamic",
+      "description": "Boolean indicating if the proxy must check the registry for a new implementation.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tierMerkleRoots(uint256)",
+      "name": "tierMerkleRoots",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "upgradeProxyTo(address)",
+      "name": "upgradeProxyTo",
+      "description": "It updates a proxy's cached implementation address.It must only be called by the LogicVersionsRegistry for non strict DynamicProxy.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

@@ -1,1 +1,292 @@
-{"schema":"../schema.json","tags":["strategies"],"name":"NoExternalStrategy","description":"This strategy holds the deposited funds without transferring them to an external protocol.","eventDecorators":[{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Triggered when some tokens have been unstaked.","parameterDecorators":[{"name":"amount","description":"Unstake amount.","recommendedTypes":[],"indexed":true},{"name":"holder","description":"Address of the holder.","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"earlyWithdraw(address,uint256,uint256)","name":"earlyWithdraw","description":"Withdraws funds from this strategy in case of an early withdrawal.","parameterDecorators":[{"name":"_inboundCurrency","description":"Address of the inbound token.","recommendedTypes":[]},{"name":"_amount","description":"Amount to withdraw.","recommendedTypes":[]},{"name":"_minAmount","description":"Used for aam strategies, since every strategy overrides from the same strategy interface hence it is defined here. _minAmount isn't needed in this strategy but since all strategies override from the same interface and the amm strategies need it hence it is used here.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getAccumulatedRewardTokenAmounts(bool)","name":"getAccumulatedRewardTokenAmounts","description":"Returns total accumulated reward token amount.","parameterDecorators":[{"name":"disableRewardTokenClaim","description":"Reward claim disable flag.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getNetDepositAmount(uint256)","name":"getNetDepositAmount","description":"Get the expected net deposit amount (amount minus slippage) for a given amount. Used only for AMM strategies.","parameterDecorators":[{"name":"_amount","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"net amount.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getRewardTokens()","name":"getRewardTokens","description":"Returns the instances of the reward tokens.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getTotalAmount()","name":"getTotalAmount","description":"Returns the total accumulated amount (i.e., principal + interest) stored in curve. Intended for usage by external clients and in case of variable deposit pools.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Total accumulated amount.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getUnderlyingAsset()","name":"getUnderlyingAsset","description":"Returns the underlying token address.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Returns the underlying inbound (deposit) token address.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"inboundToken()","name":"inboundToken","description":"inbound token (deposit token) address.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"invest(address,uint256)","name":"invest","description":"Deposits funds into this contract.","parameterDecorators":[{"name":"_inboundCurrency","description":"Address of the inbound token.","recommendedTypes":[]},{"name":"_minAmount","description":"Used for aam strategies, since every strategy overrides from the same strategy interface hence it is defined here. _minAmount isn't needed in this strategy but since all strategies override from the same interface and the amm strategies need it hence it is used here.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"redeem(address,uint256,uint256,bool)","name":"redeem","description":"Redeems funds from this strategy when the waiting round for the good ghosting pool is over.","parameterDecorators":[{"name":"_inboundCurrency","description":"Address of the inbound token.","recommendedTypes":[]},{"name":"_amount","description":"Amount to withdraw.","recommendedTypes":[]},{"name":"_minAmount","description":"Used for aam strategies, since every strategy overrides from the same strategy interface hence it is defined here. _minAmount isn't needed in this strategy but since all strategies override from the same interface and the amm strategies need it hence it is used here.","recommendedTypes":[]},{"name":"disableRewardTokenClaim","description":"Reward claim disable flag.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"rewardTokens(uint256)","name":"rewardTokens","description":"reward token address.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"strategyOwner()","name":"strategyOwner","description":"Get strategy owner address.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Strategy owner.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "strategies"
+  ],
+  "name": "NoExternalStrategy",
+  "description": "This strategy holds the deposited funds without transferring them to an external protocol.",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Triggered when some tokens have been unstaked.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "Unstake amount.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "holder",
+          "description": "Address of the holder.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "earlyWithdraw(address,uint256,uint256)",
+      "name": "earlyWithdraw",
+      "description": "Withdraws funds from this strategy in case of an early withdrawal.",
+      "parameterDecorators": [
+        {
+          "name": "_inboundCurrency",
+          "description": "Address of the inbound token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "Amount to withdraw.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minAmount",
+          "description": "Used for aam strategies, since every strategy overrides from the same strategy interface hence it is defined here. _minAmount isn't needed in this strategy but since all strategies override from the same interface and the amm strategies need it hence it is used here.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getAccumulatedRewardTokenAmounts(bool)",
+      "name": "getAccumulatedRewardTokenAmounts",
+      "description": "Returns total accumulated reward token amount.",
+      "parameterDecorators": [
+        {
+          "name": "disableRewardTokenClaim",
+          "description": "Reward claim disable flag.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getNetDepositAmount(uint256)",
+      "name": "getNetDepositAmount",
+      "description": "Get the expected net deposit amount (amount minus slippage) for a given amount. Used only for AMM strategies.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "net amount.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRewardTokens()",
+      "name": "getRewardTokens",
+      "description": "Returns the instances of the reward tokens.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTotalAmount()",
+      "name": "getTotalAmount",
+      "description": "Returns the total accumulated amount (i.e., principal + interest) stored in curve. Intended for usage by external clients and in case of variable deposit pools.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Total accumulated amount.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUnderlyingAsset()",
+      "name": "getUnderlyingAsset",
+      "description": "Returns the underlying token address.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Returns the underlying inbound (deposit) token address.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "inboundToken()",
+      "name": "inboundToken",
+      "description": "inbound token (deposit token) address.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "invest(address,uint256)",
+      "name": "invest",
+      "description": "Deposits funds into this contract.",
+      "parameterDecorators": [
+        {
+          "name": "_inboundCurrency",
+          "description": "Address of the inbound token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minAmount",
+          "description": "Used for aam strategies, since every strategy overrides from the same strategy interface hence it is defined here. _minAmount isn't needed in this strategy but since all strategies override from the same interface and the amm strategies need it hence it is used here.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "redeem(address,uint256,uint256,bool)",
+      "name": "redeem",
+      "description": "Redeems funds from this strategy when the waiting round for the good ghosting pool is over.",
+      "parameterDecorators": [
+        {
+          "name": "_inboundCurrency",
+          "description": "Address of the inbound token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "Amount to withdraw.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minAmount",
+          "description": "Used for aam strategies, since every strategy overrides from the same strategy interface hence it is defined here. _minAmount isn't needed in this strategy but since all strategies override from the same interface and the amm strategies need it hence it is used here.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "disableRewardTokenClaim",
+          "description": "Reward claim disable flag.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rewardTokens(uint256)",
+      "name": "rewardTokens",
+      "description": "reward token address.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "strategyOwner()",
+      "name": "strategyOwner",
+      "description": "Get strategy owner address.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Strategy owner.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

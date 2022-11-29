@@ -1,1 +1,901 @@
-{"schema":"../schema.json","tags":[],"name":"DPiggyAsset","description":"DPiggyAsset. The contract is proxied for dPiggyAssetProxy. It is created and managed by dPiggy contract that is also the contract admin. Implements all operations for the Dai deposited for an asset.","eventDecorators":[{"signature":"CompoundRedeem(uint256,uint256,uint256,uint256,uint256,uint256,uint256)","name":"CompoundRedeem","description":"Event for token purchase logging.","parameterDecorators":[{"name":"executionId","description":"","recommendedTypes":[],"indexed":true},{"name":"rate","description":"","recommendedTypes":[],"indexed":false},{"name":"totalBalance","description":"","recommendedTypes":[],"indexed":false},{"name":"totalRedeemed","description":"","recommendedTypes":[],"indexed":false},{"name":"fee","description":"","recommendedTypes":[],"indexed":false},{"name":"totalBought","description":"","recommendedTypes":[],"indexed":false},{"name":"totalAucBurned","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Deposit(address,uint256,uint256,uint256,uint256)","name":"Deposit","description":"Event for token purchase logging.","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":false},{"name":"rate","description":"","recommendedTypes":[],"indexed":false},{"name":"baseExecutionId","description":"","recommendedTypes":[],"indexed":false},{"name":"baseExecutionAmountForFee","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Finish(address,uint256,uint256,uint256,uint256)","name":"Finish","description":"Event for token purchase logging.","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[],"indexed":true},{"name":"totalRedeemed","description":"","recommendedTypes":[],"indexed":false},{"name":"yield","description":"","recommendedTypes":[],"indexed":false},{"name":"fee","description":"","recommendedTypes":[],"indexed":false},{"name":"totalAucBurned","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Redeem(address,uint256)","name":"Redeem","description":"Event for token purchase logging.","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":false}]},{"signature":"SetMigration(address)","name":"SetMigration","description":"Event for token purchase logging.","parameterDecorators":[{"name":"previousContract","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SetMinimumTimeBetweenExecutions(uint256,uint256)","name":"SetMinimumTimeBetweenExecutions","description":"Event for token purchase logging.","parameterDecorators":[{"name":"newTime","description":"","recommendedTypes":[],"indexed":false},{"name":"oldTime","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SetProxyAdmin(address,address)","name":"SetProxyAdmin","description":"Event for token purchase logging.","parameterDecorators":[{"name":"newAdmin","description":"","recommendedTypes":[],"indexed":true},{"name":"oldAdmin","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SetProxyImplementation(address,address)","name":"SetProxyImplementation","description":"Event for token purchase logging.","parameterDecorators":[{"name":"newImplementation","description":"","recommendedTypes":[],"indexed":true},{"name":"oldImplementation","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"addEscrow(address)","name":"addEscrow","description":"Function to set the fee exemption due to the Auc escrowed for the user. Only can be called by the admin (dPiggy contract).","parameterDecorators":[{"name":"user","description":"User's address.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"True if the user has some Dai deposited on the asset otherwise False.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"admin()","name":"admin","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"deposit(address,uint256)","name":"deposit","description":"Function to deposit Dai. Only can be called by the admin (dPiggy contract). On deposit, it sets all previous Dai profit, asset profit and fee amount until the last Compound redeem execution. It sets stored data to be able to calculate the proportional profit and fee on the next Compound redeem execution because the rate is a weighted average of all deposits rate in this period (between executions) and the same for the fee that should be proportional to the number of days in this period.","parameterDecorators":[{"name":"user","description":"User's address.","recommendedTypes":[]},{"name":"amount","description":"Amount of Dai deposited.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"executeCompoundRedeem()","name":"executeCompoundRedeem","description":"Function to execute the Compound redeem. It is redeemed all Dai profit for the period: (total on Compound contract - total deposited). The fee is calculated over total Dai deposited minus: - Amount of Dai of the users that has Auc escrowed. - Proportional amount of Dai for users that deposited Dai between last execution and current execution. The fee is charged only during the days that the Dai was invested, not all period. The amount of Dai for the fee is used to buy Auc on Uniswap and then the Auc is burned. So the remaining amount of Dai redeemed is used to buy the respective asset on Uniswap. The execution is general, not for a user, the distribution of profit to each user is calculated on redeem/finish functions.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"executionId()","name":"executionId","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"executions(uint256)","name":"executions","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"time","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"rate","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"totalDai","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"totalRedeemed","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"totalBought","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"totalBalance","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"totalFeeDeduction","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"feeAmount","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"feeExemptionAmountForAucEscrowed()","name":"feeExemptionAmountForAucEscrowed","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"feeExemptionAmountForUserBaseData(uint256)","name":"feeExemptionAmountForUserBaseData","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"feeExemptionNormalizedDifference(uint256)","name":"feeExemptionNormalizedDifference","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"finish()","name":"finish","description":"Function to finish the sender's participation for the asset. The asset profit is redeemed as well as all the Dai deposited.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"forceFinish(address)","name":"forceFinish","description":"Function to force finish of the user participation for the asset. The asset profit is redeemed as well as all the Dai deposited. Only can be called by the admin (dPiggy contract).","parameterDecorators":[{"name":"user","description":"User's address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"forceRedeem(address)","name":"forceRedeem","description":"Function to force redeem of the asset profit for the user address. Only can be called by the admin (dPiggy contract).","parameterDecorators":[{"name":"user","description":"User's address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getMinimumTimeForNextExecution()","name":"getMinimumTimeForNextExecution","description":"Function to get the minimum time for the next Compound redeem execution.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The minimum time in Unix for the next Compound redeem execution.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getUserAssetRedeemed(address)","name":"getUserAssetRedeemed","description":"Function to get the amount of asset redeemed for the user.","parameterDecorators":[{"name":"user","description":"User's address.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The amount of asset redeemed.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getUserEstimatedCurrentFee(address,uint256)","name":"getUserEstimatedCurrentFee","description":"Function to get the estimated current fee in Dai for the user. To estimate the amount of fee on the Compound redeem execution is calculated by the difference between the `time` and the last execution time. So it is not the total amount of fee, for an estimated total of the fee in Dai: `getUserAssetProfitAndFeeAmount(second return)` + `getUserEstimatedCurrentFee`.","parameterDecorators":[{"name":"user","description":"User's address.","recommendedTypes":[]},{"name":"time","description":"The Unix time to calculate the fee. It should be the current Unix time.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The estimated fee in Dai.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getUserEstimatedCurrentProfitWithoutFee(address)","name":"getUserEstimatedCurrentProfitWithoutFee","description":"Function to get the estimated current gross profit in Dai for the user. So it is not the total gross profit, it is only for the user amount of Dai on the next Compound redeem execution. The estimative of the amount of Dai on the Compound redeem execution considering the current Compound stored rate. For an estimated total of the gross profit: `getUserProfit` + `getUserEstimatedCurrentProfitWithoutFee`.","parameterDecorators":[{"name":"user","description":"User's address.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The estimated gross profit in Dai.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getUserProfitsAndFeeAmount(address)","name":"getUserProfitsAndFeeAmount","description":"Function to get the user's Dai gross profit, asset net profit and the fee amount in Dai.","parameterDecorators":[{"name":"user","description":"User's address.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param2","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getUserTotalInvested(address)","name":"getUserTotalInvested","description":"Function to get the amount of Dai deposited for the user.","parameterDecorators":[{"name":"user","description":"User's address.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The amount of Dai deposited.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"implementation()","name":"implementation","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"init(address,uint256)","name":"init","description":"Function to initialize the contract. It should be called through the `data` argument when creating the proxy. It must be called only once. The `assert` is to guarantee that behavior.","parameterDecorators":[{"name":"_tokenAddress","description":"The ERC20 token address on the chain or '0x0' for Ethereum. It is the asset for the respective contract.","recommendedTypes":[]},{"name":"_minimumTimeBetweenExecutions","description":"The minimum time in seconds between executions to run the Compound redeem.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"initMigratingData(address,address[])","name":"initMigratingData","description":"Function to initialize the contract migrating the data from another contract. It should be called through the `data` argument when creating the proxy. It must be called only once. The `assert` is to guarantee that behavior.","parameterDecorators":[{"name":"previousContract","description":"The contract to copy the data.","recommendedTypes":[]},{"name":"users","description":"The users to copy their stored data.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"isCompound()","name":"isCompound","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"minimumTimeBetweenExecutions()","name":"minimumTimeBetweenExecutions","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"redeem()","name":"redeem","description":"Function to redeem the asset profit for the sender address.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"remainingValueRedeemed(uint256)","name":"remainingValueRedeemed","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setMinimumTimeBetweenExecutions(uint256)","name":"setMinimumTimeBetweenExecutions","description":"Function to set the minimum time between the Compound redeem executions. Only can be called by the admin (dPiggy contract).","parameterDecorators":[{"name":"time","description":"New minimum time in seconds between the Compound redeem executions.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"tokenAddress()","name":"tokenAddress","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"totalBalance()","name":"totalBalance","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"totalBalanceNormalizedDifference(uint256)","name":"totalBalanceNormalizedDifference","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"usersData(address)","name":"usersData","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"baseExecutionId","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"baseExecutionAvgRate","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"baseExecutionAccumulatedAmount","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"baseExecutionAccumulatedWeightForRate","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"baseExecutionAmountForFee","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"currentAllocated","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"previousAllocated","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"previousProfit","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"previousAssetAmount","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"previousFeeAmount","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"redeemed","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"withdrawStuckToken(address,address)","name":"withdrawStuckToken","description":"","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[]},{"name":"destination","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "DPiggyAsset",
+  "description": "DPiggyAsset. The contract is proxied for dPiggyAssetProxy. It is created and managed by dPiggy contract that is also the contract admin. Implements all operations for the Dai deposited for an asset.",
+  "eventDecorators": [
+    {
+      "signature": "CompoundRedeem(uint256,uint256,uint256,uint256,uint256,uint256,uint256)",
+      "name": "CompoundRedeem",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "executionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "rate",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalRedeemed",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "fee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalBought",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalAucBurned",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Deposit(address,uint256,uint256,uint256,uint256)",
+      "name": "Deposit",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "rate",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "baseExecutionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "baseExecutionAmountForFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Finish(address,uint256,uint256,uint256,uint256)",
+      "name": "Finish",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "totalRedeemed",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "yield",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "fee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalAucBurned",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Redeem(address,uint256)",
+      "name": "Redeem",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SetMigration(address)",
+      "name": "SetMigration",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "previousContract",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SetMinimumTimeBetweenExecutions(uint256,uint256)",
+      "name": "SetMinimumTimeBetweenExecutions",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "newTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "oldTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SetProxyAdmin(address,address)",
+      "name": "SetProxyAdmin",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "newAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "oldAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SetProxyImplementation(address,address)",
+      "name": "SetProxyImplementation",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "oldImplementation",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addEscrow(address)",
+      "name": "addEscrow",
+      "description": "Function to set the fee exemption due to the Auc escrowed for the user. Only can be called by the admin (dPiggy contract).",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "User's address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "True if the user has some Dai deposited on the asset otherwise False.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "admin()",
+      "name": "admin",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deposit(address,uint256)",
+      "name": "deposit",
+      "description": "Function to deposit Dai. Only can be called by the admin (dPiggy contract). On deposit, it sets all previous Dai profit, asset profit and fee amount until the last Compound redeem execution. It sets stored data to be able to calculate the proportional profit and fee on the next Compound redeem execution because the rate is a weighted average of all deposits rate in this period (between executions) and the same for the fee that should be proportional to the number of days in this period.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "User's address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "Amount of Dai deposited.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "executeCompoundRedeem()",
+      "name": "executeCompoundRedeem",
+      "description": "Function to execute the Compound redeem. It is redeemed all Dai profit for the period: (total on Compound contract - total deposited). The fee is calculated over total Dai deposited minus: - Amount of Dai of the users that has Auc escrowed. - Proportional amount of Dai for users that deposited Dai between last execution and current execution. The fee is charged only during the days that the Dai was invested, not all period. The amount of Dai for the fee is used to buy Auc on Uniswap and then the Auc is burned. So the remaining amount of Dai redeemed is used to buy the respective asset on Uniswap. The execution is general, not for a user, the distribution of profit to each user is calculated on redeem/finish functions.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "executionId()",
+      "name": "executionId",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "executions(uint256)",
+      "name": "executions",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "rate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "totalDai",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "totalRedeemed",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "totalBought",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "totalBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "totalFeeDeduction",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "feeAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "feeExemptionAmountForAucEscrowed()",
+      "name": "feeExemptionAmountForAucEscrowed",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "feeExemptionAmountForUserBaseData(uint256)",
+      "name": "feeExemptionAmountForUserBaseData",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "feeExemptionNormalizedDifference(uint256)",
+      "name": "feeExemptionNormalizedDifference",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "finish()",
+      "name": "finish",
+      "description": "Function to finish the sender's participation for the asset. The asset profit is redeemed as well as all the Dai deposited.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "forceFinish(address)",
+      "name": "forceFinish",
+      "description": "Function to force finish of the user participation for the asset. The asset profit is redeemed as well as all the Dai deposited. Only can be called by the admin (dPiggy contract).",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "User's address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "forceRedeem(address)",
+      "name": "forceRedeem",
+      "description": "Function to force redeem of the asset profit for the user address. Only can be called by the admin (dPiggy contract).",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "User's address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getMinimumTimeForNextExecution()",
+      "name": "getMinimumTimeForNextExecution",
+      "description": "Function to get the minimum time for the next Compound redeem execution.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The minimum time in Unix for the next Compound redeem execution.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUserAssetRedeemed(address)",
+      "name": "getUserAssetRedeemed",
+      "description": "Function to get the amount of asset redeemed for the user.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "User's address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The amount of asset redeemed.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUserEstimatedCurrentFee(address,uint256)",
+      "name": "getUserEstimatedCurrentFee",
+      "description": "Function to get the estimated current fee in Dai for the user. To estimate the amount of fee on the Compound redeem execution is calculated by the difference between the `time` and the last execution time. So it is not the total amount of fee, for an estimated total of the fee in Dai: `getUserAssetProfitAndFeeAmount(second return)` + `getUserEstimatedCurrentFee`.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "User's address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "The Unix time to calculate the fee. It should be the current Unix time.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The estimated fee in Dai.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUserEstimatedCurrentProfitWithoutFee(address)",
+      "name": "getUserEstimatedCurrentProfitWithoutFee",
+      "description": "Function to get the estimated current gross profit in Dai for the user. So it is not the total gross profit, it is only for the user amount of Dai on the next Compound redeem execution. The estimative of the amount of Dai on the Compound redeem execution considering the current Compound stored rate. For an estimated total of the gross profit: `getUserProfit` + `getUserEstimatedCurrentProfitWithoutFee`.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "User's address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The estimated gross profit in Dai.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUserProfitsAndFeeAmount(address)",
+      "name": "getUserProfitsAndFeeAmount",
+      "description": "Function to get the user's Dai gross profit, asset net profit and the fee amount in Dai.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "User's address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUserTotalInvested(address)",
+      "name": "getUserTotalInvested",
+      "description": "Function to get the amount of Dai deposited for the user.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "User's address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The amount of Dai deposited.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "implementation()",
+      "name": "implementation",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "init(address,uint256)",
+      "name": "init",
+      "description": "Function to initialize the contract. It should be called through the `data` argument when creating the proxy. It must be called only once. The `assert` is to guarantee that behavior.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenAddress",
+          "description": "The ERC20 token address on the chain or '0x0' for Ethereum. It is the asset for the respective contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minimumTimeBetweenExecutions",
+          "description": "The minimum time in seconds between executions to run the Compound redeem.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initMigratingData(address,address[])",
+      "name": "initMigratingData",
+      "description": "Function to initialize the contract migrating the data from another contract. It should be called through the `data` argument when creating the proxy. It must be called only once. The `assert` is to guarantee that behavior.",
+      "parameterDecorators": [
+        {
+          "name": "previousContract",
+          "description": "The contract to copy the data.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "users",
+          "description": "The users to copy their stored data.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isCompound()",
+      "name": "isCompound",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minimumTimeBetweenExecutions()",
+      "name": "minimumTimeBetweenExecutions",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "redeem()",
+      "name": "redeem",
+      "description": "Function to redeem the asset profit for the sender address.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "remainingValueRedeemed(uint256)",
+      "name": "remainingValueRedeemed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setMinimumTimeBetweenExecutions(uint256)",
+      "name": "setMinimumTimeBetweenExecutions",
+      "description": "Function to set the minimum time between the Compound redeem executions. Only can be called by the admin (dPiggy contract).",
+      "parameterDecorators": [
+        {
+          "name": "time",
+          "description": "New minimum time in seconds between the Compound redeem executions.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tokenAddress()",
+      "name": "tokenAddress",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalBalance()",
+      "name": "totalBalance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalBalanceNormalizedDifference(uint256)",
+      "name": "totalBalanceNormalizedDifference",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "usersData(address)",
+      "name": "usersData",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "baseExecutionId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "baseExecutionAvgRate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "baseExecutionAccumulatedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "baseExecutionAccumulatedWeightForRate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "baseExecutionAmountForFee",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "currentAllocated",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "previousAllocated",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "previousProfit",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "previousAssetAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "previousFeeAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "redeemed",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdrawStuckToken(address,address)",
+      "name": "withdrawStuckToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "destination",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

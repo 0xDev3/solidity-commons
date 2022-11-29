@@ -1,1 +1,270 @@
-{"schema":"../schema.json","tags":[],"name":"BatchTxExecutor","description":"BatchTxExecutor. Utility that executes transactions in the provided white-list serially. Stable ordering of execution is not guaranteed.","eventDecorators":[{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Event emited when a user withdraws his tokens from the bank.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"TransactionFailed(address,uint256,bytes,bytes)","name":"TransactionFailed","description":"Event emited when a user withdraws his tokens from the bank.","parameterDecorators":[{"name":"destination","description":"","recommendedTypes":[],"indexed":true},{"name":"index","description":"","recommendedTypes":[],"indexed":false},{"name":"data","description":"","recommendedTypes":[],"indexed":false},{"name":"reason","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"addTransaction(address,uint256,bytes)","name":"addTransaction","description":"Adds a transaction to the transaction list.","parameterDecorators":[{"name":"destination","description":"Address of contract destination.","recommendedTypes":[]},{"name":"value","description":"","recommendedTypes":[]},{"name":"data","description":"Transaction data payload.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"checkExecution(uint256)","name":"checkExecution","description":"Helper function to re-trigger specific transaction in case of failure.","parameterDecorators":[{"name":"index","description":"Transaction to execute.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"executeAll()","name":"executeAll","description":"Executes all transactions marked enabled. If any transaction in the transaction list reverts, it returns false.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"removeTransaction(uint256)","name":"removeTransaction","description":"","parameterDecorators":[{"name":"index","description":"Index of transaction to remove. Transaction ordering may have changed since adding.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setTransactionEnabled(uint256,bool)","name":"setTransactionEnabled","description":"","parameterDecorators":[{"name":"index","description":"Index of transaction. Transaction ordering may have changed since adding.","recommendedTypes":[]},{"name":"enabled","description":"True for enabled, false for disabled.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"totalValue()","name":"totalValue","description":"Computes and returns the total value for all enabled transactions.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transactions(uint256)","name":"transactions","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"enabled","description":"","recommendedTypes":[],"solidityType":"bool"},{"name":"destination","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"value","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"data","description":"","recommendedTypes":[],"solidityType":"bytes"}],"emittableEvents":[],"readOnly":true},{"signature":"transactionsSize()","name":"transactionsSize","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Number of transactions, both enabled and disabled, in transactions list.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "BatchTxExecutor",
+  "description": "BatchTxExecutor. Utility that executes transactions in the provided white-list serially. Stable ordering of execution is not guaranteed.",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Event emited when a user withdraws his tokens from the bank.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TransactionFailed(address,uint256,bytes,bytes)",
+      "name": "TransactionFailed",
+      "description": "Event emited when a user withdraws his tokens from the bank.",
+      "parameterDecorators": [
+        {
+          "name": "destination",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "reason",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addTransaction(address,uint256,bytes)",
+      "name": "addTransaction",
+      "description": "Adds a transaction to the transaction list.",
+      "parameterDecorators": [
+        {
+          "name": "destination",
+          "description": "Address of contract destination.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "Transaction data payload.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "checkExecution(uint256)",
+      "name": "checkExecution",
+      "description": "Helper function to re-trigger specific transaction in case of failure.",
+      "parameterDecorators": [
+        {
+          "name": "index",
+          "description": "Transaction to execute.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "executeAll()",
+      "name": "executeAll",
+      "description": "Executes all transactions marked enabled. If any transaction in the transaction list reverts, it returns false.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeTransaction(uint256)",
+      "name": "removeTransaction",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "index",
+          "description": "Index of transaction to remove. Transaction ordering may have changed since adding.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setTransactionEnabled(uint256,bool)",
+      "name": "setTransactionEnabled",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "index",
+          "description": "Index of transaction. Transaction ordering may have changed since adding.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "enabled",
+          "description": "True for enabled, false for disabled.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "totalValue()",
+      "name": "totalValue",
+      "description": "Computes and returns the total value for all enabled transactions.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transactions(uint256)",
+      "name": "transactions",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "enabled",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "destination",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transactionsSize()",
+      "name": "transactionsSize",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Number of transactions, both enabled and disabled, in transactions list.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

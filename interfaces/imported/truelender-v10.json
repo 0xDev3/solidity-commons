@@ -1,1 +1,827 @@
-{"schema":"../schema.json","tags":["tokens","staking","lending","strategies","loans","voting"],"name":"TrueLender","description":"TrueLender v1.0.","eventDecorators":[{"signature":"Allowed(address,bool)","name":"Allowed","description":"","parameterDecorators":[{"name":"who","description":"","recommendedTypes":[],"indexed":true},{"name":"status","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ApyLimitsChanged(uint256,uint256)","name":"ApyLimitsChanged","description":"","parameterDecorators":[{"name":"minApy","description":"","recommendedTypes":[],"indexed":false},{"name":"maxApy","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Funded(address,uint256)","name":"Funded","description":"","parameterDecorators":[{"name":"loanToken","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"ParticipationFactorChanged(uint256)","name":"ParticipationFactorChanged","description":"","parameterDecorators":[{"name":"participationFactor","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Reclaimed(address,uint256)","name":"Reclaimed","description":"","parameterDecorators":[{"name":"loanToken","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":false}]},{"signature":"RiskAversionChanged(uint256)","name":"RiskAversionChanged","description":"","parameterDecorators":[{"name":"riskAversion","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SizeLimitsChanged(uint256,uint256)","name":"SizeLimitsChanged","description":"","parameterDecorators":[{"name":"minSize","description":"","recommendedTypes":[],"indexed":false},{"name":"maxSize","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TermLimitsChanged(uint256,uint256)","name":"TermLimitsChanged","description":"","parameterDecorators":[{"name":"minTerm","description":"","recommendedTypes":[],"indexed":false},{"name":"maxTerm","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"VotingPeriodChanged(uint256)","name":"VotingPeriodChanged","description":"","parameterDecorators":[{"name":"votingPeriod","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"allow(address,bool)","name":"allow","description":"Called by owner to change whitelist status for accounts.","parameterDecorators":[{"name":"who","description":"Account to change whitelist status for.","recommendedTypes":[]},{"name":"status","description":"New whitelist status for account.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"allowedBorrowers(address)","name":"allowedBorrowers","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"currencyToken()","name":"currencyToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"distribute(address,uint256,uint256)","name":"distribute","description":"Withdraw a basket of tokens held by the pool When exiting the pool, the pool contract calls this function to withdraw a fraction of all the loans held by the pool Loop through recipient's share of LoanTokens and calculate versus total per loan. There should never be too many loans in the pool to run out of gas.","parameterDecorators":[{"name":"recipient","description":"Recipient of basket.","recommendedTypes":[]},{"name":"numerator","description":"Numerator of fraction to withdraw.","recommendedTypes":[]},{"name":"denominator","description":"Denominator of fraction to withdraw.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"fund(address)","name":"fund","description":"Fund a loan which meets the strategy requirements.","parameterDecorators":[{"name":"loanToken","description":"LoanToken to fund.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"initialize(address,address)","name":"initialize","description":"Initalize the contract with parameters.","parameterDecorators":[{"name":"_pool","description":"Lending pool address.","recommendedTypes":[]},{"name":"_ratingAgency","description":"Prediction market address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"loanIsAttractiveEnough(uint256)","name":"loanIsAttractiveEnough","description":"Check if a loan is within APY bounds.","parameterDecorators":[{"name":"apy","description":"APY of loan.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Whether a loan is within APY bounds.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"loanIsCredible(uint256,uint256,uint256,uint256)","name":"loanIsCredible","description":"Use APY and term of loan to check expected value of a loan Expected value = profit - (default_loss * (no / yes)) e.g. riskAversion = 10,000 => expected value of 1.","parameterDecorators":[{"name":"apy","description":"APY of loan.","recommendedTypes":[]},{"name":"term","description":"Term length of loan.","recommendedTypes":[]},{"name":"yesVotes","description":"Number of YES votes in credit market.","recommendedTypes":[]},{"name":"noVotes","description":"Number of NO votes in credit market.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"loanSizeWithinBounds(uint256)","name":"loanSizeWithinBounds","description":"Check if a loan is within size bounds.","parameterDecorators":[{"name":"amount","description":"Size of loan.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Whether a loan is within size bounds.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"loanTermWithinBounds(uint256)","name":"loanTermWithinBounds","description":"Check if loan term is within term bounds.","parameterDecorators":[{"name":"term","description":"Term of loan.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Whether loan term is within term bounds.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"loans()","name":"loans","description":"Get currently funded loans.","parameterDecorators":[],"returnDecorators":[{"name":"result","description":"Array of loans currently funded.","recommendedTypes":[],"solidityType":"address[]"}],"emittableEvents":[],"readOnly":true},{"signature":"maxApy()","name":"maxApy","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"maxSize()","name":"maxSize","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"maxTerm()","name":"maxTerm","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"minApy()","name":"minApy","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"minSize()","name":"minSize","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"minTerm()","name":"minTerm","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"participationFactor()","name":"participationFactor","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"pool()","name":"pool","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"ratingAgency()","name":"ratingAgency","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"reclaim(address)","name":"reclaim","description":"For settled loans, redeem LoanTokens for underlying funds.","parameterDecorators":[{"name":"loanToken","description":"Loan to reclaim capital from.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"riskAversion()","name":"riskAversion","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setApyLimits(uint256,uint256)","name":"setApyLimits","description":"Set new bounds on loan APY. Only owner can change parameters.","parameterDecorators":[{"name":"newMinApy","description":"New minimum loan APY.","recommendedTypes":[]},{"name":"newMaxApy","description":"New maximum loan APY.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setParticipationFactor(uint256)","name":"setParticipationFactor","description":"Set new participation factor. Only owner can change parameters.","parameterDecorators":[{"name":"newParticipationFactor","description":"New participation factor.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setRiskAversion(uint256)","name":"setRiskAversion","description":"Set new risk aversion factor. Only owner can change parameters.","parameterDecorators":[{"name":"newRiskAversion","description":"New risk aversion factor.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setSizeLimits(uint256,uint256)","name":"setSizeLimits","description":"Set new bounds on loan size. Only owner can change parameters.","parameterDecorators":[{"name":"min","description":"New minimum loan size.","recommendedTypes":[]},{"name":"max","description":"New maximum loan size.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setTermLimits(uint256,uint256)","name":"setTermLimits","description":"Set new bounds on loan term length. Only owner can change parameters.","parameterDecorators":[{"name":"min","description":"New minimum loan term.","recommendedTypes":[]},{"name":"max","description":"New maximum loan term.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setVotingPeriod(uint256)","name":"setVotingPeriod","description":"Set new minimum voting period in credit rating market. Only owner can change parameters.","parameterDecorators":[{"name":"newVotingPeriod","description":"new minimum voting period.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"value()","name":"value","description":"Loop through loan tokens and calculate theoretical value of all loans There should never be too many loans in the pool to run out of gas.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Theoretical value of all the loans funded by this strategy.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"votesThresholdReached(uint256,uint256)","name":"votesThresholdReached","description":"Check if a loan is within APY bounds Minimum absolute value of yes votes, rather than ratio of yes to no.","parameterDecorators":[{"name":"amount","description":"Size of loan.","recommendedTypes":[]},{"name":"yesVotes","description":"Number of yes votes.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Whether a loan has reached the required voting threshold.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"votingLastedLongEnough(uint256)","name":"votingLastedLongEnough","description":"Check if a loan has been in the credit market long enough.","parameterDecorators":[{"name":"start","description":"Timestamp at which rating began.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Whether a loan has been rated for long enough.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"votingPeriod()","name":"votingPeriod","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "staking",
+    "lending",
+    "strategies",
+    "loans",
+    "voting"
+  ],
+  "name": "TrueLender",
+  "description": "TrueLender v1.0.",
+  "eventDecorators": [
+    {
+      "signature": "Allowed(address,bool)",
+      "name": "Allowed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "who",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "status",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ApyLimitsChanged(uint256,uint256)",
+      "name": "ApyLimitsChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "minApy",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "maxApy",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Funded(address,uint256)",
+      "name": "Funded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "loanToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ParticipationFactorChanged(uint256)",
+      "name": "ParticipationFactorChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "participationFactor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Reclaimed(address,uint256)",
+      "name": "Reclaimed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "loanToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RiskAversionChanged(uint256)",
+      "name": "RiskAversionChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "riskAversion",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SizeLimitsChanged(uint256,uint256)",
+      "name": "SizeLimitsChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "minSize",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "maxSize",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TermLimitsChanged(uint256,uint256)",
+      "name": "TermLimitsChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "minTerm",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "maxTerm",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "VotingPeriodChanged(uint256)",
+      "name": "VotingPeriodChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "votingPeriod",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "allow(address,bool)",
+      "name": "allow",
+      "description": "Called by owner to change whitelist status for accounts.",
+      "parameterDecorators": [
+        {
+          "name": "who",
+          "description": "Account to change whitelist status for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "status",
+          "description": "New whitelist status for account.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "allowedBorrowers(address)",
+      "name": "allowedBorrowers",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "currencyToken()",
+      "name": "currencyToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "distribute(address,uint256,uint256)",
+      "name": "distribute",
+      "description": "Withdraw a basket of tokens held by the pool When exiting the pool, the pool contract calls this function to withdraw a fraction of all the loans held by the pool Loop through recipient's share of LoanTokens and calculate versus total per loan. There should never be too many loans in the pool to run out of gas.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "Recipient of basket.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "numerator",
+          "description": "Numerator of fraction to withdraw.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "denominator",
+          "description": "Denominator of fraction to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "fund(address)",
+      "name": "fund",
+      "description": "Fund a loan which meets the strategy requirements.",
+      "parameterDecorators": [
+        {
+          "name": "loanToken",
+          "description": "LoanToken to fund.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialize(address,address)",
+      "name": "initialize",
+      "description": "Initalize the contract with parameters.",
+      "parameterDecorators": [
+        {
+          "name": "_pool",
+          "description": "Lending pool address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_ratingAgency",
+          "description": "Prediction market address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "loanIsAttractiveEnough(uint256)",
+      "name": "loanIsAttractiveEnough",
+      "description": "Check if a loan is within APY bounds.",
+      "parameterDecorators": [
+        {
+          "name": "apy",
+          "description": "APY of loan.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Whether a loan is within APY bounds.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "loanIsCredible(uint256,uint256,uint256,uint256)",
+      "name": "loanIsCredible",
+      "description": "Use APY and term of loan to check expected value of a loan Expected value = profit - (default_loss * (no / yes)) e.g. riskAversion = 10,000 => expected value of 1.",
+      "parameterDecorators": [
+        {
+          "name": "apy",
+          "description": "APY of loan.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "term",
+          "description": "Term length of loan.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "yesVotes",
+          "description": "Number of YES votes in credit market.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "noVotes",
+          "description": "Number of NO votes in credit market.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "loanSizeWithinBounds(uint256)",
+      "name": "loanSizeWithinBounds",
+      "description": "Check if a loan is within size bounds.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "Size of loan.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Whether a loan is within size bounds.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "loanTermWithinBounds(uint256)",
+      "name": "loanTermWithinBounds",
+      "description": "Check if loan term is within term bounds.",
+      "parameterDecorators": [
+        {
+          "name": "term",
+          "description": "Term of loan.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Whether loan term is within term bounds.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "loans()",
+      "name": "loans",
+      "description": "Get currently funded loans.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "result",
+          "description": "Array of loans currently funded.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxApy()",
+      "name": "maxApy",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxSize()",
+      "name": "maxSize",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxTerm()",
+      "name": "maxTerm",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minApy()",
+      "name": "minApy",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minSize()",
+      "name": "minSize",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minTerm()",
+      "name": "minTerm",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "participationFactor()",
+      "name": "participationFactor",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pool()",
+      "name": "pool",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ratingAgency()",
+      "name": "ratingAgency",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "reclaim(address)",
+      "name": "reclaim",
+      "description": "For settled loans, redeem LoanTokens for underlying funds.",
+      "parameterDecorators": [
+        {
+          "name": "loanToken",
+          "description": "Loan to reclaim capital from.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "riskAversion()",
+      "name": "riskAversion",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setApyLimits(uint256,uint256)",
+      "name": "setApyLimits",
+      "description": "Set new bounds on loan APY. Only owner can change parameters.",
+      "parameterDecorators": [
+        {
+          "name": "newMinApy",
+          "description": "New minimum loan APY.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newMaxApy",
+          "description": "New maximum loan APY.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setParticipationFactor(uint256)",
+      "name": "setParticipationFactor",
+      "description": "Set new participation factor. Only owner can change parameters.",
+      "parameterDecorators": [
+        {
+          "name": "newParticipationFactor",
+          "description": "New participation factor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRiskAversion(uint256)",
+      "name": "setRiskAversion",
+      "description": "Set new risk aversion factor. Only owner can change parameters.",
+      "parameterDecorators": [
+        {
+          "name": "newRiskAversion",
+          "description": "New risk aversion factor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setSizeLimits(uint256,uint256)",
+      "name": "setSizeLimits",
+      "description": "Set new bounds on loan size. Only owner can change parameters.",
+      "parameterDecorators": [
+        {
+          "name": "min",
+          "description": "New minimum loan size.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "max",
+          "description": "New maximum loan size.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setTermLimits(uint256,uint256)",
+      "name": "setTermLimits",
+      "description": "Set new bounds on loan term length. Only owner can change parameters.",
+      "parameterDecorators": [
+        {
+          "name": "min",
+          "description": "New minimum loan term.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "max",
+          "description": "New maximum loan term.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setVotingPeriod(uint256)",
+      "name": "setVotingPeriod",
+      "description": "Set new minimum voting period in credit rating market. Only owner can change parameters.",
+      "parameterDecorators": [
+        {
+          "name": "newVotingPeriod",
+          "description": "new minimum voting period.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "value()",
+      "name": "value",
+      "description": "Loop through loan tokens and calculate theoretical value of all loans There should never be too many loans in the pool to run out of gas.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Theoretical value of all the loans funded by this strategy.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "votesThresholdReached(uint256,uint256)",
+      "name": "votesThresholdReached",
+      "description": "Check if a loan is within APY bounds Minimum absolute value of yes votes, rather than ratio of yes to no.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "Size of loan.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "yesVotes",
+          "description": "Number of yes votes.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Whether a loan has reached the required voting threshold.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "votingLastedLongEnough(uint256)",
+      "name": "votingLastedLongEnough",
+      "description": "Check if a loan has been in the credit market long enough.",
+      "parameterDecorators": [
+        {
+          "name": "start",
+          "description": "Timestamp at which rating began.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Whether a loan has been rated for long enough.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "votingPeriod()",
+      "name": "votingPeriod",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

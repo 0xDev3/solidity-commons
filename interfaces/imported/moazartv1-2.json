@@ -1,1 +1,1090 @@
-{"schema":"../schema.json","tags":[],"name":"MozartV1","description":"MoazartV1. This contract holds both the implementation logic and storage (indirectly). The key optimization of this contract is around simplicity and the actions a user can call. In addition, the architecture is designed for safety around upgrades where new storage variables are introduced through the inherited storage contract pattern.","eventDecorators":[{"signature":"ActionOperated(uint8,tuple,tuple)","name":"ActionOperated","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"operation","description":"","recommendedTypes":[],"indexed":false},{"name":"params","description":"","recommendedTypes":[],"indexed":false},{"name":"updatedPosition","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"CollateralRatioUpdated(tuple)","name":"CollateralRatioUpdated","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"value","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ExcessTokensWithdrawn(address,uint256,address)","name":"ExcessTokensWithdrawn","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"destination","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"FeesUpdated(tuple,tuple)","name":"FeesUpdated","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"_liquidationUserFee","description":"","recommendedTypes":[],"indexed":false},{"name":"_liquidationArcRatio","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"GlobalOperatorSet(address,bool)","name":"GlobalOperatorSet","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"_operator","description":"","recommendedTypes":[],"indexed":false},{"name":"_status","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"IndexUpdated(uint256,uint256)","name":"IndexUpdated","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"newIndex","description":"","recommendedTypes":[],"indexed":false},{"name":"lastUpdateTime","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"InterestSetterUpdated(address)","name":"InterestSetterUpdated","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"value","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LimitsUpdated(uint256,uint256)","name":"LimitsUpdated","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"_collateralLimit","description":"","recommendedTypes":[],"indexed":false},{"name":"_positionCollateralMinimum","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OracleUpdated(address)","name":"OracleUpdated","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"value","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PauseStatusUpdated(bool)","name":"PauseStatusUpdated","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"value","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PositionOperatorSet(uint256,address,bool)","name":"PositionOperatorSet","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"_positionId","description":"","recommendedTypes":[],"indexed":false},{"name":"_operator","description":"","recommendedTypes":[],"indexed":false},{"name":"_status","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PrinterUpdated(address)","name":"PrinterUpdated","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"value","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RateUpdated(uint256)","name":"RateUpdated","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"value","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"calculateCollateralDelta(tuple(bool,uint256),uint256,tuple(uint256))","name":"calculateCollateralDelta","description":"Given an asset being borrowed, figure out how much collateral can this still borrow or is in the red by. This function is used to check if a position is undercolalteralised and also to calculate how much can a position be liquidated by.","parameterDecorators":[{"name":"parSupply","description":"The amount being supplied.","recommendedTypes":[],"parameters":[{"name":"sign","description":"","type":"bool"},{"name":"value","description":"","type":"uint256"}]},{"name":"borrowedAmount","description":"The non-par amount being borrowed.","recommendedTypes":[]},{"name":"price","description":"The price to calculate this difference by.","recommendedTypes":[],"parameters":[{"name":"value","description":"","type":"uint256"}]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"calculateCollateralRequired(uint256,tuple(uint256))","name":"calculateCollateralRequired","description":"Calculate how much collateral you need given a certain borrow amount.","parameterDecorators":[{"name":"borrowedAmount","description":"The borrowed amount expressed as a uint256 (NOT principal).","recommendedTypes":[]},{"name":"price","description":"What price do you want to calculate the inverse at.","recommendedTypes":[],"parameters":[{"name":"value","description":"","type":"uint256"}]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"calculateLiquidationPrice(tuple(uint256))","name":"calculateLiquidationPrice","description":"When executing a liqudation, the price of the asset has to be calculated at a discount in order for it to be profitable for the liquidator. This function will get the current oracle price for the asset and find the discounted price.","parameterDecorators":[{"name":"currentPrice","description":"The current price of the collateral.","recommendedTypes":[],"parameters":[{"name":"value","description":"","type":"uint256"}]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"currentBorrowIndex()","name":"currentBorrowIndex","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"currentTimestamp()","name":"currentTimestamp","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getAdmin()","name":"getAdmin","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getBorrowIndex()","name":"getBorrowIndex","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getCollateralAsset()","name":"getCollateralAsset","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getCollateralRatio()","name":"getCollateralRatio","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"getCurrentOracle()","name":"getCurrentOracle","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getCurrentPrice()","name":"getCurrentPrice","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"getFees()","name":"getFees","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_liquidationUserFee","description":"","recommendedTypes":[],"solidityType":"tuple"},{"name":"_liquidationArcRatio","description":"","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"getInterestRate()","name":"getInterestRate","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getInterestSetter()","name":"getInterestSetter","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getLimits()","name":"getLimits","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getPosition(uint256)","name":"getPosition","description":"","parameterDecorators":[{"name":"id","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"getSyntheticAsset()","name":"getSyntheticAsset","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getTotals()","name":"getTotals","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"init(uint8,address,address,address,address,tuple(uint256),tuple(uint256),tuple(uint256))","name":"init","description":"Intitialise the protocol with the appropriate parameters. Can only be called once.","parameterDecorators":[{"name":"_collateralDecimals","description":"How many decimals does the collateral contain.","recommendedTypes":[]},{"name":"_collateralAddress","description":"The address of the collateral to be used.","recommendedTypes":[]},{"name":"_syntheticAddress","description":"The address of the synthetic token proxy.","recommendedTypes":[]},{"name":"_oracleAddress","description":"Address of the IOracle conforming contract.","recommendedTypes":[]},{"name":"_interestSetter","description":"Address which can update interest rates.","recommendedTypes":[]},{"name":"_collateralRatio","description":"How much colalteral is needed to borrow.","recommendedTypes":[],"parameters":[{"name":"value","description":"","type":"uint256"}]},{"name":"_liquidationUserFee","description":"How much is a user penalised if they go below their c-ratio.","recommendedTypes":[],"parameters":[{"name":"value","description":"","type":"uint256"}]},{"name":"_liquidationArcRatio","description":"How much of the liquidation profit should ARC take.","recommendedTypes":[],"parameters":[{"name":"value","description":"","type":"uint256"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"isCollateralized(tuple(address,tuple,tuple),tuple(uint256))","name":"isCollateralized","description":"","parameterDecorators":[{"name":"position","description":"","recommendedTypes":[],"parameters":[{"name":"owner","description":"","type":"address"},{"name":"collateralAmount","description":"","type":"tuple"},{"name":"borrowedAmount","description":"","type":"tuple"}]},{"name":"currentPrice","description":"","recommendedTypes":[],"parameters":[{"name":"value","description":"","type":"uint256"}]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isGlobalOperator(address)","name":"isGlobalOperator","description":"","parameterDecorators":[{"name":"_operator","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isPositionOperator(uint256,address)","name":"isPositionOperator","description":"","parameterDecorators":[{"name":"_positionId","description":"","recommendedTypes":[]},{"name":"_operator","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"operateAction(uint8,tuple(uint256,uint256,uint256,address))","name":"operateAction","description":"This is the only function that can be called by user's of the system and uses an enum and struct to parse the args. This structure guarantees the state machine will always meet certain properties.","parameterDecorators":[{"name":"operation","description":"An enum of the operation to execute.","recommendedTypes":[]},{"name":"params","description":"Parameters to exceute the operation against.","recommendedTypes":[],"parameters":[{"name":"id","description":"","type":"uint256"},{"name":"amountOne","description":"","type":"uint256"},{"name":"amountTwo","description":"","type":"uint256"},{"name":"addressOne","description":"","type":"address"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"paused()","name":"paused","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"positionCount()","name":"positionCount","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setCollateralRatio(tuple(uint256))","name":"setCollateralRatio","description":"Can only be called by the admin of the proxy. Set the collateral ratio of value to debt.","parameterDecorators":[{"name":"_collateralRatio","description":"The ratio expressed up to 18 decimal places.","recommendedTypes":[],"parameters":[{"name":"value","description":"","type":"uint256"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setFees(tuple(uint256),tuple(uint256))","name":"setFees","description":"Can only be called by the admin of the proxy. Set the fees in the system.","parameterDecorators":[{"name":"_liquidationUserFee","description":"Determines the penalty a user must pay by discounting their collateral to provide a profit incentive for liquidators.","recommendedTypes":[],"parameters":[{"name":"value","description":"","type":"uint256"}]},{"name":"_liquidationArcRatio","description":"The amount ARC earns from the profit earned from the liquidation.","recommendedTypes":[],"parameters":[{"name":"value","description":"","type":"uint256"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setGlobalOperatorStatus(address,bool)","name":"setGlobalOperatorStatus","description":"Can only be called by the admin of the proxy. Set an address to be able to manage any user's position.","parameterDecorators":[{"name":"_operator","description":"Address of the new operator.","recommendedTypes":[]},{"name":"_status","description":"True indicates they are a valid address, false means they are not.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setInterestRate(uint256)","name":"setInterestRate","description":"Can only be called by the interest setter of the protocol and the maximum rate settable by the admin is 99% (21820606489). Update the interest rate of the protocol. Since this rate is compounded every second rather than being purely linear, the calculate for r is expressed as the following (assuming you want 5% APY): * r^N = 1.005 since N = 364 * 24 * 60 * 60 (number of seconds in a year) r = 1.000000000158153903837946258002097 rate = 1000000000158153903 (18 decimal places solidity value).","parameterDecorators":[{"name":"_rate","description":"The interest rate expressed per second.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setInterestSetter(address)","name":"setInterestSetter","description":"Can only be called by the admin of the proxy. Set the address which can set interest rates.","parameterDecorators":[{"name":"_setter","description":"The address of the new interest rate setter.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setLimits(uint256,uint256)","name":"setLimits","description":"Can only be called by the admin of the proxy. Set the limits of the system to ensure value can be capped.","parameterDecorators":[{"name":"_collateralLimit","description":"Maximum amount of collateral that can be held in the system. This should be expressed as 18 decimal places since the precision scalar will handle the rest.","recommendedTypes":[]},{"name":"_positionCollateralMinimum","description":"The minimum of collateral per position.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setOracle(address)","name":"setOracle","description":"Can only be called by the admin of the proxy. Set the instance of the oracle to report prices from. Must conform to IOracle.sol.","parameterDecorators":[{"name":"_oracle","description":"The address of the IOracle instance.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setPause(bool)","name":"setPause","description":"","parameterDecorators":[{"name":"value","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setPositionOperatorStatus(uint256,address,bool)","name":"setPositionOperatorStatus","description":"Add/remove an address to operate a position on the owner's behalf. This will include the ability to borrow and repay on their behalf as well.","parameterDecorators":[{"name":"_positionId","description":"The position to become an operator for.","recommendedTypes":[]},{"name":"_operator","description":"The address set to become the operator.","recommendedTypes":[]},{"name":"_status","description":"The ability to s.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateIndex()","name":"updateIndex","description":"Update the index of the contracts to compute the current interest rate. This function simply calculates the last time this function was called (in seconds) then multiplied by the interest rate. The result is then multiplied by the totalBorrowed amount.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"withdrawTokens(address,address,uint256)","name":"withdrawTokens","description":"Withdraw tokens owned by the proxy. This will never include depositor funds since all the collateral is held by the synthetic token itself. The only funds that will accrue based on CoreV1 & StateV1 is the liquidation fees.","parameterDecorators":[{"name":"token","description":"Address of the token to withdraw.","recommendedTypes":[]},{"name":"destination","description":"Destination to withdraw to.","recommendedTypes":[]},{"name":"amount","description":"The total amount of tokens withdraw.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "MozartV1",
+  "description": "MoazartV1. This contract holds both the implementation logic and storage (indirectly). The key optimization of this contract is around simplicity and the actions a user can call. In addition, the architecture is designed for safety around upgrades where new storage variables are introduced through the inherited storage contract pattern.",
+  "eventDecorators": [
+    {
+      "signature": "ActionOperated(uint8,tuple,tuple)",
+      "name": "ActionOperated",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "operation",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "params",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "updatedPosition",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CollateralRatioUpdated(tuple)",
+      "name": "CollateralRatioUpdated",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ExcessTokensWithdrawn(address,uint256,address)",
+      "name": "ExcessTokensWithdrawn",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "destination",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "FeesUpdated(tuple,tuple)",
+      "name": "FeesUpdated",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "_liquidationUserFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_liquidationArcRatio",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "GlobalOperatorSet(address,bool)",
+      "name": "GlobalOperatorSet",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "_operator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_status",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "IndexUpdated(uint256,uint256)",
+      "name": "IndexUpdated",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "newIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "lastUpdateTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "InterestSetterUpdated(address)",
+      "name": "InterestSetterUpdated",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LimitsUpdated(uint256,uint256)",
+      "name": "LimitsUpdated",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "_collateralLimit",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_positionCollateralMinimum",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OracleUpdated(address)",
+      "name": "OracleUpdated",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PauseStatusUpdated(bool)",
+      "name": "PauseStatusUpdated",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PositionOperatorSet(uint256,address,bool)",
+      "name": "PositionOperatorSet",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "_positionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_operator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_status",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PrinterUpdated(address)",
+      "name": "PrinterUpdated",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RateUpdated(uint256)",
+      "name": "RateUpdated",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "calculateCollateralDelta(tuple(bool,uint256),uint256,tuple(uint256))",
+      "name": "calculateCollateralDelta",
+      "description": "Given an asset being borrowed, figure out how much collateral can this still borrow or is in the red by. This function is used to check if a position is undercolalteralised and also to calculate how much can a position be liquidated by.",
+      "parameterDecorators": [
+        {
+          "name": "parSupply",
+          "description": "The amount being supplied.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "sign",
+              "description": "",
+              "type": "bool"
+            },
+            {
+              "name": "value",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "name": "borrowedAmount",
+          "description": "The non-par amount being borrowed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "price",
+          "description": "The price to calculate this difference by.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "value",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateCollateralRequired(uint256,tuple(uint256))",
+      "name": "calculateCollateralRequired",
+      "description": "Calculate how much collateral you need given a certain borrow amount.",
+      "parameterDecorators": [
+        {
+          "name": "borrowedAmount",
+          "description": "The borrowed amount expressed as a uint256 (NOT principal).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "price",
+          "description": "What price do you want to calculate the inverse at.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "value",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateLiquidationPrice(tuple(uint256))",
+      "name": "calculateLiquidationPrice",
+      "description": "When executing a liqudation, the price of the asset has to be calculated at a discount in order for it to be profitable for the liquidator. This function will get the current oracle price for the asset and find the discounted price.",
+      "parameterDecorators": [
+        {
+          "name": "currentPrice",
+          "description": "The current price of the collateral.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "value",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "currentBorrowIndex()",
+      "name": "currentBorrowIndex",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "currentTimestamp()",
+      "name": "currentTimestamp",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAdmin()",
+      "name": "getAdmin",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getBorrowIndex()",
+      "name": "getBorrowIndex",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCollateralAsset()",
+      "name": "getCollateralAsset",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCollateralRatio()",
+      "name": "getCollateralRatio",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentOracle()",
+      "name": "getCurrentOracle",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentPrice()",
+      "name": "getCurrentPrice",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getFees()",
+      "name": "getFees",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_liquidationUserFee",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        },
+        {
+          "name": "_liquidationArcRatio",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getInterestRate()",
+      "name": "getInterestRate",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getInterestSetter()",
+      "name": "getInterestSetter",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getLimits()",
+      "name": "getLimits",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPosition(uint256)",
+      "name": "getPosition",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSyntheticAsset()",
+      "name": "getSyntheticAsset",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTotals()",
+      "name": "getTotals",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "init(uint8,address,address,address,address,tuple(uint256),tuple(uint256),tuple(uint256))",
+      "name": "init",
+      "description": "Intitialise the protocol with the appropriate parameters. Can only be called once.",
+      "parameterDecorators": [
+        {
+          "name": "_collateralDecimals",
+          "description": "How many decimals does the collateral contain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_collateralAddress",
+          "description": "The address of the collateral to be used.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_syntheticAddress",
+          "description": "The address of the synthetic token proxy.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_oracleAddress",
+          "description": "Address of the IOracle conforming contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_interestSetter",
+          "description": "Address which can update interest rates.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_collateralRatio",
+          "description": "How much colalteral is needed to borrow.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "value",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "name": "_liquidationUserFee",
+          "description": "How much is a user penalised if they go below their c-ratio.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "value",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "name": "_liquidationArcRatio",
+          "description": "How much of the liquidation profit should ARC take.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "value",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isCollateralized(tuple(address,tuple,tuple),tuple(uint256))",
+      "name": "isCollateralized",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "position",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "owner",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "collateralAmount",
+              "description": "",
+              "type": "tuple"
+            },
+            {
+              "name": "borrowedAmount",
+              "description": "",
+              "type": "tuple"
+            }
+          ]
+        },
+        {
+          "name": "currentPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "value",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isGlobalOperator(address)",
+      "name": "isGlobalOperator",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_operator",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isPositionOperator(uint256,address)",
+      "name": "isPositionOperator",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_positionId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_operator",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "operateAction(uint8,tuple(uint256,uint256,uint256,address))",
+      "name": "operateAction",
+      "description": "This is the only function that can be called by user's of the system and uses an enum and struct to parse the args. This structure guarantees the state machine will always meet certain properties.",
+      "parameterDecorators": [
+        {
+          "name": "operation",
+          "description": "An enum of the operation to execute.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "params",
+          "description": "Parameters to exceute the operation against.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "id",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "amountOne",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "amountTwo",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "addressOne",
+              "description": "",
+              "type": "address"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "paused()",
+      "name": "paused",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "positionCount()",
+      "name": "positionCount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setCollateralRatio(tuple(uint256))",
+      "name": "setCollateralRatio",
+      "description": "Can only be called by the admin of the proxy. Set the collateral ratio of value to debt.",
+      "parameterDecorators": [
+        {
+          "name": "_collateralRatio",
+          "description": "The ratio expressed up to 18 decimal places.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "value",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setFees(tuple(uint256),tuple(uint256))",
+      "name": "setFees",
+      "description": "Can only be called by the admin of the proxy. Set the fees in the system.",
+      "parameterDecorators": [
+        {
+          "name": "_liquidationUserFee",
+          "description": "Determines the penalty a user must pay by discounting their collateral to provide a profit incentive for liquidators.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "value",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "name": "_liquidationArcRatio",
+          "description": "The amount ARC earns from the profit earned from the liquidation.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "value",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setGlobalOperatorStatus(address,bool)",
+      "name": "setGlobalOperatorStatus",
+      "description": "Can only be called by the admin of the proxy. Set an address to be able to manage any user's position.",
+      "parameterDecorators": [
+        {
+          "name": "_operator",
+          "description": "Address of the new operator.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_status",
+          "description": "True indicates they are a valid address, false means they are not.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setInterestRate(uint256)",
+      "name": "setInterestRate",
+      "description": "Can only be called by the interest setter of the protocol and the maximum rate settable by the admin is 99% (21820606489). Update the interest rate of the protocol. Since this rate is compounded every second rather than being purely linear, the calculate for r is expressed as the following (assuming you want 5% APY): * r^N = 1.005 since N = 364 * 24 * 60 * 60 (number of seconds in a year) r = 1.000000000158153903837946258002097 rate = 1000000000158153903 (18 decimal places solidity value).",
+      "parameterDecorators": [
+        {
+          "name": "_rate",
+          "description": "The interest rate expressed per second.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setInterestSetter(address)",
+      "name": "setInterestSetter",
+      "description": "Can only be called by the admin of the proxy. Set the address which can set interest rates.",
+      "parameterDecorators": [
+        {
+          "name": "_setter",
+          "description": "The address of the new interest rate setter.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setLimits(uint256,uint256)",
+      "name": "setLimits",
+      "description": "Can only be called by the admin of the proxy. Set the limits of the system to ensure value can be capped.",
+      "parameterDecorators": [
+        {
+          "name": "_collateralLimit",
+          "description": "Maximum amount of collateral that can be held in the system. This should be expressed as 18 decimal places since the precision scalar will handle the rest.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_positionCollateralMinimum",
+          "description": "The minimum of collateral per position.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setOracle(address)",
+      "name": "setOracle",
+      "description": "Can only be called by the admin of the proxy. Set the instance of the oracle to report prices from. Must conform to IOracle.sol.",
+      "parameterDecorators": [
+        {
+          "name": "_oracle",
+          "description": "The address of the IOracle instance.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setPause(bool)",
+      "name": "setPause",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setPositionOperatorStatus(uint256,address,bool)",
+      "name": "setPositionOperatorStatus",
+      "description": "Add/remove an address to operate a position on the owner's behalf. This will include the ability to borrow and repay on their behalf as well.",
+      "parameterDecorators": [
+        {
+          "name": "_positionId",
+          "description": "The position to become an operator for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_operator",
+          "description": "The address set to become the operator.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_status",
+          "description": "The ability to s.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateIndex()",
+      "name": "updateIndex",
+      "description": "Update the index of the contracts to compute the current interest rate. This function simply calculates the last time this function was called (in seconds) then multiplied by the interest rate. The result is then multiplied by the totalBorrowed amount.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawTokens(address,address,uint256)",
+      "name": "withdrawTokens",
+      "description": "Withdraw tokens owned by the proxy. This will never include depositor funds since all the collateral is held by the synthetic token itself. The only funds that will accrue based on CoreV1 & StateV1 is the liquidation fees.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "Address of the token to withdraw.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "destination",
+          "description": "Destination to withdraw to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "The total amount of tokens withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

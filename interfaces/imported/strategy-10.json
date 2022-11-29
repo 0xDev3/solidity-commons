@@ -1,1 +1,1065 @@
-{"schema":"../schema.json","tags":["strategies"],"name":"Strategy","description":"","eventDecorators":[{"signature":"Harvested(uint256,uint256,uint256,uint256)","name":"Harvested","description":"An event thats emitted when a withdrawal is made from Pool.","parameterDecorators":[{"name":"profit","description":"","recommendedTypes":[],"indexed":false},{"name":"loss","description":"","recommendedTypes":[],"indexed":false},{"name":"debtPayment","description":"","recommendedTypes":[],"indexed":false},{"name":"debtOutstanding","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Leverage(uint256,uint256,bool,address)","name":"Leverage","description":"An event thats emitted when a withdrawal is made from Pool.","parameterDecorators":[{"name":"amountRequested","description":"","recommendedTypes":[],"indexed":false},{"name":"amountGiven","description":"","recommendedTypes":[],"indexed":false},{"name":"deficit","description":"","recommendedTypes":[],"indexed":false},{"name":"flashLoan","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"UpdatedDebtThreshold(uint256)","name":"UpdatedDebtThreshold","description":"An event thats emitted when a withdrawal is made from Pool.","parameterDecorators":[{"name":"debtThreshold","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"UpdatedKeeper(address)","name":"UpdatedKeeper","description":"An event thats emitted when a withdrawal is made from Pool.","parameterDecorators":[{"name":"newKeeper","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"UpdatedProfitFactor(uint256)","name":"UpdatedProfitFactor","description":"An event thats emitted when a withdrawal is made from Pool.","parameterDecorators":[{"name":"profitFactor","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"UpdatedReportDelay(uint256)","name":"UpdatedReportDelay","description":"An event thats emitted when a withdrawal is made from Pool.","parameterDecorators":[{"name":"delay","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"UpdatedRewards(address)","name":"UpdatedRewards","description":"An event thats emitted when a withdrawal is made from Pool.","parameterDecorators":[{"name":"rewards","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"UpdatedStrategist(address)","name":"UpdatedStrategist","description":"An event thats emitted when a withdrawal is made from Pool.","parameterDecorators":[{"name":"newStrategist","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"AaveActive()","name":"AaveActive","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"DyDxActive()","name":"DyDxActive","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"addressesProvider()","name":"addressesProvider","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"apiVersion()","name":"apiVersion","description":"Used to track which version of `StrategyAPI` this Strategy implements. The Strategy's version must match the Vault's `API_VERSION`.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"A string which holds the current API version of this contract.","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true},{"signature":"blocksToLiquidationDangerZone()","name":"blocksToLiquidationDangerZone","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"cToken()","name":"cToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"callFunction(address,tuple(address,uint256),bytes)","name":"callFunction","description":"","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[]},{"name":"account","description":"","recommendedTypes":[],"parameters":[{"name":"owner","description":"","type":"address"},{"name":"number","description":"","type":"uint256"}]},{"name":"data","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"collateralTarget()","name":"collateralTarget","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"comp()","name":"comp","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"compound()","name":"compound","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"debtThreshold()","name":"debtThreshold","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"dyDxMarketId()","name":"dyDxMarketId","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"emergencyExit()","name":"emergencyExit","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"estimatedTotalAssets()","name":"estimatedTotalAssets","description":"Provide an accurate estimate for the total amount of assets (principle + return) that this Strategy is currently managing, denominated in terms of `want` tokens. This total should be \"realizable\" e.g. the total value that could *actually* be obtained from this Strategy if it were to divest its entire position based on current on-chain conditions. Care must be taken in using this function, since it relies on external systems, which could be manipulated by the attacker to give an inflated (or reduced) value produced by this function, based on current on-chain conditions (e.g. this function is possible to influence through flashloan attacks, oracle manipulations, or other DeFi attack mechanisms). It is up to governance to use this function to correctly order this Strategy relative to its peers in the withdrawal queue to minimize losses for the Vault based on sudden withdrawals. This value should be higher than the total debt of the Strategy and higher than its expected value to be \"safe\".","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The estimated total assets in this Strategy.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"executeOperation(address,uint256,uint256,bytes)","name":"executeOperation","description":"","parameterDecorators":[{"name":"_reserve","description":"","recommendedTypes":[]},{"name":"_amount","description":"","recommendedTypes":[]},{"name":"_fee","description":"","recommendedTypes":[]},{"name":"_params","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"expectedReturn()","name":"expectedReturn","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getCurrentPosition()","name":"getCurrentPosition","description":"","parameterDecorators":[],"returnDecorators":[{"name":"deposits","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"borrows","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getLivePosition()","name":"getLivePosition","description":"","parameterDecorators":[],"returnDecorators":[{"name":"deposits","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"borrows","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"getblocksUntilLiquidation()","name":"getblocksUntilLiquidation","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"harvest()","name":"harvest","description":"Harvests the Strategy, recognizing any profits or losses and adjusting the Strategy's position. In the rare case the Strategy is in emergency shutdown, this will exit the Strategy's position. This may only be called by governance, the strategist, or the keeper. When `harvest()` is called, the Strategy reports to the Vault (via `vault.report()`), so in some cases `harvest()` must be called in order to take in profits, to borrow newly available funds from the Vault, or otherwise adjust its position. In other cases `harvest()` must be called to report to the Vault on the Strategy's position, especially if any losses have occurred.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"harvestTrigger(uint256)","name":"harvestTrigger","description":"","parameterDecorators":[{"name":"gasCost","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"keeper()","name":"keeper","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"migrate(address)","name":"migrate","description":"Transfers all `want` from this Strategy to `_newStrategy`. This may only be called by governance or the Vault. The new Strategy's Vault must be the same as this Strategy's Vault.","parameterDecorators":[{"name":"_newStrategy","description":"The Strategy to migrate to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"minCompToSell()","name":"minCompToSell","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"minReportDelay()","name":"minReportDelay","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"minWant()","name":"minWant","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"name()","name":"name","description":"This Strategy's name. You can use this field to manage the \"version\" of this Strategy, e.g. `StrategySomethingOrOtherV1`. However, \"API Version\" is managed by `apiVersion()` function above.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"This Strategy's name.","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true},{"signature":"netBalanceLent()","name":"netBalanceLent","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"predictCompAccrued()","name":"predictCompAccrued","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"priceCheck(address,address,uint256)","name":"priceCheck","description":"","parameterDecorators":[{"name":"start","description":"","recommendedTypes":[]},{"name":"end","description":"","recommendedTypes":[]},{"name":"_amount","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"profitFactor()","name":"profitFactor","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"rewards()","name":"rewards","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"setAave(bool)","name":"setAave","description":"","parameterDecorators":[{"name":"_ave","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setCollateralTarget(uint256)","name":"setCollateralTarget","description":"","parameterDecorators":[{"name":"_collateralTarget","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setDebtThreshold(uint256)","name":"setDebtThreshold","description":"Sets how far the Strategy can go into loss without a harvest and report being required. By default this is 0, meaning any losses would cause a harvest which will subsequently report the loss to the Vault for tracking. (See `harvestTrigger()` for more details.) This may only be called by governance or the strategist.","parameterDecorators":[{"name":"_debtThreshold","description":"How big of a loss this Strategy may carry without being required to report to the Vault.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setDyDx(bool)","name":"setDyDx","description":"","parameterDecorators":[{"name":"_dydx","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setEmergencyExit()","name":"setEmergencyExit","description":"Activates emergency exit. Once activated, the Strategy will exit its position upon the next harvest, depositing all funds into the Vault as quickly as is reasonable given on-chain conditions. This may only be called by governance or the strategist. See `vault.setEmergencyShutdown()` and `harvest()` for further details.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setKeeper(address)","name":"setKeeper","description":"Used to change `keeper`. `keeper` is the only address that may call `tend()` or `harvest()`, other than `governance()` or `strategist`. However, unlike `governance()` or `strategist`, `keeper` may *only* call `tend()` and `harvest()`, and no other authorized functions, following the principle of least privilege. This may only be called by governance or the strategist.","parameterDecorators":[{"name":"_keeper","description":"The new address to assign as `keeper`.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMinCompToSell(uint256)","name":"setMinCompToSell","description":"","parameterDecorators":[{"name":"_minCompToSell","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMinReportDelay(uint256)","name":"setMinReportDelay","description":"Used to change `minReportDelay`. `minReportDelay` is the minimum number of blocks that should pass before `harvest()` is called. For external keepers (such as the Keep3r network), this is the minimum time between jobs, to prevent excessive costs. (see `harvestTrigger()` for more details.) This may only be called by governance or the strategist.","parameterDecorators":[{"name":"_delay","description":"The minimum number of blocks to wait between harvests.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMinWant(uint256)","name":"setMinWant","description":"","parameterDecorators":[{"name":"_minWant","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setProfitFactor(uint256)","name":"setProfitFactor","description":"Used to change `profitFactor`. `profitFactor` is used to determine if it's worthwhile to harvest, given gas costs. (See `harvestTrigger()` for more details.) This may only be called by governance or the strategist.","parameterDecorators":[{"name":"_profitFactor","description":"A ratio to multiply anticipated `harvest()` gas cost against.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setRewards(address)","name":"setRewards","description":"Used to change `rewards`. Any distributed rewards will cease flowing to the old address and begin flowing to this address once the change is in effect. This will not change any Strategy reports in progress, only new reports made after this change goes into effect. This may only be called by the strategist.","parameterDecorators":[{"name":"_rewards","description":"The address to use for collecting rewards.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setStrategist(address)","name":"setStrategist","description":"Used to change `strategist`. This may only be called by governance or the existing strategist.","parameterDecorators":[{"name":"_strategist","description":"The new address to assign as `strategist`.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"storedCollateralisation()","name":"storedCollateralisation","description":"","parameterDecorators":[],"returnDecorators":[{"name":"collat","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"strategist()","name":"strategist","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"sweep(address)","name":"sweep","description":"Removes tokens from this Strategy that are not the type of tokens managed by this Strategy. This may be used in case of accidentally sending the wrong kind of token to this Strategy. Tokens will be sent to `governance()`. This will fail if an attempt is made to sweep `want`, or any tokens that are protected by this Strategy. This may only be called by governance. Implement `protectedTokens()` to specify any additional tokens that should be protected from sweeping in addition to `want`.","parameterDecorators":[{"name":"_token","description":"The token to transfer out of this vault.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"tend()","name":"tend","description":"Adjust the Strategy's position. The purpose of tending isn't to realize gains, but to maximize yield by reinvesting any returns. See comments on `adjustPosition()`. This may only be called by governance, the strategist, or the keeper.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"tendTrigger(uint256)","name":"tendTrigger","description":"","parameterDecorators":[{"name":"gasCost","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"uniswapRouter()","name":"uniswapRouter","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"updateMarketId()","name":"updateMarketId","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"vault()","name":"vault","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"want()","name":"want","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"weth()","name":"weth","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"withdraw(uint256)","name":"withdraw","description":"Withdraws `_amountNeeded` to `vault`. This may only be called by the Vault.","parameterDecorators":[{"name":"_amountNeeded","description":"How much `want` to withdraw.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "strategies"
+  ],
+  "name": "Strategy",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "Harvested(uint256,uint256,uint256,uint256)",
+      "name": "Harvested",
+      "description": "An event thats emitted when a withdrawal is made from Pool.",
+      "parameterDecorators": [
+        {
+          "name": "profit",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "loss",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "debtPayment",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "debtOutstanding",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Leverage(uint256,uint256,bool,address)",
+      "name": "Leverage",
+      "description": "An event thats emitted when a withdrawal is made from Pool.",
+      "parameterDecorators": [
+        {
+          "name": "amountRequested",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amountGiven",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "deficit",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "flashLoan",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UpdatedDebtThreshold(uint256)",
+      "name": "UpdatedDebtThreshold",
+      "description": "An event thats emitted when a withdrawal is made from Pool.",
+      "parameterDecorators": [
+        {
+          "name": "debtThreshold",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UpdatedKeeper(address)",
+      "name": "UpdatedKeeper",
+      "description": "An event thats emitted when a withdrawal is made from Pool.",
+      "parameterDecorators": [
+        {
+          "name": "newKeeper",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UpdatedProfitFactor(uint256)",
+      "name": "UpdatedProfitFactor",
+      "description": "An event thats emitted when a withdrawal is made from Pool.",
+      "parameterDecorators": [
+        {
+          "name": "profitFactor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UpdatedReportDelay(uint256)",
+      "name": "UpdatedReportDelay",
+      "description": "An event thats emitted when a withdrawal is made from Pool.",
+      "parameterDecorators": [
+        {
+          "name": "delay",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UpdatedRewards(address)",
+      "name": "UpdatedRewards",
+      "description": "An event thats emitted when a withdrawal is made from Pool.",
+      "parameterDecorators": [
+        {
+          "name": "rewards",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UpdatedStrategist(address)",
+      "name": "UpdatedStrategist",
+      "description": "An event thats emitted when a withdrawal is made from Pool.",
+      "parameterDecorators": [
+        {
+          "name": "newStrategist",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "AaveActive()",
+      "name": "AaveActive",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "DyDxActive()",
+      "name": "DyDxActive",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addressesProvider()",
+      "name": "addressesProvider",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "apiVersion()",
+      "name": "apiVersion",
+      "description": "Used to track which version of `StrategyAPI` this Strategy implements. The Strategy's version must match the Vault's `API_VERSION`.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "A string which holds the current API version of this contract.",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "blocksToLiquidationDangerZone()",
+      "name": "blocksToLiquidationDangerZone",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "cToken()",
+      "name": "cToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "callFunction(address,tuple(address,uint256),bytes)",
+      "name": "callFunction",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "owner",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "number",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "collateralTarget()",
+      "name": "collateralTarget",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "comp()",
+      "name": "comp",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "compound()",
+      "name": "compound",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "debtThreshold()",
+      "name": "debtThreshold",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "dyDxMarketId()",
+      "name": "dyDxMarketId",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "emergencyExit()",
+      "name": "emergencyExit",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "estimatedTotalAssets()",
+      "name": "estimatedTotalAssets",
+      "description": "Provide an accurate estimate for the total amount of assets (principle + return) that this Strategy is currently managing, denominated in terms of `want` tokens. This total should be \"realizable\" e.g. the total value that could *actually* be obtained from this Strategy if it were to divest its entire position based on current on-chain conditions. Care must be taken in using this function, since it relies on external systems, which could be manipulated by the attacker to give an inflated (or reduced) value produced by this function, based on current on-chain conditions (e.g. this function is possible to influence through flashloan attacks, oracle manipulations, or other DeFi attack mechanisms). It is up to governance to use this function to correctly order this Strategy relative to its peers in the withdrawal queue to minimize losses for the Vault based on sudden withdrawals. This value should be higher than the total debt of the Strategy and higher than its expected value to be \"safe\".",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The estimated total assets in this Strategy.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "executeOperation(address,uint256,uint256,bytes)",
+      "name": "executeOperation",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_reserve",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_fee",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_params",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "expectedReturn()",
+      "name": "expectedReturn",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentPosition()",
+      "name": "getCurrentPosition",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "deposits",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "borrows",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getLivePosition()",
+      "name": "getLivePosition",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "deposits",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "borrows",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getblocksUntilLiquidation()",
+      "name": "getblocksUntilLiquidation",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "harvest()",
+      "name": "harvest",
+      "description": "Harvests the Strategy, recognizing any profits or losses and adjusting the Strategy's position. In the rare case the Strategy is in emergency shutdown, this will exit the Strategy's position. This may only be called by governance, the strategist, or the keeper. When `harvest()` is called, the Strategy reports to the Vault (via `vault.report()`), so in some cases `harvest()` must be called in order to take in profits, to borrow newly available funds from the Vault, or otherwise adjust its position. In other cases `harvest()` must be called to report to the Vault on the Strategy's position, especially if any losses have occurred.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "harvestTrigger(uint256)",
+      "name": "harvestTrigger",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "gasCost",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "keeper()",
+      "name": "keeper",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "migrate(address)",
+      "name": "migrate",
+      "description": "Transfers all `want` from this Strategy to `_newStrategy`. This may only be called by governance or the Vault. The new Strategy's Vault must be the same as this Strategy's Vault.",
+      "parameterDecorators": [
+        {
+          "name": "_newStrategy",
+          "description": "The Strategy to migrate to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "minCompToSell()",
+      "name": "minCompToSell",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minReportDelay()",
+      "name": "minReportDelay",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minWant()",
+      "name": "minWant",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "name()",
+      "name": "name",
+      "description": "This Strategy's name. You can use this field to manage the \"version\" of this Strategy, e.g. `StrategySomethingOrOtherV1`. However, \"API Version\" is managed by `apiVersion()` function above.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "This Strategy's name.",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "netBalanceLent()",
+      "name": "netBalanceLent",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "predictCompAccrued()",
+      "name": "predictCompAccrued",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "priceCheck(address,address,uint256)",
+      "name": "priceCheck",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "start",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "end",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "profitFactor()",
+      "name": "profitFactor",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewards()",
+      "name": "rewards",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setAave(bool)",
+      "name": "setAave",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_ave",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setCollateralTarget(uint256)",
+      "name": "setCollateralTarget",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_collateralTarget",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDebtThreshold(uint256)",
+      "name": "setDebtThreshold",
+      "description": "Sets how far the Strategy can go into loss without a harvest and report being required. By default this is 0, meaning any losses would cause a harvest which will subsequently report the loss to the Vault for tracking. (See `harvestTrigger()` for more details.) This may only be called by governance or the strategist.",
+      "parameterDecorators": [
+        {
+          "name": "_debtThreshold",
+          "description": "How big of a loss this Strategy may carry without being required to report to the Vault.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDyDx(bool)",
+      "name": "setDyDx",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_dydx",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setEmergencyExit()",
+      "name": "setEmergencyExit",
+      "description": "Activates emergency exit. Once activated, the Strategy will exit its position upon the next harvest, depositing all funds into the Vault as quickly as is reasonable given on-chain conditions. This may only be called by governance or the strategist. See `vault.setEmergencyShutdown()` and `harvest()` for further details.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setKeeper(address)",
+      "name": "setKeeper",
+      "description": "Used to change `keeper`. `keeper` is the only address that may call `tend()` or `harvest()`, other than `governance()` or `strategist`. However, unlike `governance()` or `strategist`, `keeper` may *only* call `tend()` and `harvest()`, and no other authorized functions, following the principle of least privilege. This may only be called by governance or the strategist.",
+      "parameterDecorators": [
+        {
+          "name": "_keeper",
+          "description": "The new address to assign as `keeper`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMinCompToSell(uint256)",
+      "name": "setMinCompToSell",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_minCompToSell",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMinReportDelay(uint256)",
+      "name": "setMinReportDelay",
+      "description": "Used to change `minReportDelay`. `minReportDelay` is the minimum number of blocks that should pass before `harvest()` is called. For external keepers (such as the Keep3r network), this is the minimum time between jobs, to prevent excessive costs. (see `harvestTrigger()` for more details.) This may only be called by governance or the strategist.",
+      "parameterDecorators": [
+        {
+          "name": "_delay",
+          "description": "The minimum number of blocks to wait between harvests.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMinWant(uint256)",
+      "name": "setMinWant",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_minWant",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setProfitFactor(uint256)",
+      "name": "setProfitFactor",
+      "description": "Used to change `profitFactor`. `profitFactor` is used to determine if it's worthwhile to harvest, given gas costs. (See `harvestTrigger()` for more details.) This may only be called by governance or the strategist.",
+      "parameterDecorators": [
+        {
+          "name": "_profitFactor",
+          "description": "A ratio to multiply anticipated `harvest()` gas cost against.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRewards(address)",
+      "name": "setRewards",
+      "description": "Used to change `rewards`. Any distributed rewards will cease flowing to the old address and begin flowing to this address once the change is in effect. This will not change any Strategy reports in progress, only new reports made after this change goes into effect. This may only be called by the strategist.",
+      "parameterDecorators": [
+        {
+          "name": "_rewards",
+          "description": "The address to use for collecting rewards.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setStrategist(address)",
+      "name": "setStrategist",
+      "description": "Used to change `strategist`. This may only be called by governance or the existing strategist.",
+      "parameterDecorators": [
+        {
+          "name": "_strategist",
+          "description": "The new address to assign as `strategist`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "storedCollateralisation()",
+      "name": "storedCollateralisation",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "collat",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "strategist()",
+      "name": "strategist",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "sweep(address)",
+      "name": "sweep",
+      "description": "Removes tokens from this Strategy that are not the type of tokens managed by this Strategy. This may be used in case of accidentally sending the wrong kind of token to this Strategy. Tokens will be sent to `governance()`. This will fail if an attempt is made to sweep `want`, or any tokens that are protected by this Strategy. This may only be called by governance. Implement `protectedTokens()` to specify any additional tokens that should be protected from sweeping in addition to `want`.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "The token to transfer out of this vault.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tend()",
+      "name": "tend",
+      "description": "Adjust the Strategy's position. The purpose of tending isn't to realize gains, but to maximize yield by reinvesting any returns. See comments on `adjustPosition()`. This may only be called by governance, the strategist, or the keeper.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tendTrigger(uint256)",
+      "name": "tendTrigger",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "gasCost",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "uniswapRouter()",
+      "name": "uniswapRouter",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "updateMarketId()",
+      "name": "updateMarketId",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "vault()",
+      "name": "vault",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "want()",
+      "name": "want",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "weth()",
+      "name": "weth",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw(uint256)",
+      "name": "withdraw",
+      "description": "Withdraws `_amountNeeded` to `vault`. This may only be called by the Vault.",
+      "parameterDecorators": [
+        {
+          "name": "_amountNeeded",
+          "description": "How much `want` to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

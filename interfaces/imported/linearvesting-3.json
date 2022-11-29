@@ -1,1 +1,390 @@
-{"schema":"../schema.json","tags":["vesting"],"name":"LinearVesting","description":"","eventDecorators":[{"signature":"DrawDown(address,uint256)","name":"DrawDown","description":"event emitted when a successful drawn down of vesting tokens is made. Emitted when setting contract parameters.","parameterDecorators":[{"name":"_beneficiary","description":"","recommendedTypes":[],"indexed":true},{"name":"_amount","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"ScheduleCreated(address)","name":"ScheduleCreated","description":"event emitted when a vesting schedule is created. Emitted when setting contract parameters.","parameterDecorators":[{"name":"_beneficiary","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"_transferBalanceToOwner(uint256)","name":"_transferBalanceToOwner","description":"","parameterDecorators":[{"name":"_amount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"availableDrawDownAmount(address)","name":"availableDrawDownAmount","description":"Draw down amount currently available (based on the block timestamp).","parameterDecorators":[{"name":"_beneficiary","description":"beneficiary of the vested tokens.","recommendedTypes":[]}],"returnDecorators":[{"name":"_amount","description":"tokens due from vesting schedule.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"cliffDuration()","name":"cliffDuration","description":"cliff duration in seconds.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"createVestingSchedule(address,uint256)","name":"createVestingSchedule","description":"Create a new vesting scheduleA transfer is used to bring tokens into the VestingDepositAccount so pre-approval is required.","parameterDecorators":[{"name":"_beneficiary","description":"beneficiary of the vested tokens.","recommendedTypes":[]},{"name":"_amount","description":"amount of tokens (in wei).","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"createVestingSchedules(address[],uint256[])","name":"createVestingSchedules","description":"Create new vesting schedules in a batchA transfer is used to bring tokens into the VestingDepositAccount so pre-approval is required. array index of address should be the same as the array index of the amount.","parameterDecorators":[{"name":"_beneficiaries","description":"array of beneficiaries of the vested tokens.","recommendedTypes":[]},{"name":"_amounts","description":"array of amount of tokens (in wei).","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"drawDown()","name":"drawDown","description":"Draws down any vested tokens due. Must be called directly by the beneficiary assigned the tokens in the schedule.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"end()","name":"end","description":"end of vesting period as a timestamp.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"lastDrawnAt(address)","name":"lastDrawnAt","description":"last drawn down time (seconds) per beneficiary.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"owner address set on construction.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"remainingBalance(address)","name":"remainingBalance","description":"Balance remaining in vesting schedule.","parameterDecorators":[{"name":"_beneficiary","description":"beneficiary of the vested tokens.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"_remainingBalance tokens still due (and currently locked) from vesting schedule.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"start()","name":"start","description":"start of vesting period as a timestamp.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"token()","name":"token","description":"ERC20 token we are vesting.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"tokenBalance()","name":"tokenBalance","description":"Vested token balance for a beneficiary. Must be called directly by the beneficiary assigned the tokens in the schedule.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"_tokenBalance total balance proxied via the ERC20 token.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"totalDrawn(address)","name":"totalDrawn","description":"cumulative total of tokens drawn down (and transferred from the deposit account) per beneficiary.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership roleChanges the owner of this contract to a new address. Only owner.","parameterDecorators":[{"name":"_newOwner","description":"beneficiary to vest remaining tokens to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"vestedAmount(address)","name":"vestedAmount","description":"amount vested for a beneficiary. Note beneficiary address can not be reused.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"vestingScheduleForBeneficiary(address)","name":"vestingScheduleForBeneficiary","description":"Vesting schedule and associated data for a beneficiary. Must be called directly by the beneficiary assigned the tokens in the schedule.","parameterDecorators":[{"name":"_beneficiary","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"_amount","description":"_amount.","recommendedTypes":[],"solidityType":"uint256"},{"name":"_totalDrawn","description":"_totalDrawn.","recommendedTypes":[],"solidityType":"uint256"},{"name":"_lastDrawnAt","description":"_lastDrawnAt.","recommendedTypes":[],"solidityType":"uint256"},{"name":"_remainingBalance","description":"_remainingBalance.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "vesting"
+  ],
+  "name": "LinearVesting",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "DrawDown(address,uint256)",
+      "name": "DrawDown",
+      "description": "event emitted when a successful drawn down of vesting tokens is made. Emitted when setting contract parameters.",
+      "parameterDecorators": [
+        {
+          "name": "_beneficiary",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ScheduleCreated(address)",
+      "name": "ScheduleCreated",
+      "description": "event emitted when a vesting schedule is created. Emitted when setting contract parameters.",
+      "parameterDecorators": [
+        {
+          "name": "_beneficiary",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "_transferBalanceToOwner(uint256)",
+      "name": "_transferBalanceToOwner",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "availableDrawDownAmount(address)",
+      "name": "availableDrawDownAmount",
+      "description": "Draw down amount currently available (based on the block timestamp).",
+      "parameterDecorators": [
+        {
+          "name": "_beneficiary",
+          "description": "beneficiary of the vested tokens.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_amount",
+          "description": "tokens due from vesting schedule.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "cliffDuration()",
+      "name": "cliffDuration",
+      "description": "cliff duration in seconds.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "createVestingSchedule(address,uint256)",
+      "name": "createVestingSchedule",
+      "description": "Create a new vesting scheduleA transfer is used to bring tokens into the VestingDepositAccount so pre-approval is required.",
+      "parameterDecorators": [
+        {
+          "name": "_beneficiary",
+          "description": "beneficiary of the vested tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "amount of tokens (in wei).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createVestingSchedules(address[],uint256[])",
+      "name": "createVestingSchedules",
+      "description": "Create new vesting schedules in a batchA transfer is used to bring tokens into the VestingDepositAccount so pre-approval is required. array index of address should be the same as the array index of the amount.",
+      "parameterDecorators": [
+        {
+          "name": "_beneficiaries",
+          "description": "array of beneficiaries of the vested tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amounts",
+          "description": "array of amount of tokens (in wei).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "drawDown()",
+      "name": "drawDown",
+      "description": "Draws down any vested tokens due. Must be called directly by the beneficiary assigned the tokens in the schedule.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "end()",
+      "name": "end",
+      "description": "end of vesting period as a timestamp.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastDrawnAt(address)",
+      "name": "lastDrawnAt",
+      "description": "last drawn down time (seconds) per beneficiary.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "owner address set on construction.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "remainingBalance(address)",
+      "name": "remainingBalance",
+      "description": "Balance remaining in vesting schedule.",
+      "parameterDecorators": [
+        {
+          "name": "_beneficiary",
+          "description": "beneficiary of the vested tokens.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "_remainingBalance tokens still due (and currently locked) from vesting schedule.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "start()",
+      "name": "start",
+      "description": "start of vesting period as a timestamp.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "ERC20 token we are vesting.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tokenBalance()",
+      "name": "tokenBalance",
+      "description": "Vested token balance for a beneficiary. Must be called directly by the beneficiary assigned the tokens in the schedule.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "_tokenBalance total balance proxied via the ERC20 token.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalDrawn(address)",
+      "name": "totalDrawn",
+      "description": "cumulative total of tokens drawn down (and transferred from the deposit account) per beneficiary.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership roleChanges the owner of this contract to a new address. Only owner.",
+      "parameterDecorators": [
+        {
+          "name": "_newOwner",
+          "description": "beneficiary to vest remaining tokens to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "vestedAmount(address)",
+      "name": "vestedAmount",
+      "description": "amount vested for a beneficiary. Note beneficiary address can not be reused.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "vestingScheduleForBeneficiary(address)",
+      "name": "vestingScheduleForBeneficiary",
+      "description": "Vesting schedule and associated data for a beneficiary. Must be called directly by the beneficiary assigned the tokens in the schedule.",
+      "parameterDecorators": [
+        {
+          "name": "_beneficiary",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_amount",
+          "description": "_amount.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_totalDrawn",
+          "description": "_totalDrawn.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_lastDrawnAt",
+          "description": "_lastDrawnAt.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_remainingBalance",
+          "description": "_remainingBalance.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

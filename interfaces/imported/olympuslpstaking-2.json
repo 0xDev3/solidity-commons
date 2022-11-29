@@ -1,1 +1,455 @@
-{"schema":"../schema.json","tags":[],"name":"OlympusLPStaking","description":"","eventDecorators":[{"signature":"PoolUpdated(uint256,uint256,uint256)","name":"PoolUpdated","description":"Event emitted when tokens are recovered by owner.","parameterDecorators":[{"name":"_blocksRewarded","description":"","recommendedTypes":[],"indexed":false},{"name":"_amountRewarded","description":"","recommendedTypes":[],"indexed":false},{"name":"_time","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RewardsClaimed(address,uint256,uint256)","name":"RewardsClaimed","description":"Event emitted when tokens are recovered by owner.","parameterDecorators":[{"name":"_staker","description":"","recommendedTypes":[],"indexed":false},{"name":"_rewardsClaimed","description":"","recommendedTypes":[],"indexed":false},{"name":"_time","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"StakeCompleted(address,uint256,uint256,uint256)","name":"StakeCompleted","description":"Event emitted when tokens are recovered by owner.","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":false},{"name":"beneficiary","description":"who got the tokens.","recommendedTypes":[],"indexed":false},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":false},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":false}]},{"signature":"TransferredOwnership(address,address,uint256)","name":"TransferredOwnership","description":"Event emitted when tokens are recovered by owner.","parameterDecorators":[{"name":"_previous","description":"","recommendedTypes":[],"indexed":false},{"name":"_next","description":"","recommendedTypes":[],"indexed":false},{"name":"_time","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"WithdrawCompleted(address,uint256,uint256)","name":"WithdrawCompleted","description":"Event emitted when tokens are recovered by owner.","parameterDecorators":[{"name":"_staker","description":"","recommendedTypes":[],"indexed":false},{"name":"_amount","description":"","recommendedTypes":[],"indexed":false},{"name":"_time","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"accRewardPerShare()","name":"accRewardPerShare","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"claimRewards()","name":"claimRewards","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"getUserBalance(address)","name":"getUserBalance","description":"","parameterDecorators":[{"name":"_staker","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"_amountStaked","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"lastRewardTimestamp()","name":"lastRewardTimestamp","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"lpToken()","name":"lpToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"pendingRewards(address)","name":"pendingRewards","description":"","parameterDecorators":[{"name":"_staker","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"rewardPerSecond()","name":"rewardPerSecond","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"rewardPool()","name":"rewardPool","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"rewardToken()","name":"rewardToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"setRewardPerSecond(uint256)","name":"setRewardPerSecond","description":"","parameterDecorators":[{"name":"_rewardPerSecond","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"stakeLP(uint256)","name":"stakeLP","description":"","parameterDecorators":[{"name":"_amount","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"totalStaked()","name":"totalStaked","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"","parameterDecorators":[{"name":"_owner","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"unstakeLP()","name":"unstakeLP","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"updatePool()","name":"updatePool","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"userDetails(address)","name":"userDetails","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"_LPDeposited","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"_rewardDebt","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "OlympusLPStaking",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "PoolUpdated(uint256,uint256,uint256)",
+      "name": "PoolUpdated",
+      "description": "Event emitted when tokens are recovered by owner.",
+      "parameterDecorators": [
+        {
+          "name": "_blocksRewarded",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_amountRewarded",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_time",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RewardsClaimed(address,uint256,uint256)",
+      "name": "RewardsClaimed",
+      "description": "Event emitted when tokens are recovered by owner.",
+      "parameterDecorators": [
+        {
+          "name": "_staker",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_rewardsClaimed",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_time",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "StakeCompleted(address,uint256,uint256,uint256)",
+      "name": "StakeCompleted",
+      "description": "Event emitted when tokens are recovered by owner.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "beneficiary",
+          "description": "who got the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TransferredOwnership(address,address,uint256)",
+      "name": "TransferredOwnership",
+      "description": "Event emitted when tokens are recovered by owner.",
+      "parameterDecorators": [
+        {
+          "name": "_previous",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_next",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_time",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WithdrawCompleted(address,uint256,uint256)",
+      "name": "WithdrawCompleted",
+      "description": "Event emitted when tokens are recovered by owner.",
+      "parameterDecorators": [
+        {
+          "name": "_staker",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_time",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "accRewardPerShare()",
+      "name": "accRewardPerShare",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claimRewards()",
+      "name": "claimRewards",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getUserBalance(address)",
+      "name": "getUserBalance",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_staker",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_amountStaked",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastRewardTimestamp()",
+      "name": "lastRewardTimestamp",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lpToken()",
+      "name": "lpToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pendingRewards(address)",
+      "name": "pendingRewards",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_staker",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardPerSecond()",
+      "name": "rewardPerSecond",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardPool()",
+      "name": "rewardPool",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardToken()",
+      "name": "rewardToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setRewardPerSecond(uint256)",
+      "name": "setRewardPerSecond",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_rewardPerSecond",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stakeLP(uint256)",
+      "name": "stakeLP",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "totalStaked()",
+      "name": "totalStaked",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_owner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unstakeLP()",
+      "name": "unstakeLP",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updatePool()",
+      "name": "updatePool",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "userDetails(address)",
+      "name": "userDetails",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_LPDeposited",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_rewardDebt",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

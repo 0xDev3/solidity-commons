@@ -1,1 +1,748 @@
-{"schema":"../schema.json","tags":["staking","voting","voting","celo network"],"name":"Account","description":"A contract that facilitates voting on behalf of StakedCelo.sol. This contract depends on the Manager to decide how to distribute votes and how to keep track of ownership of CELO voted via this contract.","eventDecorators":[{"signature":"AdminChanged(address,address)","name":"AdminChanged","description":"","parameterDecorators":[{"name":"previousAdmin","description":"","recommendedTypes":[],"indexed":false},{"name":"newAdmin","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"BeaconUpgraded(address)","name":"BeaconUpgraded","description":"","parameterDecorators":[{"name":"beacon","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"CeloWithdrawalFinished(address,uint256,uint256)","name":"CeloWithdrawalFinished","description":"Emitted when a CELO withdrawal completes for `beneficiary`.","parameterDecorators":[{"name":"beneficiary","description":"The user for whom the withdrawal amount is intended.","recommendedTypes":[],"indexed":true},{"name":"amount","description":"The amount of CELO requested for withdrawal.","recommendedTypes":[],"indexed":false},{"name":"timestamp","description":"The timestamp of the pending withdrawal.","recommendedTypes":[],"indexed":false}]},{"signature":"CeloWithdrawalScheduled(address,address,uint256)","name":"CeloWithdrawalScheduled","description":"Emitted when CELO withdrawal is scheduled for a group.","parameterDecorators":[{"name":"beneficiary","description":"The user for whom the withdrawal amount is intended for.","recommendedTypes":[],"indexed":true},{"name":"group","description":"The validator group the CELO is withdrawn from.","recommendedTypes":[],"indexed":true},{"name":"withdrawalAmount","description":"The amount of CELO requested for withdrawal.","recommendedTypes":[],"indexed":false}]},{"signature":"CeloWithdrawalStarted(address,address,uint256)","name":"CeloWithdrawalStarted","description":"Emitted when CELO withdrawal kicked off for group. Immediate withdrawals are not included in this event, but can be identified by a GoldToken.sol transfer from this contract.","parameterDecorators":[{"name":"beneficiary","description":"The user for whom the withdrawal amount is intended for.","recommendedTypes":[],"indexed":true},{"name":"group","description":"The validator group the CELO is withdrawn from.","recommendedTypes":[],"indexed":true},{"name":"withdrawalAmount","description":"The amount of CELO requested for withdrawal.","recommendedTypes":[],"indexed":false}]},{"signature":"ManagerSet(address)","name":"ManagerSet","description":"Emitted when the manager is initially set or later modified.","parameterDecorators":[{"name":"manager","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Upgraded(address)","name":"Upgraded","description":"","parameterDecorators":[{"name":"implementation","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"VotesScheduled(address,uint256)","name":"VotesScheduled","description":"Emitted when CELO is scheduled for voting for a given group.","parameterDecorators":[{"name":"group","description":"The validator group the CELO is intended to vote for.","recommendedTypes":[],"indexed":true},{"name":"amount","description":"The amount of CELO scheduled.","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"activateAndVote(address,address,address)","name":"activateAndVote","description":"Activates any activatable pending votes for group, and locks & votes any unlocked CELO for group. Callable by anyone. In practice, this is expected to be called near the end of each epoch by an off-chain agent.","parameterDecorators":[{"name":"group","description":"The group to activate pending votes for and lock & vote any unlocked CELO for.","recommendedTypes":[]},{"name":"voteLesser","description":"Used by Election's `vote`. This is the group that will recieve fewer votes than group after the votes are cast, or address(0) if no such group exists.","recommendedTypes":[]},{"name":"voteGreater","description":"Used by Election's `vote`. This is the group that will recieve greater votes than group after the votes are cast, or address(0) if no such group exists.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"finishPendingWithdrawal(address,uint256,uint256)","name":"finishPendingWithdrawal","description":"Finishes a pending withdrawal created as a result of a `withdrawCelo` call, claiming CELO after the `unlockingPeriod` defined in LockedGold.sol. Callable by anyone, but ultimatly the withdrawal goes to `beneficiary`. The pending withdrawal info found in both StakedCeloGroupVoter and LockedGold must match to ensure that the beneficiary is claiming the appropriate pending withdrawal.","parameterDecorators":[{"name":"beneficiary","description":"The account that owns the pending withdrawal being processed.","recommendedTypes":[]},{"name":"localPendingWithdrawalIndex","description":"The index of the pending withdrawal to finish in pendingWithdrawals[beneficiary] array.","recommendedTypes":[]},{"name":"lockedGoldPendingWithdrawalIndex","description":"The index of the pending withdrawal to finish in LockedGold.","recommendedTypes":[]}],"returnDecorators":[{"name":"amount","description":"The amount of CELO sent to `beneficiary`.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"getCeloForGroup(address)","name":"getCeloForGroup","description":"Returns the total amount of CELO directed towards `group`. This is the Unlocked CELO balance for `group` plus the combined amount in pending and active votes made by this contract.","parameterDecorators":[{"name":"group","description":"The address of the validator group.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The total amount of CELO directed towards `group`.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getNumberPendingWithdrawals(address)","name":"getNumberPendingWithdrawals","description":"Returns the number of pending withdrawals for a beneficiary.","parameterDecorators":[{"name":"beneficiary","description":"The address of the beneficiary who initiated the pending withdrawal.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The numbers of pending withdrawals for `beneficiary`.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getPendingWithdrawal(address,uint256)","name":"getPendingWithdrawal","description":"Returns a pending withdrawals for a beneficiary.","parameterDecorators":[{"name":"beneficiary","description":"The address of the beneficiary who initiated the pending withdrawal.","recommendedTypes":[]},{"name":"index","description":"The index in `beneficiary`'s pendingWithdrawals array.","recommendedTypes":[]}],"returnDecorators":[{"name":"value","description":"The values of the pending withdrawal.","recommendedTypes":[],"solidityType":"uint256"},{"name":"timestamp","description":"The timestamp of the pending withdrawal.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getPendingWithdrawals(address)","name":"getPendingWithdrawals","description":"Returns the pending withdrawals for a beneficiary.","parameterDecorators":[{"name":"beneficiary","description":"The address of the beneficiary who initiated the pending withdrawal.","recommendedTypes":[]}],"returnDecorators":[{"name":"values","description":"The values of pending withdrawals.","recommendedTypes":[],"solidityType":"uint256[]"},{"name":"timestamps","description":"The timestamps of pending withdrawals.","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getTotalCelo()","name":"getTotalCelo","description":"Gets the total amount of CELO this contract controls. This is the unlocked CELO balance of the contract plus the amount of LockedGold for this contract, which included unvoting and voting LockedGold.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The total amount of CELO this contract controls, including LockedGold.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"hello()","name":"hello","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"initialize(address,address,address)","name":"initialize","description":"","parameterDecorators":[{"name":"_registry","description":"The address of the Celo registry.","recommendedTypes":[]},{"name":"_manager","description":"The address of the Manager contract.","recommendedTypes":[]},{"name":"_owner","description":"The address of the contract owner.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"manager()","name":"manager","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"pendingWithdrawals(address,uint256)","name":"pendingWithdrawals","description":"Keyed by beneficiary address, the related array of pending withdrawals. See `PendingWithdrawal` for more info.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"value","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"timestamp","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"registry()","name":"registry","description":"The Registry.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"scheduleVotes(address[],uint256[])","name":"scheduleVotes","description":"Deposits CELO sent via msg.value as unlocked CELO intended as votes for groups. Only callable by the Staked CELO contract, which must restrict which groups are valid.","parameterDecorators":[{"name":"groups","description":"The groups the deposited CELO is intended to vote for.","recommendedTypes":[]},{"name":"votes","description":"The amount of CELO to schedule for each respective group from `groups`.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"scheduleWithdrawals(address,address[],uint256[])","name":"scheduleWithdrawals","description":"Schedule a list of withdrawals to be refunded to a beneficiary.","parameterDecorators":[{"name":"beneficiary","description":"The account that will receive the CELO once it's withdrawn. from `groups`.","recommendedTypes":[]},{"name":"groups","description":"The groups the deposited CELO is intended to be withdrawn from.","recommendedTypes":[]},{"name":"withdrawals","description":"The amount of CELO to withdraw for each respective group.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"scheduledVotesForGroup(address)","name":"scheduledVotesForGroup","description":"Returns the total amount of CELO that's scheduled to vote for a group.","parameterDecorators":[{"name":"group","description":"The address of the validator group.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The total amount of CELO directed towards `group`.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"scheduledWithdrawalsForGroup(address)","name":"scheduledWithdrawalsForGroup","description":"Returns the total amount of CELO that's scheduled to be withdrawn for a group.","parameterDecorators":[{"name":"group","description":"The address of the validator group.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The total amount of CELO to be withdrawn for `group`.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"scheduledWithdrawalsForGroupAndBeneficiary(address,address)","name":"scheduledWithdrawalsForGroupAndBeneficiary","description":"Returns the total amount of CELO that's scheduled to be withdrawn for a group scoped by a beneficiary.","parameterDecorators":[{"name":"group","description":"The address of the validator group.","recommendedTypes":[]},{"name":"beneficiary","description":"The beneficiary of the withdrawal.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The total amount of CELO to be withdrawn for `group` by `beneficiary`.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setManager(address)","name":"setManager","description":"Sets the manager address.","parameterDecorators":[{"name":"_manager","description":"The new manager address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"totalScheduledWithdrawals()","name":"totalScheduledWithdrawals","description":"Total amount of CELO scheduled to be withdrawn from all groups by all beneficiaries.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"upgradeTo(address)","name":"upgradeTo","description":"Upgrade the implementation of the proxy to `newImplementation`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.","parameterDecorators":[{"name":"newImplementation","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":["Upgraded(address)"],"readOnly":false},{"signature":"upgradeToAndCall(address,bytes)","name":"upgradeToAndCall","description":"Upgrade the implementation of the proxy to `newImplementation`, and subsequently execute the function call encoded in `data`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.","parameterDecorators":[{"name":"newImplementation","description":"","recommendedTypes":[]},{"name":"data","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":["Upgraded(address)"],"readOnly":false},{"signature":"withdraw(address,address,address,address,address,address,uint256)","name":"withdraw","description":"Starts withdrawal of CELO from `group`. If there is any unlocked CELO for the group, that CELO is used for immediate withdrawal. Otherwise, CELO is taken from pending and active votes, which are subject to the unlock period of LockedGold.sol. Only callable by the Staked CELO contract, which must restrict which groups are valid.","parameterDecorators":[{"name":"beneficiary","description":"The recipient of the withdrawn CELO.","recommendedTypes":[]},{"name":"group","description":"The group to withdraw CELO from.","recommendedTypes":[]},{"name":"lesserAfterPendingRevoke","description":"Used by Election's `revokePending`. This is the group that is before `group` within the validators sorted LinkedList, or address(0) if there isn't one, after the revoke of pending votes has occurred.","recommendedTypes":[]},{"name":"greaterAfterPendingRevoke","description":"Used by Election's `revokePending`. This is the group that is after `group` within the validators sorted LinkedList, or address(0) if there isn't one, after the revoke of pending votes has occurred.","recommendedTypes":[]},{"name":"lesserAfterActiveRevoke","description":"Used by Election's `revokeActive`. This is the group that is before `group` within the validators sorted LinkedList, or address(0) if there isn't one, after the revoke of active votes has occurred.","recommendedTypes":[]},{"name":"greaterAfterActiveRevoke","description":"Used by Election's `revokeActive`. This is the group that is after `group` within the validators sorted LinkedList, or address(0) if there isn't one, after the revoke of active votes has occurred.","recommendedTypes":[]},{"name":"index","description":"Used by Election's `revokePending` and `revokeActive`. This is the index of `group` in the this contract's array of groups it is voting for.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The amount of immediately withdrawn CELO that is obtained from scheduledVotes for `group`.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "staking",
+    "voting",
+    "voting",
+    "celo network"
+  ],
+  "name": "Account",
+  "description": "A contract that facilitates voting on behalf of StakedCelo.sol. This contract depends on the Manager to decide how to distribute votes and how to keep track of ownership of CELO voted via this contract.",
+  "eventDecorators": [
+    {
+      "signature": "AdminChanged(address,address)",
+      "name": "AdminChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BeaconUpgraded(address)",
+      "name": "BeaconUpgraded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "beacon",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "CeloWithdrawalFinished(address,uint256,uint256)",
+      "name": "CeloWithdrawalFinished",
+      "description": "Emitted when a CELO withdrawal completes for `beneficiary`.",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "The user for whom the withdrawal amount is intended.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "The amount of CELO requested for withdrawal.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "timestamp",
+          "description": "The timestamp of the pending withdrawal.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CeloWithdrawalScheduled(address,address,uint256)",
+      "name": "CeloWithdrawalScheduled",
+      "description": "Emitted when CELO withdrawal is scheduled for a group.",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "The user for whom the withdrawal amount is intended for.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "group",
+          "description": "The validator group the CELO is withdrawn from.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "withdrawalAmount",
+          "description": "The amount of CELO requested for withdrawal.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CeloWithdrawalStarted(address,address,uint256)",
+      "name": "CeloWithdrawalStarted",
+      "description": "Emitted when CELO withdrawal kicked off for group. Immediate withdrawals are not included in this event, but can be identified by a GoldToken.sol transfer from this contract.",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "The user for whom the withdrawal amount is intended for.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "group",
+          "description": "The validator group the CELO is withdrawn from.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "withdrawalAmount",
+          "description": "The amount of CELO requested for withdrawal.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ManagerSet(address)",
+      "name": "ManagerSet",
+      "description": "Emitted when the manager is initially set or later modified.",
+      "parameterDecorators": [
+        {
+          "name": "manager",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Upgraded(address)",
+      "name": "Upgraded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "implementation",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "VotesScheduled(address,uint256)",
+      "name": "VotesScheduled",
+      "description": "Emitted when CELO is scheduled for voting for a given group.",
+      "parameterDecorators": [
+        {
+          "name": "group",
+          "description": "The validator group the CELO is intended to vote for.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "The amount of CELO scheduled.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "activateAndVote(address,address,address)",
+      "name": "activateAndVote",
+      "description": "Activates any activatable pending votes for group, and locks & votes any unlocked CELO for group. Callable by anyone. In practice, this is expected to be called near the end of each epoch by an off-chain agent.",
+      "parameterDecorators": [
+        {
+          "name": "group",
+          "description": "The group to activate pending votes for and lock & vote any unlocked CELO for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "voteLesser",
+          "description": "Used by Election's `vote`. This is the group that will recieve fewer votes than group after the votes are cast, or address(0) if no such group exists.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "voteGreater",
+          "description": "Used by Election's `vote`. This is the group that will recieve greater votes than group after the votes are cast, or address(0) if no such group exists.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "finishPendingWithdrawal(address,uint256,uint256)",
+      "name": "finishPendingWithdrawal",
+      "description": "Finishes a pending withdrawal created as a result of a `withdrawCelo` call, claiming CELO after the `unlockingPeriod` defined in LockedGold.sol. Callable by anyone, but ultimatly the withdrawal goes to `beneficiary`. The pending withdrawal info found in both StakedCeloGroupVoter and LockedGold must match to ensure that the beneficiary is claiming the appropriate pending withdrawal.",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "The account that owns the pending withdrawal being processed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "localPendingWithdrawalIndex",
+          "description": "The index of the pending withdrawal to finish in pendingWithdrawals[beneficiary] array.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "lockedGoldPendingWithdrawalIndex",
+          "description": "The index of the pending withdrawal to finish in LockedGold.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amount",
+          "description": "The amount of CELO sent to `beneficiary`.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getCeloForGroup(address)",
+      "name": "getCeloForGroup",
+      "description": "Returns the total amount of CELO directed towards `group`. This is the Unlocked CELO balance for `group` plus the combined amount in pending and active votes made by this contract.",
+      "parameterDecorators": [
+        {
+          "name": "group",
+          "description": "The address of the validator group.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The total amount of CELO directed towards `group`.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getNumberPendingWithdrawals(address)",
+      "name": "getNumberPendingWithdrawals",
+      "description": "Returns the number of pending withdrawals for a beneficiary.",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "The address of the beneficiary who initiated the pending withdrawal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The numbers of pending withdrawals for `beneficiary`.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPendingWithdrawal(address,uint256)",
+      "name": "getPendingWithdrawal",
+      "description": "Returns a pending withdrawals for a beneficiary.",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "The address of the beneficiary who initiated the pending withdrawal.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "The index in `beneficiary`'s pendingWithdrawals array.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "value",
+          "description": "The values of the pending withdrawal.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "timestamp",
+          "description": "The timestamp of the pending withdrawal.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPendingWithdrawals(address)",
+      "name": "getPendingWithdrawals",
+      "description": "Returns the pending withdrawals for a beneficiary.",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "The address of the beneficiary who initiated the pending withdrawal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "values",
+          "description": "The values of pending withdrawals.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "timestamps",
+          "description": "The timestamps of pending withdrawals.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTotalCelo()",
+      "name": "getTotalCelo",
+      "description": "Gets the total amount of CELO this contract controls. This is the unlocked CELO balance of the contract plus the amount of LockedGold for this contract, which included unvoting and voting LockedGold.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The total amount of CELO this contract controls, including LockedGold.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "hello()",
+      "name": "hello",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,address,address)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_registry",
+          "description": "The address of the Celo registry.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_manager",
+          "description": "The address of the Manager contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_owner",
+          "description": "The address of the contract owner.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "manager()",
+      "name": "manager",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pendingWithdrawals(address,uint256)",
+      "name": "pendingWithdrawals",
+      "description": "Keyed by beneficiary address, the related array of pending withdrawals. See `PendingWithdrawal` for more info.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "timestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "registry()",
+      "name": "registry",
+      "description": "The Registry.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "scheduleVotes(address[],uint256[])",
+      "name": "scheduleVotes",
+      "description": "Deposits CELO sent via msg.value as unlocked CELO intended as votes for groups. Only callable by the Staked CELO contract, which must restrict which groups are valid.",
+      "parameterDecorators": [
+        {
+          "name": "groups",
+          "description": "The groups the deposited CELO is intended to vote for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "votes",
+          "description": "The amount of CELO to schedule for each respective group from `groups`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "scheduleWithdrawals(address,address[],uint256[])",
+      "name": "scheduleWithdrawals",
+      "description": "Schedule a list of withdrawals to be refunded to a beneficiary.",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "The account that will receive the CELO once it's withdrawn. from `groups`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "groups",
+          "description": "The groups the deposited CELO is intended to be withdrawn from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "withdrawals",
+          "description": "The amount of CELO to withdraw for each respective group.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "scheduledVotesForGroup(address)",
+      "name": "scheduledVotesForGroup",
+      "description": "Returns the total amount of CELO that's scheduled to vote for a group.",
+      "parameterDecorators": [
+        {
+          "name": "group",
+          "description": "The address of the validator group.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The total amount of CELO directed towards `group`.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "scheduledWithdrawalsForGroup(address)",
+      "name": "scheduledWithdrawalsForGroup",
+      "description": "Returns the total amount of CELO that's scheduled to be withdrawn for a group.",
+      "parameterDecorators": [
+        {
+          "name": "group",
+          "description": "The address of the validator group.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The total amount of CELO to be withdrawn for `group`.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "scheduledWithdrawalsForGroupAndBeneficiary(address,address)",
+      "name": "scheduledWithdrawalsForGroupAndBeneficiary",
+      "description": "Returns the total amount of CELO that's scheduled to be withdrawn for a group scoped by a beneficiary.",
+      "parameterDecorators": [
+        {
+          "name": "group",
+          "description": "The address of the validator group.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "beneficiary",
+          "description": "The beneficiary of the withdrawal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The total amount of CELO to be withdrawn for `group` by `beneficiary`.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setManager(address)",
+      "name": "setManager",
+      "description": "Sets the manager address.",
+      "parameterDecorators": [
+        {
+          "name": "_manager",
+          "description": "The new manager address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "totalScheduledWithdrawals()",
+      "name": "totalScheduledWithdrawals",
+      "description": "Total amount of CELO scheduled to be withdrawn from all groups by all beneficiaries.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeTo(address)",
+      "name": "upgradeTo",
+      "description": "Upgrade the implementation of the proxy to `newImplementation`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "Upgraded(address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeToAndCall(address,bytes)",
+      "name": "upgradeToAndCall",
+      "description": "Upgrade the implementation of the proxy to `newImplementation`, and subsequently execute the function call encoded in `data`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "Upgraded(address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(address,address,address,address,address,address,uint256)",
+      "name": "withdraw",
+      "description": "Starts withdrawal of CELO from `group`. If there is any unlocked CELO for the group, that CELO is used for immediate withdrawal. Otherwise, CELO is taken from pending and active votes, which are subject to the unlock period of LockedGold.sol. Only callable by the Staked CELO contract, which must restrict which groups are valid.",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "The recipient of the withdrawn CELO.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "group",
+          "description": "The group to withdraw CELO from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "lesserAfterPendingRevoke",
+          "description": "Used by Election's `revokePending`. This is the group that is before `group` within the validators sorted LinkedList, or address(0) if there isn't one, after the revoke of pending votes has occurred.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "greaterAfterPendingRevoke",
+          "description": "Used by Election's `revokePending`. This is the group that is after `group` within the validators sorted LinkedList, or address(0) if there isn't one, after the revoke of pending votes has occurred.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "lesserAfterActiveRevoke",
+          "description": "Used by Election's `revokeActive`. This is the group that is before `group` within the validators sorted LinkedList, or address(0) if there isn't one, after the revoke of active votes has occurred.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "greaterAfterActiveRevoke",
+          "description": "Used by Election's `revokeActive`. This is the group that is after `group` within the validators sorted LinkedList, or address(0) if there isn't one, after the revoke of active votes has occurred.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "Used by Election's `revokePending` and `revokeActive`. This is the index of `group` in the this contract's array of groups it is voting for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The amount of immediately withdrawn CELO that is obtained from scheduledVotes for `group`.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

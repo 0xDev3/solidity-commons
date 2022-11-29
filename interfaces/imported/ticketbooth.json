@@ -1,1 +1,732 @@
-{"schema":"../schema.json","tags":["staking"],"name":"TicketBooth","description":"Tickets can be either represented internally staked, or as unstaked ERC-20s. This contract manages these two representations and the conversion between the two.The total supply of a project's tickets and the balance of each account are calculated in this contract. Manage Ticket printing, redemption, and account balances.","eventDecorators":[{"signature":"Issue(uint256,string,string,address)","name":"Issue","description":"","parameterDecorators":[{"name":"projectId","description":"","recommendedTypes":[],"indexed":true},{"name":"name","description":"","recommendedTypes":[],"indexed":false},{"name":"symbol","description":"","recommendedTypes":[],"indexed":false},{"name":"caller","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Lock(address,uint256,uint256,address)","name":"Lock","description":"","parameterDecorators":[{"name":"holder","description":"","recommendedTypes":[],"indexed":true},{"name":"projectId","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"caller","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Print(address,uint256,uint256,bool,bool,address)","name":"Print","description":"","parameterDecorators":[{"name":"holder","description":"","recommendedTypes":[],"indexed":true},{"name":"projectId","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"convertedTickets","description":"","recommendedTypes":[],"indexed":false},{"name":"preferUnstakedTickets","description":"","recommendedTypes":[],"indexed":false},{"name":"controller","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Redeem(address,uint256,uint256,uint256,bool,address)","name":"Redeem","description":"","parameterDecorators":[{"name":"holder","description":"","recommendedTypes":[],"indexed":true},{"name":"projectId","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"stakedTickets","description":"","recommendedTypes":[],"indexed":false},{"name":"preferUnstaked","description":"","recommendedTypes":[],"indexed":false},{"name":"controller","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Stake(address,uint256,uint256,address)","name":"Stake","description":"","parameterDecorators":[{"name":"holder","description":"","recommendedTypes":[],"indexed":true},{"name":"projectId","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"caller","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Transfer(address,uint256,address,uint256,address)","name":"Transfer","description":"","parameterDecorators":[{"name":"holder","description":"","recommendedTypes":[],"indexed":true},{"name":"projectId","description":"","recommendedTypes":[],"indexed":true},{"name":"recipient","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"caller","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Unlock(address,uint256,uint256,address)","name":"Unlock","description":"","parameterDecorators":[{"name":"holder","description":"","recommendedTypes":[],"indexed":true},{"name":"projectId","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"caller","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Unstake(address,uint256,uint256,address)","name":"Unstake","description":"","parameterDecorators":[{"name":"holder","description":"","recommendedTypes":[],"indexed":true},{"name":"projectId","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"caller","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"balanceOf(address,uint256)","name":"balanceOf","description":"The total balance of tickets a holder has for a specified project, including staked and unstaked tickets.","parameterDecorators":[{"name":"_holder","description":"The ticket holder to get a balance for.","recommendedTypes":[]},{"name":"_projectId","description":"The project to get the `_hodler`s balance of.","recommendedTypes":[]}],"returnDecorators":[{"name":"balance","description":"The balance.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"issue(uint256,string,string)","name":"issue","description":"Issues an owner's ERC-20 Tickets that'll be used when unstaking tickets. Deploys an owner's Ticket ERC-20 token contract.","parameterDecorators":[{"name":"_projectId","description":"The ID of the project being issued tickets.","recommendedTypes":[]},{"name":"_name","description":"The ERC-20's name. \" Juicebox ticket\" will be appended.","recommendedTypes":[]},{"name":"_symbol","description":"The ERC-20's symbol. \"j\" will be prepended.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"lock(address,uint256,uint256)","name":"lock","description":"Lock a project's tickets, preventing them from being redeemed and from converting to ERC20s. Only a ticket holder or an operator can lock its tickets.","parameterDecorators":[{"name":"_holder","description":"The holder to lock tickets from.","recommendedTypes":[]},{"name":"_projectId","description":"The ID of the project whos tickets are being locked.","recommendedTypes":[]},{"name":"_amount","description":"The amount of tickets to lock.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"lockedBalanceBy(address,address,uint256)","name":"lockedBalanceBy","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]},{"name":"param2","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"lockedBalanceOf(address,uint256)","name":"lockedBalanceOf","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"operatorStore()","name":"operatorStore","description":"A contract storing operator assignments.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"print(address,uint256,uint256,bool)","name":"print","description":"Print new tickets. Only a project's current terminal can print its tickets.","parameterDecorators":[{"name":"_holder","description":"The address receiving the new tickets.","recommendedTypes":[]},{"name":"_projectId","description":"The project to which the tickets belong.","recommendedTypes":[]},{"name":"_amount","description":"The amount to print.","recommendedTypes":[]},{"name":"_preferUnstakedTickets","description":"Whether ERC20's should be converted automatically if they have been issued.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"projects()","name":"projects","description":"The Projects contract which mints ERC-721's that represent project ownership and transfers.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"redeem(address,uint256,uint256,bool)","name":"redeem","description":"Redeems tickets. Only a project's current terminal can redeem its tickets.","parameterDecorators":[{"name":"_holder","description":"The address that owns the tickets being redeemed.","recommendedTypes":[]},{"name":"_projectId","description":"The ID of the project of the tickets being redeemed.","recommendedTypes":[]},{"name":"_amount","description":"The amount of tickets being redeemed.","recommendedTypes":[]},{"name":"_preferUnstaked","description":"If the preference is to redeem tickets that have been converted to ERC-20s.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"stake(address,uint256,uint256)","name":"stake","description":"Stakes ERC20 tickets by burning their supply and creating an internal staked version. Only a ticket holder or an operator can stake its tickets.","parameterDecorators":[{"name":"_holder","description":"The owner of the tickets to stake.","recommendedTypes":[]},{"name":"_projectId","description":"The ID of the project whos tickets are being staked.","recommendedTypes":[]},{"name":"_amount","description":"The amount of tickets to stake.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"stakedBalanceOf(address,uint256)","name":"stakedBalanceOf","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"stakedTotalSupplyOf(uint256)","name":"stakedTotalSupplyOf","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"terminalDirectory()","name":"terminalDirectory","description":"The direct deposit terminals.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"ticketsOf(uint256)","name":"ticketsOf","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"totalSupplyOf(uint256)","name":"totalSupplyOf","description":"The total supply of tickets for each project, including staked and unstaked tickets.","parameterDecorators":[{"name":"_projectId","description":"The ID of the project to get the total supply of.","recommendedTypes":[]}],"returnDecorators":[{"name":"supply","description":"The total supply.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transfer(address,uint256,uint256,address)","name":"transfer","description":"Allows a ticket holder to transfer its tickets to another account, without unstaking to ERC-20s. Only a ticket holder or an operator can transfer its tickets.","parameterDecorators":[{"name":"_holder","description":"The holder to transfer tickets from.","recommendedTypes":[]},{"name":"_projectId","description":"The ID of the project whos tickets are being transfered.","recommendedTypes":[]},{"name":"_amount","description":"The amount of tickets to transfer.","recommendedTypes":[]},{"name":"_recipient","description":"The recipient of the tickets.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unlock(address,uint256,uint256)","name":"unlock","description":"Unlock a project's tickets. The address that locked the tickets must be the address that unlocks the tickets.","parameterDecorators":[{"name":"_holder","description":"The holder to unlock tickets from.","recommendedTypes":[]},{"name":"_projectId","description":"The ID of the project whos tickets are being unlocked.","recommendedTypes":[]},{"name":"_amount","description":"The amount of tickets to unlock.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unstake(address,uint256,uint256)","name":"unstake","description":"Unstakes internal tickets by creating and distributing ERC20 tickets. Only a ticket holder or an operator can unstake its tickets.","parameterDecorators":[{"name":"_holder","description":"The owner of the tickets to unstake.","recommendedTypes":[]},{"name":"_projectId","description":"The ID of the project whos tickets are being unstaked.","recommendedTypes":[]},{"name":"_amount","description":"The amount of tickets to unstake.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "staking"
+  ],
+  "name": "TicketBooth",
+  "description": "Tickets can be either represented internally staked, or as unstaked ERC-20s. This contract manages these two representations and the conversion between the two.The total supply of a project's tickets and the balance of each account are calculated in this contract. Manage Ticket printing, redemption, and account balances.",
+  "eventDecorators": [
+    {
+      "signature": "Issue(uint256,string,string,address)",
+      "name": "Issue",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "name",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "symbol",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Lock(address,uint256,uint256,address)",
+      "name": "Lock",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Print(address,uint256,uint256,bool,bool,address)",
+      "name": "Print",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "convertedTickets",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "preferUnstakedTickets",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "controller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Redeem(address,uint256,uint256,uint256,bool,address)",
+      "name": "Redeem",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "stakedTickets",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "preferUnstaked",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "controller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Stake(address,uint256,uint256,address)",
+      "name": "Stake",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Transfer(address,uint256,address,uint256,address)",
+      "name": "Transfer",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unlock(address,uint256,uint256,address)",
+      "name": "Unlock",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unstake(address,uint256,uint256,address)",
+      "name": "Unstake",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "balanceOf(address,uint256)",
+      "name": "balanceOf",
+      "description": "The total balance of tickets a holder has for a specified project, including staked and unstaked tickets.",
+      "parameterDecorators": [
+        {
+          "name": "_holder",
+          "description": "The ticket holder to get a balance for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_projectId",
+          "description": "The project to get the `_hodler`s balance of.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "balance",
+          "description": "The balance.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "issue(uint256,string,string)",
+      "name": "issue",
+      "description": "Issues an owner's ERC-20 Tickets that'll be used when unstaking tickets. Deploys an owner's Ticket ERC-20 token contract.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project being issued tickets.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_name",
+          "description": "The ERC-20's name. \" Juicebox ticket\" will be appended.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_symbol",
+          "description": "The ERC-20's symbol. \"j\" will be prepended.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lock(address,uint256,uint256)",
+      "name": "lock",
+      "description": "Lock a project's tickets, preventing them from being redeemed and from converting to ERC20s. Only a ticket holder or an operator can lock its tickets.",
+      "parameterDecorators": [
+        {
+          "name": "_holder",
+          "description": "The holder to lock tickets from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_projectId",
+          "description": "The ID of the project whos tickets are being locked.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The amount of tickets to lock.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lockedBalanceBy(address,address,uint256)",
+      "name": "lockedBalanceBy",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lockedBalanceOf(address,uint256)",
+      "name": "lockedBalanceOf",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "operatorStore()",
+      "name": "operatorStore",
+      "description": "A contract storing operator assignments.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "print(address,uint256,uint256,bool)",
+      "name": "print",
+      "description": "Print new tickets. Only a project's current terminal can print its tickets.",
+      "parameterDecorators": [
+        {
+          "name": "_holder",
+          "description": "The address receiving the new tickets.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_projectId",
+          "description": "The project to which the tickets belong.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The amount to print.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_preferUnstakedTickets",
+          "description": "Whether ERC20's should be converted automatically if they have been issued.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "projects()",
+      "name": "projects",
+      "description": "The Projects contract which mints ERC-721's that represent project ownership and transfers.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "redeem(address,uint256,uint256,bool)",
+      "name": "redeem",
+      "description": "Redeems tickets. Only a project's current terminal can redeem its tickets.",
+      "parameterDecorators": [
+        {
+          "name": "_holder",
+          "description": "The address that owns the tickets being redeemed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_projectId",
+          "description": "The ID of the project of the tickets being redeemed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The amount of tickets being redeemed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_preferUnstaked",
+          "description": "If the preference is to redeem tickets that have been converted to ERC-20s.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stake(address,uint256,uint256)",
+      "name": "stake",
+      "description": "Stakes ERC20 tickets by burning their supply and creating an internal staked version. Only a ticket holder or an operator can stake its tickets.",
+      "parameterDecorators": [
+        {
+          "name": "_holder",
+          "description": "The owner of the tickets to stake.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_projectId",
+          "description": "The ID of the project whos tickets are being staked.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The amount of tickets to stake.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stakedBalanceOf(address,uint256)",
+      "name": "stakedBalanceOf",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "stakedTotalSupplyOf(uint256)",
+      "name": "stakedTotalSupplyOf",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "terminalDirectory()",
+      "name": "terminalDirectory",
+      "description": "The direct deposit terminals.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ticketsOf(uint256)",
+      "name": "ticketsOf",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalSupplyOf(uint256)",
+      "name": "totalSupplyOf",
+      "description": "The total supply of tickets for each project, including staked and unstaked tickets.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project to get the total supply of.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "supply",
+          "description": "The total supply.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transfer(address,uint256,uint256,address)",
+      "name": "transfer",
+      "description": "Allows a ticket holder to transfer its tickets to another account, without unstaking to ERC-20s. Only a ticket holder or an operator can transfer its tickets.",
+      "parameterDecorators": [
+        {
+          "name": "_holder",
+          "description": "The holder to transfer tickets from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_projectId",
+          "description": "The ID of the project whos tickets are being transfered.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The amount of tickets to transfer.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_recipient",
+          "description": "The recipient of the tickets.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unlock(address,uint256,uint256)",
+      "name": "unlock",
+      "description": "Unlock a project's tickets. The address that locked the tickets must be the address that unlocks the tickets.",
+      "parameterDecorators": [
+        {
+          "name": "_holder",
+          "description": "The holder to unlock tickets from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_projectId",
+          "description": "The ID of the project whos tickets are being unlocked.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The amount of tickets to unlock.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unstake(address,uint256,uint256)",
+      "name": "unstake",
+      "description": "Unstakes internal tickets by creating and distributing ERC20 tickets. Only a ticket holder or an operator can unstake its tickets.",
+      "parameterDecorators": [
+        {
+          "name": "_holder",
+          "description": "The owner of the tickets to unstake.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_projectId",
+          "description": "The ID of the project whos tickets are being unstaked.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The amount of tickets to unstake.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

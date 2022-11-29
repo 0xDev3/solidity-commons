@@ -1,1 +1,474 @@
-{"schema":"../schema.json","tags":[],"name":"CanonicalTransactionChain","description":"CanonicalTransactionChain. The Canonical Transaction Chain (CTC) contract is an append-only log of transactions which must be applied to the rollup state. It defines the ordering of rollup transactions by writing them to the 'CTC:batches' instance of the Chain Storage Container. The CTC also allows any account to 'enqueue' an L2 transaction, which will require that the Sequencer will eventually append it to the rollup state. Runtime target: EVM.","eventDecorators":[{"signature":"QueueBatchAppended(uint256,uint256,uint256)","name":"QueueBatchAppended","description":"event emitted when a user has unstaked a token.","parameterDecorators":[{"name":"_startingQueueIndex","description":"","recommendedTypes":[],"indexed":false},{"name":"_numQueueElements","description":"","recommendedTypes":[],"indexed":false},{"name":"_totalElements","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SequencerBatchAppended(uint256,uint256,uint256)","name":"SequencerBatchAppended","description":"event emitted when a user has unstaked a token.","parameterDecorators":[{"name":"_startingQueueIndex","description":"","recommendedTypes":[],"indexed":false},{"name":"_numQueueElements","description":"","recommendedTypes":[],"indexed":false},{"name":"_totalElements","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TransactionBatchAppended(uint256,bytes32,uint256,uint256,bytes)","name":"TransactionBatchAppended","description":"event emitted when a user has unstaked a token.","parameterDecorators":[{"name":"account","description":"- The token recipient.","recommendedTypes":[],"indexed":true},{"name":"amount","description":"- The amount sent to unbundle.","recommendedTypes":[],"indexed":false},{"name":"bundleAddress","description":"- The bundle from which the token was unbundled.","recommendedTypes":[],"indexed":false},{"name":"receivedAmount","description":"- The amount after fees (these may change in the rakeback and are therefore explicit).","recommendedTypes":[],"indexed":false},{"name":"tokenAddress","description":"- The address of the vanilla underlying.","recommendedTypes":[],"indexed":false}]},{"signature":"TransactionEnqueued(address,address,uint256,bytes,uint256,uint256)","name":"TransactionEnqueued","description":"event emitted when a user has unstaked a token.","parameterDecorators":[{"name":"_l1TxOrigin","description":"","recommendedTypes":[],"indexed":true},{"name":"_target","description":"","recommendedTypes":[],"indexed":true},{"name":"_gasLimit","description":"","recommendedTypes":[],"indexed":false},{"name":"_data","description":"","recommendedTypes":[],"indexed":false},{"name":"_queueIndex","description":"","recommendedTypes":[],"indexed":true},{"name":"_timestamp","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"ENQUEUE_GAS_COST()","name":"ENQUEUE_GAS_COST","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"ENQUEUE_L2_GAS_PREPAID()","name":"ENQUEUE_L2_GAS_PREPAID","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"L2_GAS_DISCOUNT_DIVISOR()","name":"L2_GAS_DISCOUNT_DIVISOR","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"MAX_ROLLUP_TX_SIZE()","name":"MAX_ROLLUP_TX_SIZE","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"MIN_ROLLUP_TX_GAS()","name":"MIN_ROLLUP_TX_GAS","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"appendSequencerBatch()","name":"appendSequencerBatch","description":"Allows the sequencer to append a batch of transactions. This function uses a custom encoding scheme for efficiency reasons. .param _shouldStartAtElement Specific batch we expect to start appending to. .param _totalElementsToAppend Total number of batch elements we expect to append. .param _contexts Array of batch contexts. .param _transactionDataFields Array of raw transaction data.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"batches()","name":"batches","description":"Accesses the batch storage container.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Reference to the batch storage container.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"enqueue(address,uint256,bytes)","name":"enqueue","description":"Adds a transaction to the queue.","parameterDecorators":[{"name":"_target","description":"Target L2 contract to send the transaction to.","recommendedTypes":[]},{"name":"_gasLimit","description":"Gas limit for the enqueued L2 transaction.","recommendedTypes":[]},{"name":"_data","description":"Transaction data.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getLastBlockNumber()","name":"getLastBlockNumber","description":"Returns the blocknumber of the last transaction.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Blocknumber for the last transaction.","recommendedTypes":[],"solidityType":"uint40"}],"emittableEvents":[],"readOnly":true},{"signature":"getLastTimestamp()","name":"getLastTimestamp","description":"Returns the timestamp of the last transaction.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Timestamp for the last transaction.","recommendedTypes":[],"solidityType":"uint40"}],"emittableEvents":[],"readOnly":true},{"signature":"getNextQueueIndex()","name":"getNextQueueIndex","description":"Returns the index of the next element to be enqueued.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Index for the next queue element.","recommendedTypes":[],"solidityType":"uint40"}],"emittableEvents":[],"readOnly":true},{"signature":"getNumPendingQueueElements()","name":"getNumPendingQueueElements","description":"Get the number of queue elements which have not yet been included.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Number of pending queue elements.","recommendedTypes":[],"solidityType":"uint40"}],"emittableEvents":[],"readOnly":true},{"signature":"getQueueElement(uint256)","name":"getQueueElement","description":"Gets the queue element at a particular index.","parameterDecorators":[{"name":"_index","description":"Index of the queue element to access.","recommendedTypes":[]}],"returnDecorators":[{"name":"_element","description":"Queue element at the given index.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"getQueueLength()","name":"getQueueLength","description":"Retrieves the length of the queue, including both pending and canonical transactions.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Length of the queue.","recommendedTypes":[],"solidityType":"uint40"}],"emittableEvents":[],"readOnly":true},{"signature":"getTotalBatches()","name":"getTotalBatches","description":"Retrieves the total number of batches submitted.","parameterDecorators":[],"returnDecorators":[{"name":"_totalBatches","description":"Total submitted batches.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getTotalElements()","name":"getTotalElements","description":"Retrieves the total number of elements submitted.","parameterDecorators":[],"returnDecorators":[{"name":"_totalElements","description":"Total submitted elements.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"libAddressManager()","name":"libAddressManager","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"maxTransactionGasLimit()","name":"maxTransactionGasLimit","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"queue()","name":"queue","description":"Accesses the queue storage container.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Reference to the queue storage container.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"resolve(string)","name":"resolve","description":"Resolves the address associated with a given name.","parameterDecorators":[{"name":"_name","description":"Name to resolve an address for.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Address associated with the given name.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "CanonicalTransactionChain",
+  "description": "CanonicalTransactionChain. The Canonical Transaction Chain (CTC) contract is an append-only log of transactions which must be applied to the rollup state. It defines the ordering of rollup transactions by writing them to the 'CTC:batches' instance of the Chain Storage Container. The CTC also allows any account to 'enqueue' an L2 transaction, which will require that the Sequencer will eventually append it to the rollup state. Runtime target: EVM.",
+  "eventDecorators": [
+    {
+      "signature": "QueueBatchAppended(uint256,uint256,uint256)",
+      "name": "QueueBatchAppended",
+      "description": "event emitted when a user has unstaked a token.",
+      "parameterDecorators": [
+        {
+          "name": "_startingQueueIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_numQueueElements",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_totalElements",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SequencerBatchAppended(uint256,uint256,uint256)",
+      "name": "SequencerBatchAppended",
+      "description": "event emitted when a user has unstaked a token.",
+      "parameterDecorators": [
+        {
+          "name": "_startingQueueIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_numQueueElements",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_totalElements",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TransactionBatchAppended(uint256,bytes32,uint256,uint256,bytes)",
+      "name": "TransactionBatchAppended",
+      "description": "event emitted when a user has unstaked a token.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "- The token recipient.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "- The amount sent to unbundle.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "bundleAddress",
+          "description": "- The bundle from which the token was unbundled.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "receivedAmount",
+          "description": "- The amount after fees (these may change in the rakeback and are therefore explicit).",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenAddress",
+          "description": "- The address of the vanilla underlying.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TransactionEnqueued(address,address,uint256,bytes,uint256,uint256)",
+      "name": "TransactionEnqueued",
+      "description": "event emitted when a user has unstaked a token.",
+      "parameterDecorators": [
+        {
+          "name": "_l1TxOrigin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_target",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_gasLimit",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_queueIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_timestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "ENQUEUE_GAS_COST()",
+      "name": "ENQUEUE_GAS_COST",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ENQUEUE_L2_GAS_PREPAID()",
+      "name": "ENQUEUE_L2_GAS_PREPAID",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "L2_GAS_DISCOUNT_DIVISOR()",
+      "name": "L2_GAS_DISCOUNT_DIVISOR",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MAX_ROLLUP_TX_SIZE()",
+      "name": "MAX_ROLLUP_TX_SIZE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MIN_ROLLUP_TX_GAS()",
+      "name": "MIN_ROLLUP_TX_GAS",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "appendSequencerBatch()",
+      "name": "appendSequencerBatch",
+      "description": "Allows the sequencer to append a batch of transactions. This function uses a custom encoding scheme for efficiency reasons. .param _shouldStartAtElement Specific batch we expect to start appending to. .param _totalElementsToAppend Total number of batch elements we expect to append. .param _contexts Array of batch contexts. .param _transactionDataFields Array of raw transaction data.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "batches()",
+      "name": "batches",
+      "description": "Accesses the batch storage container.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Reference to the batch storage container.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "enqueue(address,uint256,bytes)",
+      "name": "enqueue",
+      "description": "Adds a transaction to the queue.",
+      "parameterDecorators": [
+        {
+          "name": "_target",
+          "description": "Target L2 contract to send the transaction to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_gasLimit",
+          "description": "Gas limit for the enqueued L2 transaction.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "Transaction data.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getLastBlockNumber()",
+      "name": "getLastBlockNumber",
+      "description": "Returns the blocknumber of the last transaction.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Blocknumber for the last transaction.",
+          "recommendedTypes": [],
+          "solidityType": "uint40"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getLastTimestamp()",
+      "name": "getLastTimestamp",
+      "description": "Returns the timestamp of the last transaction.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Timestamp for the last transaction.",
+          "recommendedTypes": [],
+          "solidityType": "uint40"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getNextQueueIndex()",
+      "name": "getNextQueueIndex",
+      "description": "Returns the index of the next element to be enqueued.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Index for the next queue element.",
+          "recommendedTypes": [],
+          "solidityType": "uint40"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getNumPendingQueueElements()",
+      "name": "getNumPendingQueueElements",
+      "description": "Get the number of queue elements which have not yet been included.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Number of pending queue elements.",
+          "recommendedTypes": [],
+          "solidityType": "uint40"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getQueueElement(uint256)",
+      "name": "getQueueElement",
+      "description": "Gets the queue element at a particular index.",
+      "parameterDecorators": [
+        {
+          "name": "_index",
+          "description": "Index of the queue element to access.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_element",
+          "description": "Queue element at the given index.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getQueueLength()",
+      "name": "getQueueLength",
+      "description": "Retrieves the length of the queue, including both pending and canonical transactions.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Length of the queue.",
+          "recommendedTypes": [],
+          "solidityType": "uint40"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTotalBatches()",
+      "name": "getTotalBatches",
+      "description": "Retrieves the total number of batches submitted.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_totalBatches",
+          "description": "Total submitted batches.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTotalElements()",
+      "name": "getTotalElements",
+      "description": "Retrieves the total number of elements submitted.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_totalElements",
+          "description": "Total submitted elements.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "libAddressManager()",
+      "name": "libAddressManager",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxTransactionGasLimit()",
+      "name": "maxTransactionGasLimit",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "queue()",
+      "name": "queue",
+      "description": "Accesses the queue storage container.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Reference to the queue storage container.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "resolve(string)",
+      "name": "resolve",
+      "description": "Resolves the address associated with a given name.",
+      "parameterDecorators": [
+        {
+          "name": "_name",
+          "description": "Name to resolve an address for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Address associated with the given name.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

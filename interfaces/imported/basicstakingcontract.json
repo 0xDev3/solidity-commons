@@ -1,1 +1,357 @@
-{"schema":"../schema.json","tags":[],"name":"BasicStakingContract","description":"","eventDecorators":[{"signature":"Staked(address,uint256,uint256,bytes)","name":"Staked","description":"","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"total","description":"","recommendedTypes":[],"indexed":false},{"name":"data","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Unstaked(address,uint256,uint256,bytes)","name":"Unstaked","description":"","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"total","description":"","recommendedTypes":[],"indexed":false},{"name":"data","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"stake(uint256,bytes)","name":"stake","description":"Stakes a certain amount of tokens, this MUST transfer the given amount from the user MUST trigger Staked event.","parameterDecorators":[{"name":"_amount","description":"uint256 the amount of tokens to stake.","recommendedTypes":[]},{"name":"_data","description":"bytes optional data to include in the Stake event.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"stakeFor(address,uint256,bytes)","name":"stakeFor","description":"Stakes a certain amount of tokens, this MUST transfer the given amount from the caller MUST trigger Staked event.","parameterDecorators":[{"name":"_user","description":"address the address the tokens are staked for.","recommendedTypes":[]},{"name":"_amount","description":"uint256 the amount of tokens to stake.","recommendedTypes":[]},{"name":"_data","description":"bytes optional data to include in the Stake event.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getPersonalStakeUnlockedTimestamps(address)","name":"getPersonalStakeUnlockedTimestamps","description":"Returns the timestamps for when active personal stakes for an address will unlock These accessors functions are needed until https://github.com/ethereum/web3.js/issues/1241 is solved.","parameterDecorators":[{"name":"_address","description":"address that created the stakes.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getPersonalStakes(address)","name":"getPersonalStakes","description":"Helper function to get specific properties of all of the personal stakes created by an address.","parameterDecorators":[{"name":"_address","description":"address The address to query.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256[]"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256[]"},{"name":"param2","description":"","recommendedTypes":[],"solidityType":"address[]"}],"emittableEvents":[],"readOnly":true},{"signature":"totalStakedFor(address)","name":"totalStakedFor","description":"Returns the current total of tokens staked for an address.","parameterDecorators":[{"name":"_address","description":"address The address to query.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getPersonalStakeActualAmounts(address)","name":"getPersonalStakeActualAmounts","description":"Returns the stake actualAmount for active personal stakes for an address These accessors functions are needed until https://github.com/ethereum/web3.js/issues/1241 is solved.","parameterDecorators":[{"name":"_address","description":"address that created the stakes.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"supportsHistory()","name":"supportsHistory","description":"MUST return true if the optional history functions are implemented, otherwise false. Since we don't implement the optional interface, this always returns false.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"getPersonalStakeForAddresses(address)","name":"getPersonalStakeForAddresses","description":"Returns the addresses that each personal stake was created for by an address These accessors functions are needed until https://github.com/ethereum/web3.js/issues/1241 is solved.","parameterDecorators":[{"name":"_address","description":"address that created the stakes.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address[]"}],"emittableEvents":[],"readOnly":true},{"signature":"totalStaked()","name":"totalStaked","description":"Returns the current total of tokens staked.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"unstake(uint256,bytes)","name":"unstake","description":"Unstakes a certain amount of tokens, this SHOULD return the given amount of tokens to the user, if unstaking is currently not possible the function MUST revert MUST trigger Unstaked event. Unstaking tokens is an atomic operation—either all of the tokens in a stake, or none of the tokens. Users can only unstake a single stake at a time, it is must be their oldest active stake. Upon releasing that stake, the tokens will be transferred back to their account, and their personalStakeIndex will increment to the next active stake.","parameterDecorators":[{"name":"_amount","description":"uint256 the amount of tokens to unstake.","recommendedTypes":[]},{"name":"_data","description":"bytes optional data to include in the Unstake event.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"stakeHolders(address)","name":"stakeHolders","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"totalStakedFor","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"personalStakeIndex","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"exists","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"defaultLockInDuration()","name":"defaultLockInDuration","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"token()","name":"token","description":"Address of the token being used by the staking interface.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "BasicStakingContract",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "Staked(address,uint256,uint256,bytes)",
+      "name": "Staked",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "total",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unstaked(address,uint256,uint256,bytes)",
+      "name": "Unstaked",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "total",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "stake(uint256,bytes)",
+      "name": "stake",
+      "description": "Stakes a certain amount of tokens, this MUST transfer the given amount from the user MUST trigger Staked event.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "uint256 the amount of tokens to stake.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "bytes optional data to include in the Stake event.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stakeFor(address,uint256,bytes)",
+      "name": "stakeFor",
+      "description": "Stakes a certain amount of tokens, this MUST transfer the given amount from the caller MUST trigger Staked event.",
+      "parameterDecorators": [
+        {
+          "name": "_user",
+          "description": "address the address the tokens are staked for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "uint256 the amount of tokens to stake.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "bytes optional data to include in the Stake event.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getPersonalStakeUnlockedTimestamps(address)",
+      "name": "getPersonalStakeUnlockedTimestamps",
+      "description": "Returns the timestamps for when active personal stakes for an address will unlock These accessors functions are needed until https://github.com/ethereum/web3.js/issues/1241 is solved.",
+      "parameterDecorators": [
+        {
+          "name": "_address",
+          "description": "address that created the stakes.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPersonalStakes(address)",
+      "name": "getPersonalStakes",
+      "description": "Helper function to get specific properties of all of the personal stakes created by an address.",
+      "parameterDecorators": [
+        {
+          "name": "_address",
+          "description": "address The address to query.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalStakedFor(address)",
+      "name": "totalStakedFor",
+      "description": "Returns the current total of tokens staked for an address.",
+      "parameterDecorators": [
+        {
+          "name": "_address",
+          "description": "address The address to query.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPersonalStakeActualAmounts(address)",
+      "name": "getPersonalStakeActualAmounts",
+      "description": "Returns the stake actualAmount for active personal stakes for an address These accessors functions are needed until https://github.com/ethereum/web3.js/issues/1241 is solved.",
+      "parameterDecorators": [
+        {
+          "name": "_address",
+          "description": "address that created the stakes.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "supportsHistory()",
+      "name": "supportsHistory",
+      "description": "MUST return true if the optional history functions are implemented, otherwise false. Since we don't implement the optional interface, this always returns false.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPersonalStakeForAddresses(address)",
+      "name": "getPersonalStakeForAddresses",
+      "description": "Returns the addresses that each personal stake was created for by an address These accessors functions are needed until https://github.com/ethereum/web3.js/issues/1241 is solved.",
+      "parameterDecorators": [
+        {
+          "name": "_address",
+          "description": "address that created the stakes.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalStaked()",
+      "name": "totalStaked",
+      "description": "Returns the current total of tokens staked.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unstake(uint256,bytes)",
+      "name": "unstake",
+      "description": "Unstakes a certain amount of tokens, this SHOULD return the given amount of tokens to the user, if unstaking is currently not possible the function MUST revert MUST trigger Unstaked event. Unstaking tokens is an atomic operation—either all of the tokens in a stake, or none of the tokens. Users can only unstake a single stake at a time, it is must be their oldest active stake. Upon releasing that stake, the tokens will be transferred back to their account, and their personalStakeIndex will increment to the next active stake.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "uint256 the amount of tokens to unstake.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "bytes optional data to include in the Unstake event.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stakeHolders(address)",
+      "name": "stakeHolders",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalStakedFor",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "personalStakeIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "exists",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "defaultLockInDuration()",
+      "name": "defaultLockInDuration",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "Address of the token being used by the staking interface.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

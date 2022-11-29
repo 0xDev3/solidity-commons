@@ -1,1 +1,311 @@
-{"schema":"../schema.json","tags":["staking"],"name":"StakePool","description":"","eventDecorators":[{"signature":"NotifyDeposit(address,uint256,uint256)","name":"NotifyDeposit","description":"Event for token purchase logging. trigger notification of deposits.","parameterDecorators":[{"name":"sender","description":"msg.sender for the transaction.","recommendedTypes":[],"indexed":false},{"name":"amount","description":"msg.value for the transaction.","recommendedTypes":[],"indexed":false},{"name":"balance","description":"the users balance including this deposit.","recommendedTypes":[],"indexed":false}]},{"signature":"NotifyEarnings(uint256)","name":"NotifyEarnings","description":"Event for token purchase logging. trigger notification of earnings to be split.","parameterDecorators":[{"name":"earnings","description":"uint staking earnings for pool.","recommendedTypes":[],"indexed":false}]},{"signature":"NotifyFallback(address,uint256)","name":"NotifyFallback","description":"Event for token purchase logging. notify when funds received from staking contract.","parameterDecorators":[{"name":"sender","description":"msg.sender for the transaction.","recommendedTypes":[],"indexed":false},{"name":"amount","description":"msg.value for the transaction.","recommendedTypes":[],"indexed":false}]},{"signature":"NotifyNewSC(address,address)","name":"NotifyNewSC","description":"Event for token purchase logging. notify that StakeContract address has been changed.","parameterDecorators":[{"name":"oldSC","description":"old address of the staking contract.","recommendedTypes":[],"indexed":false},{"name":"newSC","description":"new address of the staking contract.","recommendedTypes":[],"indexed":false}]},{"signature":"NotifyStaked(address,uint256)","name":"NotifyStaked","description":"Event for token purchase logging. trigger notification of staked amount.","parameterDecorators":[{"name":"sender","description":"msg.sender for the transaction.","recommendedTypes":[],"indexed":false},{"name":"amount","description":"msg.value for the transaction.","recommendedTypes":[],"indexed":false}]},{"signature":"NotifyUpdate(address,uint256,uint256)","name":"NotifyUpdate","description":"Event for token purchase logging. trigger notification of change in users staked balances.","parameterDecorators":[{"name":"user","description":"address of user.","recommendedTypes":[],"indexed":false},{"name":"previousBalance","description":"users previous staked balance.","recommendedTypes":[],"indexed":false},{"name":"newStakeBalence","description":"users new staked balance.","recommendedTypes":[],"indexed":false}]},{"signature":"NotifyWithdrawal(address,uint256,uint256,uint256)","name":"NotifyWithdrawal","description":"Event for token purchase logging. trigger notification of withdrawal.","parameterDecorators":[{"name":"sender","description":"address of msg.sender.","recommendedTypes":[],"indexed":false},{"name":"startBal","description":"users starting balance.","recommendedTypes":[],"indexed":false},{"name":"finalBal","description":"users final balance after withdrawal.","recommendedTypes":[],"indexed":false},{"name":"request","description":"users requested withdraw amount.","recommendedTypes":[],"indexed":false}]},{"signature":"Paused(address)","name":"Paused","description":"Event for token purchase logging.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Unpaused(address)","name":"Unpaused","description":"Event for token purchase logging.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"calcNewBalances()","name":"calcNewBalances","description":"dev calculated new stakedBalances return true if calc is successful, otherwise false.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"deposit()","name":"deposit","description":"deposit funds to the contract.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getState()","name":"getState","description":"retreive current state of users funds.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"array of values describing the current state of user.","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"paused()","name":"paused","description":"Returns true if the contract is paused, and false otherwise.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"requestExitAtEndOfCurrentStakingPeriod(uint256)","name":"requestExitAtEndOfCurrentStakingPeriod","description":"user can request to exit at end of current staking period.","parameterDecorators":[{"name":"amount","description":"requested amount to withdraw from staking contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"requestNextStakingPeriod()","name":"requestNextStakingPeriod","description":"user can request to enter next staking period.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setStakeContract(address)","name":"setStakeContract","description":"set staking contract address.","parameterDecorators":[{"name":"_stakeContract","description":"new address to change staking contract / mechanism.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"stake()","name":"stake","description":"stake funds to stakeContract.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unstake()","name":"unstake","description":"unstake funds from stakeContract.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdraw(uint256)","name":"withdraw","description":"withdrawal funds out of pool.","parameterDecorators":[{"name":"wdValue","description":"amount to withdraw.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "staking"
+  ],
+  "name": "StakePool",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "NotifyDeposit(address,uint256,uint256)",
+      "name": "NotifyDeposit",
+      "description": "Event for token purchase logging. trigger notification of deposits.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "msg.sender for the transaction.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "msg.value for the transaction.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "balance",
+          "description": "the users balance including this deposit.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NotifyEarnings(uint256)",
+      "name": "NotifyEarnings",
+      "description": "Event for token purchase logging. trigger notification of earnings to be split.",
+      "parameterDecorators": [
+        {
+          "name": "earnings",
+          "description": "uint staking earnings for pool.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NotifyFallback(address,uint256)",
+      "name": "NotifyFallback",
+      "description": "Event for token purchase logging. notify when funds received from staking contract.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "msg.sender for the transaction.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "msg.value for the transaction.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NotifyNewSC(address,address)",
+      "name": "NotifyNewSC",
+      "description": "Event for token purchase logging. notify that StakeContract address has been changed.",
+      "parameterDecorators": [
+        {
+          "name": "oldSC",
+          "description": "old address of the staking contract.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newSC",
+          "description": "new address of the staking contract.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NotifyStaked(address,uint256)",
+      "name": "NotifyStaked",
+      "description": "Event for token purchase logging. trigger notification of staked amount.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "msg.sender for the transaction.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "msg.value for the transaction.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NotifyUpdate(address,uint256,uint256)",
+      "name": "NotifyUpdate",
+      "description": "Event for token purchase logging. trigger notification of change in users staked balances.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "address of user.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "previousBalance",
+          "description": "users previous staked balance.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newStakeBalence",
+          "description": "users new staked balance.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NotifyWithdrawal(address,uint256,uint256,uint256)",
+      "name": "NotifyWithdrawal",
+      "description": "Event for token purchase logging. trigger notification of withdrawal.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "address of msg.sender.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "startBal",
+          "description": "users starting balance.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "finalBal",
+          "description": "users final balance after withdrawal.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "request",
+          "description": "users requested withdraw amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Paused(address)",
+      "name": "Paused",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unpaused(address)",
+      "name": "Unpaused",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "calcNewBalances()",
+      "name": "calcNewBalances",
+      "description": "dev calculated new stakedBalances return true if calc is successful, otherwise false.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deposit()",
+      "name": "deposit",
+      "description": "deposit funds to the contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getState()",
+      "name": "getState",
+      "description": "retreive current state of users funds.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "array of values describing the current state of user.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "paused()",
+      "name": "paused",
+      "description": "Returns true if the contract is paused, and false otherwise.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "requestExitAtEndOfCurrentStakingPeriod(uint256)",
+      "name": "requestExitAtEndOfCurrentStakingPeriod",
+      "description": "user can request to exit at end of current staking period.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "requested amount to withdraw from staking contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "requestNextStakingPeriod()",
+      "name": "requestNextStakingPeriod",
+      "description": "user can request to enter next staking period.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setStakeContract(address)",
+      "name": "setStakeContract",
+      "description": "set staking contract address.",
+      "parameterDecorators": [
+        {
+          "name": "_stakeContract",
+          "description": "new address to change staking contract / mechanism.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stake()",
+      "name": "stake",
+      "description": "stake funds to stakeContract.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unstake()",
+      "name": "unstake",
+      "description": "unstake funds from stakeContract.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(uint256)",
+      "name": "withdraw",
+      "description": "withdrawal funds out of pool.",
+      "parameterDecorators": [
+        {
+          "name": "wdValue",
+          "description": "amount to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

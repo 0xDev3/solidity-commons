@@ -1,1 +1,764 @@
-{"schema":"../schema.json","tags":[],"name":"Ops","description":"Ops enables everyone to communicate to Gelato Bots to monitor and execute certain transactionsResolverAddresses determine when Gelato should execute and provides bots with the payload they should use to executeExecAddress determine the actual contracts to execute a function on.","eventDecorators":[{"signature":"ExecSuccess(uint256,address,bool)","name":"ExecSuccess","description":"Emitted when RFQ gets filled. Emitted on withdrawAmount().","parameterDecorators":[{"name":"txFee","description":"","recommendedTypes":[],"indexed":true},{"name":"feeToken","description":"","recommendedTypes":[],"indexed":true},{"name":"callSuccess","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TaskCancelled(bytes32,address)","name":"TaskCancelled","description":"Emitted when RFQ gets filled. Emitted on withdrawAmount().","parameterDecorators":[{"name":"address_","description":"member address.","recommendedTypes":[],"indexed":false},{"name":"amount_","description":"staked amount*.","recommendedTypes":[],"indexed":false}]},{"signature":"TaskCreated(address,address,bytes4,address,bytes32,bytes,bool,address,bytes32)","name":"TaskCreated","description":"Emitted when RFQ gets filled. Emitted on withdrawAmount().","parameterDecorators":[{"name":"taskCreator","description":"","recommendedTypes":[],"indexed":false},{"name":"execAddress","description":"","recommendedTypes":[],"indexed":false},{"name":"selector","description":"","recommendedTypes":[],"indexed":false},{"name":"resolverAddress","description":"","recommendedTypes":[],"indexed":false},{"name":"taskId","description":"","recommendedTypes":[],"indexed":false},{"name":"resolverData","description":"","recommendedTypes":[],"indexed":false},{"name":"useTaskTreasuryFunds","description":"","recommendedTypes":[],"indexed":false},{"name":"feeToken","description":"","recommendedTypes":[],"indexed":false},{"name":"resolverHash","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TimerSet(bytes32,uint128,uint128)","name":"TimerSet","description":"Emitted when RFQ gets filled. Emitted on withdrawAmount().","parameterDecorators":[{"name":"taskId","description":"","recommendedTypes":[],"indexed":true},{"name":"nextExec","description":"","recommendedTypes":[],"indexed":true},{"name":"interval","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"cancelTask(bytes32)","name":"cancelTask","description":"Cancel a task so that Gelato can no longer execute it.","parameterDecorators":[{"name":"_taskId","description":"The hash of the task, can be computed using getTaskId().","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"createTask(address,bytes4,bytes,address,bytes)","name":"createTask","description":"Create a task that tells Gelato to monitor and execute transactions on specific contracts. Requires funds to be added in Task Treasury, assumes treasury sends fee to Gelato via Ops.","parameterDecorators":[{"name":"_execAddress","description":"On which contract should Gelato execute the transactions.","recommendedTypes":[]},{"name":"_execSelector","description":"Which function Gelato should eecute on the _execAddress.","recommendedTypes":[]},{"name":"_execCommand","description":"","recommendedTypes":[]},{"name":"_resolverAddress","description":"On which contract should Gelato check when to execute the tx.","recommendedTypes":[]},{"name":"_resolverData","description":"Which data should be used to check on the Resolver when to execute the tx.","recommendedTypes":[]}],"returnDecorators":[{"name":"task","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":false},{"signature":"createTaskNoPrepayment(address,bytes4,bytes,address,bytes,address)","name":"createTaskNoPrepayment","description":"Create a task that tells Gelato to monitor and execute transactions on specific contracts. Requires no funds to be added in Task Treasury, assumes tasks sends fee to Gelato directly.","parameterDecorators":[{"name":"_execAddress","description":"On which contract should Gelato execute the transactions.","recommendedTypes":[]},{"name":"_execSelector","description":"Which function Gelato should eecute on the _execAddress.","recommendedTypes":[]},{"name":"_execCommand","description":"","recommendedTypes":[]},{"name":"_resolverAddress","description":"On which contract should Gelato check when to execute the tx.","recommendedTypes":[]},{"name":"_resolverData","description":"Which data should be used to check on the Resolver when to execute the tx.","recommendedTypes":[]},{"name":"_feeToken","description":"Which token to use as fee payment.","recommendedTypes":[]}],"returnDecorators":[{"name":"task","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":false},{"signature":"createTimedTask(uint128,uint128,address,bytes4,bytes,address,bytes,address,bool)","name":"createTimedTask","description":"Create a timed task that executes every so often based on the inputted interval.","parameterDecorators":[{"name":"_startTime","description":"Timestamp when the first task should become executable. 0 for right now.","recommendedTypes":[]},{"name":"_interval","description":"After how many seconds should each task be executed.","recommendedTypes":[]},{"name":"_execAddress","description":"On which contract should Gelato execute the transactions.","recommendedTypes":[]},{"name":"_execSelector","description":"Which function Gelato should eecute on the _execAddress.","recommendedTypes":[]},{"name":"_execCommand","description":"","recommendedTypes":[]},{"name":"_resolverAddress","description":"On which contract should Gelato check when to execute the tx.","recommendedTypes":[]},{"name":"_resolverData","description":"Which data should be used to check on the Resolver when to execute the tx.","recommendedTypes":[]},{"name":"_feeToken","description":"Which token to use as fee payment.","recommendedTypes":[]},{"name":"_useTreasury","description":"True if Gelato should charge fees from TaskTreasury, false if not.","recommendedTypes":[]}],"returnDecorators":[{"name":"task","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":false},{"signature":"exec(bytes32,uint256,address,bool)","name":"exec","description":"Execution API called by Gelato.","parameterDecorators":[{"name":"task","description":"","recommendedTypes":[]},{"name":"_txFee","description":"Fee paid to Gelato for execution, deducted on the TaskTreasury.","recommendedTypes":[]},{"name":"_feeToken","description":"Token used to pay for the execution. ETH = 0xeeeeee...","recommendedTypes":[]},{"name":"_revertOnFailure","description":"To revert or not if call to execAddress fails param _execAddress On which contract should Gelato execute the tx param _execData Data used to execute the tx, queried from the Resolver by Gelato.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"execAddresses(bytes32)","name":"execAddresses","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"execCommands(bytes32)","name":"execCommands","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes"}],"emittableEvents":[],"readOnly":true},{"signature":"fee()","name":"fee","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"feeToken()","name":"feeToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"gelato()","name":"gelato","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getDetails(bytes32)","name":"getDetails","description":"Helper func to get Execution Address and Execution Command.","parameterDecorators":[{"name":"taskId","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"bytes"}],"emittableEvents":[],"readOnly":true},{"signature":"getFeeDetails()","name":"getFeeDetails","description":"Helper func to query fee and feeToken.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getResolverHash(address,bytes)","name":"getResolverHash","description":"Helper func to query the resolverHash.","parameterDecorators":[{"name":"_resolverAddress","description":"Address of resolver.","recommendedTypes":[]},{"name":"_resolverData","description":"Data passed to resolver.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"getSelector(string)","name":"getSelector","description":"Helper func to query the _selector of a function you want to automate. Example: \"transferFrom(address,address,uint256)\" => 0x23b872dd.","parameterDecorators":[{"name":"_func","description":"String of the function you want the selector from.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes4"}],"emittableEvents":[],"readOnly":true},{"signature":"getTaskId(address,address,bytes4,bool,address,bytes32)","name":"getTaskId","description":"Returns TaskId of a task Creator.","parameterDecorators":[{"name":"_taskCreator","description":"Address of the task creator.","recommendedTypes":[]},{"name":"_execAddress","description":"Address of the contract to be executed by Gelato.","recommendedTypes":[]},{"name":"_selector","description":"Function on the _execAddress which should be executed.","recommendedTypes":[]},{"name":"_useTaskTreasuryFunds","description":"If msg.sender's balance on TaskTreasury should pay for the tx.","recommendedTypes":[]},{"name":"_feeToken","description":"FeeToken to use, address 0 if task treasury is used.","recommendedTypes":[]},{"name":"_resolverHash","description":"hash of resolver address and data.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"getTaskIdsByUser(address)","name":"getTaskIdsByUser","description":"Helper func to query all open tasks by a task creator.","parameterDecorators":[{"name":"_taskCreator","description":"Address who created the task.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32[]"}],"emittableEvents":[],"readOnly":true},{"signature":"taskCreator(bytes32)","name":"taskCreator","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"taskTreasury()","name":"taskTreasury","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"timedTask(bytes32)","name":"timedTask","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"nextExec","description":"","recommendedTypes":[],"solidityType":"uint128"},{"name":"interval","description":"","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":true},{"signature":"updateAddress(bytes32,address)","name":"updateAddress","description":"Func to update Execution Command in Task.","parameterDecorators":[{"name":"taskId","description":"","recommendedTypes":[]},{"name":"_execAddress","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"updateCommand(bytes32,bytes)","name":"updateCommand","description":"Func to update Execution Command in Task.","parameterDecorators":[{"name":"taskId","description":"","recommendedTypes":[]},{"name":"_execCommand","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"updateTime(bytes32,uint128,uint128)","name":"updateTime","description":"","parameterDecorators":[{"name":"taskId","description":"","recommendedTypes":[]},{"name":"_startTime","description":"","recommendedTypes":[]},{"name":"_interval","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"version()","name":"version","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "Ops",
+  "description": "Ops enables everyone to communicate to Gelato Bots to monitor and execute certain transactionsResolverAddresses determine when Gelato should execute and provides bots with the payload they should use to executeExecAddress determine the actual contracts to execute a function on.",
+  "eventDecorators": [
+    {
+      "signature": "ExecSuccess(uint256,address,bool)",
+      "name": "ExecSuccess",
+      "description": "Emitted when RFQ gets filled. Emitted on withdrawAmount().",
+      "parameterDecorators": [
+        {
+          "name": "txFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "feeToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "callSuccess",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TaskCancelled(bytes32,address)",
+      "name": "TaskCancelled",
+      "description": "Emitted when RFQ gets filled. Emitted on withdrawAmount().",
+      "parameterDecorators": [
+        {
+          "name": "address_",
+          "description": "member address.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount_",
+          "description": "staked amount*.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TaskCreated(address,address,bytes4,address,bytes32,bytes,bool,address,bytes32)",
+      "name": "TaskCreated",
+      "description": "Emitted when RFQ gets filled. Emitted on withdrawAmount().",
+      "parameterDecorators": [
+        {
+          "name": "taskCreator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "execAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "selector",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "resolverAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "taskId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "resolverData",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "useTaskTreasuryFunds",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "feeToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "resolverHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TimerSet(bytes32,uint128,uint128)",
+      "name": "TimerSet",
+      "description": "Emitted when RFQ gets filled. Emitted on withdrawAmount().",
+      "parameterDecorators": [
+        {
+          "name": "taskId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "nextExec",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "interval",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "cancelTask(bytes32)",
+      "name": "cancelTask",
+      "description": "Cancel a task so that Gelato can no longer execute it.",
+      "parameterDecorators": [
+        {
+          "name": "_taskId",
+          "description": "The hash of the task, can be computed using getTaskId().",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createTask(address,bytes4,bytes,address,bytes)",
+      "name": "createTask",
+      "description": "Create a task that tells Gelato to monitor and execute transactions on specific contracts. Requires funds to be added in Task Treasury, assumes treasury sends fee to Gelato via Ops.",
+      "parameterDecorators": [
+        {
+          "name": "_execAddress",
+          "description": "On which contract should Gelato execute the transactions.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_execSelector",
+          "description": "Which function Gelato should eecute on the _execAddress.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_execCommand",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_resolverAddress",
+          "description": "On which contract should Gelato check when to execute the tx.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_resolverData",
+          "description": "Which data should be used to check on the Resolver when to execute the tx.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "task",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createTaskNoPrepayment(address,bytes4,bytes,address,bytes,address)",
+      "name": "createTaskNoPrepayment",
+      "description": "Create a task that tells Gelato to monitor and execute transactions on specific contracts. Requires no funds to be added in Task Treasury, assumes tasks sends fee to Gelato directly.",
+      "parameterDecorators": [
+        {
+          "name": "_execAddress",
+          "description": "On which contract should Gelato execute the transactions.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_execSelector",
+          "description": "Which function Gelato should eecute on the _execAddress.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_execCommand",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_resolverAddress",
+          "description": "On which contract should Gelato check when to execute the tx.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_resolverData",
+          "description": "Which data should be used to check on the Resolver when to execute the tx.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_feeToken",
+          "description": "Which token to use as fee payment.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "task",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createTimedTask(uint128,uint128,address,bytes4,bytes,address,bytes,address,bool)",
+      "name": "createTimedTask",
+      "description": "Create a timed task that executes every so often based on the inputted interval.",
+      "parameterDecorators": [
+        {
+          "name": "_startTime",
+          "description": "Timestamp when the first task should become executable. 0 for right now.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_interval",
+          "description": "After how many seconds should each task be executed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_execAddress",
+          "description": "On which contract should Gelato execute the transactions.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_execSelector",
+          "description": "Which function Gelato should eecute on the _execAddress.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_execCommand",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_resolverAddress",
+          "description": "On which contract should Gelato check when to execute the tx.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_resolverData",
+          "description": "Which data should be used to check on the Resolver when to execute the tx.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_feeToken",
+          "description": "Which token to use as fee payment.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_useTreasury",
+          "description": "True if Gelato should charge fees from TaskTreasury, false if not.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "task",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "exec(bytes32,uint256,address,bool)",
+      "name": "exec",
+      "description": "Execution API called by Gelato.",
+      "parameterDecorators": [
+        {
+          "name": "task",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_txFee",
+          "description": "Fee paid to Gelato for execution, deducted on the TaskTreasury.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_feeToken",
+          "description": "Token used to pay for the execution. ETH = 0xeeeeee...",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_revertOnFailure",
+          "description": "To revert or not if call to execAddress fails param _execAddress On which contract should Gelato execute the tx param _execData Data used to execute the tx, queried from the Resolver by Gelato.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "execAddresses(bytes32)",
+      "name": "execAddresses",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "execCommands(bytes32)",
+      "name": "execCommands",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "fee()",
+      "name": "fee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "feeToken()",
+      "name": "feeToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "gelato()",
+      "name": "gelato",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getDetails(bytes32)",
+      "name": "getDetails",
+      "description": "Helper func to get Execution Address and Execution Command.",
+      "parameterDecorators": [
+        {
+          "name": "taskId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getFeeDetails()",
+      "name": "getFeeDetails",
+      "description": "Helper func to query fee and feeToken.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getResolverHash(address,bytes)",
+      "name": "getResolverHash",
+      "description": "Helper func to query the resolverHash.",
+      "parameterDecorators": [
+        {
+          "name": "_resolverAddress",
+          "description": "Address of resolver.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_resolverData",
+          "description": "Data passed to resolver.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSelector(string)",
+      "name": "getSelector",
+      "description": "Helper func to query the _selector of a function you want to automate. Example: \"transferFrom(address,address,uint256)\" => 0x23b872dd.",
+      "parameterDecorators": [
+        {
+          "name": "_func",
+          "description": "String of the function you want the selector from.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes4"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTaskId(address,address,bytes4,bool,address,bytes32)",
+      "name": "getTaskId",
+      "description": "Returns TaskId of a task Creator.",
+      "parameterDecorators": [
+        {
+          "name": "_taskCreator",
+          "description": "Address of the task creator.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_execAddress",
+          "description": "Address of the contract to be executed by Gelato.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_selector",
+          "description": "Function on the _execAddress which should be executed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_useTaskTreasuryFunds",
+          "description": "If msg.sender's balance on TaskTreasury should pay for the tx.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_feeToken",
+          "description": "FeeToken to use, address 0 if task treasury is used.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_resolverHash",
+          "description": "hash of resolver address and data.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTaskIdsByUser(address)",
+      "name": "getTaskIdsByUser",
+      "description": "Helper func to query all open tasks by a task creator.",
+      "parameterDecorators": [
+        {
+          "name": "_taskCreator",
+          "description": "Address who created the task.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "taskCreator(bytes32)",
+      "name": "taskCreator",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "taskTreasury()",
+      "name": "taskTreasury",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "timedTask(bytes32)",
+      "name": "timedTask",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "nextExec",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "interval",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "updateAddress(bytes32,address)",
+      "name": "updateAddress",
+      "description": "Func to update Execution Command in Task.",
+      "parameterDecorators": [
+        {
+          "name": "taskId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_execAddress",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateCommand(bytes32,bytes)",
+      "name": "updateCommand",
+      "description": "Func to update Execution Command in Task.",
+      "parameterDecorators": [
+        {
+          "name": "taskId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_execCommand",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateTime(bytes32,uint128,uint128)",
+      "name": "updateTime",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "taskId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_startTime",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_interval",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "version()",
+      "name": "version",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

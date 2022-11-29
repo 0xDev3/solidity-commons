@@ -1,1 +1,1363 @@
-{"schema":"../schema.json","tags":["bridges"],"name":"HomeBridgeErcToErc","description":"HomeBridgeErcToErc.","eventDecorators":[{"signature":"UserRequestForSignature(address,uint256)","name":"UserRequestForSignature","description":"Event for token purchase logging.","parameterDecorators":[{"name":"recipient","description":"","recommendedTypes":[],"indexed":false},{"name":"value","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"AffirmationCompleted(address,uint256,bytes32)","name":"AffirmationCompleted","description":"Event for token purchase logging.","parameterDecorators":[{"name":"access","description":"TRUE if the Watcher was given permissions, FALSE if permissions were removed.","recommendedTypes":[],"indexed":false},{"name":"domain","description":"the remote domain of the Home contract for the Replica.","recommendedTypes":[],"indexed":false},{"name":"watcher","description":"the address of the Watcher.","recommendedTypes":[],"indexed":false}]},{"signature":"SignedForUserRequest(address,bytes32)","name":"SignedForUserRequest","description":"Event for token purchase logging.","parameterDecorators":[{"name":"signer","description":"","recommendedTypes":[],"indexed":true},{"name":"messageHash","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SignedForAffirmation(address,bytes32)","name":"SignedForAffirmation","description":"Event for token purchase logging.","parameterDecorators":[{"name":"signer","description":"","recommendedTypes":[],"indexed":true},{"name":"transactionHash","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"CollectedSignatures(address,bytes32,uint256)","name":"CollectedSignatures","description":"Event for token purchase logging.","parameterDecorators":[{"name":"access","description":"TRUE if the Watcher was given permissions, FALSE if permissions were removed.","recommendedTypes":[],"indexed":false},{"name":"domain","description":"the remote domain of the Home contract for the Replica.","recommendedTypes":[],"indexed":false},{"name":"watcher","description":"the address of the Watcher.","recommendedTypes":[],"indexed":false}]},{"signature":"DailyLimitChanged(uint256)","name":"DailyLimitChanged","description":"Event for token purchase logging.","parameterDecorators":[{"name":"newLimit","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ExecutionDailyLimitChanged(uint256)","name":"ExecutionDailyLimitChanged","description":"Event for token purchase logging.","parameterDecorators":[{"name":"newLimit","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"GasPriceChanged(uint256)","name":"GasPriceChanged","description":"Event for token purchase logging.","parameterDecorators":[{"name":"gasPrice","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RequiredBlockConfirmationChanged(uint256)","name":"RequiredBlockConfirmationChanged","description":"Event for token purchase logging.","parameterDecorators":[{"name":"requiredBlockConfirmations","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"FeeDistributedFromAffirmation(uint256,bytes32)","name":"FeeDistributedFromAffirmation","description":"Event for token purchase logging.","parameterDecorators":[{"name":"feeAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"transactionHash","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"FeeDistributedFromSignatures(uint256,bytes32)","name":"FeeDistributedFromSignatures","description":"Event for token purchase logging.","parameterDecorators":[{"name":"feeAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"transactionHash","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Event for token purchase logging.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":false},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"MediatorAmountLimitExceeded(address,uint256,bytes32)","name":"MediatorAmountLimitExceeded","description":"Event for token purchase logging.","parameterDecorators":[{"name":"access","description":"TRUE if the Watcher was given permissions, FALSE if permissions were removed.","recommendedTypes":[],"indexed":false},{"name":"domain","description":"the remote domain of the Home contract for the Replica.","recommendedTypes":[],"indexed":false},{"name":"watcher","description":"the address of the Watcher.","recommendedTypes":[],"indexed":true}]},{"signature":"AmountLimitExceeded(address,uint256,bytes32,bytes32)","name":"AmountLimitExceeded","description":"Event for token purchase logging.","parameterDecorators":[{"name":"recipient","description":"","recommendedTypes":[],"indexed":false},{"name":"value","description":"","recommendedTypes":[],"indexed":false},{"name":"transactionHash","description":"","recommendedTypes":[],"indexed":true},{"name":"messageId","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"AssetAboveLimitsFixed(bytes32,uint256,uint256)","name":"AssetAboveLimitsFixed","description":"Event for token purchase logging.","parameterDecorators":[{"name":"access","description":"TRUE if the Watcher was given permissions, FALSE if permissions were removed.","recommendedTypes":[],"indexed":true},{"name":"domain","description":"the remote domain of the Home contract for the Replica.","recommendedTypes":[],"indexed":false},{"name":"watcher","description":"the address of the Watcher.","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"numMessagesSigned(bytes32)","name":"numMessagesSigned","description":"","parameterDecorators":[{"name":"_message","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"signature(bytes32,uint256)","name":"signature","description":"","parameterDecorators":[{"name":"_hash","description":"","recommendedTypes":[]},{"name":"_index","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes"}],"emittableEvents":[],"readOnly":true},{"signature":"erc677token()","name":"erc677token","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"setForeignFee(uint256)","name":"setForeignFee","description":"Updates the fee percentage for foreign->home bridge operations. Only owner is allowed to call this method.","parameterDecorators":[{"name":"_fee","description":"new value for fee percentage.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"totalSpentPerDay(uint256)","name":"totalSpentPerDay","description":"","parameterDecorators":[{"name":"_day","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setHomeFee(uint256)","name":"setHomeFee","description":"Updates the fee percentage for home->foreign bridge operations. Only owner is allowed to call this method. If during this operation, home fee is changed, it is highly recommended to stop the bridge operations first. Otherwise, pending signature requests can become a reason for imbalance between two bridge sides.","parameterDecorators":[{"name":"_fee","description":"new value for fee percentage.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"isInitialized()","name":"isInitialized","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"setExecutionDailyLimit(uint256)","name":"setExecutionDailyLimit","description":"","parameterDecorators":[{"name":"_dailyLimit","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getCurrentDay()","name":"getCurrentDay","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"requiredBlockConfirmations()","name":"requiredBlockConfirmations","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"requiredMessageLength()","name":"requiredMessageLength","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getBridgeMode()","name":"getBridgeMode","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_data","description":"","recommendedTypes":[],"solidityType":"bytes4"}],"emittableEvents":[],"readOnly":true},{"signature":"executionDailyLimit()","name":"executionDailyLimit","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"message(bytes32)","name":"message","description":"","parameterDecorators":[{"name":"_hash","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes"}],"emittableEvents":[],"readOnly":true},{"signature":"totalExecutedPerDay(uint256)","name":"totalExecutedPerDay","description":"","parameterDecorators":[{"name":"_day","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setFeeManagerContract(address)","name":"setFeeManagerContract","description":"Updates the address of the used fee manager contract. Only contract owner can call this method. If during this operation, home fee is changed, it is highly recommended to stop the bridge operations first. Otherwise, pending signature requests can become a reason for imbalance between two bridge sides.","parameterDecorators":[{"name":"_feeManager","description":"address of the new fee manager contract, or zero address to disable fee collection.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"submitSignature(bytes,bytes)","name":"submitSignature","description":"","parameterDecorators":[{"name":"signature","description":"","recommendedTypes":[]},{"name":"message","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"dailyLimit()","name":"dailyLimit","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"numAffirmationsSigned(bytes32)","name":"numAffirmationsSigned","description":"","parameterDecorators":[{"name":"_withdrawal","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"affirmationsSigned(bytes32)","name":"affirmationsSigned","description":"","parameterDecorators":[{"name":"_withdrawal","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"initialize(address,uint256[3],uint256,uint256,address,uint256[2],address,int256)","name":"initialize","description":"","parameterDecorators":[{"name":"_validatorContract","description":"","recommendedTypes":[]},{"name":"_dailyLimitMaxPerTxMinPerTxArray","description":"","recommendedTypes":[]},{"name":"_homeGasPrice","description":"","recommendedTypes":[]},{"name":"_requiredBlockConfirmations","description":"","recommendedTypes":[]},{"name":"_erc677token","description":"","recommendedTypes":[]},{"name":"_foreignDailyLimitForeignMaxPerTxArray","description":"","recommendedTypes":[]},{"name":"_owner","description":"","recommendedTypes":[]},{"name":"_decimalShift","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"withinExecutionLimit(uint256)","name":"withinExecutionLimit","description":"","parameterDecorators":[{"name":"_amount","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"executionMaxPerTx()","name":"executionMaxPerTx","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"requiredSignatures()","name":"requiredSignatures","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Tells the address of the owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"messagesSigned(bytes32)","name":"messagesSigned","description":"","parameterDecorators":[{"name":"_message","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"claimTokensFromErc677(address,address)","name":"claimTokensFromErc677","description":"Withdraws erc20 tokens or native coins from the token contract. It is required since the bridge contract is the owner of the token contract.","parameterDecorators":[{"name":"_token","description":"address of the claimed token or address(0) for native coins.","recommendedTypes":[]},{"name":"_to","description":"address of the tokens/coins receiver.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getHomeFee()","name":"getHomeFee","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"maxAvailablePerTx()","name":"maxAvailablePerTx","description":"Retrieves maximum available bridge amount per one transaction taking into account maxPerTx() and dailyLimit() parameters.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"validatorContract()","name":"validatorContract","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"executeAffirmation(address,uint256,bytes32)","name":"executeAffirmation","description":"Executes a message affirmation for some Foreign side event. Can be called only by a current bridge validator.","parameterDecorators":[{"name":"recipient","description":"tokens/coins of receiver address, where the assets should be unlocked/minted.","recommendedTypes":[]},{"name":"value","description":"amount of assets to unlock/mint.","recommendedTypes":[]},{"name":"transactionHash","description":"reference event transaction hash on the Foreign side of the bridge.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"deployedAtBlock()","name":"deployedAtBlock","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getBridgeInterfacesVersion()","name":"getBridgeInterfacesVersion","description":"","parameterDecorators":[],"returnDecorators":[{"name":"major","description":"","recommendedTypes":[],"solidityType":"uint64"},{"name":"minor","description":"","recommendedTypes":[],"solidityType":"uint64"},{"name":"patch","description":"","recommendedTypes":[],"solidityType":"uint64"}],"emittableEvents":[],"readOnly":true},{"signature":"outOfLimitAmount()","name":"outOfLimitAmount","description":"Total amount coins/tokens that were bridged from the other side and are out of execution limits.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setMinPerTx(uint256)","name":"setMinPerTx","description":"","parameterDecorators":[{"name":"_minPerTx","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"onTokenTransfer(address,uint256,bytes)","name":"onTokenTransfer","description":"","parameterDecorators":[{"name":"_from","description":"","recommendedTypes":[]},{"name":"_value","description":"","recommendedTypes":[]},{"name":"_data","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"fixAssetsAboveLimits(bytes32,bool,uint256)","name":"fixAssetsAboveLimits","description":"Fixes locked tokens, that were out of execution limits during the call to executeAffirmation.","parameterDecorators":[{"name":"hashMsg","description":"reference for bridge operation that was out of execution limits.","recommendedTypes":[]},{"name":"unlockOnForeign","description":"true if fixed tokens should be unlocked to the other side of the bridge.","recommendedTypes":[]},{"name":"valueToUnlock","description":"unlocked amount of tokens, should be less than txAboveLimitsValue. Should be less than maxPerTx(), if tokens need to be unlocked on the other side.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setRequiredBlockConfirmations(uint256)","name":"setRequiredBlockConfirmations","description":"","parameterDecorators":[{"name":"_blockConfirmations","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setDailyLimit(uint256)","name":"setDailyLimit","description":"","parameterDecorators":[{"name":"_dailyLimit","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setGasPrice(uint256)","name":"setGasPrice","description":"Public setter for fallback gas price value. Only bridge owner can call this method.","parameterDecorators":[{"name":"_gasPrice","description":"new value for the gas price.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMaxPerTx(uint256)","name":"setMaxPerTx","description":"","parameterDecorators":[{"name":"_maxPerTx","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"decimalShift()","name":"decimalShift","description":"Returns the value of foreign-to-home decimal shift.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":true},{"signature":"feeManagerContract()","name":"feeManagerContract","description":"Retrieves the address of the fee manager contract used.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"minPerTx()","name":"minPerTx","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"rewardableInitialize(address,uint256[3],uint256,uint256,address,uint256[2],address,address,uint256[2],int256)","name":"rewardableInitialize","description":"","parameterDecorators":[{"name":"_validatorContract","description":"","recommendedTypes":[]},{"name":"_dailyLimitMaxPerTxMinPerTxArray","description":"","recommendedTypes":[]},{"name":"_homeGasPrice","description":"","recommendedTypes":[]},{"name":"_requiredBlockConfirmations","description":"","recommendedTypes":[]},{"name":"_erc677token","description":"","recommendedTypes":[]},{"name":"_foreignDailyLimitForeignMaxPerTxArray","description":"","recommendedTypes":[]},{"name":"_owner","description":"","recommendedTypes":[]},{"name":"_feeManager","description":"","recommendedTypes":[]},{"name":"_homeFeeForeignFeeArray","description":"","recommendedTypes":[]},{"name":"_decimalShift","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"withinLimit(uint256)","name":"withinLimit","description":"","parameterDecorators":[{"name":"_amount","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"setExecutionMaxPerTx(uint256)","name":"setExecutionMaxPerTx","description":"","parameterDecorators":[{"name":"_maxPerTx","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getFeeManagerMode()","name":"getFeeManagerMode","description":"Retrieves the mode of the used fee manager.","parameterDecorators":[],"returnDecorators":[{"name":"mode","description":"","recommendedTypes":[],"solidityType":"bytes4"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Allows the current owner to transfer control of the contract to a newOwner.","parameterDecorators":[{"name":"newOwner","description":"the address to transfer ownership to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"maxPerTx()","name":"maxPerTx","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"gasPrice()","name":"gasPrice","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"isAlreadyProcessed(uint256)","name":"isAlreadyProcessed","description":"","parameterDecorators":[{"name":"_number","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"getForeignFee()","name":"getForeignFee","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "bridges"
+  ],
+  "name": "HomeBridgeErcToErc",
+  "description": "HomeBridgeErcToErc.",
+  "eventDecorators": [
+    {
+      "signature": "UserRequestForSignature(address,uint256)",
+      "name": "UserRequestForSignature",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AffirmationCompleted(address,uint256,bytes32)",
+      "name": "AffirmationCompleted",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "access",
+          "description": "TRUE if the Watcher was given permissions, FALSE if permissions were removed.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "domain",
+          "description": "the remote domain of the Home contract for the Replica.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "watcher",
+          "description": "the address of the Watcher.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SignedForUserRequest(address,bytes32)",
+      "name": "SignedForUserRequest",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "signer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "messageHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SignedForAffirmation(address,bytes32)",
+      "name": "SignedForAffirmation",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "signer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "transactionHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CollectedSignatures(address,bytes32,uint256)",
+      "name": "CollectedSignatures",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "access",
+          "description": "TRUE if the Watcher was given permissions, FALSE if permissions were removed.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "domain",
+          "description": "the remote domain of the Home contract for the Replica.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "watcher",
+          "description": "the address of the Watcher.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DailyLimitChanged(uint256)",
+      "name": "DailyLimitChanged",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "newLimit",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ExecutionDailyLimitChanged(uint256)",
+      "name": "ExecutionDailyLimitChanged",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "newLimit",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "GasPriceChanged(uint256)",
+      "name": "GasPriceChanged",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "gasPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RequiredBlockConfirmationChanged(uint256)",
+      "name": "RequiredBlockConfirmationChanged",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "requiredBlockConfirmations",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "FeeDistributedFromAffirmation(uint256,bytes32)",
+      "name": "FeeDistributedFromAffirmation",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "feeAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "transactionHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "FeeDistributedFromSignatures(uint256,bytes32)",
+      "name": "FeeDistributedFromSignatures",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "feeAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "transactionHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "MediatorAmountLimitExceeded(address,uint256,bytes32)",
+      "name": "MediatorAmountLimitExceeded",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "access",
+          "description": "TRUE if the Watcher was given permissions, FALSE if permissions were removed.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "domain",
+          "description": "the remote domain of the Home contract for the Replica.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "watcher",
+          "description": "the address of the Watcher.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "AmountLimitExceeded(address,uint256,bytes32,bytes32)",
+      "name": "AmountLimitExceeded",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "transactionHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "messageId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AssetAboveLimitsFixed(bytes32,uint256,uint256)",
+      "name": "AssetAboveLimitsFixed",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "access",
+          "description": "TRUE if the Watcher was given permissions, FALSE if permissions were removed.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "domain",
+          "description": "the remote domain of the Home contract for the Replica.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "watcher",
+          "description": "the address of the Watcher.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "numMessagesSigned(bytes32)",
+      "name": "numMessagesSigned",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_message",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "signature(bytes32,uint256)",
+      "name": "signature",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_hash",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "erc677token()",
+      "name": "erc677token",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setForeignFee(uint256)",
+      "name": "setForeignFee",
+      "description": "Updates the fee percentage for foreign->home bridge operations. Only owner is allowed to call this method.",
+      "parameterDecorators": [
+        {
+          "name": "_fee",
+          "description": "new value for fee percentage.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "totalSpentPerDay(uint256)",
+      "name": "totalSpentPerDay",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_day",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setHomeFee(uint256)",
+      "name": "setHomeFee",
+      "description": "Updates the fee percentage for home->foreign bridge operations. Only owner is allowed to call this method. If during this operation, home fee is changed, it is highly recommended to stop the bridge operations first. Otherwise, pending signature requests can become a reason for imbalance between two bridge sides.",
+      "parameterDecorators": [
+        {
+          "name": "_fee",
+          "description": "new value for fee percentage.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isInitialized()",
+      "name": "isInitialized",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setExecutionDailyLimit(uint256)",
+      "name": "setExecutionDailyLimit",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_dailyLimit",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getCurrentDay()",
+      "name": "getCurrentDay",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "requiredBlockConfirmations()",
+      "name": "requiredBlockConfirmations",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "requiredMessageLength()",
+      "name": "requiredMessageLength",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getBridgeMode()",
+      "name": "getBridgeMode",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_data",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes4"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "executionDailyLimit()",
+      "name": "executionDailyLimit",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "message(bytes32)",
+      "name": "message",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_hash",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalExecutedPerDay(uint256)",
+      "name": "totalExecutedPerDay",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_day",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setFeeManagerContract(address)",
+      "name": "setFeeManagerContract",
+      "description": "Updates the address of the used fee manager contract. Only contract owner can call this method. If during this operation, home fee is changed, it is highly recommended to stop the bridge operations first. Otherwise, pending signature requests can become a reason for imbalance between two bridge sides.",
+      "parameterDecorators": [
+        {
+          "name": "_feeManager",
+          "description": "address of the new fee manager contract, or zero address to disable fee collection.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "submitSignature(bytes,bytes)",
+      "name": "submitSignature",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "signature",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "message",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "dailyLimit()",
+      "name": "dailyLimit",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "numAffirmationsSigned(bytes32)",
+      "name": "numAffirmationsSigned",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_withdrawal",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "affirmationsSigned(bytes32)",
+      "name": "affirmationsSigned",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_withdrawal",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,uint256[3],uint256,uint256,address,uint256[2],address,int256)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_validatorContract",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_dailyLimitMaxPerTxMinPerTxArray",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_homeGasPrice",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_requiredBlockConfirmations",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_erc677token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_foreignDailyLimitForeignMaxPerTxArray",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_owner",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_decimalShift",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withinExecutionLimit(uint256)",
+      "name": "withinExecutionLimit",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "executionMaxPerTx()",
+      "name": "executionMaxPerTx",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "requiredSignatures()",
+      "name": "requiredSignatures",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Tells the address of the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "messagesSigned(bytes32)",
+      "name": "messagesSigned",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_message",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claimTokensFromErc677(address,address)",
+      "name": "claimTokensFromErc677",
+      "description": "Withdraws erc20 tokens or native coins from the token contract. It is required since the bridge contract is the owner of the token contract.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the claimed token or address(0) for native coins.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "address of the tokens/coins receiver.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getHomeFee()",
+      "name": "getHomeFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxAvailablePerTx()",
+      "name": "maxAvailablePerTx",
+      "description": "Retrieves maximum available bridge amount per one transaction taking into account maxPerTx() and dailyLimit() parameters.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "validatorContract()",
+      "name": "validatorContract",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "executeAffirmation(address,uint256,bytes32)",
+      "name": "executeAffirmation",
+      "description": "Executes a message affirmation for some Foreign side event. Can be called only by a current bridge validator.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "tokens/coins of receiver address, where the assets should be unlocked/minted.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "amount of assets to unlock/mint.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "transactionHash",
+          "description": "reference event transaction hash on the Foreign side of the bridge.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deployedAtBlock()",
+      "name": "deployedAtBlock",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getBridgeInterfacesVersion()",
+      "name": "getBridgeInterfacesVersion",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "major",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "minor",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "patch",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "outOfLimitAmount()",
+      "name": "outOfLimitAmount",
+      "description": "Total amount coins/tokens that were bridged from the other side and are out of execution limits.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setMinPerTx(uint256)",
+      "name": "setMinPerTx",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_minPerTx",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "onTokenTransfer(address,uint256,bytes)",
+      "name": "onTokenTransfer",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_from",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_value",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "fixAssetsAboveLimits(bytes32,bool,uint256)",
+      "name": "fixAssetsAboveLimits",
+      "description": "Fixes locked tokens, that were out of execution limits during the call to executeAffirmation.",
+      "parameterDecorators": [
+        {
+          "name": "hashMsg",
+          "description": "reference for bridge operation that was out of execution limits.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "unlockOnForeign",
+          "description": "true if fixed tokens should be unlocked to the other side of the bridge.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "valueToUnlock",
+          "description": "unlocked amount of tokens, should be less than txAboveLimitsValue. Should be less than maxPerTx(), if tokens need to be unlocked on the other side.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRequiredBlockConfirmations(uint256)",
+      "name": "setRequiredBlockConfirmations",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_blockConfirmations",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDailyLimit(uint256)",
+      "name": "setDailyLimit",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_dailyLimit",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setGasPrice(uint256)",
+      "name": "setGasPrice",
+      "description": "Public setter for fallback gas price value. Only bridge owner can call this method.",
+      "parameterDecorators": [
+        {
+          "name": "_gasPrice",
+          "description": "new value for the gas price.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMaxPerTx(uint256)",
+      "name": "setMaxPerTx",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_maxPerTx",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "decimalShift()",
+      "name": "decimalShift",
+      "description": "Returns the value of foreign-to-home decimal shift.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "feeManagerContract()",
+      "name": "feeManagerContract",
+      "description": "Retrieves the address of the fee manager contract used.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minPerTx()",
+      "name": "minPerTx",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardableInitialize(address,uint256[3],uint256,uint256,address,uint256[2],address,address,uint256[2],int256)",
+      "name": "rewardableInitialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_validatorContract",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_dailyLimitMaxPerTxMinPerTxArray",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_homeGasPrice",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_requiredBlockConfirmations",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_erc677token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_foreignDailyLimitForeignMaxPerTxArray",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_owner",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_feeManager",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_homeFeeForeignFeeArray",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_decimalShift",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withinLimit(uint256)",
+      "name": "withinLimit",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setExecutionMaxPerTx(uint256)",
+      "name": "setExecutionMaxPerTx",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_maxPerTx",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getFeeManagerMode()",
+      "name": "getFeeManagerMode",
+      "description": "Retrieves the mode of the used fee manager.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "mode",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes4"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Allows the current owner to transfer control of the contract to a newOwner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "the address to transfer ownership to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "maxPerTx()",
+      "name": "maxPerTx",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "gasPrice()",
+      "name": "gasPrice",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isAlreadyProcessed(uint256)",
+      "name": "isAlreadyProcessed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_number",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getForeignFee()",
+      "name": "getForeignFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

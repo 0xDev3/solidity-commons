@@ -1,1 +1,404 @@
-{"schema":"../schema.json","tags":["airdrops"],"name":"Airdrop","description":"","eventDecorators":[{"signature":"Claimed(address,uint256,uint256)","name":"Claimed","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"newAmount","description":"new amount.","recommendedTypes":[],"indexed":false},{"name":"prevAmount","description":"previous amount.","recommendedTypes":[],"indexed":false},{"name":"token","description":"token address.","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"TrancheAdded(uint256,bytes32,uint256)","name":"TrancheAdded","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"newAmount","description":"new amount.","recommendedTypes":[],"indexed":false},{"name":"prevAmount","description":"previous amount.","recommendedTypes":[],"indexed":false},{"name":"token","description":"token address.","recommendedTypes":[],"indexed":false}]},{"signature":"TrancheExpired(uint256)","name":"TrancheExpired","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"tranche","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"claim(address,uint256,uint256,bytes32[])","name":"claim","description":"","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[]},{"name":"_tranche","description":"","recommendedTypes":[]},{"name":"_balance","description":"","recommendedTypes":[]},{"name":"_merkleProof","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claimed(uint256,address)","name":"claimed","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"expireTranche(uint256)","name":"expireTranche","description":"","parameterDecorators":[{"name":"_trancheId","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"merkleRoots(uint256)","name":"merkleRoots","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"multiClaim(address,uint256[],uint256[],bytes32[][])","name":"multiClaim","description":"","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[]},{"name":"_tranches","description":"","recommendedTypes":[]},{"name":"_balances","description":"","recommendedTypes":[]},{"name":"_merkleProofs","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"seedNewAllocations(bytes32,uint256)","name":"seedNewAllocations","description":"","parameterDecorators":[{"name":"_merkleRoot","description":"","recommendedTypes":[]},{"name":"_totalAllocation","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"trancheId","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"token()","name":"token","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"tranches()","name":"tranches","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"verifyClaim(address,uint256,uint256,bytes32[])","name":"verifyClaim","description":"","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[]},{"name":"_tranche","description":"","recommendedTypes":[]},{"name":"_balance","description":"","recommendedTypes":[]},{"name":"_merkleProof","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"valid","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"withdrawERC20(address,uint256)","name":"withdrawERC20","description":"function withdraw ERC20 token to account owner.","parameterDecorators":[{"name":"_token","description":"is address of the token.","recommendedTypes":[]},{"name":"_amount","description":"is amount withdraw.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdrawETH(uint256)","name":"withdrawETH","description":"function withdraw ETH to account owner.","parameterDecorators":[{"name":"_amount","description":"is amount withdraw.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdrawToken(uint256)","name":"withdrawToken","description":"function withdraw token to account owner.","parameterDecorators":[{"name":"_amount","description":"is amount withdraw.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "airdrops"
+  ],
+  "name": "Airdrop",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "Claimed(address,uint256,uint256)",
+      "name": "Claimed",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "newAmount",
+          "description": "new amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "prevAmount",
+          "description": "previous amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "token",
+          "description": "token address.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TrancheAdded(uint256,bytes32,uint256)",
+      "name": "TrancheAdded",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "newAmount",
+          "description": "new amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "prevAmount",
+          "description": "previous amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "token",
+          "description": "token address.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TrancheExpired(uint256)",
+      "name": "TrancheExpired",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "tranche",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "claim(address,uint256,uint256,bytes32[])",
+      "name": "claim",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tranche",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_balance",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_merkleProof",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimed(uint256,address)",
+      "name": "claimed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "expireTranche(uint256)",
+      "name": "expireTranche",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_trancheId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "merkleRoots(uint256)",
+      "name": "merkleRoots",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "multiClaim(address,uint256[],uint256[],bytes32[][])",
+      "name": "multiClaim",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tranches",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_balances",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_merkleProofs",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "seedNewAllocations(bytes32,uint256)",
+      "name": "seedNewAllocations",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_merkleRoot",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_totalAllocation",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "trancheId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tranches()",
+      "name": "tranches",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "verifyClaim(address,uint256,uint256,bytes32[])",
+      "name": "verifyClaim",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tranche",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_balance",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_merkleProof",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "valid",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdrawERC20(address,uint256)",
+      "name": "withdrawERC20",
+      "description": "function withdraw ERC20 token to account owner.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "is address of the token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "is amount withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawETH(uint256)",
+      "name": "withdrawETH",
+      "description": "function withdraw ETH to account owner.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "is amount withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawToken(uint256)",
+      "name": "withdrawToken",
+      "description": "function withdraw token to account owner.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "is amount withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

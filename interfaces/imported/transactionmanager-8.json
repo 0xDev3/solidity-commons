@@ -1,1 +1,1478 @@
-{"schema":"../schema.json","tags":["locking","liquidity"],"name":"TransactionManager","description":"TransactionManager.","eventDecorators":[{"signature":"AdminChanged(address,address)","name":"AdminChanged","description":"Event for token purchase logging.","parameterDecorators":[{"name":"previousAdmin","description":"","recommendedTypes":[],"indexed":false},{"name":"newAdmin","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"AssetAdded(address,address)","name":"AssetAdded","description":"Event for token purchase logging.","parameterDecorators":[{"name":"addedAssetId","description":"","recommendedTypes":[],"indexed":true},{"name":"caller","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"AssetRemoved(address,address)","name":"AssetRemoved","description":"Event for token purchase logging.","parameterDecorators":[{"name":"removedAssetId","description":"","recommendedTypes":[],"indexed":true},{"name":"caller","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"BeaconUpgraded(address)","name":"BeaconUpgraded","description":"Event for token purchase logging.","parameterDecorators":[{"name":"beacon","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"LiquidityAdded(address,address,uint256,address)","name":"LiquidityAdded","description":"Event for token purchase logging.","parameterDecorators":[{"name":"router","description":"","recommendedTypes":[],"indexed":true},{"name":"assetId","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"caller","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LiquidityRemoved(address,address,uint256,address)","name":"LiquidityRemoved","description":"Event for token purchase logging.","parameterDecorators":[{"name":"router","description":"","recommendedTypes":[],"indexed":true},{"name":"assetId","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"recipient","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"NewFeePercent(uint256,uint256)","name":"NewFeePercent","description":"Event for token purchase logging.","parameterDecorators":[{"name":"normalFeePercent","description":"","recommendedTypes":[],"indexed":false},{"name":"specialFeePercent","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"NewPriceOracle(address)","name":"NewPriceOracle","description":"Event for token purchase logging.","parameterDecorators":[{"name":"priceOracle","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"NewSpecialFeeToken(address)","name":"NewSpecialFeeToken","description":"Event for token purchase logging.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnershipProposed(address)","name":"OwnershipProposed","description":"Event for token purchase logging.","parameterDecorators":[{"name":"proposedOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Event for token purchase logging.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Paused(address)","name":"Paused","description":"Event for token purchase logging.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RouterAdded(address,address)","name":"RouterAdded","description":"Event for token purchase logging.","parameterDecorators":[{"name":"addedRouter","description":"","recommendedTypes":[],"indexed":true},{"name":"caller","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"RouterRemoved(address,address)","name":"RouterRemoved","description":"Event for token purchase logging.","parameterDecorators":[{"name":"removedRouter","description":"","recommendedTypes":[],"indexed":true},{"name":"caller","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"TransactionCancelled(address,address,bytes32,tuple,uint256,address)","name":"TransactionCancelled","description":"Event for token purchase logging.","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[],"indexed":true},{"name":"router","description":"","recommendedTypes":[],"indexed":true},{"name":"transactionId","description":"","recommendedTypes":[],"indexed":true},{"name":"txData","description":"","recommendedTypes":[],"indexed":false},{"name":"relayerFee","description":"","recommendedTypes":[],"indexed":false},{"name":"caller","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TransactionFulfilled(address,address,bytes32,tuple,uint256,bytes,bytes,address)","name":"TransactionFulfilled","description":"Event for token purchase logging.","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[],"indexed":true},{"name":"router","description":"","recommendedTypes":[],"indexed":true},{"name":"transactionId","description":"","recommendedTypes":[],"indexed":true},{"name":"txData","description":"","recommendedTypes":[],"indexed":false},{"name":"relayerFee","description":"","recommendedTypes":[],"indexed":false},{"name":"signature","description":"","recommendedTypes":[],"indexed":false},{"name":"callData","description":"","recommendedTypes":[],"indexed":false},{"name":"caller","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TransactionPrepared(address,address,bytes32,tuple,address,bytes,bytes,bytes)","name":"TransactionPrepared","description":"Event for token purchase logging.","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[],"indexed":true},{"name":"router","description":"","recommendedTypes":[],"indexed":true},{"name":"transactionId","description":"","recommendedTypes":[],"indexed":true},{"name":"txData","description":"","recommendedTypes":[],"indexed":false},{"name":"caller","description":"","recommendedTypes":[],"indexed":false},{"name":"encryptedCallData","description":"","recommendedTypes":[],"indexed":false},{"name":"encodedBid","description":"","recommendedTypes":[],"indexed":false},{"name":"bidSignature","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Unpaused(address)","name":"Unpaused","description":"Event for token purchase logging.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Upgraded(address)","name":"Upgraded","description":"Event for token purchase logging.","parameterDecorators":[{"name":"implementation","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"MAX_TIMEOUT()","name":"MAX_TIMEOUT","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"MIN_TIMEOUT()","name":"MIN_TIMEOUT","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"PERCENTS_DIVIDER()","name":"PERCENTS_DIVIDER","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"acceptProposedOwner()","name":"acceptProposedOwner","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"addAssetId(address)","name":"addAssetId","description":"Used to add assets on same chain as contract that can be transferred.","parameterDecorators":[{"name":"assetId","description":"AssetId to add.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"addLiquidity(uint256,address)","name":"addLiquidity","description":"This is used by any router to increase their available liquidity for a given asset.","parameterDecorators":[{"name":"amount","description":"The amount of liquidity to add for the router.","recommendedTypes":[]},{"name":"assetId","description":"The address (or `address(0)` if native asset) of the asset you're adding liquidity for.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"addLiquidityFor(uint256,address,address)","name":"addLiquidityFor","description":"This is used by any one to increase the available liquidity for a given asset on behalf of a router.","parameterDecorators":[{"name":"amount","description":"The amount of liquidity to add for the router.","recommendedTypes":[]},{"name":"assetId","description":"The address (or `address(0)` if native asset) of the asset you're adding liquidity for.","recommendedTypes":[]},{"name":"router","description":"The router you are adding liquidity on behalf of.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"addRouter(address)","name":"addRouter","description":"Used to add routers that can transact crosschain.","parameterDecorators":[{"name":"router","description":"Router address to add.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"approvedAssets(address)","name":"approvedAssets","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"approvedRouters(address)","name":"approvedRouters","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"calculateFeeAmount(address,address,uint256)","name":"calculateFeeAmount","description":"Returns the fee amount.","parameterDecorators":[{"name":"account","description":"Sender address.","recommendedTypes":[]},{"name":"token","description":"Sending token address.","recommendedTypes":[]},{"name":"amount","description":"Sending Amount If account is holder of special token : (USD value of sending token) * (special Fee percent) / (special Fee Token Price) Else (Sending Token) * (normal Fee percent).","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"cancel(tuple(address,address,address,address,address,address,address,bytes32,bytes32,uint256,uint256,uint256,uint256,uint256),uint256,bytes)","name":"cancel","description":"Any crosschain transaction can be cancelled after it has been created to prevent indefinite lock up of funds. After the transaction has expired, anyone can cancel it. Before the expiry, only the recipient of the funds on the given chain is able to cancel. On the sending chain, this means only the router is able to cancel before the expiry, while only the user can prematurely cancel on the receiving chain.","parameterDecorators":[{"name":"txData","description":"All of the data (invariant and variant) for a crosschain transaction. The variant data provided is checked against what was stored when the `prepare` function was called.","recommendedTypes":[],"parameters":[{"name":"user","description":"","type":"address"},{"name":"router","description":"","type":"address"},{"name":"sendingAssetId","description":"","type":"address"},{"name":"receivingAssetId","description":"","type":"address"},{"name":"sendingChainFallback","description":"","type":"address"},{"name":"receivingAddress","description":"","type":"address"},{"name":"callTo","description":"","type":"address"},{"name":"callDataHash","description":"","type":"bytes32"},{"name":"transactionId","description":"","type":"bytes32"},{"name":"sendingChainId","description":"","type":"uint256"},{"name":"receivingChainId","description":"","type":"uint256"},{"name":"amount","description":"","type":"uint256"},{"name":"expiry","description":"","type":"uint256"},{"name":"preparedBlockNumber","description":"","type":"uint256"}]},{"name":"relayerFee","description":"The fee that should go to the relayer when they are calling the function for the user.","recommendedTypes":[]},{"name":"signature","description":"The user's signature that allows a transaction to be cancelled on the receiving chain.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":false},{"signature":"chainId()","name":"chainId","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"delay()","name":"delay","description":"Returns the delay period before a new owner can be accepted.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"fulfill(tuple(address,address,address,address,address,address,address,bytes32,bytes32,uint256,uint256,uint256,uint256,uint256),uint256,bytes,bytes)","name":"fulfill","description":"This function completes a crosschain transaction. When called on the receiving chain, the user reveals their signature on the invariant parts of the transaction data and is sent the appropriate amount. The router then uses this signature to unlock the corresponding funds on the receiving chain, which are then added back to their available liquidity. The user includes a relayer fee since it is not assumed they will have gas on the receiving chain. This function *must* be called before the transaction expiry has elapsed.","parameterDecorators":[{"name":"txData","description":"All of the data (invariant and variant) for a crosschain transaction. The variant data provided is checked against what was stored when the `prepare` function was called.","recommendedTypes":[],"parameters":[{"name":"user","description":"","type":"address"},{"name":"router","description":"","type":"address"},{"name":"sendingAssetId","description":"","type":"address"},{"name":"receivingAssetId","description":"","type":"address"},{"name":"sendingChainFallback","description":"","type":"address"},{"name":"receivingAddress","description":"","type":"address"},{"name":"callTo","description":"","type":"address"},{"name":"callDataHash","description":"","type":"bytes32"},{"name":"transactionId","description":"","type":"bytes32"},{"name":"sendingChainId","description":"","type":"uint256"},{"name":"receivingChainId","description":"","type":"uint256"},{"name":"amount","description":"","type":"uint256"},{"name":"expiry","description":"","type":"uint256"},{"name":"preparedBlockNumber","description":"","type":"uint256"}]},{"name":"relayerFee","description":"The fee that should go to the relayer when they are calling the function on the receiving chain for the user.","recommendedTypes":[]},{"name":"signature","description":"The users signature on the invariant data + fee that can be used by the router to unlock the transaction on the sending chain.","recommendedTypes":[]},{"name":"callData","description":"The calldata to be sent to and executed by the `FulfillHelper`.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":false},{"signature":"getFeeInfo()","name":"getFeeInfo","description":"Returns the special fee token address, normal fee percent, special fee percent.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param2","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getTokenPrice(address)","name":"getTokenPrice","description":"Returns the token price from price oracle.","parameterDecorators":[{"name":"token","description":"Sending token address (Price for 1 wei) * 10 ^ 36.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"initialize(uint256)","name":"initialize","description":"","parameterDecorators":[{"name":"_chainId","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"interpreter()","name":"interpreter","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"normalFeePercent()","name":"normalFeePercent","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"paused()","name":"paused","description":"Returns true if the contract is paused, and false otherwise.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"prepare(tuple(address,address,address,address,address,address,address,uint256,uint256,bytes32,bytes32),uint256,uint256,bytes,bytes,bytes)","name":"prepare","description":"This function creates a crosschain transaction. When called on the sending chain, the user is expected to lock up funds. When called on the receiving chain, the router deducts the transfer amount from the available liquidity. The majority of the information about a given transfer does not change between chains, with three notable exceptions: `amount`, `expiry`, and `preparedBlock`. The `amount` and `expiry` are decremented between sending and receiving chains to provide an incentive for the router to complete the transaction and time for the router to fulfill the transaction on the sending chain after the unlocking signature is revealed, respectively.","parameterDecorators":[{"name":"invariantData","description":"The data for a crosschain transaction that will not change between sending and receiving chains. The hash of this data is used as the key to store the inforamtion that does change between chains (amount, expiry,preparedBlock) for verification.","recommendedTypes":[],"parameters":[{"name":"user","description":"","type":"address"},{"name":"router","description":"","type":"address"},{"name":"sendingAssetId","description":"","type":"address"},{"name":"receivingAssetId","description":"","type":"address"},{"name":"sendingChainFallback","description":"","type":"address"},{"name":"receivingAddress","description":"","type":"address"},{"name":"callTo","description":"","type":"address"},{"name":"sendingChainId","description":"","type":"uint256"},{"name":"receivingChainId","description":"","type":"uint256"},{"name":"callDataHash","description":"","type":"bytes32"},{"name":"transactionId","description":"","type":"bytes32"}]},{"name":"amount","description":"The amount of the transaction on this chain.","recommendedTypes":[]},{"name":"expiry","description":"The block.timestamp when the transaction will no longer be fulfillable and is freely cancellable on this chain.","recommendedTypes":[]},{"name":"encryptedCallData","description":"The calldata to be executed when the tx is fulfilled. Used in the function to allow the user to reconstruct the tx from events. Hash is stored onchain to prevent shenanigans.","recommendedTypes":[]},{"name":"encodedBid","description":"The encoded bid that was accepted by the user for this crosschain transfer. It is supplied as a param to the function but is only used in event emission.","recommendedTypes":[]},{"name":"bidSignature","description":"The signature of the bidder on the encoded bid for this transaction. Only used within the function for event emission. The validity of the bid and bidSignature are enforced offchain.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":false},{"signature":"priceOracle()","name":"priceOracle","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"proposeNewOwner(address)","name":"proposeNewOwner","description":"Sets the timestamp for an owner to be proposed, and sets the newly proposed owner as step 1 in a 2-step process.","parameterDecorators":[{"name":"newlyProposed","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"proposed()","name":"proposed","description":"Returns the address of the proposed owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"proposedTimestamp()","name":"proposedTimestamp","description":"Returns the address of the proposed owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"removeAssetId(address)","name":"removeAssetId","description":"Used to remove assets on same chain as contract that can be transferred.","parameterDecorators":[{"name":"assetId","description":"AssetId to remove.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"removeLiquidity(uint256,address,address)","name":"removeLiquidity","description":"This is used by any router to increase their available liquidity for a given asset.","parameterDecorators":[{"name":"amount","description":"The amount of liquidity to add for the router.","recommendedTypes":[]},{"name":"assetId","description":"The address (or `address(0)` if native asset) of the asset you're adding liquidity for.","recommendedTypes":[]},{"name":"recipient","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"removeLiquidityFor(uint256,address,address,address)","name":"removeLiquidityFor","description":"Remove liquidity For router.","parameterDecorators":[{"name":"amount","description":"The amount of liquidity to add for the router.","recommendedTypes":[]},{"name":"assetId","description":"The address (or `address(0)` if native asset) of the asset you're adding liquidity for.","recommendedTypes":[]},{"name":"router","description":"The router you are adding liquidity on behalf of.","recommendedTypes":[]},{"name":"recipient","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"removeRouter(address)","name":"removeRouter","description":"Used to remove routers that can transact crosschain.","parameterDecorators":[{"name":"router","description":"Router address to remove.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"renounced()","name":"renounced","description":"Indicates if the ownership has been renounced() by checking if current owner is address(0).","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"routerBalances(address,address)","name":"routerBalances","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setFeePercent(uint256,uint256)","name":"setFeePercent","description":"Owner can set special fee percent and normal fee percent.","parameterDecorators":[{"name":"_normal","description":"normal fee percentage.","recommendedTypes":[]},{"name":"_special","description":"special fee percentage.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setPriceOracle(address)","name":"setPriceOracle","description":"Owner can set price oracle address.","parameterDecorators":[{"name":"_priceOracle","description":"Router address to add.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setSpecialFeeToken(address)","name":"setSpecialFeeToken","description":"Owner can set special fee token.","parameterDecorators":[{"name":"_token","description":"ERC20 Token address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"specialFeePercent()","name":"specialFeePercent","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"specialFeeToken()","name":"specialFeeToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"upgradeTo(address)","name":"upgradeTo","description":"Upgrade the implementation of the proxy to `newImplementation`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.","parameterDecorators":[{"name":"newImplementation","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":["Upgraded(address)"],"readOnly":false},{"signature":"upgradeToAndCall(address,bytes)","name":"upgradeToAndCall","description":"Upgrade the implementation of the proxy to `newImplementation`, and subsequently execute the function call encoded in `data`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.","parameterDecorators":[{"name":"newImplementation","description":"","recommendedTypes":[]},{"name":"data","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":["Upgraded(address)"],"readOnly":false},{"signature":"variantTransactionData(bytes32)","name":"variantTransactionData","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "locking",
+    "liquidity"
+  ],
+  "name": "TransactionManager",
+  "description": "TransactionManager.",
+  "eventDecorators": [
+    {
+      "signature": "AdminChanged(address,address)",
+      "name": "AdminChanged",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "previousAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AssetAdded(address,address)",
+      "name": "AssetAdded",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "addedAssetId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "AssetRemoved(address,address)",
+      "name": "AssetRemoved",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "removedAssetId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "BeaconUpgraded(address)",
+      "name": "BeaconUpgraded",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "beacon",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "LiquidityAdded(address,address,uint256,address)",
+      "name": "LiquidityAdded",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "router",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "assetId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LiquidityRemoved(address,address,uint256,address)",
+      "name": "LiquidityRemoved",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "router",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "assetId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewFeePercent(uint256,uint256)",
+      "name": "NewFeePercent",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "normalFeePercent",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "specialFeePercent",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewPriceOracle(address)",
+      "name": "NewPriceOracle",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "priceOracle",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "NewSpecialFeeToken(address)",
+      "name": "NewSpecialFeeToken",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipProposed(address)",
+      "name": "OwnershipProposed",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "proposedOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Paused(address)",
+      "name": "Paused",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RouterAdded(address,address)",
+      "name": "RouterAdded",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "addedRouter",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RouterRemoved(address,address)",
+      "name": "RouterRemoved",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "removedRouter",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TransactionCancelled(address,address,bytes32,tuple,uint256,address)",
+      "name": "TransactionCancelled",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "router",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "transactionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "txData",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "relayerFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TransactionFulfilled(address,address,bytes32,tuple,uint256,bytes,bytes,address)",
+      "name": "TransactionFulfilled",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "router",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "transactionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "txData",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "relayerFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "signature",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "callData",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TransactionPrepared(address,address,bytes32,tuple,address,bytes,bytes,bytes)",
+      "name": "TransactionPrepared",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "router",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "transactionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "txData",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "encryptedCallData",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "encodedBid",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "bidSignature",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unpaused(address)",
+      "name": "Unpaused",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Upgraded(address)",
+      "name": "Upgraded",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "implementation",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "MAX_TIMEOUT()",
+      "name": "MAX_TIMEOUT",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MIN_TIMEOUT()",
+      "name": "MIN_TIMEOUT",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "PERCENTS_DIVIDER()",
+      "name": "PERCENTS_DIVIDER",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "acceptProposedOwner()",
+      "name": "acceptProposedOwner",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addAssetId(address)",
+      "name": "addAssetId",
+      "description": "Used to add assets on same chain as contract that can be transferred.",
+      "parameterDecorators": [
+        {
+          "name": "assetId",
+          "description": "AssetId to add.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addLiquidity(uint256,address)",
+      "name": "addLiquidity",
+      "description": "This is used by any router to increase their available liquidity for a given asset.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "The amount of liquidity to add for the router.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "assetId",
+          "description": "The address (or `address(0)` if native asset) of the asset you're adding liquidity for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addLiquidityFor(uint256,address,address)",
+      "name": "addLiquidityFor",
+      "description": "This is used by any one to increase the available liquidity for a given asset on behalf of a router.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "The amount of liquidity to add for the router.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "assetId",
+          "description": "The address (or `address(0)` if native asset) of the asset you're adding liquidity for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "router",
+          "description": "The router you are adding liquidity on behalf of.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addRouter(address)",
+      "name": "addRouter",
+      "description": "Used to add routers that can transact crosschain.",
+      "parameterDecorators": [
+        {
+          "name": "router",
+          "description": "Router address to add.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "approvedAssets(address)",
+      "name": "approvedAssets",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "approvedRouters(address)",
+      "name": "approvedRouters",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateFeeAmount(address,address,uint256)",
+      "name": "calculateFeeAmount",
+      "description": "Returns the fee amount.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "Sender address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "token",
+          "description": "Sending token address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "Sending Amount If account is holder of special token : (USD value of sending token) * (special Fee percent) / (special Fee Token Price) Else (Sending Token) * (normal Fee percent).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "cancel(tuple(address,address,address,address,address,address,address,bytes32,bytes32,uint256,uint256,uint256,uint256,uint256),uint256,bytes)",
+      "name": "cancel",
+      "description": "Any crosschain transaction can be cancelled after it has been created to prevent indefinite lock up of funds. After the transaction has expired, anyone can cancel it. Before the expiry, only the recipient of the funds on the given chain is able to cancel. On the sending chain, this means only the router is able to cancel before the expiry, while only the user can prematurely cancel on the receiving chain.",
+      "parameterDecorators": [
+        {
+          "name": "txData",
+          "description": "All of the data (invariant and variant) for a crosschain transaction. The variant data provided is checked against what was stored when the `prepare` function was called.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "user",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "router",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "sendingAssetId",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "receivingAssetId",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "sendingChainFallback",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "receivingAddress",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "callTo",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "callDataHash",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "transactionId",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "sendingChainId",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "receivingChainId",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "expiry",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "preparedBlockNumber",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "name": "relayerFee",
+          "description": "The fee that should go to the relayer when they are calling the function for the user.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "signature",
+          "description": "The user's signature that allows a transaction to be cancelled on the receiving chain.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "chainId()",
+      "name": "chainId",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "delay()",
+      "name": "delay",
+      "description": "Returns the delay period before a new owner can be accepted.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "fulfill(tuple(address,address,address,address,address,address,address,bytes32,bytes32,uint256,uint256,uint256,uint256,uint256),uint256,bytes,bytes)",
+      "name": "fulfill",
+      "description": "This function completes a crosschain transaction. When called on the receiving chain, the user reveals their signature on the invariant parts of the transaction data and is sent the appropriate amount. The router then uses this signature to unlock the corresponding funds on the receiving chain, which are then added back to their available liquidity. The user includes a relayer fee since it is not assumed they will have gas on the receiving chain. This function *must* be called before the transaction expiry has elapsed.",
+      "parameterDecorators": [
+        {
+          "name": "txData",
+          "description": "All of the data (invariant and variant) for a crosschain transaction. The variant data provided is checked against what was stored when the `prepare` function was called.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "user",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "router",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "sendingAssetId",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "receivingAssetId",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "sendingChainFallback",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "receivingAddress",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "callTo",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "callDataHash",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "transactionId",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "sendingChainId",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "receivingChainId",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "expiry",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "preparedBlockNumber",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "name": "relayerFee",
+          "description": "The fee that should go to the relayer when they are calling the function on the receiving chain for the user.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "signature",
+          "description": "The users signature on the invariant data + fee that can be used by the router to unlock the transaction on the sending chain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "callData",
+          "description": "The calldata to be sent to and executed by the `FulfillHelper`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getFeeInfo()",
+      "name": "getFeeInfo",
+      "description": "Returns the special fee token address, normal fee percent, special fee percent.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokenPrice(address)",
+      "name": "getTokenPrice",
+      "description": "Returns the token price from price oracle.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "Sending token address (Price for 1 wei) * 10 ^ 36.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(uint256)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_chainId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "interpreter()",
+      "name": "interpreter",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "normalFeePercent()",
+      "name": "normalFeePercent",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "paused()",
+      "name": "paused",
+      "description": "Returns true if the contract is paused, and false otherwise.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "prepare(tuple(address,address,address,address,address,address,address,uint256,uint256,bytes32,bytes32),uint256,uint256,bytes,bytes,bytes)",
+      "name": "prepare",
+      "description": "This function creates a crosschain transaction. When called on the sending chain, the user is expected to lock up funds. When called on the receiving chain, the router deducts the transfer amount from the available liquidity. The majority of the information about a given transfer does not change between chains, with three notable exceptions: `amount`, `expiry`, and `preparedBlock`. The `amount` and `expiry` are decremented between sending and receiving chains to provide an incentive for the router to complete the transaction and time for the router to fulfill the transaction on the sending chain after the unlocking signature is revealed, respectively.",
+      "parameterDecorators": [
+        {
+          "name": "invariantData",
+          "description": "The data for a crosschain transaction that will not change between sending and receiving chains. The hash of this data is used as the key to store the inforamtion that does change between chains (amount, expiry,preparedBlock) for verification.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "user",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "router",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "sendingAssetId",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "receivingAssetId",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "sendingChainFallback",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "receivingAddress",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "callTo",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "sendingChainId",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "receivingChainId",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "callDataHash",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "transactionId",
+              "description": "",
+              "type": "bytes32"
+            }
+          ]
+        },
+        {
+          "name": "amount",
+          "description": "The amount of the transaction on this chain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "expiry",
+          "description": "The block.timestamp when the transaction will no longer be fulfillable and is freely cancellable on this chain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "encryptedCallData",
+          "description": "The calldata to be executed when the tx is fulfilled. Used in the function to allow the user to reconstruct the tx from events. Hash is stored onchain to prevent shenanigans.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "encodedBid",
+          "description": "The encoded bid that was accepted by the user for this crosschain transfer. It is supplied as a param to the function but is only used in event emission.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "bidSignature",
+          "description": "The signature of the bidder on the encoded bid for this transaction. Only used within the function for event emission. The validity of the bid and bidSignature are enforced offchain.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "priceOracle()",
+      "name": "priceOracle",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "proposeNewOwner(address)",
+      "name": "proposeNewOwner",
+      "description": "Sets the timestamp for an owner to be proposed, and sets the newly proposed owner as step 1 in a 2-step process.",
+      "parameterDecorators": [
+        {
+          "name": "newlyProposed",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "proposed()",
+      "name": "proposed",
+      "description": "Returns the address of the proposed owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "proposedTimestamp()",
+      "name": "proposedTimestamp",
+      "description": "Returns the address of the proposed owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeAssetId(address)",
+      "name": "removeAssetId",
+      "description": "Used to remove assets on same chain as contract that can be transferred.",
+      "parameterDecorators": [
+        {
+          "name": "assetId",
+          "description": "AssetId to remove.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeLiquidity(uint256,address,address)",
+      "name": "removeLiquidity",
+      "description": "This is used by any router to increase their available liquidity for a given asset.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "The amount of liquidity to add for the router.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "assetId",
+          "description": "The address (or `address(0)` if native asset) of the asset you're adding liquidity for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeLiquidityFor(uint256,address,address,address)",
+      "name": "removeLiquidityFor",
+      "description": "Remove liquidity For router.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "The amount of liquidity to add for the router.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "assetId",
+          "description": "The address (or `address(0)` if native asset) of the asset you're adding liquidity for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "router",
+          "description": "The router you are adding liquidity on behalf of.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeRouter(address)",
+      "name": "removeRouter",
+      "description": "Used to remove routers that can transact crosschain.",
+      "parameterDecorators": [
+        {
+          "name": "router",
+          "description": "Router address to remove.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounced()",
+      "name": "renounced",
+      "description": "Indicates if the ownership has been renounced() by checking if current owner is address(0).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "routerBalances(address,address)",
+      "name": "routerBalances",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setFeePercent(uint256,uint256)",
+      "name": "setFeePercent",
+      "description": "Owner can set special fee percent and normal fee percent.",
+      "parameterDecorators": [
+        {
+          "name": "_normal",
+          "description": "normal fee percentage.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_special",
+          "description": "special fee percentage.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setPriceOracle(address)",
+      "name": "setPriceOracle",
+      "description": "Owner can set price oracle address.",
+      "parameterDecorators": [
+        {
+          "name": "_priceOracle",
+          "description": "Router address to add.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setSpecialFeeToken(address)",
+      "name": "setSpecialFeeToken",
+      "description": "Owner can set special fee token.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "ERC20 Token address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "specialFeePercent()",
+      "name": "specialFeePercent",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "specialFeeToken()",
+      "name": "specialFeeToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "upgradeTo(address)",
+      "name": "upgradeTo",
+      "description": "Upgrade the implementation of the proxy to `newImplementation`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "Upgraded(address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeToAndCall(address,bytes)",
+      "name": "upgradeToAndCall",
+      "description": "Upgrade the implementation of the proxy to `newImplementation`, and subsequently execute the function call encoded in `data`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "Upgraded(address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "variantTransactionData(bytes32)",
+      "name": "variantTransactionData",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

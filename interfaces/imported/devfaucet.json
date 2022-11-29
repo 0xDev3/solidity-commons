@@ -1,1 +1,373 @@
-{"schema":"../schema.json","tags":["tokens"],"name":"DevFaucet","description":"TODO - get this to be forward compatible if new contracts are deployed i.e. if a new token is added, how can we mint without redeploying a contract Add daily limit to prevent abuse.","eventDecorators":[{"signature":"AuthorityUpdated(address)","name":"AuthorityUpdated","description":"event emitted when a user has unstaked a token.","parameterDecorators":[{"name":"authority","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"DAI()","name":"DAI","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"addOHM(address)","name":"addOHM","description":"","parameterDecorators":[{"name":"ohm_","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"addStaking(address)","name":"addStaking","description":"","parameterDecorators":[{"name":"staking_","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"approveStaking(address,address)","name":"approveStaking","description":"","parameterDecorators":[{"name":"ohm_","description":"","recommendedTypes":[]},{"name":"staking_","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"authority()","name":"authority","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"futureStaking(uint256)","name":"futureStaking","description":"Define array to push future staking contracts to if they are ever swapped.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"lastMint(address)","name":"lastMint","description":"Keep track of the last block a user minted at so we can prevent spam.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"mintDAI()","name":"mintDAI","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"mintETH(uint256)","name":"mintETH","description":"","parameterDecorators":[{"name":"amount_","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"mintGOHM()","name":"mintGOHM","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"mintOHM(uint256)","name":"mintOHM","description":"","parameterDecorators":[{"name":"ohmIndex_","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"mintSOHM(uint256)","name":"mintSOHM","description":"","parameterDecorators":[{"name":"ohmIndex_","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"mintWSOHM()","name":"mintWSOHM","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"mintable(uint256)","name":"mintable","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"setAuthority(address)","name":"setAuthority","description":"","parameterDecorators":[{"name":"_newAuthority","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setDAI(address)","name":"setDAI","description":"","parameterDecorators":[{"name":"dai_","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setOHM(uint256,address)","name":"setOHM","description":"","parameterDecorators":[{"name":"ohmIndex_","description":"","recommendedTypes":[]},{"name":"ohm_","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setStakingV1(address)","name":"setStakingV1","description":"","parameterDecorators":[{"name":"stakingV1_","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setStakingV2(address)","name":"setStakingV2","description":"","parameterDecorators":[{"name":"stakingV2_","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"stakingV1()","name":"stakingV1","description":"Define current staking contracts.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"stakingV2()","name":"stakingV2","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"wsOHM()","name":"wsOHM","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens"
+  ],
+  "name": "DevFaucet",
+  "description": "TODO - get this to be forward compatible if new contracts are deployed i.e. if a new token is added, how can we mint without redeploying a contract Add daily limit to prevent abuse.",
+  "eventDecorators": [
+    {
+      "signature": "AuthorityUpdated(address)",
+      "name": "AuthorityUpdated",
+      "description": "event emitted when a user has unstaked a token.",
+      "parameterDecorators": [
+        {
+          "name": "authority",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "DAI()",
+      "name": "DAI",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addOHM(address)",
+      "name": "addOHM",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "ohm_",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addStaking(address)",
+      "name": "addStaking",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "staking_",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "approveStaking(address,address)",
+      "name": "approveStaking",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "ohm_",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "staking_",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "authority()",
+      "name": "authority",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "futureStaking(uint256)",
+      "name": "futureStaking",
+      "description": "Define array to push future staking contracts to if they are ever swapped.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastMint(address)",
+      "name": "lastMint",
+      "description": "Keep track of the last block a user minted at so we can prevent spam.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "mintDAI()",
+      "name": "mintDAI",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "mintETH(uint256)",
+      "name": "mintETH",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount_",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "mintGOHM()",
+      "name": "mintGOHM",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "mintOHM(uint256)",
+      "name": "mintOHM",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "ohmIndex_",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "mintSOHM(uint256)",
+      "name": "mintSOHM",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "ohmIndex_",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "mintWSOHM()",
+      "name": "mintWSOHM",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "mintable(uint256)",
+      "name": "mintable",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setAuthority(address)",
+      "name": "setAuthority",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_newAuthority",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDAI(address)",
+      "name": "setDAI",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "dai_",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setOHM(uint256,address)",
+      "name": "setOHM",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "ohmIndex_",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ohm_",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setStakingV1(address)",
+      "name": "setStakingV1",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "stakingV1_",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setStakingV2(address)",
+      "name": "setStakingV2",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "stakingV2_",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stakingV1()",
+      "name": "stakingV1",
+      "description": "Define current staking contracts.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "stakingV2()",
+      "name": "stakingV2",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "wsOHM()",
+      "name": "wsOHM",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

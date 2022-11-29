@@ -1,1 +1,1151 @@
-{"schema":"../schema.json","tags":["tokens","liquidity"],"name":"LiquidityProtectionStore","description":"This contract serves as the storage of the liquidity protection mechanism. It holds the data and tokens, and it is generally non-upgradable.","eventDecorators":[{"signature":"BalanceLocked(address,uint256,uint256)","name":"BalanceLocked","description":"events for transfer. triggered when network tokens are locked.","parameterDecorators":[{"name":"_provider","description":"provider of the network tokens.","recommendedTypes":[],"indexed":true},{"name":"_amount","description":"amount of network tokens.","recommendedTypes":[],"indexed":false},{"name":"_expirationTime","description":"lock expiration time.","recommendedTypes":[],"indexed":false}]},{"signature":"BalanceUnlocked(address,uint256)","name":"BalanceUnlocked","description":"events for transfer. triggered when network tokens are unlocked.","parameterDecorators":[{"name":"_provider","description":"provider of the network tokens.","recommendedTypes":[],"indexed":true},{"name":"_amount","description":"amount of network tokens.","recommendedTypes":[],"indexed":false}]},{"signature":"PositionAdded(uint256,address,address,address,uint256,uint256)","name":"PositionAdded","description":"events for transfer. triggered when a position is added.","parameterDecorators":[{"name":"_id","description":"position id.","recommendedTypes":[],"indexed":false},{"name":"_provider","description":"liquidity provider.","recommendedTypes":[],"indexed":true},{"name":"_poolToken","description":"pool token address.","recommendedTypes":[],"indexed":true},{"name":"_reserveToken","description":"reserve token address.","recommendedTypes":[],"indexed":true},{"name":"_poolAmount","description":"amount of pool tokens.","recommendedTypes":[],"indexed":false},{"name":"_reserveAmount","description":"amount of reserve tokens.","recommendedTypes":[],"indexed":false}]},{"signature":"PositionRemoved(uint256,address,address,address,uint256,uint256)","name":"PositionRemoved","description":"events for transfer. triggered when a position is removed.","parameterDecorators":[{"name":"_id","description":"position id.","recommendedTypes":[],"indexed":false},{"name":"_provider","description":"liquidity provider.","recommendedTypes":[],"indexed":true},{"name":"_poolToken","description":"pool token address.","recommendedTypes":[],"indexed":true},{"name":"_reserveToken","description":"reserve token address.","recommendedTypes":[],"indexed":true},{"name":"_poolAmount","description":"amount of pool tokens.","recommendedTypes":[],"indexed":false},{"name":"_reserveAmount","description":"amount of reserve tokens.","recommendedTypes":[],"indexed":false}]},{"signature":"PositionUpdated(uint256,address,address,address,int256,int256)","name":"PositionUpdated","description":"events for transfer. triggered when a position is updated.","parameterDecorators":[{"name":"_id","description":"position id.","recommendedTypes":[],"indexed":false},{"name":"_provider","description":"liquidity provider.","recommendedTypes":[],"indexed":true},{"name":"_poolToken","description":"pool token address.","recommendedTypes":[],"indexed":true},{"name":"_reserveToken","description":"reserve token address.","recommendedTypes":[],"indexed":true},{"name":"_deltaPoolAmount","description":"delta amount of pool tokens.","recommendedTypes":[],"indexed":false},{"name":"_deltaReserveAmount","description":"delta amount of reserve tokens.","recommendedTypes":[],"indexed":false}]},{"signature":"RoleAdminChanged(bytes32,bytes32,bytes32)","name":"RoleAdminChanged","description":"events for transfer.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[],"indexed":true},{"name":"previousAdminRole","description":"","recommendedTypes":[],"indexed":true},{"name":"newAdminRole","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"RoleGranted(bytes32,address,address)","name":"RoleGranted","description":"events for transfer.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[],"indexed":true},{"name":"account","description":"","recommendedTypes":[],"indexed":true},{"name":"sender","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"RoleRevoked(bytes32,address,address)","name":"RoleRevoked","description":"events for transfer.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[],"indexed":true},{"name":"account","description":"","recommendedTypes":[],"indexed":true},{"name":"sender","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"SystemBalanceUpdated(address,uint256,uint256)","name":"SystemBalanceUpdated","description":"events for transfer. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"_token","description":"token address.","recommendedTypes":[],"indexed":false},{"name":"_prevAmount","description":"previous amount.","recommendedTypes":[],"indexed":false},{"name":"_newAmount","description":"new amount.","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"DEFAULT_ADMIN_ROLE()","name":"DEFAULT_ADMIN_ROLE","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"ROLE_OWNER()","name":"ROLE_OWNER","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"ROLE_SEEDER()","name":"ROLE_SEEDER","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"addLockedBalance(address,uint256,uint256)","name":"addLockedBalance","description":"adds new locked network token balance can only be called by the contract owner.","parameterDecorators":[{"name":"_provider","description":"liquidity provider.","recommendedTypes":[]},{"name":"_amount","description":"token amount.","recommendedTypes":[]},{"name":"_expirationTime","description":"lock expiration time.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"new locked balance index.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"addProtectedLiquidity(address,address,address,uint256,uint256,uint256,uint256,uint256)","name":"addProtectedLiquidity","description":"adds protected liquidity can only be called by the contract owner.","parameterDecorators":[{"name":"_provider","description":"liquidity provider.","recommendedTypes":[]},{"name":"_poolToken","description":"pool token address.","recommendedTypes":[]},{"name":"_reserveToken","description":"reserve token address.","recommendedTypes":[]},{"name":"_poolAmount","description":"pool token amount.","recommendedTypes":[]},{"name":"_reserveAmount","description":"reserve token amount.","recommendedTypes":[]},{"name":"_reserveRateN","description":"rate of 1 protected reserve token in units of the other reserve token (numerator).","recommendedTypes":[]},{"name":"_reserveRateD","description":"rate of 1 protected reserve token in units of the other reserve token (denominator).","recommendedTypes":[]},{"name":"_timestamp","description":"timestamp.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"new protected liquidity id.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"decSystemBalance(address,uint256)","name":"decSystemBalance","description":"decreases the system balance for a given token can only be called by the contract owner.","parameterDecorators":[{"name":"_token","description":"token address.","recommendedTypes":[]},{"name":"_amount","description":"token amount.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getRoleAdmin(bytes32)","name":"getRoleAdmin","description":"Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"getRoleMember(bytes32,uint256)","name":"getRoleMember","description":"Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]},{"name":"index","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getRoleMemberCount(bytes32)","name":"getRoleMemberCount","description":"Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"grantRole(bytes32,address)","name":"grantRole","description":"Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted} event. Requirements: - the caller must have ``role``'s admin role.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]},{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":["RoleGranted(bytes32,address,address)"],"readOnly":false},{"signature":"hasRole(bytes32,address)","name":"hasRole","description":"Returns `true` if `account` has been granted `role`.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]},{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"incSystemBalance(address,uint256)","name":"incSystemBalance","description":"increases the system balance for a given token can only be called by the contract owner.","parameterDecorators":[{"name":"_token","description":"token address.","recommendedTypes":[]},{"name":"_amount","description":"token amount.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"lockedBalance(address,uint256)","name":"lockedBalance","description":"returns an existing locked network token balance details.","parameterDecorators":[{"name":"_provider","description":"locked balances provider.","recommendedTypes":[]},{"name":"_index","description":"start index.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"amount of network tokens.","recommendedTypes":[],"solidityType":"uint256"},{"name":"_1","description":"lock expiration time.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"lockedBalanceCount(address)","name":"lockedBalanceCount","description":"returns the number of network token locked balances for a given provider.","parameterDecorators":[{"name":"_provider","description":"locked balances provider.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the number of network token locked balances.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"lockedBalanceRange(address,uint256,uint256)","name":"lockedBalanceRange","description":"returns a range of locked network token balances for a given provider.","parameterDecorators":[{"name":"_provider","description":"locked balances provider.","recommendedTypes":[]},{"name":"_startIndex","description":"start index.","recommendedTypes":[]},{"name":"_endIndex","description":"end index (exclusive).","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"locked amounts.","recommendedTypes":[],"solidityType":"uint256[]"},{"name":"_1","description":"expiration times.","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"protectedLiquidity(uint256)","name":"protectedLiquidity","description":"returns an existing protected liquidity details.","parameterDecorators":[{"name":"_id","description":"protected liquidity id.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"liquidity provider.","recommendedTypes":[],"solidityType":"address"},{"name":"_1","description":"pool token address.","recommendedTypes":[],"solidityType":"address"},{"name":"_2","description":"reserve token address.","recommendedTypes":[],"solidityType":"address"},{"name":"_3","description":"pool token amount.","recommendedTypes":[],"solidityType":"uint256"},{"name":"_4","description":"reserve token amount.","recommendedTypes":[],"solidityType":"uint256"},{"name":"_5","description":"rate of 1 protected reserve token in units of the other reserve token (numerator).","recommendedTypes":[],"solidityType":"uint256"},{"name":"_6","description":"rate of 1 protected reserve token in units of the other reserve token (denominator).","recommendedTypes":[],"solidityType":"uint256"},{"name":"_7","description":"timestamp.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"protectedLiquidityCount(address)","name":"protectedLiquidityCount","description":"returns the number of protected liquidities for the given provider.","parameterDecorators":[{"name":"_provider","description":"liquidity provider.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"number of protected liquidities.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"protectedLiquidityId(address,uint256)","name":"protectedLiquidityId","description":"returns the id of a protected liquidity for the given provider at a specific index.","parameterDecorators":[{"name":"_provider","description":"liquidity provider.","recommendedTypes":[]},{"name":"_index","description":"protected liquidity index.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"protected liquidity id.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"protectedLiquidityIds(address)","name":"protectedLiquidityIds","description":"returns the list of protected liquidity ids for the given provider.","parameterDecorators":[{"name":"_provider","description":"liquidity provider.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"protected liquidity ids.","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"removeLockedBalance(address,uint256)","name":"removeLockedBalance","description":"removes a locked network token balance can only be called by the contract owner.","parameterDecorators":[{"name":"_provider","description":"liquidity provider.","recommendedTypes":[]},{"name":"_index","description":"index of the locked balance.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"removeProtectedLiquidity(uint256)","name":"removeProtectedLiquidity","description":"removes protected liquidity can only be called by the contract owner.","parameterDecorators":[{"name":"_id","description":"protected liquidity id.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"renounceRole(bytes32,address)","name":"renounceRole","description":"Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]},{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":["RoleRevoked(bytes32,address,address)"],"readOnly":false},{"signature":"revokeRole(bytes32,address)","name":"revokeRole","description":"Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]},{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":["RoleRevoked(bytes32,address,address)"],"readOnly":false},{"signature":"seedLockedBalances(address[],uint256[],uint256[])","name":"seedLockedBalances","description":"","parameterDecorators":[{"name":"_providers","description":"","recommendedTypes":[]},{"name":"_amounts","description":"","recommendedTypes":[]},{"name":"_expirationTimes","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"seedNextProtectedLiquidityId(uint256)","name":"seedNextProtectedLiquidityId","description":"","parameterDecorators":[{"name":"_nextProtectedLiquidityId","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"seedProtectedLiquidities(uint256[],address[],address[],address[],uint256[],uint256[],uint256[],uint256[],uint256[])","name":"seedProtectedLiquidities","description":"","parameterDecorators":[{"name":"_ids","description":"","recommendedTypes":[]},{"name":"_providers","description":"","recommendedTypes":[]},{"name":"_poolTokens","description":"","recommendedTypes":[]},{"name":"_reserveTokens","description":"","recommendedTypes":[]},{"name":"_poolAmounts","description":"","recommendedTypes":[]},{"name":"_reserveAmounts","description":"","recommendedTypes":[]},{"name":"_reserveRateNs","description":"","recommendedTypes":[]},{"name":"_reserveRateDs","description":"","recommendedTypes":[]},{"name":"_timestamps","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"seedSystemBalances(address[],uint256[],uint256[],address[],address[],uint256[],uint256[])","name":"seedSystemBalances","description":"","parameterDecorators":[{"name":"_tokens","description":"","recommendedTypes":[]},{"name":"_systemBalances","description":"","recommendedTypes":[]},{"name":"_poolAmounts","description":"","recommendedTypes":[]},{"name":"_reserve0s","description":"","recommendedTypes":[]},{"name":"_reserve1s","description":"","recommendedTypes":[]},{"name":"_reserve0Amounts","description":"","recommendedTypes":[]},{"name":"_reserve1Amounts","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"systemBalance(address)","name":"systemBalance","description":"returns the system balance for a given token.","parameterDecorators":[{"name":"_token","description":"token address.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"system balance.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"totalProtectedPoolAmount(address)","name":"totalProtectedPoolAmount","description":"returns the total protected pool token amount for a given pool.","parameterDecorators":[{"name":"_poolToken","description":"pool token address.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"total protected amount.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"totalProtectedReserveAmount(address,address)","name":"totalProtectedReserveAmount","description":"returns the total protected reserve amount for a given pool.","parameterDecorators":[{"name":"_poolToken","description":"pool token address.","recommendedTypes":[]},{"name":"_reserveToken","description":"reserve token address.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"total protected amount.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"updateProtectedLiquidityAmounts(uint256,uint256,uint256)","name":"updateProtectedLiquidityAmounts","description":"updates an existing protected liquidity pool/reserve amounts can only be called by the contract owner.","parameterDecorators":[{"name":"_id","description":"protected liquidity id.","recommendedTypes":[]},{"name":"_newPoolAmount","description":"new pool tokens amount.","recommendedTypes":[]},{"name":"_newReserveAmount","description":"new reserve tokens amount.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdrawTokens(address,address,uint256)","name":"withdrawTokens","description":"withdraws tokens held by the contract can only be called by the contract owner.","parameterDecorators":[{"name":"_token","description":"token address.","recommendedTypes":[]},{"name":"_to","description":"recipient address.","recommendedTypes":[]},{"name":"_amount","description":"amount to withdraw.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "liquidity"
+  ],
+  "name": "LiquidityProtectionStore",
+  "description": "This contract serves as the storage of the liquidity protection mechanism. It holds the data and tokens, and it is generally non-upgradable.",
+  "eventDecorators": [
+    {
+      "signature": "BalanceLocked(address,uint256,uint256)",
+      "name": "BalanceLocked",
+      "description": "events for transfer. triggered when network tokens are locked.",
+      "parameterDecorators": [
+        {
+          "name": "_provider",
+          "description": "provider of the network tokens.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_amount",
+          "description": "amount of network tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_expirationTime",
+          "description": "lock expiration time.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BalanceUnlocked(address,uint256)",
+      "name": "BalanceUnlocked",
+      "description": "events for transfer. triggered when network tokens are unlocked.",
+      "parameterDecorators": [
+        {
+          "name": "_provider",
+          "description": "provider of the network tokens.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_amount",
+          "description": "amount of network tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PositionAdded(uint256,address,address,address,uint256,uint256)",
+      "name": "PositionAdded",
+      "description": "events for transfer. triggered when a position is added.",
+      "parameterDecorators": [
+        {
+          "name": "_id",
+          "description": "position id.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_provider",
+          "description": "liquidity provider.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_poolToken",
+          "description": "pool token address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_reserveToken",
+          "description": "reserve token address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_poolAmount",
+          "description": "amount of pool tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_reserveAmount",
+          "description": "amount of reserve tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PositionRemoved(uint256,address,address,address,uint256,uint256)",
+      "name": "PositionRemoved",
+      "description": "events for transfer. triggered when a position is removed.",
+      "parameterDecorators": [
+        {
+          "name": "_id",
+          "description": "position id.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_provider",
+          "description": "liquidity provider.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_poolToken",
+          "description": "pool token address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_reserveToken",
+          "description": "reserve token address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_poolAmount",
+          "description": "amount of pool tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_reserveAmount",
+          "description": "amount of reserve tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PositionUpdated(uint256,address,address,address,int256,int256)",
+      "name": "PositionUpdated",
+      "description": "events for transfer. triggered when a position is updated.",
+      "parameterDecorators": [
+        {
+          "name": "_id",
+          "description": "position id.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_provider",
+          "description": "liquidity provider.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_poolToken",
+          "description": "pool token address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_reserveToken",
+          "description": "reserve token address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_deltaPoolAmount",
+          "description": "delta amount of pool tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_deltaReserveAmount",
+          "description": "delta amount of reserve tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RoleAdminChanged(bytes32,bytes32,bytes32)",
+      "name": "RoleAdminChanged",
+      "description": "events for transfer.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "previousAdminRole",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newAdminRole",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RoleGranted(bytes32,address,address)",
+      "name": "RoleGranted",
+      "description": "events for transfer.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RoleRevoked(bytes32,address,address)",
+      "name": "RoleRevoked",
+      "description": "events for transfer.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "SystemBalanceUpdated(address,uint256,uint256)",
+      "name": "SystemBalanceUpdated",
+      "description": "events for transfer. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "token address.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_prevAmount",
+          "description": "previous amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_newAmount",
+          "description": "new amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "DEFAULT_ADMIN_ROLE()",
+      "name": "DEFAULT_ADMIN_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ROLE_OWNER()",
+      "name": "ROLE_OWNER",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ROLE_SEEDER()",
+      "name": "ROLE_SEEDER",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addLockedBalance(address,uint256,uint256)",
+      "name": "addLockedBalance",
+      "description": "adds new locked network token balance can only be called by the contract owner.",
+      "parameterDecorators": [
+        {
+          "name": "_provider",
+          "description": "liquidity provider.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "token amount.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_expirationTime",
+          "description": "lock expiration time.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "new locked balance index.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addProtectedLiquidity(address,address,address,uint256,uint256,uint256,uint256,uint256)",
+      "name": "addProtectedLiquidity",
+      "description": "adds protected liquidity can only be called by the contract owner.",
+      "parameterDecorators": [
+        {
+          "name": "_provider",
+          "description": "liquidity provider.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_poolToken",
+          "description": "pool token address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserveToken",
+          "description": "reserve token address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_poolAmount",
+          "description": "pool token amount.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserveAmount",
+          "description": "reserve token amount.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserveRateN",
+          "description": "rate of 1 protected reserve token in units of the other reserve token (numerator).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserveRateD",
+          "description": "rate of 1 protected reserve token in units of the other reserve token (denominator).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_timestamp",
+          "description": "timestamp.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "new protected liquidity id.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "decSystemBalance(address,uint256)",
+      "name": "decSystemBalance",
+      "description": "decreases the system balance for a given token can only be called by the contract owner.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "token address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "token amount.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getRoleAdmin(bytes32)",
+      "name": "getRoleAdmin",
+      "description": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoleMember(bytes32,uint256)",
+      "name": "getRoleMember",
+      "description": "Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoleMemberCount(bytes32)",
+      "name": "getRoleMemberCount",
+      "description": "Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "grantRole(bytes32,address)",
+      "name": "grantRole",
+      "description": "Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted} event. Requirements: - the caller must have ``role``'s admin role.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "RoleGranted(bytes32,address,address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "hasRole(bytes32,address)",
+      "name": "hasRole",
+      "description": "Returns `true` if `account` has been granted `role`.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "incSystemBalance(address,uint256)",
+      "name": "incSystemBalance",
+      "description": "increases the system balance for a given token can only be called by the contract owner.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "token address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "token amount.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lockedBalance(address,uint256)",
+      "name": "lockedBalance",
+      "description": "returns an existing locked network token balance details.",
+      "parameterDecorators": [
+        {
+          "name": "_provider",
+          "description": "locked balances provider.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_index",
+          "description": "start index.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "amount of network tokens.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_1",
+          "description": "lock expiration time.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lockedBalanceCount(address)",
+      "name": "lockedBalanceCount",
+      "description": "returns the number of network token locked balances for a given provider.",
+      "parameterDecorators": [
+        {
+          "name": "_provider",
+          "description": "locked balances provider.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the number of network token locked balances.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lockedBalanceRange(address,uint256,uint256)",
+      "name": "lockedBalanceRange",
+      "description": "returns a range of locked network token balances for a given provider.",
+      "parameterDecorators": [
+        {
+          "name": "_provider",
+          "description": "locked balances provider.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_startIndex",
+          "description": "start index.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_endIndex",
+          "description": "end index (exclusive).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "locked amounts.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_1",
+          "description": "expiration times.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "protectedLiquidity(uint256)",
+      "name": "protectedLiquidity",
+      "description": "returns an existing protected liquidity details.",
+      "parameterDecorators": [
+        {
+          "name": "_id",
+          "description": "protected liquidity id.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "liquidity provider.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "_1",
+          "description": "pool token address.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "_2",
+          "description": "reserve token address.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "_3",
+          "description": "pool token amount.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_4",
+          "description": "reserve token amount.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_5",
+          "description": "rate of 1 protected reserve token in units of the other reserve token (numerator).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_6",
+          "description": "rate of 1 protected reserve token in units of the other reserve token (denominator).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_7",
+          "description": "timestamp.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "protectedLiquidityCount(address)",
+      "name": "protectedLiquidityCount",
+      "description": "returns the number of protected liquidities for the given provider.",
+      "parameterDecorators": [
+        {
+          "name": "_provider",
+          "description": "liquidity provider.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "number of protected liquidities.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "protectedLiquidityId(address,uint256)",
+      "name": "protectedLiquidityId",
+      "description": "returns the id of a protected liquidity for the given provider at a specific index.",
+      "parameterDecorators": [
+        {
+          "name": "_provider",
+          "description": "liquidity provider.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_index",
+          "description": "protected liquidity index.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "protected liquidity id.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "protectedLiquidityIds(address)",
+      "name": "protectedLiquidityIds",
+      "description": "returns the list of protected liquidity ids for the given provider.",
+      "parameterDecorators": [
+        {
+          "name": "_provider",
+          "description": "liquidity provider.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "protected liquidity ids.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeLockedBalance(address,uint256)",
+      "name": "removeLockedBalance",
+      "description": "removes a locked network token balance can only be called by the contract owner.",
+      "parameterDecorators": [
+        {
+          "name": "_provider",
+          "description": "liquidity provider.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_index",
+          "description": "index of the locked balance.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeProtectedLiquidity(uint256)",
+      "name": "removeProtectedLiquidity",
+      "description": "removes protected liquidity can only be called by the contract owner.",
+      "parameterDecorators": [
+        {
+          "name": "_id",
+          "description": "protected liquidity id.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceRole(bytes32,address)",
+      "name": "renounceRole",
+      "description": "Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "RoleRevoked(bytes32,address,address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "revokeRole(bytes32,address)",
+      "name": "revokeRole",
+      "description": "Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "RoleRevoked(bytes32,address,address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "seedLockedBalances(address[],uint256[],uint256[])",
+      "name": "seedLockedBalances",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_providers",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amounts",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_expirationTimes",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "seedNextProtectedLiquidityId(uint256)",
+      "name": "seedNextProtectedLiquidityId",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_nextProtectedLiquidityId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "seedProtectedLiquidities(uint256[],address[],address[],address[],uint256[],uint256[],uint256[],uint256[],uint256[])",
+      "name": "seedProtectedLiquidities",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_ids",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_providers",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_poolTokens",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserveTokens",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_poolAmounts",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserveAmounts",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserveRateNs",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserveRateDs",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_timestamps",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "seedSystemBalances(address[],uint256[],uint256[],address[],address[],uint256[],uint256[])",
+      "name": "seedSystemBalances",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokens",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_systemBalances",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_poolAmounts",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserve0s",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserve1s",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserve0Amounts",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserve1Amounts",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "systemBalance(address)",
+      "name": "systemBalance",
+      "description": "returns the system balance for a given token.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "token address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "system balance.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalProtectedPoolAmount(address)",
+      "name": "totalProtectedPoolAmount",
+      "description": "returns the total protected pool token amount for a given pool.",
+      "parameterDecorators": [
+        {
+          "name": "_poolToken",
+          "description": "pool token address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "total protected amount.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalProtectedReserveAmount(address,address)",
+      "name": "totalProtectedReserveAmount",
+      "description": "returns the total protected reserve amount for a given pool.",
+      "parameterDecorators": [
+        {
+          "name": "_poolToken",
+          "description": "pool token address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_reserveToken",
+          "description": "reserve token address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "total protected amount.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "updateProtectedLiquidityAmounts(uint256,uint256,uint256)",
+      "name": "updateProtectedLiquidityAmounts",
+      "description": "updates an existing protected liquidity pool/reserve amounts can only be called by the contract owner.",
+      "parameterDecorators": [
+        {
+          "name": "_id",
+          "description": "protected liquidity id.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newPoolAmount",
+          "description": "new pool tokens amount.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newReserveAmount",
+          "description": "new reserve tokens amount.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawTokens(address,address,uint256)",
+      "name": "withdrawTokens",
+      "description": "withdraws tokens held by the contract can only be called by the contract owner.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "token address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "recipient address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "amount to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

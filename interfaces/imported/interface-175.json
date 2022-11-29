@@ -1,1 +1,338 @@
-{"schema":"../schema.json","tags":["tokens","vesting","locking","celo network"],"name":"CeloHedgeyOTC","description":"HedgeyOTC is an over the counter peer to peer trading contract. This contract allows for a seller to generate a unique over the counter deal, which can be private or publicThe public deals allow anyone to participate and purchase tokens from the seller, whereas a private deal allows only a single whitelisted address to participateThe Seller decides how much tokens to sell and at what priceThe Seller also decides if the tokens being sold must be time locked - which means that there is a vesting period before the buyers can access those tokens.","eventDecorators":[{"signature":"DealClosed(uint256)","name":"DealClosed","description":"Triggered when a user has withdrawn.","parameterDecorators":[{"name":"_d","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"FutureCreated(address,address,uint256,uint256)","name":"FutureCreated","description":"Triggered when a user has withdrawn.","parameterDecorators":[{"name":"_owner","description":"","recommendedTypes":[],"indexed":false},{"name":"_token","description":"","recommendedTypes":[],"indexed":false},{"name":"_amount","description":"","recommendedTypes":[],"indexed":false},{"name":"_unlockDate","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"NewDeal(uint256,address,address,address,uint256,uint256,uint256,uint256,uint256,address)","name":"NewDeal","description":"Triggered when a user has withdrawn. events for each function.","parameterDecorators":[{"name":"_d","description":"","recommendedTypes":[],"indexed":false},{"name":"_seller","description":"","recommendedTypes":[],"indexed":false},{"name":"_token","description":"","recommendedTypes":[],"indexed":false},{"name":"_paymentCurrency","description":"","recommendedTypes":[],"indexed":false},{"name":"_remainingAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"_minimumPurchase","description":"","recommendedTypes":[],"indexed":false},{"name":"_price","description":"","recommendedTypes":[],"indexed":false},{"name":"_maturity","description":"","recommendedTypes":[],"indexed":false},{"name":"_unlockDate","description":"","recommendedTypes":[],"indexed":false},{"name":"_buyer","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TokensBought(uint256,uint256,uint256)","name":"TokensBought","description":"Triggered when a user has withdrawn.","parameterDecorators":[{"name":"_d","description":"","recommendedTypes":[],"indexed":false},{"name":"_amount","description":"","recommendedTypes":[],"indexed":false},{"name":"_remainingAmount","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"buy(uint256,uint256)","name":"buy","description":"This function is what buyers use to make purchases from the sellersensure when using this function that you are aware of the minimums, and price per token to ensure sufficient balances to make a purchaseif the deal has an unlockDate that is beyond the current block time - no tokens will be received by the buyer, but rather they will receivean NFT, which represents their ability to redeem and claim the locked tokens after the unlockDate has passedthe NFT is minted from the futureContract, where the locked tokens are delivered to and heldthe Seller will receive payment in full immediately when triggering this function, there is no lock on payments. this function can also be used to execute a token SWAP function, where the swap is executed through this function.","parameterDecorators":[{"name":"_d","description":"is the index of the deal that a buyer wants to participate in and make a purchase.","recommendedTypes":[]},{"name":"_amount","description":"is the amount of tokens the buyer is purchasing, which must be at least the minimumPurchase ... and at most the remainingAmount for this deal (or the remainingAmount if that is less than the minimum).","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"close(uint256)","name":"close","description":"This function lets a seller cancel their existing deal anytime they if they want to, including before the maturity dateall that is required is that the deal has not been closed, and that there is still a reamining balance. you need to know the index _d of the deal you are trying to close and that is itonly the seller can close this dealonce this has been called the Deal struct in storage is deleted so that it cannot be accessed for any further methods.","parameterDecorators":[{"name":"_d","description":"is the dealID that is mapped to the Struct Deal.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"create(address,address,uint256,uint256,uint256,uint256,uint256,address)","name":"create","description":"This function is what the seller uses to create a new OTC offeringOnce this function has been completed - buyers can purchase tokens from the seller based on the price and parameters set. this function will pull in tokens from the seller, create a new Deal struct and mapped to the current index dthis function does not allow for taxed / deflationary tokens - as the amount that is pulled into the contract must match with what is being sentthis function requires that the _token has a decimals() public function on its ERC20 contract to be called.","parameterDecorators":[{"name":"_token","description":"is the ERC20 contract address that the seller is going to create the over the counter offering for.","recommendedTypes":[]},{"name":"_paymentCurrency","description":"is the ERC20 contract address of the opposite ERC20 that the seller wants to get paid in when selling the token ... this can also be used for a token SWAP - where the ERC20 address of the token being swapped to is input as the paymentCurrency.","recommendedTypes":[]},{"name":"_amount","description":"is the amount of tokens that you as the seller want to sell.","recommendedTypes":[]},{"name":"_min","description":"is the minimum amount of tokens that a buyer can purchase from you. this should be less than or equal to the total amount.","recommendedTypes":[]},{"name":"_price","description":"is the price per token which the seller will get paid, denominated in the payment currency ... if this is a token SWAP, then the _price needs to be set as the ratio of the tokens being swapped - ie 10 for 10 paymentCurrency tokens to 1 token.","recommendedTypes":[]},{"name":"_maturity","description":"is how long you would like to allow buyers to purchase tokens from this deal, in unix time. this needs to be beyond current block time.","recommendedTypes":[]},{"name":"_unlockDate","description":"is used if you are requiring that tokens purchased by buyers are locked. If this is set to 0 or anything less than current block time ... any tokens purchased will not be locked but immediately delivered to the buyers. Otherwise the unlockDate will lock the tokens in the associated ... futureContract and mint the buyer an NFT - which will hold the tokens in escrow until the unlockDate has passed - whereupon the owner of the NFT can redeem the tokens.","recommendedTypes":[]},{"name":"_buyer","description":"is a special option to make this a private deal - where only a specific buyer's address can participate and make the purchase. If this is set to the ... Zero address - then it is publicly available and anyone can purchase tokens from this deal.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"d()","name":"d","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"deals(uint256)","name":"deals","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"seller","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"token","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"paymentCurrency","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"remainingAmount","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"minimumPurchase","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"price","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"maturity","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"unlockDate","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"buyer","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"futureContract()","name":"futureContract","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "vesting",
+    "locking",
+    "celo network"
+  ],
+  "name": "CeloHedgeyOTC",
+  "description": "HedgeyOTC is an over the counter peer to peer trading contract. This contract allows for a seller to generate a unique over the counter deal, which can be private or publicThe public deals allow anyone to participate and purchase tokens from the seller, whereas a private deal allows only a single whitelisted address to participateThe Seller decides how much tokens to sell and at what priceThe Seller also decides if the tokens being sold must be time locked - which means that there is a vesting period before the buyers can access those tokens.",
+  "eventDecorators": [
+    {
+      "signature": "DealClosed(uint256)",
+      "name": "DealClosed",
+      "description": "Triggered when a user has withdrawn.",
+      "parameterDecorators": [
+        {
+          "name": "_d",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "FutureCreated(address,address,uint256,uint256)",
+      "name": "FutureCreated",
+      "description": "Triggered when a user has withdrawn.",
+      "parameterDecorators": [
+        {
+          "name": "_owner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_unlockDate",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewDeal(uint256,address,address,address,uint256,uint256,uint256,uint256,uint256,address)",
+      "name": "NewDeal",
+      "description": "Triggered when a user has withdrawn. events for each function.",
+      "parameterDecorators": [
+        {
+          "name": "_d",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_seller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_paymentCurrency",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_remainingAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_minimumPurchase",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_price",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_maturity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_unlockDate",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_buyer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TokensBought(uint256,uint256,uint256)",
+      "name": "TokensBought",
+      "description": "Triggered when a user has withdrawn.",
+      "parameterDecorators": [
+        {
+          "name": "_d",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_remainingAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "buy(uint256,uint256)",
+      "name": "buy",
+      "description": "This function is what buyers use to make purchases from the sellersensure when using this function that you are aware of the minimums, and price per token to ensure sufficient balances to make a purchaseif the deal has an unlockDate that is beyond the current block time - no tokens will be received by the buyer, but rather they will receivean NFT, which represents their ability to redeem and claim the locked tokens after the unlockDate has passedthe NFT is minted from the futureContract, where the locked tokens are delivered to and heldthe Seller will receive payment in full immediately when triggering this function, there is no lock on payments. this function can also be used to execute a token SWAP function, where the swap is executed through this function.",
+      "parameterDecorators": [
+        {
+          "name": "_d",
+          "description": "is the index of the deal that a buyer wants to participate in and make a purchase.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "is the amount of tokens the buyer is purchasing, which must be at least the minimumPurchase ... and at most the remainingAmount for this deal (or the remainingAmount if that is less than the minimum).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "close(uint256)",
+      "name": "close",
+      "description": "This function lets a seller cancel their existing deal anytime they if they want to, including before the maturity dateall that is required is that the deal has not been closed, and that there is still a reamining balance. you need to know the index _d of the deal you are trying to close and that is itonly the seller can close this dealonce this has been called the Deal struct in storage is deleted so that it cannot be accessed for any further methods.",
+      "parameterDecorators": [
+        {
+          "name": "_d",
+          "description": "is the dealID that is mapped to the Struct Deal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "create(address,address,uint256,uint256,uint256,uint256,uint256,address)",
+      "name": "create",
+      "description": "This function is what the seller uses to create a new OTC offeringOnce this function has been completed - buyers can purchase tokens from the seller based on the price and parameters set. this function will pull in tokens from the seller, create a new Deal struct and mapped to the current index dthis function does not allow for taxed / deflationary tokens - as the amount that is pulled into the contract must match with what is being sentthis function requires that the _token has a decimals() public function on its ERC20 contract to be called.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "is the ERC20 contract address that the seller is going to create the over the counter offering for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_paymentCurrency",
+          "description": "is the ERC20 contract address of the opposite ERC20 that the seller wants to get paid in when selling the token ... this can also be used for a token SWAP - where the ERC20 address of the token being swapped to is input as the paymentCurrency.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "is the amount of tokens that you as the seller want to sell.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_min",
+          "description": "is the minimum amount of tokens that a buyer can purchase from you. this should be less than or equal to the total amount.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_price",
+          "description": "is the price per token which the seller will get paid, denominated in the payment currency ... if this is a token SWAP, then the _price needs to be set as the ratio of the tokens being swapped - ie 10 for 10 paymentCurrency tokens to 1 token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_maturity",
+          "description": "is how long you would like to allow buyers to purchase tokens from this deal, in unix time. this needs to be beyond current block time.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_unlockDate",
+          "description": "is used if you are requiring that tokens purchased by buyers are locked. If this is set to 0 or anything less than current block time ... any tokens purchased will not be locked but immediately delivered to the buyers. Otherwise the unlockDate will lock the tokens in the associated ... futureContract and mint the buyer an NFT - which will hold the tokens in escrow until the unlockDate has passed - whereupon the owner of the NFT can redeem the tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_buyer",
+          "description": "is a special option to make this a private deal - where only a specific buyer's address can participate and make the purchase. If this is set to the ... Zero address - then it is publicly available and anyone can purchase tokens from this deal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "d()",
+      "name": "d",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deals(uint256)",
+      "name": "deals",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "seller",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "paymentCurrency",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "remainingAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "minimumPurchase",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "maturity",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "unlockDate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "buyer",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "futureContract()",
+      "name": "futureContract",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

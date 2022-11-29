@@ -1,1 +1,564 @@
-{"schema":"../schema.json","tags":[],"name":"Chores","description":"An auction run by parents to incentivize kids to do chores. the most basic auction I can think of.","eventDecorators":[{"signature":"AddParent(address,address)","name":"AddParent","description":"An event emitted when a vote has been cast on a proposal.","parameterDecorators":[{"name":"newParent","description":"","recommendedTypes":[],"indexed":false},{"name":"initiator","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"AuctionBid(uint256,uint256,address)","name":"AuctionBid","description":"An event emitted when a vote has been cast on a proposal.","parameterDecorators":[{"name":"auctionId","description":"","recommendedTypes":[],"indexed":false},{"name":"totalPrice","description":"","recommendedTypes":[],"indexed":false},{"name":"winner","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"AuctionCreated(string,uint256,uint256,address)","name":"AuctionCreated","description":"An event emitted when a vote has been cast on a proposal.","parameterDecorators":[{"name":"chore","description":"","recommendedTypes":[],"indexed":false},{"name":"auctionId","description":"","recommendedTypes":[],"indexed":false},{"name":"price","description":"","recommendedTypes":[],"indexed":false},{"name":"creator","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"AuctionPaused(address,bool)","name":"AuctionPaused","description":"An event emitted when a vote has been cast on a proposal.","parameterDecorators":[{"name":"initiator","description":"","recommendedTypes":[],"indexed":false},{"name":"pausedState","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"AuctionSwept(uint256,uint256,address)","name":"AuctionSwept","description":"An event emitted when a vote has been cast on a proposal.","parameterDecorators":[{"name":"auctionId","description":"","recommendedTypes":[],"indexed":false},{"name":"price","description":"","recommendedTypes":[],"indexed":false},{"name":"sweeper","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ChoreCertified(uint256,uint256,address,address)","name":"ChoreCertified","description":"An event emitted when a vote has been cast on a proposal.","parameterDecorators":[{"name":"auctionId","description":"","recommendedTypes":[],"indexed":false},{"name":"price","description":"","recommendedTypes":[],"indexed":false},{"name":"kid","description":"","recommendedTypes":[],"indexed":false},{"name":"certifier","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RevokeParent(address,address)","name":"RevokeParent","description":"An event emitted when a vote has been cast on a proposal.","parameterDecorators":[{"name":"revokedParent","description":"","recommendedTypes":[],"indexed":false},{"name":"initiator","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RugPull(address)","name":"RugPull","description":"An event emitted when a vote has been cast on a proposal.","parameterDecorators":[{"name":"initiator","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"_computeCurrentPrice(uint256,uint256,uint256,uint256)","name":"_computeCurrentPrice","description":"shamelessly stolen from the cryptokitties contract 0x06012c8cf97BEaD5deAe237070F9587f8E7A266d originally was going to be a more complicated auction. leaving here for future extensibility. Computes the current price of an auction. Factored out from _currentPrice so we can run extensive unit tests. When testing, make this function public and turn on `Current price computation` test suite.","parameterDecorators":[{"name":"_startingPrice","description":"","recommendedTypes":[]},{"name":"_endingPrice","description":"","recommendedTypes":[]},{"name":"_duration","description":"","recommendedTypes":[]},{"name":"_secondsPassed","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"addParent(address)","name":"addParent","description":"Allows any parent to add additional parents. because 21st century.","parameterDecorators":[{"name":"newParent","description":"adding more parents.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"auctionCount()","name":"auctionCount","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"auctions(uint256)","name":"auctions","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"chore","description":"","recommendedTypes":[],"solidityType":"string"},{"name":"auctionId","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"price","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"bidAmount","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"startedAt","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"buyer","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"seller","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"bid(uint256)","name":"bid","description":"Kids can bid on some chores to do. Requires a 10% bond. price is calculated at current block change is calcualted and returned.","parameterDecorators":[{"name":"_auctionId","description":"- the auction in question.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"certifyWork(uint256)","name":"certifyWork","description":"the parents have to sign off on the [sometimes] shoddy work that kids do will transfer bidAmount to the buyer and will return the excess (if any) to the certifier technically not correct. mom could run off with all of dads extra money, but I'll call it an incentive to sign off on chores completed. It kind of doesn't matter. dad was going to pay $20 for the dishes anyways.","parameterDecorators":[{"name":"_auctionId","description":"- the auction in question.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"createAuction(string)","name":"createAuction","description":"parents can start an auction. Creates and begins a new auction. price of auction is set to msg.value.","parameterDecorators":[{"name":"_chore","description":"- The task to be completed for the winner.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"duration()","name":"duration","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"fetchAuction(uint256)","name":"fetchAuction","description":"","parameterDecorators":[{"name":"_auctionId","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"chore","description":"","recommendedTypes":[],"solidityType":"string"},{"name":"price","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"bidAmount","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"startedAt","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"buyer","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"seller","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getCurrentAuctionPrice(uint256)","name":"getCurrentAuctionPrice","description":"price is calculated at current block.","parameterDecorators":[{"name":"_auctionId","description":"- the auction in question.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"parents(address)","name":"parents","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"pauseContract()","name":"pauseContract","description":"Allows any Parent to pause the contract.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"priceCurve()","name":"priceCurve","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"revokeParenthood(address)","name":"revokeParenthood","description":"Allows any owner to revoke someone else.","parameterDecorators":[{"name":"revoked","description":"The address to remove parenthood priviliges from the contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"rugPull()","name":"rugPull","description":"Allows any Parent to rug pull if the contract is stopped.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"stopped()","name":"stopped","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"sweepExpiredAuction(uint256)","name":"sweepExpiredAuction","description":"sweeps the money back out of expired chores that nobody did assumes onlyParents are a #team and share money and don't care if one sweeps vs another.","parameterDecorators":[{"name":"_auctionId","description":"- the expired auction to sweep.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"togglePauseContract()","name":"togglePauseContract","description":"Allows any Parent to pause the contract.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "Chores",
+  "description": "An auction run by parents to incentivize kids to do chores. the most basic auction I can think of.",
+  "eventDecorators": [
+    {
+      "signature": "AddParent(address,address)",
+      "name": "AddParent",
+      "description": "An event emitted when a vote has been cast on a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "newParent",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "initiator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AuctionBid(uint256,uint256,address)",
+      "name": "AuctionBid",
+      "description": "An event emitted when a vote has been cast on a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "auctionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "winner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AuctionCreated(string,uint256,uint256,address)",
+      "name": "AuctionCreated",
+      "description": "An event emitted when a vote has been cast on a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "chore",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "auctionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "creator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AuctionPaused(address,bool)",
+      "name": "AuctionPaused",
+      "description": "An event emitted when a vote has been cast on a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "initiator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "pausedState",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AuctionSwept(uint256,uint256,address)",
+      "name": "AuctionSwept",
+      "description": "An event emitted when a vote has been cast on a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "auctionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "sweeper",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ChoreCertified(uint256,uint256,address,address)",
+      "name": "ChoreCertified",
+      "description": "An event emitted when a vote has been cast on a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "auctionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "kid",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "certifier",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RevokeParent(address,address)",
+      "name": "RevokeParent",
+      "description": "An event emitted when a vote has been cast on a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "revokedParent",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "initiator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RugPull(address)",
+      "name": "RugPull",
+      "description": "An event emitted when a vote has been cast on a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "initiator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "_computeCurrentPrice(uint256,uint256,uint256,uint256)",
+      "name": "_computeCurrentPrice",
+      "description": "shamelessly stolen from the cryptokitties contract 0x06012c8cf97BEaD5deAe237070F9587f8E7A266d originally was going to be a more complicated auction. leaving here for future extensibility. Computes the current price of an auction. Factored out from _currentPrice so we can run extensive unit tests. When testing, make this function public and turn on `Current price computation` test suite.",
+      "parameterDecorators": [
+        {
+          "name": "_startingPrice",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_endingPrice",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_duration",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_secondsPassed",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addParent(address)",
+      "name": "addParent",
+      "description": "Allows any parent to add additional parents. because 21st century.",
+      "parameterDecorators": [
+        {
+          "name": "newParent",
+          "description": "adding more parents.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "auctionCount()",
+      "name": "auctionCount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "auctions(uint256)",
+      "name": "auctions",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "chore",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        },
+        {
+          "name": "auctionId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "bidAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "startedAt",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "buyer",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "seller",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "bid(uint256)",
+      "name": "bid",
+      "description": "Kids can bid on some chores to do. Requires a 10% bond. price is calculated at current block change is calcualted and returned.",
+      "parameterDecorators": [
+        {
+          "name": "_auctionId",
+          "description": "- the auction in question.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "certifyWork(uint256)",
+      "name": "certifyWork",
+      "description": "the parents have to sign off on the [sometimes] shoddy work that kids do will transfer bidAmount to the buyer and will return the excess (if any) to the certifier technically not correct. mom could run off with all of dads extra money, but I'll call it an incentive to sign off on chores completed. It kind of doesn't matter. dad was going to pay $20 for the dishes anyways.",
+      "parameterDecorators": [
+        {
+          "name": "_auctionId",
+          "description": "- the auction in question.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createAuction(string)",
+      "name": "createAuction",
+      "description": "parents can start an auction. Creates and begins a new auction. price of auction is set to msg.value.",
+      "parameterDecorators": [
+        {
+          "name": "_chore",
+          "description": "- The task to be completed for the winner.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "duration()",
+      "name": "duration",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "fetchAuction(uint256)",
+      "name": "fetchAuction",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_auctionId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "chore",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        },
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "bidAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "startedAt",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "buyer",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "seller",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentAuctionPrice(uint256)",
+      "name": "getCurrentAuctionPrice",
+      "description": "price is calculated at current block.",
+      "parameterDecorators": [
+        {
+          "name": "_auctionId",
+          "description": "- the auction in question.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "parents(address)",
+      "name": "parents",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pauseContract()",
+      "name": "pauseContract",
+      "description": "Allows any Parent to pause the contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "priceCurve()",
+      "name": "priceCurve",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "revokeParenthood(address)",
+      "name": "revokeParenthood",
+      "description": "Allows any owner to revoke someone else.",
+      "parameterDecorators": [
+        {
+          "name": "revoked",
+          "description": "The address to remove parenthood priviliges from the contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rugPull()",
+      "name": "rugPull",
+      "description": "Allows any Parent to rug pull if the contract is stopped.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stopped()",
+      "name": "stopped",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "sweepExpiredAuction(uint256)",
+      "name": "sweepExpiredAuction",
+      "description": "sweeps the money back out of expired chores that nobody did assumes onlyParents are a #team and share money and don't care if one sweeps vs another.",
+      "parameterDecorators": [
+        {
+          "name": "_auctionId",
+          "description": "- the expired auction to sweep.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "togglePauseContract()",
+      "name": "togglePauseContract",
+      "description": "Allows any Parent to pause the contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

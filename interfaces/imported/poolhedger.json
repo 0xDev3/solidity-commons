@@ -1,1 +1,484 @@
-{"schema":"../schema.json","tags":["liquidity"],"name":"PoolHedger","description":"PoolHedger. Uses the delta hedging funds from the LiquidityPool to hedge option deltas, so LPs are minimally exposed to movements in the underlying asset price.","eventDecorators":[{"signature":"BaseExchanged(uint256,uint256)","name":"BaseExchanged","description":"event for token purchase logging. Emitted when base is sold.","parameterDecorators":[{"name":"baseAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"quoteReceived","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"InteractionDelaySet(uint256)","name":"InteractionDelaySet","description":"event for token purchase logging. Emitted when the interaction delay is set.","parameterDecorators":[{"name":"newInteractionDelay","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LongSetTo(uint256,uint256)","name":"LongSetTo","description":"event for token purchase logging. Emitted when the long exposure of the hedge contract is adjusted.","parameterDecorators":[{"name":"oldAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"newAmount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"event for token purchase logging.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"PositionUpdated(int256,int256,int256)","name":"PositionUpdated","description":"event for token purchase logging. Emitted when the hedge position is updated.","parameterDecorators":[{"name":"oldNetDelta","description":"","recommendedTypes":[],"indexed":false},{"name":"currentNetDelta","description":"","recommendedTypes":[],"indexed":false},{"name":"expectedNetDelta","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"QuoteExchanged(uint256,uint256)","name":"QuoteExchanged","description":"event for token purchase logging. Emitted when base is sold.","parameterDecorators":[{"name":"quoteAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"baseReceived","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"QuoteReturnedToLP(uint256)","name":"QuoteReturnedToLP","description":"event for token purchase logging. Emitted when proceeds of the short are sent back to the LP.","parameterDecorators":[{"name":"amountQuote","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ShortBufferSet(uint256)","name":"ShortBufferSet","description":"event for token purchase logging. Emitted when the short buffer ratio is set.","parameterDecorators":[{"name":"newShortBuffer","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ShortInitialized(uint256)","name":"ShortInitialized","description":"event for token purchase logging. Emitted when the short is initialized.","parameterDecorators":[{"name":"shortId","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ShortSetTo(uint256,uint256,uint256,uint256)","name":"ShortSetTo","description":"event for token purchase logging. Emitted when short or short collateral is adjusted.","parameterDecorators":[{"name":"oldShort","description":"","recommendedTypes":[],"indexed":false},{"name":"newShort","description":"","recommendedTypes":[],"indexed":false},{"name":"oldCollateral","description":"","recommendedTypes":[],"indexed":false},{"name":"newCollateral","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"getCurrentHedgedNetDelta()","name":"getCurrentHedgedNetDelta","description":"Returns the current hedged netDelta position.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":true},{"signature":"getShortPosition(address)","name":"getShortPosition","description":"Returns short balance and collateral.","parameterDecorators":[{"name":"short","description":"The short contract.","recommendedTypes":[]}],"returnDecorators":[{"name":"shortBalance","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"collateral","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getValueQuote(address,uint256)","name":"getValueQuote","description":"Returns the value of the long/short position held by the PoolHedger.","parameterDecorators":[{"name":"short","description":"The short contract.","recommendedTypes":[]},{"name":"spotPrice","description":"The price of the baseAsset.","recommendedTypes":[]}],"returnDecorators":[{"name":"value","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"hedgeDelta()","name":"hedgeDelta","description":"Retrieves the netDelta from the OptionGreekCache and updates the hedge position.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"init(address,address,address,address,address,address)","name":"init","description":"Initialize the contract.","parameterDecorators":[{"name":"_globals","description":"LyraGlobals address.","recommendedTypes":[]},{"name":"_optionMarket","description":"OptionMarket address.","recommendedTypes":[]},{"name":"_optionGreekCache","description":"","recommendedTypes":[]},{"name":"_liquidityPool","description":"LiquidityPool address.","recommendedTypes":[]},{"name":"_quoteAsset","description":"Quote asset address.","recommendedTypes":[]},{"name":"_baseAsset","description":"Base asset address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"initShort()","name":"initShort","description":"Initialises the short.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"interactionDelay()","name":"interactionDelay","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"lastInteraction()","name":"lastInteraction","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"reopenShort()","name":"reopenShort","description":"Reopens the short if the old one was closed or liquidated.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setInteractionDelay(uint256)","name":"setInteractionDelay","description":"Set the contract interaction delay.","parameterDecorators":[{"name":"newInteractionDelay","description":"The new interaction delay.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setShortBuffer(uint256)","name":"setShortBuffer","description":"Initialize the contract.","parameterDecorators":[{"name":"newShortBuffer","description":"The new short buffer for collateral to short ratio.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"shortBuffer()","name":"shortBuffer","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"shortId()","name":"shortId","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"shortingInitialized()","name":"shortingInitialized","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "liquidity"
+  ],
+  "name": "PoolHedger",
+  "description": "PoolHedger. Uses the delta hedging funds from the LiquidityPool to hedge option deltas, so LPs are minimally exposed to movements in the underlying asset price.",
+  "eventDecorators": [
+    {
+      "signature": "BaseExchanged(uint256,uint256)",
+      "name": "BaseExchanged",
+      "description": "event for token purchase logging. Emitted when base is sold.",
+      "parameterDecorators": [
+        {
+          "name": "baseAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "quoteReceived",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "InteractionDelaySet(uint256)",
+      "name": "InteractionDelaySet",
+      "description": "event for token purchase logging. Emitted when the interaction delay is set.",
+      "parameterDecorators": [
+        {
+          "name": "newInteractionDelay",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LongSetTo(uint256,uint256)",
+      "name": "LongSetTo",
+      "description": "event for token purchase logging. Emitted when the long exposure of the hedge contract is adjusted.",
+      "parameterDecorators": [
+        {
+          "name": "oldAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "PositionUpdated(int256,int256,int256)",
+      "name": "PositionUpdated",
+      "description": "event for token purchase logging. Emitted when the hedge position is updated.",
+      "parameterDecorators": [
+        {
+          "name": "oldNetDelta",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "currentNetDelta",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "expectedNetDelta",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "QuoteExchanged(uint256,uint256)",
+      "name": "QuoteExchanged",
+      "description": "event for token purchase logging. Emitted when base is sold.",
+      "parameterDecorators": [
+        {
+          "name": "quoteAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "baseReceived",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "QuoteReturnedToLP(uint256)",
+      "name": "QuoteReturnedToLP",
+      "description": "event for token purchase logging. Emitted when proceeds of the short are sent back to the LP.",
+      "parameterDecorators": [
+        {
+          "name": "amountQuote",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ShortBufferSet(uint256)",
+      "name": "ShortBufferSet",
+      "description": "event for token purchase logging. Emitted when the short buffer ratio is set.",
+      "parameterDecorators": [
+        {
+          "name": "newShortBuffer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ShortInitialized(uint256)",
+      "name": "ShortInitialized",
+      "description": "event for token purchase logging. Emitted when the short is initialized.",
+      "parameterDecorators": [
+        {
+          "name": "shortId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ShortSetTo(uint256,uint256,uint256,uint256)",
+      "name": "ShortSetTo",
+      "description": "event for token purchase logging. Emitted when short or short collateral is adjusted.",
+      "parameterDecorators": [
+        {
+          "name": "oldShort",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newShort",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "oldCollateral",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newCollateral",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "getCurrentHedgedNetDelta()",
+      "name": "getCurrentHedgedNetDelta",
+      "description": "Returns the current hedged netDelta position.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getShortPosition(address)",
+      "name": "getShortPosition",
+      "description": "Returns short balance and collateral.",
+      "parameterDecorators": [
+        {
+          "name": "short",
+          "description": "The short contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "shortBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "collateral",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getValueQuote(address,uint256)",
+      "name": "getValueQuote",
+      "description": "Returns the value of the long/short position held by the PoolHedger.",
+      "parameterDecorators": [
+        {
+          "name": "short",
+          "description": "The short contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "spotPrice",
+          "description": "The price of the baseAsset.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "hedgeDelta()",
+      "name": "hedgeDelta",
+      "description": "Retrieves the netDelta from the OptionGreekCache and updates the hedge position.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "init(address,address,address,address,address,address)",
+      "name": "init",
+      "description": "Initialize the contract.",
+      "parameterDecorators": [
+        {
+          "name": "_globals",
+          "description": "LyraGlobals address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_optionMarket",
+          "description": "OptionMarket address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_optionGreekCache",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_liquidityPool",
+          "description": "LiquidityPool address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_quoteAsset",
+          "description": "Quote asset address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_baseAsset",
+          "description": "Base asset address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initShort()",
+      "name": "initShort",
+      "description": "Initialises the short.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "interactionDelay()",
+      "name": "interactionDelay",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastInteraction()",
+      "name": "lastInteraction",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "reopenShort()",
+      "name": "reopenShort",
+      "description": "Reopens the short if the old one was closed or liquidated.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setInteractionDelay(uint256)",
+      "name": "setInteractionDelay",
+      "description": "Set the contract interaction delay.",
+      "parameterDecorators": [
+        {
+          "name": "newInteractionDelay",
+          "description": "The new interaction delay.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setShortBuffer(uint256)",
+      "name": "setShortBuffer",
+      "description": "Initialize the contract.",
+      "parameterDecorators": [
+        {
+          "name": "newShortBuffer",
+          "description": "The new short buffer for collateral to short ratio.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "shortBuffer()",
+      "name": "shortBuffer",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "shortId()",
+      "name": "shortId",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "shortingInitialized()",
+      "name": "shortingInitialized",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

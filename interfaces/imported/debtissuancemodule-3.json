@@ -1,1 +1,556 @@
-{"schema":"../schema.json","tags":["tokens"],"name":"DebtIssuanceModule","description":"DebtIssuanceModule.","eventDecorators":[{"signature":"FeeRecipientUpdated(address,address)","name":"FeeRecipientUpdated","description":"","parameterDecorators":[{"name":"_setToken","description":"","recommendedTypes":[],"indexed":true},{"name":"_newFeeRecipient","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"IssueFeeUpdated(address,uint256)","name":"IssueFeeUpdated","description":"","parameterDecorators":[{"name":"_setToken","description":"","recommendedTypes":[],"indexed":true},{"name":"_newIssueFee","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RedeemFeeUpdated(address,uint256)","name":"RedeemFeeUpdated","description":"","parameterDecorators":[{"name":"_setToken","description":"","recommendedTypes":[],"indexed":true},{"name":"_newRedeemFee","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SetTokenIssued(address,address,address,address,uint256,uint256,uint256)","name":"SetTokenIssued","description":"","parameterDecorators":[{"name":"_setToken","description":"","recommendedTypes":[],"indexed":true},{"name":"_issuer","description":"","recommendedTypes":[],"indexed":true},{"name":"_to","description":"","recommendedTypes":[],"indexed":true},{"name":"_hookContract","description":"","recommendedTypes":[],"indexed":false},{"name":"_quantity","description":"","recommendedTypes":[],"indexed":false},{"name":"_managerFee","description":"","recommendedTypes":[],"indexed":false},{"name":"_protocolFee","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SetTokenRedeemed(address,address,address,uint256,uint256,uint256)","name":"SetTokenRedeemed","description":"","parameterDecorators":[{"name":"_setToken","description":"","recommendedTypes":[],"indexed":true},{"name":"_redeemer","description":"","recommendedTypes":[],"indexed":true},{"name":"_to","description":"","recommendedTypes":[],"indexed":true},{"name":"_quantity","description":"","recommendedTypes":[],"indexed":false},{"name":"_managerFee","description":"","recommendedTypes":[],"indexed":false},{"name":"_protocolFee","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"calculateTotalFees(address,uint256,bool)","name":"calculateTotalFees","description":"Calculates the manager fee, protocol fee and resulting totalQuantity to use when calculating unit amounts. If fees are charged they are added to the total issue quantity, for example 1% fee on 100 Sets means 101 Sets are minted by caller, the _to address receives 100 and the feeRecipient receives 1. Conversely, on redemption the redeemer will only receive the collateral that collateralizes 99 Sets, while the additional Set is given to the feeRecipient.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken to issue.","recommendedTypes":[]},{"name":"_quantity","description":"Amount of SetToken issuer wants to receive/redeem.","recommendedTypes":[]},{"name":"_isIssue","description":"If issuing or redeeming.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"uint256 Total amount of Sets to be issued/redeemed with fee adjustment.","recommendedTypes":[],"solidityType":"uint256"},{"name":"_1","description":"uint256 Sets minted to the manager.","recommendedTypes":[],"solidityType":"uint256"},{"name":"_2","description":"uint256 Sets minted to the protocol.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"controller()","name":"controller","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getModuleIssuanceHooks(address)","name":"getModuleIssuanceHooks","description":"","parameterDecorators":[{"name":"_setToken","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getRequiredComponentIssuanceUnits(address,uint256)","name":"getRequiredComponentIssuanceUnits","description":"Calculates the amount of each component needed to collateralize passed issue quantity plus fees of Sets as well as amount of debt that will be returned to caller. Values DO NOT take into account any updates from pre action manager or module hooks.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken to issue.","recommendedTypes":[]},{"name":"_quantity","description":"Amount of Sets to be issued.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"address[] Array of component addresses making up the Set.","recommendedTypes":[],"solidityType":"address[]"},{"name":"_1","description":"uint256[] Array of equity notional amounts of each component, respectively, represented as uint256.","recommendedTypes":[],"solidityType":"uint256[]"},{"name":"_2","description":"uint256[] Array of debt notional amounts of each component, respectively, represented as uint256.","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getRequiredComponentRedemptionUnits(address,uint256)","name":"getRequiredComponentRedemptionUnits","description":"Calculates the amount of each component will be returned on redemption net of fees as well as how much debt needs to be paid down to. redeem. Values DO NOT take into account any updates from pre action manager or module hooks.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken to issue.","recommendedTypes":[]},{"name":"_quantity","description":"Amount of Sets to be redeemed.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"address[] Array of component addresses making up the Set.","recommendedTypes":[],"solidityType":"address[]"},{"name":"_1","description":"uint256[] Array of equity notional amounts of each component, respectively, represented as uint256.","recommendedTypes":[],"solidityType":"uint256[]"},{"name":"_2","description":"uint256[] Array of debt notional amounts of each component, respectively, represented as uint256.","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"initialize(address,uint256,uint256,uint256,address,address)","name":"initialize","description":"MANAGER ONLY: Initializes this module to the SetToken with issuance-related hooks and fee information. Only callable by the SetToken's manager. Hook addresses are optional. Address(0) means that no hook will be called.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken to issue.","recommendedTypes":[]},{"name":"_maxManagerFee","description":"Maximum fee that can be charged on issue and redeem.","recommendedTypes":[]},{"name":"_managerIssueFee","description":"Fee to charge on issuance.","recommendedTypes":[]},{"name":"_managerRedeemFee","description":"Fee to charge on redemption.","recommendedTypes":[]},{"name":"_feeRecipient","description":"Address to send fees to.","recommendedTypes":[]},{"name":"_managerIssuanceHook","description":"Instance of the Manager Contract with the Pre-Issuance Hook function.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"issuanceSettings(address)","name":"issuanceSettings","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"maxManagerFee","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"managerIssueFee","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"managerRedeemFee","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"feeRecipient","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"managerIssuanceHook","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"issue(address,uint256,address)","name":"issue","description":"Deposits components to the SetToken, replicates any external module component positions and mints the SetToken. If the token has a debt position all collateral will be transferred in first then debt will be returned to the minting address. If specified, a fee will be charged on issuance.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken to issue.","recommendedTypes":[]},{"name":"_quantity","description":"Quantity of SetToken to issue.","recommendedTypes":[]},{"name":"_to","description":"Address to mint SetToken to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"redeem(address,uint256,address)","name":"redeem","description":"Returns components from the SetToken, unwinds any external module component positions and burns the SetToken. If the token has a debt position all debt will be paid down first then equity positions will be returned to the minting address. If specified, a fee will be charged on redeem.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken to redeem.","recommendedTypes":[]},{"name":"_quantity","description":"Quantity of SetToken to redeem.","recommendedTypes":[]},{"name":"_to","description":"Address to send collateral to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"register(address)","name":"register","description":"MODULE ONLY: Adds calling module to array of modules that require they be called before component hooks are called. Can be used to sync debt positions before issuance.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken to issue.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"removeModule()","name":"removeModule","description":"SET TOKEN ONLY: Allows removal of module (and deletion of state) if no other modules are registered.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unregister(address)","name":"unregister","description":"MODULE ONLY: Removes calling module from array of modules that require they be called before component hooks are called.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken to issue.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateFeeRecipient(address,address)","name":"updateFeeRecipient","description":"MANAGER ONLY: Updates address receiving issue/redeem fees for a given SetToken.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken to update fee recipient.","recommendedTypes":[]},{"name":"_newFeeRecipient","description":"New fee recipient address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateIssueFee(address,uint256)","name":"updateIssueFee","description":"MANAGER ONLY: Updates issue fee for passed SetToken.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken to update issue fee.","recommendedTypes":[]},{"name":"_newIssueFee","description":"New fee amount in preciseUnits (1% = 10^16).","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateRedeemFee(address,uint256)","name":"updateRedeemFee","description":"MANAGER ONLY: Updates redeem fee for passed SetToken.","parameterDecorators":[{"name":"_setToken","description":"Instance of the SetToken to update redeem fee.","recommendedTypes":[]},{"name":"_newRedeemFee","description":"New fee amount in preciseUnits (1% = 10^16).","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens"
+  ],
+  "name": "DebtIssuanceModule",
+  "description": "DebtIssuanceModule.",
+  "eventDecorators": [
+    {
+      "signature": "FeeRecipientUpdated(address,address)",
+      "name": "FeeRecipientUpdated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_newFeeRecipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "IssueFeeUpdated(address,uint256)",
+      "name": "IssueFeeUpdated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_newIssueFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RedeemFeeUpdated(address,uint256)",
+      "name": "RedeemFeeUpdated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_newRedeemFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SetTokenIssued(address,address,address,address,uint256,uint256,uint256)",
+      "name": "SetTokenIssued",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_issuer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_hookContract",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_quantity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_managerFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_protocolFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SetTokenRedeemed(address,address,address,uint256,uint256,uint256)",
+      "name": "SetTokenRedeemed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_redeemer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_quantity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_managerFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_protocolFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "calculateTotalFees(address,uint256,bool)",
+      "name": "calculateTotalFees",
+      "description": "Calculates the manager fee, protocol fee and resulting totalQuantity to use when calculating unit amounts. If fees are charged they are added to the total issue quantity, for example 1% fee on 100 Sets means 101 Sets are minted by caller, the _to address receives 100 and the feeRecipient receives 1. Conversely, on redemption the redeemer will only receive the collateral that collateralizes 99 Sets, while the additional Set is given to the feeRecipient.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken to issue.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_quantity",
+          "description": "Amount of SetToken issuer wants to receive/redeem.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isIssue",
+          "description": "If issuing or redeeming.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint256 Total amount of Sets to be issued/redeemed with fee adjustment.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_1",
+          "description": "uint256 Sets minted to the manager.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_2",
+          "description": "uint256 Sets minted to the protocol.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "controller()",
+      "name": "controller",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getModuleIssuanceHooks(address)",
+      "name": "getModuleIssuanceHooks",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRequiredComponentIssuanceUnits(address,uint256)",
+      "name": "getRequiredComponentIssuanceUnits",
+      "description": "Calculates the amount of each component needed to collateralize passed issue quantity plus fees of Sets as well as amount of debt that will be returned to caller. Values DO NOT take into account any updates from pre action manager or module hooks.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken to issue.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_quantity",
+          "description": "Amount of Sets to be issued.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "address[] Array of component addresses making up the Set.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "_1",
+          "description": "uint256[] Array of equity notional amounts of each component, respectively, represented as uint256.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_2",
+          "description": "uint256[] Array of debt notional amounts of each component, respectively, represented as uint256.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRequiredComponentRedemptionUnits(address,uint256)",
+      "name": "getRequiredComponentRedemptionUnits",
+      "description": "Calculates the amount of each component will be returned on redemption net of fees as well as how much debt needs to be paid down to. redeem. Values DO NOT take into account any updates from pre action manager or module hooks.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken to issue.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_quantity",
+          "description": "Amount of Sets to be redeemed.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "address[] Array of component addresses making up the Set.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "_1",
+          "description": "uint256[] Array of equity notional amounts of each component, respectively, represented as uint256.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_2",
+          "description": "uint256[] Array of debt notional amounts of each component, respectively, represented as uint256.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,uint256,uint256,uint256,address,address)",
+      "name": "initialize",
+      "description": "MANAGER ONLY: Initializes this module to the SetToken with issuance-related hooks and fee information. Only callable by the SetToken's manager. Hook addresses are optional. Address(0) means that no hook will be called.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken to issue.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_maxManagerFee",
+          "description": "Maximum fee that can be charged on issue and redeem.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_managerIssueFee",
+          "description": "Fee to charge on issuance.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_managerRedeemFee",
+          "description": "Fee to charge on redemption.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_feeRecipient",
+          "description": "Address to send fees to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_managerIssuanceHook",
+          "description": "Instance of the Manager Contract with the Pre-Issuance Hook function.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "issuanceSettings(address)",
+      "name": "issuanceSettings",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "maxManagerFee",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "managerIssueFee",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "managerRedeemFee",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "feeRecipient",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "managerIssuanceHook",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "issue(address,uint256,address)",
+      "name": "issue",
+      "description": "Deposits components to the SetToken, replicates any external module component positions and mints the SetToken. If the token has a debt position all collateral will be transferred in first then debt will be returned to the minting address. If specified, a fee will be charged on issuance.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken to issue.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_quantity",
+          "description": "Quantity of SetToken to issue.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "Address to mint SetToken to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "redeem(address,uint256,address)",
+      "name": "redeem",
+      "description": "Returns components from the SetToken, unwinds any external module component positions and burns the SetToken. If the token has a debt position all debt will be paid down first then equity positions will be returned to the minting address. If specified, a fee will be charged on redeem.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken to redeem.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_quantity",
+          "description": "Quantity of SetToken to redeem.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "Address to send collateral to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "register(address)",
+      "name": "register",
+      "description": "MODULE ONLY: Adds calling module to array of modules that require they be called before component hooks are called. Can be used to sync debt positions before issuance.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken to issue.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeModule()",
+      "name": "removeModule",
+      "description": "SET TOKEN ONLY: Allows removal of module (and deletion of state) if no other modules are registered.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unregister(address)",
+      "name": "unregister",
+      "description": "MODULE ONLY: Removes calling module from array of modules that require they be called before component hooks are called.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken to issue.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateFeeRecipient(address,address)",
+      "name": "updateFeeRecipient",
+      "description": "MANAGER ONLY: Updates address receiving issue/redeem fees for a given SetToken.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken to update fee recipient.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newFeeRecipient",
+          "description": "New fee recipient address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateIssueFee(address,uint256)",
+      "name": "updateIssueFee",
+      "description": "MANAGER ONLY: Updates issue fee for passed SetToken.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken to update issue fee.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newIssueFee",
+          "description": "New fee amount in preciseUnits (1% = 10^16).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateRedeemFee(address,uint256)",
+      "name": "updateRedeemFee",
+      "description": "MANAGER ONLY: Updates redeem fee for passed SetToken.",
+      "parameterDecorators": [
+        {
+          "name": "_setToken",
+          "description": "Instance of the SetToken to update redeem fee.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newRedeemFee",
+          "description": "New fee amount in preciseUnits (1% = 10^16).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

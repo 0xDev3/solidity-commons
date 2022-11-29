@@ -1,1 +1,1040 @@
-{"schema":"../schema.json","tags":["tokens","swaps","liquidity"],"name":"Swap","description":"Swap - A StableSwap implementation in solidity. Most of the logic is stored as a library `SwapUtils` for the sake of reducing contract's deployment size.","eventDecorators":[{"signature":"AddLiquidity(address,uint256[],uint256[],uint256,uint256)","name":"AddLiquidity","description":"","parameterDecorators":[{"name":"provider","description":"","recommendedTypes":[],"indexed":true},{"name":"tokenAmounts","description":"","recommendedTypes":[],"indexed":false},{"name":"fees","description":"","recommendedTypes":[],"indexed":false},{"name":"invariant","description":"","recommendedTypes":[],"indexed":false},{"name":"lpTokenSupply","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"CollectProtocolFee(address,uint256)","name":"CollectProtocolFee","description":"","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"NewAdminFee(uint256)","name":"NewAdminFee","description":"","parameterDecorators":[{"name":"newAdminFee","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"NewSwapFee(uint256)","name":"NewSwapFee","description":"","parameterDecorators":[{"name":"newSwapFee","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"NewWithdrawFee(uint256)","name":"NewWithdrawFee","description":"","parameterDecorators":[{"name":"newWithdrawFee","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Paused(address)","name":"Paused","description":"","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RampA(uint256,uint256,uint256,uint256)","name":"RampA","description":"","parameterDecorators":[{"name":"oldA","description":"","recommendedTypes":[],"indexed":false},{"name":"newA","description":"","recommendedTypes":[],"indexed":false},{"name":"initialTime","description":"","recommendedTypes":[],"indexed":false},{"name":"futureTime","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RemoveLiquidity(address,uint256[],uint256)","name":"RemoveLiquidity","description":"","parameterDecorators":[{"name":"provider","description":"","recommendedTypes":[],"indexed":true},{"name":"tokenAmounts","description":"","recommendedTypes":[],"indexed":false},{"name":"lpTokenSupply","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RemoveLiquidityImbalance(address,uint256[],uint256[],uint256,uint256)","name":"RemoveLiquidityImbalance","description":"","parameterDecorators":[{"name":"provider","description":"","recommendedTypes":[],"indexed":true},{"name":"tokenAmounts","description":"","recommendedTypes":[],"indexed":false},{"name":"fees","description":"","recommendedTypes":[],"indexed":false},{"name":"invariant","description":"","recommendedTypes":[],"indexed":false},{"name":"lpTokenSupply","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RemoveLiquidityOne(address,uint256,uint256,uint256,uint256)","name":"RemoveLiquidityOne","description":"","parameterDecorators":[{"name":"provider","description":"","recommendedTypes":[],"indexed":true},{"name":"lpTokenAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"lpTokenSupply","description":"","recommendedTypes":[],"indexed":false},{"name":"boughtId","description":"","recommendedTypes":[],"indexed":false},{"name":"tokensBought","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"StopRampA(uint256,uint256)","name":"StopRampA","description":"","parameterDecorators":[{"name":"currentA","description":"","recommendedTypes":[],"indexed":false},{"name":"time","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TokenSwap(address,uint256,uint256,uint128,uint128)","name":"TokenSwap","description":"","parameterDecorators":[{"name":"buyer","description":"","recommendedTypes":[],"indexed":true},{"name":"tokensSold","description":"","recommendedTypes":[],"indexed":false},{"name":"tokensBought","description":"","recommendedTypes":[],"indexed":false},{"name":"soldId","description":"","recommendedTypes":[],"indexed":false},{"name":"boughtId","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Unpaused(address)","name":"Unpaused","description":"","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"addLiquidity(uint256[],uint256,uint256)","name":"addLiquidity","description":"Add liquidity to the pool with given amounts.","parameterDecorators":[{"name":"amounts","description":"the amounts of each token to add, in their native precision.","recommendedTypes":[]},{"name":"minToMint","description":"the minimum LP tokens adding this amount of liquidity should mint, otherwise revert. Handy for front-running mitigation.","recommendedTypes":[]},{"name":"deadline","description":"latest timestamp to accept this transaction.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"amount of LP token user minted and received.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"calculateCurrentWithdrawFee(address)","name":"calculateCurrentWithdrawFee","description":"Calculate the fee that is applied when the given user withdraws. The withdraw fee decays linearly over period of 4 weeks. For example, depositing and withdrawing right away will charge you the full amount of withdraw fee. But withdrawing after 4 weeks will charge you no additional fees. returned value should be divided by FEE_DENOMINATOR to convert to correct decimals.","parameterDecorators":[{"name":"user","description":"address you want to calculate withdraw fee of.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"current withdraw fee of the user.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"calculateRemoveLiquidity(address,uint256)","name":"calculateRemoveLiquidity","description":"A simple method to calculate amount of each underlying tokens that is returned upon burning given amount of LP tokens.","parameterDecorators":[{"name":"account","description":"the address that is withdrawing tokens.","recommendedTypes":[]},{"name":"amount","description":"the amount of LP tokens that would be burned on withdrawal.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"array of token balances that the user will receive.","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"calculateRemoveLiquidityOneToken(address,uint256,uint8)","name":"calculateRemoveLiquidityOneToken","description":"Calculate the amount of underlying token available to withdraw when withdrawing via only single token.","parameterDecorators":[{"name":"account","description":"the address that is withdrawing tokens.","recommendedTypes":[]},{"name":"tokenAmount","description":"the amount of LP token to burn.","recommendedTypes":[]},{"name":"tokenIndex","description":"index of which token will be withdrawn.","recommendedTypes":[]}],"returnDecorators":[{"name":"availableTokenAmount","description":"calculated amount of underlying token available to withdraw.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"calculateSwap(uint8,uint8,uint256)","name":"calculateSwap","description":"Calculate amount of tokens you receive on swap.","parameterDecorators":[{"name":"tokenIndexFrom","description":"the token the user wants to sell.","recommendedTypes":[]},{"name":"tokenIndexTo","description":"the token the user wants to buy.","recommendedTypes":[]},{"name":"dx","description":"the amount of tokens the user wants to sell. If the token charges a fee on transfers, use the amount that gets transferred after the fee.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"amount of tokens the user will receive.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"calculateTokenAmount(address,uint256[],bool)","name":"calculateTokenAmount","description":"A simple method to calculate prices from deposits or withdrawals, excluding fees but including slippage. This is helpful as an input into the various \"min\" parameters on calls to fight front-running. This shouldn't be used outside frontends for user estimates.","parameterDecorators":[{"name":"account","description":"address that is depositing or withdrawing tokens.","recommendedTypes":[]},{"name":"amounts","description":"an array of token amounts to deposit or withdrawal, corresponding to pooledTokens. The amount should be in each pooled token's native precision. If a token charges a fee on transfers, use the amount that gets transferred after the fee.","recommendedTypes":[]},{"name":"deposit","description":"whether this is a deposit or a withdrawal.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"token amount the user will receive.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"factory()","name":"factory","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getA()","name":"getA","description":"Return A, the amplification coefficient * n * (n - 1). See the StableSwap paper for details.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"A parameter.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getAPrecise()","name":"getAPrecise","description":"Return A in its raw precision form. See the StableSwap paper for details.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"A parameter in its raw precision form.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getAdminBalance(uint256)","name":"getAdminBalance","description":"This function reads the accumulated amount of admin fees of the token with given index.","parameterDecorators":[{"name":"index","description":"Index of the pooled token.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"admin's token balance in the token's precision.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getDepositTimestamp(address)","name":"getDepositTimestamp","description":"Return timestamp of last deposit of given address.","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"timestamp of the last deposit made by the given address.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getToken(uint8)","name":"getToken","description":"Return address of the pooled token at given index. Reverts if tokenIndex is out of range.","parameterDecorators":[{"name":"index","description":"the index of the token.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"address of the token at given index.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getTokenBalance(uint8)","name":"getTokenBalance","description":"Return current balance of the pooled token at given index.","parameterDecorators":[{"name":"index","description":"the index of the token.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"current balance of the pooled token at given index with token's native precision.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getTokenIndex(address)","name":"getTokenIndex","description":"Return the index of the given token address. Reverts if no matching token is found.","parameterDecorators":[{"name":"tokenAddress","description":"address of the token.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the index of the given token address.","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"getTokenLength()","name":"getTokenLength","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getVirtualPrice()","name":"getVirtualPrice","description":"Get the virtual price, to help calculate profit.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"the virtual price, scaled to the POOL_PRECISION_DECIMALS.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"pause()","name":"pause","description":"Pause the contract. Revert if already paused.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"paused()","name":"paused","description":"Returns true if the contract is paused, and false otherwise.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"rampA(uint256,uint256)","name":"rampA","description":"Start ramping up or down A parameter towards given futureA and futureTime Checks if the change is too rapid, and commits the new A value only when it falls under the limit range.","parameterDecorators":[{"name":"futureA","description":"the new A to ramp towards.","recommendedTypes":[]},{"name":"futureTime","description":"timestamp when the new A should be reached.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"removeLiquidity(uint256,uint256[],uint256)","name":"removeLiquidity","description":"Burn LP tokens to remove liquidity from the pool. Withdraw fee that decays linearly over period of 4 weeks since last deposit will apply. Liquidity can always be removed, even when the pool is paused.","parameterDecorators":[{"name":"amount","description":"the amount of LP tokens to burn.","recommendedTypes":[]},{"name":"minAmounts","description":"the minimum amounts of each token in the pool acceptable for this burn. Useful as a front-running mitigation.","recommendedTypes":[]},{"name":"deadline","description":"latest timestamp to accept this transaction.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"amounts of tokens user received.","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":false},{"signature":"removeLiquidityImbalance(uint256[],uint256,uint256)","name":"removeLiquidityImbalance","description":"Remove liquidity from the pool, weighted differently than the pool's current balances. Withdraw fee that decays linearly over period of 4 weeks since last deposit will apply.","parameterDecorators":[{"name":"amounts","description":"how much of each token to withdraw.","recommendedTypes":[]},{"name":"maxBurnAmount","description":"the max LP token provider is willing to pay to remove liquidity. Useful as a front-running mitigation.","recommendedTypes":[]},{"name":"deadline","description":"latest timestamp to accept this transaction.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"amount of LP tokens burned.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"removeLiquidityOneToken(uint256,uint8,uint256,uint256)","name":"removeLiquidityOneToken","description":"Remove liquidity from the pool all in one token. Withdraw fee that decays linearly over period of 4 weeks since last deposit will apply.","parameterDecorators":[{"name":"tokenAmount","description":"the amount of the token you want to receive.","recommendedTypes":[]},{"name":"tokenIndex","description":"the index of the token you want to receive.","recommendedTypes":[]},{"name":"minAmount","description":"the minimum amount to withdraw, otherwise revert.","recommendedTypes":[]},{"name":"deadline","description":"latest timestamp to accept this transaction.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"amount of chosen token user received.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"stopRampA()","name":"stopRampA","description":"Stop ramping A immediately. Reverts if ramp A is already stopped.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"swap(uint8,uint8,uint256,uint256,uint256)","name":"swap","description":"Swap two tokens using this pool.","parameterDecorators":[{"name":"tokenIndexFrom","description":"the token the user wants to swap from.","recommendedTypes":[]},{"name":"tokenIndexTo","description":"the token the user wants to swap to.","recommendedTypes":[]},{"name":"dx","description":"the amount of tokens the user wants to swap from.","recommendedTypes":[]},{"name":"minDy","description":"the min amount the user would like to receive, or revert.","recommendedTypes":[]},{"name":"deadline","description":"latest timestamp to accept this transaction.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"swapStorage()","name":"swapStorage","description":"","parameterDecorators":[],"returnDecorators":[{"name":"initialA","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"futureA","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"initialATime","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"futureATime","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"swapFee","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"adminFee","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"defaultWithdrawFee","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"lpToken","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unpause()","name":"unpause","description":"Unpause the contract. Revert if already unpaused.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateUserWithdrawFee(address,uint256)","name":"updateUserWithdrawFee","description":"Updates the user withdraw fee. This function can only be called by the pool token. Should be used to update the withdraw fee on transfer of pool tokens. Transferring your pool token will reset the 4 weeks period. If the recipient is already holding some pool tokens, the withdraw fee will be discounted in respective amounts.","parameterDecorators":[{"name":"recipient","description":"address of the recipient of pool token.","recommendedTypes":[]},{"name":"transferAmount","description":"amount of pool token to transfer.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdrawAdminFees()","name":"withdrawAdminFees","description":"Withdraw all admin fees to the fee collector.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "swaps",
+    "liquidity"
+  ],
+  "name": "Swap",
+  "description": "Swap - A StableSwap implementation in solidity. Most of the logic is stored as a library `SwapUtils` for the sake of reducing contract's deployment size.",
+  "eventDecorators": [
+    {
+      "signature": "AddLiquidity(address,uint256[],uint256[],uint256,uint256)",
+      "name": "AddLiquidity",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "provider",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenAmounts",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "fees",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "invariant",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "lpTokenSupply",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CollectProtocolFee(address,uint256)",
+      "name": "CollectProtocolFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewAdminFee(uint256)",
+      "name": "NewAdminFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "newAdminFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewSwapFee(uint256)",
+      "name": "NewSwapFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "newSwapFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewWithdrawFee(uint256)",
+      "name": "NewWithdrawFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "newWithdrawFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Paused(address)",
+      "name": "Paused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RampA(uint256,uint256,uint256,uint256)",
+      "name": "RampA",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "oldA",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newA",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "initialTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "futureTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RemoveLiquidity(address,uint256[],uint256)",
+      "name": "RemoveLiquidity",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "provider",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenAmounts",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "lpTokenSupply",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RemoveLiquidityImbalance(address,uint256[],uint256[],uint256,uint256)",
+      "name": "RemoveLiquidityImbalance",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "provider",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenAmounts",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "fees",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "invariant",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "lpTokenSupply",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RemoveLiquidityOne(address,uint256,uint256,uint256,uint256)",
+      "name": "RemoveLiquidityOne",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "provider",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "lpTokenAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "lpTokenSupply",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "boughtId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokensBought",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "StopRampA(uint256,uint256)",
+      "name": "StopRampA",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "currentA",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TokenSwap(address,uint256,uint256,uint128,uint128)",
+      "name": "TokenSwap",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "buyer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokensSold",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokensBought",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "soldId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "boughtId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unpaused(address)",
+      "name": "Unpaused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addLiquidity(uint256[],uint256,uint256)",
+      "name": "addLiquidity",
+      "description": "Add liquidity to the pool with given amounts.",
+      "parameterDecorators": [
+        {
+          "name": "amounts",
+          "description": "the amounts of each token to add, in their native precision.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minToMint",
+          "description": "the minimum LP tokens adding this amount of liquidity should mint, otherwise revert. Handy for front-running mitigation.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "latest timestamp to accept this transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "amount of LP token user minted and received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "calculateCurrentWithdrawFee(address)",
+      "name": "calculateCurrentWithdrawFee",
+      "description": "Calculate the fee that is applied when the given user withdraws. The withdraw fee decays linearly over period of 4 weeks. For example, depositing and withdrawing right away will charge you the full amount of withdraw fee. But withdrawing after 4 weeks will charge you no additional fees. returned value should be divided by FEE_DENOMINATOR to convert to correct decimals.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "address you want to calculate withdraw fee of.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "current withdraw fee of the user.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateRemoveLiquidity(address,uint256)",
+      "name": "calculateRemoveLiquidity",
+      "description": "A simple method to calculate amount of each underlying tokens that is returned upon burning given amount of LP tokens.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "the address that is withdrawing tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "the amount of LP tokens that would be burned on withdrawal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "array of token balances that the user will receive.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateRemoveLiquidityOneToken(address,uint256,uint8)",
+      "name": "calculateRemoveLiquidityOneToken",
+      "description": "Calculate the amount of underlying token available to withdraw when withdrawing via only single token.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "the address that is withdrawing tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenAmount",
+          "description": "the amount of LP token to burn.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenIndex",
+          "description": "index of which token will be withdrawn.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "availableTokenAmount",
+          "description": "calculated amount of underlying token available to withdraw.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateSwap(uint8,uint8,uint256)",
+      "name": "calculateSwap",
+      "description": "Calculate amount of tokens you receive on swap.",
+      "parameterDecorators": [
+        {
+          "name": "tokenIndexFrom",
+          "description": "the token the user wants to sell.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenIndexTo",
+          "description": "the token the user wants to buy.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "dx",
+          "description": "the amount of tokens the user wants to sell. If the token charges a fee on transfers, use the amount that gets transferred after the fee.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "amount of tokens the user will receive.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateTokenAmount(address,uint256[],bool)",
+      "name": "calculateTokenAmount",
+      "description": "A simple method to calculate prices from deposits or withdrawals, excluding fees but including slippage. This is helpful as an input into the various \"min\" parameters on calls to fight front-running. This shouldn't be used outside frontends for user estimates.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "address that is depositing or withdrawing tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amounts",
+          "description": "an array of token amounts to deposit or withdrawal, corresponding to pooledTokens. The amount should be in each pooled token's native precision. If a token charges a fee on transfers, use the amount that gets transferred after the fee.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deposit",
+          "description": "whether this is a deposit or a withdrawal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "token amount the user will receive.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "factory()",
+      "name": "factory",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getA()",
+      "name": "getA",
+      "description": "Return A, the amplification coefficient * n * (n - 1). See the StableSwap paper for details.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "A parameter.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAPrecise()",
+      "name": "getAPrecise",
+      "description": "Return A in its raw precision form. See the StableSwap paper for details.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "A parameter in its raw precision form.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAdminBalance(uint256)",
+      "name": "getAdminBalance",
+      "description": "This function reads the accumulated amount of admin fees of the token with given index.",
+      "parameterDecorators": [
+        {
+          "name": "index",
+          "description": "Index of the pooled token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "admin's token balance in the token's precision.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getDepositTimestamp(address)",
+      "name": "getDepositTimestamp",
+      "description": "Return timestamp of last deposit of given address.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "timestamp of the last deposit made by the given address.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getToken(uint8)",
+      "name": "getToken",
+      "description": "Return address of the pooled token at given index. Reverts if tokenIndex is out of range.",
+      "parameterDecorators": [
+        {
+          "name": "index",
+          "description": "the index of the token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "address of the token at given index.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokenBalance(uint8)",
+      "name": "getTokenBalance",
+      "description": "Return current balance of the pooled token at given index.",
+      "parameterDecorators": [
+        {
+          "name": "index",
+          "description": "the index of the token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "current balance of the pooled token at given index with token's native precision.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokenIndex(address)",
+      "name": "getTokenIndex",
+      "description": "Return the index of the given token address. Reverts if no matching token is found.",
+      "parameterDecorators": [
+        {
+          "name": "tokenAddress",
+          "description": "address of the token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the index of the given token address.",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokenLength()",
+      "name": "getTokenLength",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVirtualPrice()",
+      "name": "getVirtualPrice",
+      "description": "Get the virtual price, to help calculate profit.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the virtual price, scaled to the POOL_PRECISION_DECIMALS.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pause()",
+      "name": "pause",
+      "description": "Pause the contract. Revert if already paused.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "paused()",
+      "name": "paused",
+      "description": "Returns true if the contract is paused, and false otherwise.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rampA(uint256,uint256)",
+      "name": "rampA",
+      "description": "Start ramping up or down A parameter towards given futureA and futureTime Checks if the change is too rapid, and commits the new A value only when it falls under the limit range.",
+      "parameterDecorators": [
+        {
+          "name": "futureA",
+          "description": "the new A to ramp towards.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "futureTime",
+          "description": "timestamp when the new A should be reached.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeLiquidity(uint256,uint256[],uint256)",
+      "name": "removeLiquidity",
+      "description": "Burn LP tokens to remove liquidity from the pool. Withdraw fee that decays linearly over period of 4 weeks since last deposit will apply. Liquidity can always be removed, even when the pool is paused.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "the amount of LP tokens to burn.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minAmounts",
+          "description": "the minimum amounts of each token in the pool acceptable for this burn. Useful as a front-running mitigation.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "latest timestamp to accept this transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "amounts of tokens user received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeLiquidityImbalance(uint256[],uint256,uint256)",
+      "name": "removeLiquidityImbalance",
+      "description": "Remove liquidity from the pool, weighted differently than the pool's current balances. Withdraw fee that decays linearly over period of 4 weeks since last deposit will apply.",
+      "parameterDecorators": [
+        {
+          "name": "amounts",
+          "description": "how much of each token to withdraw.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxBurnAmount",
+          "description": "the max LP token provider is willing to pay to remove liquidity. Useful as a front-running mitigation.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "latest timestamp to accept this transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "amount of LP tokens burned.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeLiquidityOneToken(uint256,uint8,uint256,uint256)",
+      "name": "removeLiquidityOneToken",
+      "description": "Remove liquidity from the pool all in one token. Withdraw fee that decays linearly over period of 4 weeks since last deposit will apply.",
+      "parameterDecorators": [
+        {
+          "name": "tokenAmount",
+          "description": "the amount of the token you want to receive.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenIndex",
+          "description": "the index of the token you want to receive.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minAmount",
+          "description": "the minimum amount to withdraw, otherwise revert.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "latest timestamp to accept this transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "amount of chosen token user received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stopRampA()",
+      "name": "stopRampA",
+      "description": "Stop ramping A immediately. Reverts if ramp A is already stopped.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swap(uint8,uint8,uint256,uint256,uint256)",
+      "name": "swap",
+      "description": "Swap two tokens using this pool.",
+      "parameterDecorators": [
+        {
+          "name": "tokenIndexFrom",
+          "description": "the token the user wants to swap from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenIndexTo",
+          "description": "the token the user wants to swap to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "dx",
+          "description": "the amount of tokens the user wants to swap from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minDy",
+          "description": "the min amount the user would like to receive, or revert.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "latest timestamp to accept this transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapStorage()",
+      "name": "swapStorage",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "initialA",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "futureA",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "initialATime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "futureATime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "swapFee",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "adminFee",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "defaultWithdrawFee",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "lpToken",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unpause()",
+      "name": "unpause",
+      "description": "Unpause the contract. Revert if already unpaused.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateUserWithdrawFee(address,uint256)",
+      "name": "updateUserWithdrawFee",
+      "description": "Updates the user withdraw fee. This function can only be called by the pool token. Should be used to update the withdraw fee on transfer of pool tokens. Transferring your pool token will reset the 4 weeks period. If the recipient is already holding some pool tokens, the withdraw fee will be discounted in respective amounts.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "address of the recipient of pool token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "transferAmount",
+          "description": "amount of pool token to transfer.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawAdminFees()",
+      "name": "withdrawAdminFees",
+      "description": "Withdraw all admin fees to the fee collector.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

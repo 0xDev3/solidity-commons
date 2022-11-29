@@ -1,1 +1,1330 @@
-{"schema":"../schema.json","tags":["oracles","voting"],"name":"Voting","description":"Voting system for Oracle. Handles receiving and resolving price requests via a commit-reveal voting scheme.","eventDecorators":[{"signature":"EncryptedVote(address,uint256,bytes32,uint256,bytes,bytes)","name":"EncryptedVote","description":"","parameterDecorators":[{"name":"voter","description":"","recommendedTypes":[],"indexed":true},{"name":"roundId","description":"","recommendedTypes":[],"indexed":true},{"name":"identifier","description":"","recommendedTypes":[],"indexed":true},{"name":"time","description":"","recommendedTypes":[],"indexed":false},{"name":"ancillaryData","description":"","recommendedTypes":[],"indexed":false},{"name":"encryptedVote","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"PriceRequestAdded(uint256,bytes32,uint256)","name":"PriceRequestAdded","description":"","parameterDecorators":[{"name":"roundId","description":"","recommendedTypes":[],"indexed":true},{"name":"identifier","description":"","recommendedTypes":[],"indexed":true},{"name":"time","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PriceResolved(uint256,bytes32,uint256,int256,bytes)","name":"PriceResolved","description":"","parameterDecorators":[{"name":"roundId","description":"","recommendedTypes":[],"indexed":true},{"name":"identifier","description":"","recommendedTypes":[],"indexed":true},{"name":"time","description":"","recommendedTypes":[],"indexed":false},{"name":"price","description":"","recommendedTypes":[],"indexed":false},{"name":"ancillaryData","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RewardsRetrieved(address,uint256,bytes32,uint256,bytes,uint256)","name":"RewardsRetrieved","description":"","parameterDecorators":[{"name":"voter","description":"","recommendedTypes":[],"indexed":true},{"name":"roundId","description":"","recommendedTypes":[],"indexed":true},{"name":"identifier","description":"","recommendedTypes":[],"indexed":true},{"name":"time","description":"","recommendedTypes":[],"indexed":false},{"name":"ancillaryData","description":"","recommendedTypes":[],"indexed":false},{"name":"numTokens","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"VoteCommitted(address,uint256,bytes32,uint256,bytes)","name":"VoteCommitted","description":"","parameterDecorators":[{"name":"voter","description":"","recommendedTypes":[],"indexed":true},{"name":"roundId","description":"","recommendedTypes":[],"indexed":true},{"name":"identifier","description":"","recommendedTypes":[],"indexed":true},{"name":"time","description":"","recommendedTypes":[],"indexed":false},{"name":"ancillaryData","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"VoteRevealed(address,uint256,bytes32,uint256,int256,bytes,uint256)","name":"VoteRevealed","description":"","parameterDecorators":[{"name":"voter","description":"","recommendedTypes":[],"indexed":true},{"name":"roundId","description":"","recommendedTypes":[],"indexed":true},{"name":"identifier","description":"","recommendedTypes":[],"indexed":true},{"name":"time","description":"","recommendedTypes":[],"indexed":false},{"name":"price","description":"","recommendedTypes":[],"indexed":false},{"name":"ancillaryData","description":"","recommendedTypes":[],"indexed":false},{"name":"numTokens","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"ancillaryBytesLimit()","name":"ancillaryBytesLimit","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"batchCommit(tuple(bytes32,uint256,bytes,bytes32,bytes)[])","name":"batchCommit","description":"Submit a batch of commits in a single transaction. Using `encryptedVote` is optional. If included then commitment is emitted in an event. Look at `project-root/common/Constants.js` for the tested maximum number of commitments that can fit in one transaction.","parameterDecorators":[{"name":"commits","description":"struct to encapsulate an `identifier`, `time`, `hash` and optional `encryptedVote`.","recommendedTypes":[],"parameters":[{"name":"identifier","description":"","type":"bytes32"},{"name":"time","description":"","type":"uint256"},{"name":"ancillaryData","description":"","type":"bytes"},{"name":"hash","description":"","type":"bytes32"},{"name":"encryptedVote","description":"","type":"bytes"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"batchCommit(tuple(bytes32,uint256,bytes32,bytes)[])","name":"batchCommit","description":"Submit a batch of commits in a single transaction. Using `encryptedVote` is optional. If included then commitment is stored on chain. Look at `project-root/common/Constants.js` for the tested maximum number of commitments that can fit in one transaction.","parameterDecorators":[{"name":"commits","description":"array of structs that encapsulate an `identifier`, `time`, `hash` and optional `encryptedVote`.","recommendedTypes":[],"parameters":[{"name":"identifier","description":"","type":"bytes32"},{"name":"time","description":"","type":"uint256"},{"name":"hash","description":"","type":"bytes32"},{"name":"encryptedVote","description":"","type":"bytes"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"batchReveal(tuple(bytes32,uint256,int256,int256)[])","name":"batchReveal","description":"Reveal multiple votes in a single transaction. Look at `project-root/common/Constants.js` for the tested maximum number of reveals. that can fit in one transaction. For more information on reveals, review the comment for `revealVote`.","parameterDecorators":[{"name":"reveals","description":"array of the Reveal struct which contains an identifier, time, price and salt.","recommendedTypes":[],"parameters":[{"name":"identifier","description":"","type":"bytes32"},{"name":"time","description":"","type":"uint256"},{"name":"price","description":"","type":"int256"},{"name":"salt","description":"","type":"int256"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"batchReveal(tuple(bytes32,uint256,int256,bytes,int256)[])","name":"batchReveal","description":"Reveal multiple votes in a single transaction. Look at `project-root/common/Constants.js` for the tested maximum number of reveals. that can fit in one transaction. For more info on reveals, review the comment for `revealVote`.","parameterDecorators":[{"name":"reveals","description":"array of the Reveal struct which contains an identifier, time, price and salt.","recommendedTypes":[],"parameters":[{"name":"identifier","description":"","type":"bytes32"},{"name":"time","description":"","type":"uint256"},{"name":"price","description":"","type":"int256"},{"name":"ancillaryData","description":"","type":"bytes"},{"name":"salt","description":"","type":"int256"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"commitAndEmitEncryptedVote(bytes32,uint256,bytes,bytes32,bytes)","name":"commitAndEmitEncryptedVote","description":"commits a vote and logs an event with a data blob, typically an encrypted version of the vote. An encrypted version of the vote is emitted in an event `EncryptedVote` to allow off-chain infrastructure to retrieve the commit. The contents of `encryptedVote` are never used on chain: it is purely for convenience.","parameterDecorators":[{"name":"identifier","description":"unique price pair identifier. Eg: BTC/USD price pair.","recommendedTypes":[]},{"name":"time","description":"unix timestamp of for the price request.","recommendedTypes":[]},{"name":"ancillaryData","description":"arbitrary data appended to a price request to give the voters more info from the caller.","recommendedTypes":[]},{"name":"hash","description":"keccak256 hash of the price you want to vote for and a `int256 salt`.","recommendedTypes":[]},{"name":"encryptedVote","description":"offchain encrypted blob containing the voters amount, time and salt.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"commitAndEmitEncryptedVote(bytes32,uint256,bytes32,bytes)","name":"commitAndEmitEncryptedVote","description":"commits a vote and logs an event with a data blob, typically an encrypted version of the vote. An encrypted version of the vote is emitted in an event `EncryptedVote` to allow off-chain infrastructure to retrieve the commit. The contents of `encryptedVote` are never used on chain: it is purely for convenience.","parameterDecorators":[{"name":"identifier","description":"unique price pair identifier. Eg: BTC/USD price pair.","recommendedTypes":[]},{"name":"time","description":"unix timestamp of for the price request.","recommendedTypes":[]},{"name":"hash","description":"keccak256 hash of the price you want to vote for and a `int256 salt`.","recommendedTypes":[]},{"name":"encryptedVote","description":"offchain encrypted blob containing the voters amount, time and salt.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"commitVote(bytes32,uint256,bytes,bytes32)","name":"commitVote","description":"Commit a vote for a price request for `identifier` at `time`. `identifier`, `time` must correspond to a price request that's currently in the commit phase. Commits can be changed.Since transaction data is public, the salt will be revealed with the vote. While this is the system’s expected behavior, voters should never reuse salts. If someone else is able to guess the voted price and knows that a salt will be reused, then they can determine the vote pre-reveal.","parameterDecorators":[{"name":"identifier","description":"uniquely identifies the committed vote. EG BTC/USD price pair.","recommendedTypes":[]},{"name":"time","description":"unix timestamp of the price being voted on.","recommendedTypes":[]},{"name":"ancillaryData","description":"arbitrary data appended to a price request to give the voters more info from the caller.","recommendedTypes":[]},{"name":"hash","description":"keccak256 hash of the `price`, `salt`, voter `address`, `time`, current `roundId`, and `identifier`.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"commitVote(bytes32,uint256,bytes32)","name":"commitVote","description":"Commit a vote for a price request for `identifier` at `time`. `identifier`, `time` must correspond to a price request that's currently in the commit phase. Commits can be changed.Since transaction data is public, the salt will be revealed with the vote. While this is the system’s expected behavior, voters should never reuse salts. If someone else is able to guess the voted price and knows that a salt will be reused, then they can determine the vote pre-reveal.","parameterDecorators":[{"name":"identifier","description":"uniquely identifies the committed vote. EG BTC/USD price pair.","recommendedTypes":[]},{"name":"time","description":"unix timestamp of the price being voted on.","recommendedTypes":[]},{"name":"hash","description":"keccak256 hash of the `price`, `salt`, voter `address`, `time`, current `roundId`, and `identifier`.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"gatPercentage()","name":"gatPercentage","description":"","parameterDecorators":[],"returnDecorators":[{"name":"rawValue","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getCurrentRoundId()","name":"getCurrentRoundId","description":"Returns the current round ID, as a function of the current time.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"uint256 representing the unique round ID.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getCurrentTime()","name":"getCurrentTime","description":"Gets the current time. Will return the last time set in `setCurrentTime` if running in test mode. Otherwise, it will return the block timestamp.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"uint for the current Testable timestamp.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getPendingRequests()","name":"getPendingRequests","description":"Gets the queries that are being voted on this round.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"pendingRequests array containing identifiers of type `PendingRequest`. and timestamps for all pending requests.","recommendedTypes":[],"solidityType":"tuple[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getPrice(bytes32,uint256,bytes)","name":"getPrice","description":"Gets the price for `identifier` and `time` if it has already been requested and resolved. If the price is not available, the method reverts.","parameterDecorators":[{"name":"identifier","description":"uniquely identifies the price requested. eg BTC/USD (encoded as bytes32) could be requested.","recommendedTypes":[]},{"name":"time","description":"unix timestamp of for the price request.","recommendedTypes":[]},{"name":"ancillaryData","description":"arbitrary data appended to a price request to give the voters more info from the caller.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"int256 representing the resolved price for the given identifier and timestamp.","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":true},{"signature":"getPrice(bytes32,uint256)","name":"getPrice","description":"Gets the price for `identifier` and `time` if it has already been requested and resolved. If the price is not available, the method reverts.","parameterDecorators":[{"name":"identifier","description":"uniquely identifies the price requested. eg BTC/USD (encoded as bytes32) could be requested.","recommendedTypes":[]},{"name":"time","description":"unix timestamp for the price request.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"int256 representing the resolved price for the given identifier and timestamp.","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":true},{"signature":"getPriceRequestStatuses(tuple(bytes32,uint256,bytes)[])","name":"getPriceRequestStatuses","description":"Gets the status of a list of price requests, identified by their identifier and time. If the status for a particular request is NotRequested, the lastVotingRound will always be 0.","parameterDecorators":[{"name":"requests","description":"array of type PendingRequest which includes an identifier and timestamp for each request.","recommendedTypes":[],"parameters":[{"name":"identifier","description":"","type":"bytes32"},{"name":"time","description":"","type":"uint256"},{"name":"ancillaryData","description":"","type":"bytes"}]}],"returnDecorators":[{"name":"_0","description":"requestStates a list, in the same order as the input list, giving the status of each of the specified price requests.","recommendedTypes":[],"solidityType":"tuple[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getPriceRequestStatuses(tuple(bytes32,uint256)[])","name":"getPriceRequestStatuses","description":"","parameterDecorators":[{"name":"requests","description":"","recommendedTypes":[],"parameters":[{"name":"identifier","description":"","type":"bytes32"},{"name":"time","description":"","type":"uint256"}]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"tuple[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getVotePhase()","name":"getVotePhase","description":"Returns the current voting phase, as a function of the current time.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Phase to indicate the current phase. Either { Commit, Reveal, NUM_PHASES_PLACEHOLDER }.","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"hasPrice(bytes32,uint256)","name":"hasPrice","description":"Whether the price for `identifier` and `time` is available. Time must be in the past and the identifier must be supported.","parameterDecorators":[{"name":"identifier","description":"uniquely identifies the price requested. eg BTC/USD (encoded as bytes32) could be requested.","recommendedTypes":[]},{"name":"time","description":"unix timestamp for the price request.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"bool if the DVM has resolved to a price for the given identifier and timestamp.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"hasPrice(bytes32,uint256,bytes)","name":"hasPrice","description":"Whether the price for `identifier` and `time` is available. Time must be in the past and the identifier must be supported.","parameterDecorators":[{"name":"identifier","description":"uniquely identifies the price requested. eg BTC/USD (encoded as bytes32) could be requested.","recommendedTypes":[]},{"name":"time","description":"unix timestamp of for the price request.","recommendedTypes":[]},{"name":"ancillaryData","description":"arbitrary data appended to a price request to give the voters more info from the caller.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"_hasPrice bool if the DVM has resolved to a price for the given identifier and timestamp.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"inflationRate()","name":"inflationRate","description":"","parameterDecorators":[],"returnDecorators":[{"name":"rawValue","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"migratedAddress()","name":"migratedAddress","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"requestPrice(bytes32,uint256,bytes)","name":"requestPrice","description":"Enqueues a request (if a request isn't already present) for the given `identifier`, `time` pair. Time must be in the past and the identifier must be supported. The length of the ancillary data is limited such that this method abides by the EVM transaction gas limit.","parameterDecorators":[{"name":"identifier","description":"uniquely identifies the price requested. eg BTC/USD (encoded as bytes32) could be requested.","recommendedTypes":[]},{"name":"time","description":"unix timestamp for the price request.","recommendedTypes":[]},{"name":"ancillaryData","description":"arbitrary data appended to a price request to give the voters more info from the caller.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"requestPrice(bytes32,uint256)","name":"requestPrice","description":"Enqueues a request (if a request isn't already present) for the given `identifier`, `time` pair. Time must be in the past and the identifier must be supported.","parameterDecorators":[{"name":"identifier","description":"uniquely identifies the price requested. eg BTC/USD (encoded as bytes32) could be requested.","recommendedTypes":[]},{"name":"time","description":"unix timestamp for the price request.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"retrieveRewards(address,uint256,tuple(bytes32,uint256,bytes)[])","name":"retrieveRewards","description":"Retrieves rewards owed for a set of resolved price requests. Can only retrieve rewards if calling for a valid round and if the call is done within the timeout threshold (not expired). Note that a named return value is used here to avoid a stack to deep error.","parameterDecorators":[{"name":"voterAddress","description":"voter for which rewards will be retrieved. Does not have to be the caller.","recommendedTypes":[]},{"name":"roundId","description":"the round from which voting rewards will be retrieved from.","recommendedTypes":[]},{"name":"toRetrieve","description":"array of PendingRequests which rewards are retrieved from.","recommendedTypes":[],"parameters":[{"name":"identifier","description":"","type":"bytes32"},{"name":"time","description":"","type":"uint256"},{"name":"ancillaryData","description":"","type":"bytes"}]}],"returnDecorators":[{"name":"totalRewardToIssue","description":"total amount of rewards returned to the voter.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":false},{"signature":"retrieveRewards(address,uint256,tuple(bytes32,uint256)[])","name":"retrieveRewards","description":"Retrieves rewards owed for a set of resolved price requests. Can only retrieve rewards if calling for a valid round and if the call is done within the timeout threshold (not expired).","parameterDecorators":[{"name":"voterAddress","description":"voter for which rewards will be retrieved. Does not have to be the caller.","recommendedTypes":[]},{"name":"roundId","description":"the round from which voting rewards will be retrieved from.","recommendedTypes":[]},{"name":"toRetrieve","description":"array of PendingRequests which rewards are retrieved from.","recommendedTypes":[],"parameters":[{"name":"identifier","description":"","type":"bytes32"},{"name":"time","description":"","type":"uint256"}]}],"returnDecorators":[{"name":"_0","description":"total amount of rewards returned to the voter.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":false},{"signature":"revealVote(bytes32,uint256,int256,int256)","name":"revealVote","description":"Reveal a previously committed vote for `identifier` at `time`. The revealed `price`, `salt`, `address`, `time`, `roundId`, and `identifier`, must hash to the latest `hash` that `commitVote()` was called with. Only the committer can reveal their vote.","parameterDecorators":[{"name":"identifier","description":"voted on in the commit phase. EG BTC/USD price pair.","recommendedTypes":[]},{"name":"time","description":"specifies the unix timestamp of the price is being voted on.","recommendedTypes":[]},{"name":"price","description":"voted on during the commit phase.","recommendedTypes":[]},{"name":"salt","description":"value used to hide the commitment price during the commit phase.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"revealVote(bytes32,uint256,int256,bytes,int256)","name":"revealVote","description":"Reveal a previously committed vote for `identifier` at `time`. The revealed `price`, `salt`, `address`, `time`, `roundId`, and `identifier`, must hash to the latest `hash` that `commitVote()` was called with. Only the committer can reveal their vote.","parameterDecorators":[{"name":"identifier","description":"voted on in the commit phase. EG BTC/USD price pair.","recommendedTypes":[]},{"name":"time","description":"specifies the unix timestamp of the price being voted on.","recommendedTypes":[]},{"name":"price","description":"voted on during the commit phase.","recommendedTypes":[]},{"name":"ancillaryData","description":"arbitrary data appended to a price request to give the voters more info from the caller.","recommendedTypes":[]},{"name":"salt","description":"value used to hide the commitment price during the commit phase.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"rewardsExpirationTimeout()","name":"rewardsExpirationTimeout","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"rounds(uint256)","name":"rounds","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"snapshotId","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"inflationRate","description":"","recommendedTypes":[],"solidityType":"tuple"},{"name":"gatPercentage","description":"","recommendedTypes":[],"solidityType":"tuple"},{"name":"rewardsExpirationTime","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setCurrentTime(uint256)","name":"setCurrentTime","description":"Sets the current time. Will revert if not running in test mode.","parameterDecorators":[{"name":"time","description":"timestamp to set current Testable time to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setGatPercentage(tuple(uint256))","name":"setGatPercentage","description":"Resets the Gat percentage. Note: this change only applies to rounds that have not yet begun. This method is public because calldata structs are not currently supported by solidity.","parameterDecorators":[{"name":"newGatPercentage","description":"sets the next round's Gat percentage.","recommendedTypes":[],"parameters":[{"name":"rawValue","description":"","type":"uint256"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setInflationRate(tuple(uint256))","name":"setInflationRate","description":"Resets the inflation rate. Note: this change only applies to rounds that have not yet begun. This method is public because calldata structs are not currently supported by solidity.","parameterDecorators":[{"name":"newInflationRate","description":"sets the next round's inflation rate.","recommendedTypes":[],"parameters":[{"name":"rawValue","description":"","type":"uint256"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMigrated(address)","name":"setMigrated","description":"Disables this Voting contract in favor of the migrated one. Can only be called by the contract owner.","parameterDecorators":[{"name":"newVotingAddress","description":"the newly migrated contract address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setRewardsExpirationTimeout(uint256)","name":"setRewardsExpirationTimeout","description":"Resets the rewards expiration timeout. This change only applies to rounds that have not yet begun.","parameterDecorators":[{"name":"NewRewardsExpirationTimeout","description":"how long a caller can wait before choosing to withdraw their rewards.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"snapshotCurrentRound(bytes)","name":"snapshotCurrentRound","description":"Snapshot the current round's token balances and lock in the inflation rate and GAT. This function can be called multiple times, but only the first call per round into this function or `revealVote` will create the round snapshot. Any later calls will be a no-op. Will revert unless called during reveal period.","parameterDecorators":[{"name":"signature","description":"signature required to prove caller is an EOA to prevent flash loans from being included in the snapshot.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"snapshotMessageHash()","name":"snapshotMessageHash","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"timerAddress()","name":"timerAddress","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"voteTiming()","name":"voteTiming","description":"","parameterDecorators":[],"returnDecorators":[{"name":"phaseLength","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"votingToken()","name":"votingToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "oracles",
+    "voting"
+  ],
+  "name": "Voting",
+  "description": "Voting system for Oracle. Handles receiving and resolving price requests via a commit-reveal voting scheme.",
+  "eventDecorators": [
+    {
+      "signature": "EncryptedVote(address,uint256,bytes32,uint256,bytes,bytes)",
+      "name": "EncryptedVote",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "voter",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "roundId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "identifier",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "ancillaryData",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "encryptedVote",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "PriceRequestAdded(uint256,bytes32,uint256)",
+      "name": "PriceRequestAdded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "roundId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "identifier",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PriceResolved(uint256,bytes32,uint256,int256,bytes)",
+      "name": "PriceResolved",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "roundId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "identifier",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "ancillaryData",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RewardsRetrieved(address,uint256,bytes32,uint256,bytes,uint256)",
+      "name": "RewardsRetrieved",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "voter",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "roundId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "identifier",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "ancillaryData",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "numTokens",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "VoteCommitted(address,uint256,bytes32,uint256,bytes)",
+      "name": "VoteCommitted",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "voter",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "roundId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "identifier",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "ancillaryData",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "VoteRevealed(address,uint256,bytes32,uint256,int256,bytes,uint256)",
+      "name": "VoteRevealed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "voter",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "roundId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "identifier",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "ancillaryData",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "numTokens",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "ancillaryBytesLimit()",
+      "name": "ancillaryBytesLimit",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "batchCommit(tuple(bytes32,uint256,bytes,bytes32,bytes)[])",
+      "name": "batchCommit",
+      "description": "Submit a batch of commits in a single transaction. Using `encryptedVote` is optional. If included then commitment is emitted in an event. Look at `project-root/common/Constants.js` for the tested maximum number of commitments that can fit in one transaction.",
+      "parameterDecorators": [
+        {
+          "name": "commits",
+          "description": "struct to encapsulate an `identifier`, `time`, `hash` and optional `encryptedVote`.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "identifier",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "time",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "ancillaryData",
+              "description": "",
+              "type": "bytes"
+            },
+            {
+              "name": "hash",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "encryptedVote",
+              "description": "",
+              "type": "bytes"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "batchCommit(tuple(bytes32,uint256,bytes32,bytes)[])",
+      "name": "batchCommit",
+      "description": "Submit a batch of commits in a single transaction. Using `encryptedVote` is optional. If included then commitment is stored on chain. Look at `project-root/common/Constants.js` for the tested maximum number of commitments that can fit in one transaction.",
+      "parameterDecorators": [
+        {
+          "name": "commits",
+          "description": "array of structs that encapsulate an `identifier`, `time`, `hash` and optional `encryptedVote`.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "identifier",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "time",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "hash",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "encryptedVote",
+              "description": "",
+              "type": "bytes"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "batchReveal(tuple(bytes32,uint256,int256,int256)[])",
+      "name": "batchReveal",
+      "description": "Reveal multiple votes in a single transaction. Look at `project-root/common/Constants.js` for the tested maximum number of reveals. that can fit in one transaction. For more information on reveals, review the comment for `revealVote`.",
+      "parameterDecorators": [
+        {
+          "name": "reveals",
+          "description": "array of the Reveal struct which contains an identifier, time, price and salt.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "identifier",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "time",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "price",
+              "description": "",
+              "type": "int256"
+            },
+            {
+              "name": "salt",
+              "description": "",
+              "type": "int256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "batchReveal(tuple(bytes32,uint256,int256,bytes,int256)[])",
+      "name": "batchReveal",
+      "description": "Reveal multiple votes in a single transaction. Look at `project-root/common/Constants.js` for the tested maximum number of reveals. that can fit in one transaction. For more info on reveals, review the comment for `revealVote`.",
+      "parameterDecorators": [
+        {
+          "name": "reveals",
+          "description": "array of the Reveal struct which contains an identifier, time, price and salt.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "identifier",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "time",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "price",
+              "description": "",
+              "type": "int256"
+            },
+            {
+              "name": "ancillaryData",
+              "description": "",
+              "type": "bytes"
+            },
+            {
+              "name": "salt",
+              "description": "",
+              "type": "int256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "commitAndEmitEncryptedVote(bytes32,uint256,bytes,bytes32,bytes)",
+      "name": "commitAndEmitEncryptedVote",
+      "description": "commits a vote and logs an event with a data blob, typically an encrypted version of the vote. An encrypted version of the vote is emitted in an event `EncryptedVote` to allow off-chain infrastructure to retrieve the commit. The contents of `encryptedVote` are never used on chain: it is purely for convenience.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "unique price pair identifier. Eg: BTC/USD price pair.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "unix timestamp of for the price request.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ancillaryData",
+          "description": "arbitrary data appended to a price request to give the voters more info from the caller.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "hash",
+          "description": "keccak256 hash of the price you want to vote for and a `int256 salt`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "encryptedVote",
+          "description": "offchain encrypted blob containing the voters amount, time and salt.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "commitAndEmitEncryptedVote(bytes32,uint256,bytes32,bytes)",
+      "name": "commitAndEmitEncryptedVote",
+      "description": "commits a vote and logs an event with a data blob, typically an encrypted version of the vote. An encrypted version of the vote is emitted in an event `EncryptedVote` to allow off-chain infrastructure to retrieve the commit. The contents of `encryptedVote` are never used on chain: it is purely for convenience.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "unique price pair identifier. Eg: BTC/USD price pair.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "unix timestamp of for the price request.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "hash",
+          "description": "keccak256 hash of the price you want to vote for and a `int256 salt`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "encryptedVote",
+          "description": "offchain encrypted blob containing the voters amount, time and salt.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "commitVote(bytes32,uint256,bytes,bytes32)",
+      "name": "commitVote",
+      "description": "Commit a vote for a price request for `identifier` at `time`. `identifier`, `time` must correspond to a price request that's currently in the commit phase. Commits can be changed.Since transaction data is public, the salt will be revealed with the vote. While this is the system’s expected behavior, voters should never reuse salts. If someone else is able to guess the voted price and knows that a salt will be reused, then they can determine the vote pre-reveal.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "uniquely identifies the committed vote. EG BTC/USD price pair.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "unix timestamp of the price being voted on.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ancillaryData",
+          "description": "arbitrary data appended to a price request to give the voters more info from the caller.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "hash",
+          "description": "keccak256 hash of the `price`, `salt`, voter `address`, `time`, current `roundId`, and `identifier`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "commitVote(bytes32,uint256,bytes32)",
+      "name": "commitVote",
+      "description": "Commit a vote for a price request for `identifier` at `time`. `identifier`, `time` must correspond to a price request that's currently in the commit phase. Commits can be changed.Since transaction data is public, the salt will be revealed with the vote. While this is the system’s expected behavior, voters should never reuse salts. If someone else is able to guess the voted price and knows that a salt will be reused, then they can determine the vote pre-reveal.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "uniquely identifies the committed vote. EG BTC/USD price pair.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "unix timestamp of the price being voted on.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "hash",
+          "description": "keccak256 hash of the `price`, `salt`, voter `address`, `time`, current `roundId`, and `identifier`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "gatPercentage()",
+      "name": "gatPercentage",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "rawValue",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentRoundId()",
+      "name": "getCurrentRoundId",
+      "description": "Returns the current round ID, as a function of the current time.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint256 representing the unique round ID.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentTime()",
+      "name": "getCurrentTime",
+      "description": "Gets the current time. Will return the last time set in `setCurrentTime` if running in test mode. Otherwise, it will return the block timestamp.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint for the current Testable timestamp.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPendingRequests()",
+      "name": "getPendingRequests",
+      "description": "Gets the queries that are being voted on this round.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "pendingRequests array containing identifiers of type `PendingRequest`. and timestamps for all pending requests.",
+          "recommendedTypes": [],
+          "solidityType": "tuple[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPrice(bytes32,uint256,bytes)",
+      "name": "getPrice",
+      "description": "Gets the price for `identifier` and `time` if it has already been requested and resolved. If the price is not available, the method reverts.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "uniquely identifies the price requested. eg BTC/USD (encoded as bytes32) could be requested.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "unix timestamp of for the price request.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ancillaryData",
+          "description": "arbitrary data appended to a price request to give the voters more info from the caller.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "int256 representing the resolved price for the given identifier and timestamp.",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPrice(bytes32,uint256)",
+      "name": "getPrice",
+      "description": "Gets the price for `identifier` and `time` if it has already been requested and resolved. If the price is not available, the method reverts.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "uniquely identifies the price requested. eg BTC/USD (encoded as bytes32) could be requested.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "unix timestamp for the price request.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "int256 representing the resolved price for the given identifier and timestamp.",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPriceRequestStatuses(tuple(bytes32,uint256,bytes)[])",
+      "name": "getPriceRequestStatuses",
+      "description": "Gets the status of a list of price requests, identified by their identifier and time. If the status for a particular request is NotRequested, the lastVotingRound will always be 0.",
+      "parameterDecorators": [
+        {
+          "name": "requests",
+          "description": "array of type PendingRequest which includes an identifier and timestamp for each request.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "identifier",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "time",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "ancillaryData",
+              "description": "",
+              "type": "bytes"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "requestStates a list, in the same order as the input list, giving the status of each of the specified price requests.",
+          "recommendedTypes": [],
+          "solidityType": "tuple[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPriceRequestStatuses(tuple(bytes32,uint256)[])",
+      "name": "getPriceRequestStatuses",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "requests",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "identifier",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "time",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVotePhase()",
+      "name": "getVotePhase",
+      "description": "Returns the current voting phase, as a function of the current time.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Phase to indicate the current phase. Either { Commit, Reveal, NUM_PHASES_PLACEHOLDER }.",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "hasPrice(bytes32,uint256)",
+      "name": "hasPrice",
+      "description": "Whether the price for `identifier` and `time` is available. Time must be in the past and the identifier must be supported.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "uniquely identifies the price requested. eg BTC/USD (encoded as bytes32) could be requested.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "unix timestamp for the price request.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "bool if the DVM has resolved to a price for the given identifier and timestamp.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "hasPrice(bytes32,uint256,bytes)",
+      "name": "hasPrice",
+      "description": "Whether the price for `identifier` and `time` is available. Time must be in the past and the identifier must be supported.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "uniquely identifies the price requested. eg BTC/USD (encoded as bytes32) could be requested.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "unix timestamp of for the price request.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ancillaryData",
+          "description": "arbitrary data appended to a price request to give the voters more info from the caller.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "_hasPrice bool if the DVM has resolved to a price for the given identifier and timestamp.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "inflationRate()",
+      "name": "inflationRate",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "rawValue",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "migratedAddress()",
+      "name": "migratedAddress",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "requestPrice(bytes32,uint256,bytes)",
+      "name": "requestPrice",
+      "description": "Enqueues a request (if a request isn't already present) for the given `identifier`, `time` pair. Time must be in the past and the identifier must be supported. The length of the ancillary data is limited such that this method abides by the EVM transaction gas limit.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "uniquely identifies the price requested. eg BTC/USD (encoded as bytes32) could be requested.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "unix timestamp for the price request.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ancillaryData",
+          "description": "arbitrary data appended to a price request to give the voters more info from the caller.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "requestPrice(bytes32,uint256)",
+      "name": "requestPrice",
+      "description": "Enqueues a request (if a request isn't already present) for the given `identifier`, `time` pair. Time must be in the past and the identifier must be supported.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "uniquely identifies the price requested. eg BTC/USD (encoded as bytes32) could be requested.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "unix timestamp for the price request.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "retrieveRewards(address,uint256,tuple(bytes32,uint256,bytes)[])",
+      "name": "retrieveRewards",
+      "description": "Retrieves rewards owed for a set of resolved price requests. Can only retrieve rewards if calling for a valid round and if the call is done within the timeout threshold (not expired). Note that a named return value is used here to avoid a stack to deep error.",
+      "parameterDecorators": [
+        {
+          "name": "voterAddress",
+          "description": "voter for which rewards will be retrieved. Does not have to be the caller.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "roundId",
+          "description": "the round from which voting rewards will be retrieved from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "toRetrieve",
+          "description": "array of PendingRequests which rewards are retrieved from.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "identifier",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "time",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "ancillaryData",
+              "description": "",
+              "type": "bytes"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalRewardToIssue",
+          "description": "total amount of rewards returned to the voter.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "retrieveRewards(address,uint256,tuple(bytes32,uint256)[])",
+      "name": "retrieveRewards",
+      "description": "Retrieves rewards owed for a set of resolved price requests. Can only retrieve rewards if calling for a valid round and if the call is done within the timeout threshold (not expired).",
+      "parameterDecorators": [
+        {
+          "name": "voterAddress",
+          "description": "voter for which rewards will be retrieved. Does not have to be the caller.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "roundId",
+          "description": "the round from which voting rewards will be retrieved from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "toRetrieve",
+          "description": "array of PendingRequests which rewards are retrieved from.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "identifier",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "time",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "total amount of rewards returned to the voter.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "revealVote(bytes32,uint256,int256,int256)",
+      "name": "revealVote",
+      "description": "Reveal a previously committed vote for `identifier` at `time`. The revealed `price`, `salt`, `address`, `time`, `roundId`, and `identifier`, must hash to the latest `hash` that `commitVote()` was called with. Only the committer can reveal their vote.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "voted on in the commit phase. EG BTC/USD price pair.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "specifies the unix timestamp of the price is being voted on.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "price",
+          "description": "voted on during the commit phase.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "salt",
+          "description": "value used to hide the commitment price during the commit phase.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "revealVote(bytes32,uint256,int256,bytes,int256)",
+      "name": "revealVote",
+      "description": "Reveal a previously committed vote for `identifier` at `time`. The revealed `price`, `salt`, `address`, `time`, `roundId`, and `identifier`, must hash to the latest `hash` that `commitVote()` was called with. Only the committer can reveal their vote.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "voted on in the commit phase. EG BTC/USD price pair.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "specifies the unix timestamp of the price being voted on.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "price",
+          "description": "voted on during the commit phase.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ancillaryData",
+          "description": "arbitrary data appended to a price request to give the voters more info from the caller.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "salt",
+          "description": "value used to hide the commitment price during the commit phase.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rewardsExpirationTimeout()",
+      "name": "rewardsExpirationTimeout",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rounds(uint256)",
+      "name": "rounds",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "snapshotId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "inflationRate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        },
+        {
+          "name": "gatPercentage",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        },
+        {
+          "name": "rewardsExpirationTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setCurrentTime(uint256)",
+      "name": "setCurrentTime",
+      "description": "Sets the current time. Will revert if not running in test mode.",
+      "parameterDecorators": [
+        {
+          "name": "time",
+          "description": "timestamp to set current Testable time to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setGatPercentage(tuple(uint256))",
+      "name": "setGatPercentage",
+      "description": "Resets the Gat percentage. Note: this change only applies to rounds that have not yet begun. This method is public because calldata structs are not currently supported by solidity.",
+      "parameterDecorators": [
+        {
+          "name": "newGatPercentage",
+          "description": "sets the next round's Gat percentage.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "rawValue",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setInflationRate(tuple(uint256))",
+      "name": "setInflationRate",
+      "description": "Resets the inflation rate. Note: this change only applies to rounds that have not yet begun. This method is public because calldata structs are not currently supported by solidity.",
+      "parameterDecorators": [
+        {
+          "name": "newInflationRate",
+          "description": "sets the next round's inflation rate.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "rawValue",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMigrated(address)",
+      "name": "setMigrated",
+      "description": "Disables this Voting contract in favor of the migrated one. Can only be called by the contract owner.",
+      "parameterDecorators": [
+        {
+          "name": "newVotingAddress",
+          "description": "the newly migrated contract address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRewardsExpirationTimeout(uint256)",
+      "name": "setRewardsExpirationTimeout",
+      "description": "Resets the rewards expiration timeout. This change only applies to rounds that have not yet begun.",
+      "parameterDecorators": [
+        {
+          "name": "NewRewardsExpirationTimeout",
+          "description": "how long a caller can wait before choosing to withdraw their rewards.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "snapshotCurrentRound(bytes)",
+      "name": "snapshotCurrentRound",
+      "description": "Snapshot the current round's token balances and lock in the inflation rate and GAT. This function can be called multiple times, but only the first call per round into this function or `revealVote` will create the round snapshot. Any later calls will be a no-op. Will revert unless called during reveal period.",
+      "parameterDecorators": [
+        {
+          "name": "signature",
+          "description": "signature required to prove caller is an EOA to prevent flash loans from being included in the snapshot.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "snapshotMessageHash()",
+      "name": "snapshotMessageHash",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "timerAddress()",
+      "name": "timerAddress",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "voteTiming()",
+      "name": "voteTiming",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "phaseLength",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "votingToken()",
+      "name": "votingToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

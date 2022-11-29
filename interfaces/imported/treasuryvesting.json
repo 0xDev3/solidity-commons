@@ -1,1 +1,334 @@
-{"schema":"../schema.json","tags":["vesting"],"name":"TreasuryVesting","description":"","eventDecorators":[{"signature":"GrantAdded(address,uint256)","name":"GrantAdded","description":"Event for token purchase logging.","parameterDecorators":[{"name":"recipient","description":"","recommendedTypes":[],"indexed":true},{"name":"vestingId","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"GrantTokensClaimed(address,uint256)","name":"GrantTokensClaimed","description":"Event for token purchase logging.","parameterDecorators":[{"name":"recipient","description":"","recommendedTypes":[],"indexed":true},{"name":"amountClaimed","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Event for token purchase logging.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"addTokenGrant(address,uint256,uint16,uint16)","name":"addTokenGrant","description":"","parameterDecorators":[{"name":"_recipient","description":"","recommendedTypes":[]},{"name":"_amount","description":"","recommendedTypes":[]},{"name":"_vestingDurationInDays","description":"","recommendedTypes":[]},{"name":"_vestingCliffInDays","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claimVestedTokens()","name":"claimVestedTokens","description":"Allows a grant recipient to claim their vested tokens. Errors if no tokens have vested.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getGrantAmount(address)","name":"getGrantAmount","description":"","parameterDecorators":[{"name":"_recipient","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getGrantAmountLeft(address)","name":"getGrantAmountLeft","description":"","parameterDecorators":[{"name":"_recipient","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getGrantDaysClaimed(address)","name":"getGrantDaysClaimed","description":"","parameterDecorators":[{"name":"_recipient","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getGrantStartTime(address)","name":"getGrantStartTime","description":"","parameterDecorators":[{"name":"_recipient","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getGrantTotalClaimed(address)","name":"getGrantTotalClaimed","description":"","parameterDecorators":[{"name":"_recipient","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getGrantVestingDuration(address)","name":"getGrantVestingDuration","description":"","parameterDecorators":[{"name":"_recipient","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getGrantVestingDurationLeft(address)","name":"getGrantVestingDurationLeft","description":"","parameterDecorators":[{"name":"_recipient","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getTotalVestingCount()","name":"getTotalVestingCount","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"token()","name":"token","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "vesting"
+  ],
+  "name": "TreasuryVesting",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "GrantAdded(address,uint256)",
+      "name": "GrantAdded",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "vestingId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "GrantTokensClaimed(address,uint256)",
+      "name": "GrantTokensClaimed",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amountClaimed",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addTokenGrant(address,uint256,uint16,uint16)",
+      "name": "addTokenGrant",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_recipient",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_vestingDurationInDays",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_vestingCliffInDays",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimVestedTokens()",
+      "name": "claimVestedTokens",
+      "description": "Allows a grant recipient to claim their vested tokens. Errors if no tokens have vested.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getGrantAmount(address)",
+      "name": "getGrantAmount",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_recipient",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getGrantAmountLeft(address)",
+      "name": "getGrantAmountLeft",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_recipient",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getGrantDaysClaimed(address)",
+      "name": "getGrantDaysClaimed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_recipient",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getGrantStartTime(address)",
+      "name": "getGrantStartTime",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_recipient",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getGrantTotalClaimed(address)",
+      "name": "getGrantTotalClaimed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_recipient",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getGrantVestingDuration(address)",
+      "name": "getGrantVestingDuration",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_recipient",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getGrantVestingDurationLeft(address)",
+      "name": "getGrantVestingDurationLeft",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_recipient",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTotalVestingCount()",
+      "name": "getTotalVestingCount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

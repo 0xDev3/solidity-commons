@@ -1,1 +1,384 @@
-{"schema":"../schema.json","tags":["tokens"],"name":"BulkSender","description":"BulkSender MultiSender, support ETH and ERC20 Tokens, send ether or erc20 token to multiple addresses in batch.","eventDecorators":[{"signature":"LogTokenBulkSent(address,uint256)","name":"LogTokenBulkSent","description":"Emitted when someone's membership role is being updated.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[],"indexed":false},{"name":"total","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LogGetToken(address,address,uint256)","name":"LogGetToken","description":"Emitted when someone's membership role is being updated.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[],"indexed":false},{"name":"receiver","description":"","recommendedTypes":[],"indexed":false},{"name":"balance","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"receiverAddress()","name":"receiverAddress","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"setVIPFee(uint256)","name":"setVIPFee","description":"","parameterDecorators":[{"name":"_fee","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"bulksendToken(address,address[],uint256[])","name":"bulksendToken","description":"","parameterDecorators":[{"name":"_tokenAddress","description":"","recommendedTypes":[]},{"name":"_to","description":"","recommendedTypes":[]},{"name":"_value","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getReceiverAddress()","name":"getReceiverAddress","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"bulksend(address[],uint256[])","name":"bulksend","description":"","parameterDecorators":[{"name":"_to","description":"","recommendedTypes":[]},{"name":"_value","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"bulkSendCoinWithDifferentValue(address,address[],uint256[])","name":"bulkSendCoinWithDifferentValue","description":"","parameterDecorators":[{"name":"_tokenAddress","description":"","recommendedTypes":[]},{"name":"_to","description":"","recommendedTypes":[]},{"name":"_value","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"bulkSendETHWithDifferentValue(address[],uint256[])","name":"bulkSendETHWithDifferentValue","description":"","parameterDecorators":[{"name":"_to","description":"","recommendedTypes":[]},{"name":"_value","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setReceiverAddress(address)","name":"setReceiverAddress","description":"","parameterDecorators":[{"name":"_addr","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"registerVIP()","name":"registerVIP","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"vipList(address)","name":"vipList","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"addToVIPList(address[])","name":"addToVIPList","description":"","parameterDecorators":[{"name":"_vipList","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"txFee()","name":"txFee","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setTxFee(uint256)","name":"setTxFee","description":"","parameterDecorators":[{"name":"_fee","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"VIPFee()","name":"VIPFee","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"isVIP(address)","name":"isVIP","description":"","parameterDecorators":[{"name":"_addr","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"removeFromVIPList(address[])","name":"removeFromVIPList","description":"","parameterDecorators":[{"name":"_vipList","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getBalance(address)","name":"getBalance","description":"","parameterDecorators":[{"name":"_tokenAddress","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens"
+  ],
+  "name": "BulkSender",
+  "description": "BulkSender MultiSender, support ETH and ERC20 Tokens, send ether or erc20 token to multiple addresses in batch.",
+  "eventDecorators": [
+    {
+      "signature": "LogTokenBulkSent(address,uint256)",
+      "name": "LogTokenBulkSent",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "total",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogGetToken(address,address,uint256)",
+      "name": "LogGetToken",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "receiver",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "balance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "receiverAddress()",
+      "name": "receiverAddress",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setVIPFee(uint256)",
+      "name": "setVIPFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_fee",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "bulksendToken(address,address[],uint256[])",
+      "name": "bulksendToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_value",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getReceiverAddress()",
+      "name": "getReceiverAddress",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "bulksend(address[],uint256[])",
+      "name": "bulksend",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_to",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_value",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "bulkSendCoinWithDifferentValue(address,address[],uint256[])",
+      "name": "bulkSendCoinWithDifferentValue",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_value",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "bulkSendETHWithDifferentValue(address[],uint256[])",
+      "name": "bulkSendETHWithDifferentValue",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_to",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_value",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setReceiverAddress(address)",
+      "name": "setReceiverAddress",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_addr",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "registerVIP()",
+      "name": "registerVIP",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "vipList(address)",
+      "name": "vipList",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addToVIPList(address[])",
+      "name": "addToVIPList",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_vipList",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "txFee()",
+      "name": "txFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setTxFee(uint256)",
+      "name": "setTxFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_fee",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "VIPFee()",
+      "name": "VIPFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isVIP(address)",
+      "name": "isVIP",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_addr",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeFromVIPList(address[])",
+      "name": "removeFromVIPList",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_vipList",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getBalance(address)",
+      "name": "getBalance",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenAddress",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

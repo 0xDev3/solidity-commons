@@ -1,1 +1,410 @@
-{"schema":"../schema.json","tags":["oracles"],"name":"FibPriceOracleETH","description":"","eventDecorators":[{"signature":"AggregatorUpdated(address,address)","name":"AggregatorUpdated","description":"Event for token purchase logging. Emitted when setting contract parameters.","parameterDecorators":[{"name":"tokenAddress","description":"","recommendedTypes":[],"indexed":false},{"name":"source","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"MaxPriceDiffUpdated(uint256)","name":"MaxPriceDiffUpdated","description":"Event for token purchase logging. Emitted when setting contract parameters.","parameterDecorators":[{"name":"maxDiff","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"NewAdmin(address,address)","name":"NewAdmin","description":"Event for token purchase logging. Emitted when setting contract parameters.","parameterDecorators":[{"name":"oldAdmin","description":"","recommendedTypes":[],"indexed":false},{"name":"newAdmin","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PriceRecordUpdated(address,address,address,bool)","name":"PriceRecordUpdated","description":"Event for token purchase logging. Emitted when setting contract parameters.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[],"indexed":false},{"name":"baseToken","description":"","recommendedTypes":[],"indexed":false},{"name":"lpToken","description":"","recommendedTypes":[],"indexed":false},{"name":"_active","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"admin()","name":"admin","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"aggregators(address)","name":"aggregators","description":"Chainlink Aggregators.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getPriceFromBand(address)","name":"getPriceFromBand","description":"","parameterDecorators":[{"name":"_tokenAddress","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getPriceFromChainlink(address)","name":"getPriceFromChainlink","description":"","parameterDecorators":[{"name":"_tokenAddress","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getPriceFromDex(address)","name":"getPriceFromDex","description":"","parameterDecorators":[{"name":"_tokenAddress","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getPriceFromOracle(address)","name":"getPriceFromOracle","description":"","parameterDecorators":[{"name":"_tokenAddress","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getTokenPrice(address)","name":"getTokenPrice","description":"","parameterDecorators":[{"name":"_tokenAddress","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"isPriceOracle()","name":"isPriceOracle","description":"Indicator that this is a PriceOracle contract (for inspection).","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"maxPriceDiff()","name":"maxPriceDiff","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"priceRecords(address)","name":"priceRecords","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"token","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"baseToken","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"lpToken","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"active","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"setAdmin(address)","name":"setAdmin","description":"","parameterDecorators":[{"name":"newAdmin","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setAggregators(address[],address[])","name":"setAggregators","description":"","parameterDecorators":[{"name":"tokenAddresses","description":"","recommendedTypes":[]},{"name":"sources","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setDexPriceInfo(address,address,address,bool)","name":"setDexPriceInfo","description":"","parameterDecorators":[{"name":"_token","description":"","recommendedTypes":[]},{"name":"_baseToken","description":"","recommendedTypes":[]},{"name":"_lpToken","description":"","recommendedTypes":[]},{"name":"_active","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMaxPriceDiff(uint256)","name":"setMaxPriceDiff","description":"","parameterDecorators":[{"name":"_maxPriceDiff","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"wrapped()","name":"wrapped","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "oracles"
+  ],
+  "name": "FibPriceOracleETH",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "AggregatorUpdated(address,address)",
+      "name": "AggregatorUpdated",
+      "description": "Event for token purchase logging. Emitted when setting contract parameters.",
+      "parameterDecorators": [
+        {
+          "name": "tokenAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "source",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "MaxPriceDiffUpdated(uint256)",
+      "name": "MaxPriceDiffUpdated",
+      "description": "Event for token purchase logging. Emitted when setting contract parameters.",
+      "parameterDecorators": [
+        {
+          "name": "maxDiff",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewAdmin(address,address)",
+      "name": "NewAdmin",
+      "description": "Event for token purchase logging. Emitted when setting contract parameters.",
+      "parameterDecorators": [
+        {
+          "name": "oldAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PriceRecordUpdated(address,address,address,bool)",
+      "name": "PriceRecordUpdated",
+      "description": "Event for token purchase logging. Emitted when setting contract parameters.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "baseToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "lpToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_active",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "admin()",
+      "name": "admin",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "aggregators(address)",
+      "name": "aggregators",
+      "description": "Chainlink Aggregators.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPriceFromBand(address)",
+      "name": "getPriceFromBand",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenAddress",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPriceFromChainlink(address)",
+      "name": "getPriceFromChainlink",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenAddress",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPriceFromDex(address)",
+      "name": "getPriceFromDex",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenAddress",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPriceFromOracle(address)",
+      "name": "getPriceFromOracle",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenAddress",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokenPrice(address)",
+      "name": "getTokenPrice",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenAddress",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isPriceOracle()",
+      "name": "isPriceOracle",
+      "description": "Indicator that this is a PriceOracle contract (for inspection).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxPriceDiff()",
+      "name": "maxPriceDiff",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "priceRecords(address)",
+      "name": "priceRecords",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "baseToken",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "lpToken",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "active",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setAdmin(address)",
+      "name": "setAdmin",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "newAdmin",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setAggregators(address[],address[])",
+      "name": "setAggregators",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "tokenAddresses",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "sources",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDexPriceInfo(address,address,address,bool)",
+      "name": "setDexPriceInfo",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_baseToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_lpToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_active",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMaxPriceDiff(uint256)",
+      "name": "setMaxPriceDiff",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_maxPriceDiff",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "wrapped()",
+      "name": "wrapped",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

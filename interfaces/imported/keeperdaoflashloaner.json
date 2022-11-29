@@ -1,1 +1,213 @@
-{"schema":"../schema.json","tags":["borrowing","flash loans","loans","liquidity","dao"],"name":"KeeperDaoFlashloaner","description":"This contract implements a simple keeper. It borrows ETH from the KeeperDAO liquidity pool, and immediately returns all of the borrowed ETH, plus some amount of \"profit\" from its own balance. Instead of returning profits from their own balances, keeper contracts will usually engage in arbitrage or liquidations to earn profits that can be returned.","eventDecorators":[{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":true},{"name":"beneficiary","description":"who got the tokens.","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"arber()","name":"arber","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"borrowProxy()","name":"borrowProxy","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"flashloan(address,uint256)","name":"flashloan","description":"This function is the entry point of this keeper. An off-chain bot will call this function whenever it decides that it wants to borrow from this KeeperDAO liquidity pool. This function is similar to what you would expect in a \"real\" keeper implementation: it accepts paramters telling it what / how much to borrow, and which callback on this contract should be called once the borrowed funds have been transferred.","parameterDecorators":[{"name":"_token","description":"","recommendedTypes":[]},{"name":"_amountToBorrow","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"flashloanCallback(address,uint256,address)","name":"flashloanCallback","description":"This is the callback function that implements our custom keeper logic. We do not need to call this function directly; it will be called by the KeeperDAO borrow proxy when we call borrow on the KeeperDAO liquidity pool. In fact, usually, this function should be restricted so that is can only be called by the KeeperDAO borrow proxy. Just before this callback is called by the KeeperDAO borrow proxy, all of the assets that we want to borrow will be transferred to this contract. In this callback, we can do whatever we want with these assets; we can arbitrage between DEXs, liquidity positions on Compound, and so on. The only requirement is that at least more than the borrowed assets is returned. For example, imagine that we wanted borrowed 1 ETH. Before this callback is called, the KeeperDAO liquidity pool will have transferred 1 ETH to this contract. This callback can then do whatever it wants with that ETH. However, before the callback returns, it must return at least more than 1 ETH to the KeeperDAO liquidity pool (even if it is only returning 1 ETH + 1 WEI). In our example, we will not implement a complicated keeper strategy. We will simply return all of the borrowed ETH, plus a non-zero amount of profit. The amount of profit is explicitly specified by the owner of this contract when they initiate the borrow. Of course, this strategy does not generate profit by interacting with other protocols (like most keepers do). Instead, it just uses its own balance to return profits to KeeperDAO.","parameterDecorators":[{"name":"_token","description":"","recommendedTypes":[]},{"name":"_amountBorrowed","description":"","recommendedTypes":[]},{"name":"_initiator","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"liquidityPool()","name":"liquidityPool","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setArber(address)","name":"setArber","description":"","parameterDecorators":[{"name":"_arber","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setBorrowProxy(address)","name":"setBorrowProxy","description":"Set the borrow proxy expected by this contract. This function can only be called by the current owner.","parameterDecorators":[{"name":"_newBorrowProxy","description":"The new borrow proxy expected by this contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setLiquidityPool(address)","name":"setLiquidityPool","description":"Set the liquidity pool used by this contract. This function can only be called by the current owner.","parameterDecorators":[{"name":"_newLiquidityPool","description":"The new liquidity pool used by this contract. It must be a payable address, because this contract needs to be able to return borrowed assets and profits to the liquidty pool.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "borrowing",
+    "flash loans",
+    "loans",
+    "liquidity",
+    "dao"
+  ],
+  "name": "KeeperDaoFlashloaner",
+  "description": "This contract implements a simple keeper. It borrows ETH from the KeeperDAO liquidity pool, and immediately returns all of the borrowed ETH, plus some amount of \"profit\" from its own balance. Instead of returning profits from their own balances, keeper contracts will usually engage in arbitrage or liquidations to earn profits that can be returned.",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "beneficiary",
+          "description": "who got the tokens.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "arber()",
+      "name": "arber",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "borrowProxy()",
+      "name": "borrowProxy",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "flashloan(address,uint256)",
+      "name": "flashloan",
+      "description": "This function is the entry point of this keeper. An off-chain bot will call this function whenever it decides that it wants to borrow from this KeeperDAO liquidity pool. This function is similar to what you would expect in a \"real\" keeper implementation: it accepts paramters telling it what / how much to borrow, and which callback on this contract should be called once the borrowed funds have been transferred.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amountToBorrow",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "flashloanCallback(address,uint256,address)",
+      "name": "flashloanCallback",
+      "description": "This is the callback function that implements our custom keeper logic. We do not need to call this function directly; it will be called by the KeeperDAO borrow proxy when we call borrow on the KeeperDAO liquidity pool. In fact, usually, this function should be restricted so that is can only be called by the KeeperDAO borrow proxy. Just before this callback is called by the KeeperDAO borrow proxy, all of the assets that we want to borrow will be transferred to this contract. In this callback, we can do whatever we want with these assets; we can arbitrage between DEXs, liquidity positions on Compound, and so on. The only requirement is that at least more than the borrowed assets is returned. For example, imagine that we wanted borrowed 1 ETH. Before this callback is called, the KeeperDAO liquidity pool will have transferred 1 ETH to this contract. This callback can then do whatever it wants with that ETH. However, before the callback returns, it must return at least more than 1 ETH to the KeeperDAO liquidity pool (even if it is only returning 1 ETH + 1 WEI). In our example, we will not implement a complicated keeper strategy. We will simply return all of the borrowed ETH, plus a non-zero amount of profit. The amount of profit is explicitly specified by the owner of this contract when they initiate the borrow. Of course, this strategy does not generate profit by interacting with other protocols (like most keepers do). Instead, it just uses its own balance to return profits to KeeperDAO.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amountBorrowed",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_initiator",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "liquidityPool()",
+      "name": "liquidityPool",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setArber(address)",
+      "name": "setArber",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_arber",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setBorrowProxy(address)",
+      "name": "setBorrowProxy",
+      "description": "Set the borrow proxy expected by this contract. This function can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "_newBorrowProxy",
+          "description": "The new borrow proxy expected by this contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setLiquidityPool(address)",
+      "name": "setLiquidityPool",
+      "description": "Set the liquidity pool used by this contract. This function can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "_newLiquidityPool",
+          "description": "The new liquidity pool used by this contract. It must be a payable address, because this contract needs to be able to return borrowed assets and profits to the liquidty pool.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

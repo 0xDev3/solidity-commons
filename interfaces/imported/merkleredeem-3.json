@@ -1,1 +1,412 @@
-{"schema":"../schema.json","tags":["merkle proofs"],"name":"MerkleRedeem","description":"","eventDecorators":[{"signature":"Claimed(address,uint256)","name":"Claimed","description":"Event for token purchase logging.","parameterDecorators":[{"name":"recipient","description":"","recommendedTypes":[],"indexed":true},{"name":"balance","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnerChanged(address,address)","name":"OwnerChanged","description":"Event for token purchase logging.","parameterDecorators":[{"name":"oldOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnerNominated(address)","name":"OwnerNominated","description":"Event for token purchase logging.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"acceptOwnership()","name":"acceptOwnership","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claimPeriod(address,uint256,uint256,bytes32[])","name":"claimPeriod","description":"","parameterDecorators":[{"name":"recipient","description":"","recommendedTypes":[]},{"name":"period","description":"","recommendedTypes":[]},{"name":"balance","description":"","recommendedTypes":[]},{"name":"proof","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claimPeriods(address,tuple(uint256,uint256,bytes32[])[])","name":"claimPeriods","description":"","parameterDecorators":[{"name":"recipient","description":"","recommendedTypes":[]},{"name":"claims","description":"","recommendedTypes":[],"parameters":[{"name":"period","description":"","type":"uint256"},{"name":"balance","description":"","type":"uint256"},{"name":"proof","description":"","type":"bytes32[]"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claimStatus(address,uint256,uint256)","name":"claimStatus","description":"","parameterDecorators":[{"name":"recipient","description":"","recommendedTypes":[]},{"name":"begin","description":"","recommendedTypes":[]},{"name":"end","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool[]"}],"emittableEvents":[],"readOnly":true},{"signature":"claimed(uint256,address)","name":"claimed","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"emergencyRecipient()","name":"emergencyRecipient","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"emergencyWithdraw(address)","name":"emergencyWithdraw","description":"","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"merkleRoots(uint256,uint256)","name":"merkleRoots","description":"","parameterDecorators":[{"name":"begin","description":"","recommendedTypes":[]},{"name":"end","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32[]"}],"emittableEvents":[],"readOnly":true},{"signature":"nominateNewOwner(address)","name":"nominateNewOwner","description":"","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"nominatedOwner()","name":"nominatedOwner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"periodMerkleRoots(uint256)","name":"periodMerkleRoots","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"rewardsToken()","name":"rewardsToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"seedAllocations(uint256,bytes32,uint256)","name":"seedAllocations","description":"","parameterDecorators":[{"name":"period","description":"","recommendedTypes":[]},{"name":"merkleRoot","description":"","recommendedTypes":[]},{"name":"totalAllocation","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"verifyClaim(address,uint256,uint256,bytes32[])","name":"verifyClaim","description":"","parameterDecorators":[{"name":"recipient","description":"","recommendedTypes":[]},{"name":"period","description":"","recommendedTypes":[]},{"name":"balance","description":"","recommendedTypes":[]},{"name":"proof","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "merkle proofs"
+  ],
+  "name": "MerkleRedeem",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "Claimed(address,uint256)",
+      "name": "Claimed",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "balance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnerChanged(address,address)",
+      "name": "OwnerChanged",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "oldOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnerNominated(address)",
+      "name": "OwnerNominated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "acceptOwnership()",
+      "name": "acceptOwnership",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimPeriod(address,uint256,uint256,bytes32[])",
+      "name": "claimPeriod",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "period",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "balance",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "proof",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimPeriods(address,tuple(uint256,uint256,bytes32[])[])",
+      "name": "claimPeriods",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "claims",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "period",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "balance",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "proof",
+              "description": "",
+              "type": "bytes32[]"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimStatus(address,uint256,uint256)",
+      "name": "claimStatus",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "begin",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "end",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claimed(uint256,address)",
+      "name": "claimed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "emergencyRecipient()",
+      "name": "emergencyRecipient",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "emergencyWithdraw(address)",
+      "name": "emergencyWithdraw",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "merkleRoots(uint256,uint256)",
+      "name": "merkleRoots",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "begin",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "end",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nominateNewOwner(address)",
+      "name": "nominateNewOwner",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "nominatedOwner()",
+      "name": "nominatedOwner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "periodMerkleRoots(uint256)",
+      "name": "periodMerkleRoots",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rewardsToken()",
+      "name": "rewardsToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "seedAllocations(uint256,bytes32,uint256)",
+      "name": "seedAllocations",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "period",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "merkleRoot",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "totalAllocation",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "verifyClaim(address,uint256,uint256,bytes32[])",
+      "name": "verifyClaim",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "period",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "balance",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "proof",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

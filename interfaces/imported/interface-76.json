@@ -1,1 +1,1501 @@
-{"schema":"../schema.json","tags":["locking"],"name":"VoucherKernel","description":"VoucherKernel contract is controlling the core business logic. Notes: - Since this is a demo app, it is not yet optimized. In the next phase, the bulk raw data will be packed into a single bytes32 field and/or pushed off-chain. - The usage of block.timestamp is honored since vouchers are defined with day-precision and the demo app is not covering all edge cases. See: https://ethereum.stackexchange.com/questions/5924/how-do-ethereum-mining-nodes-maintain-a-time-consistent-with-the-network/5931#5931.","eventDecorators":[{"signature":"LogCancelFaultPeriodChanged(uint256,address)","name":"LogCancelFaultPeriodChanged","description":"","parameterDecorators":[{"name":"_newCancelFaultPeriod","description":"","recommendedTypes":[],"indexed":false},{"name":"_triggeredBy","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LogCashierSet(address,address)","name":"LogCashierSet","description":"","parameterDecorators":[{"name":"_newCashier","description":"","recommendedTypes":[],"indexed":false},{"name":"_triggeredBy","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LogComplainPeriodChanged(uint256,address)","name":"LogComplainPeriodChanged","description":"","parameterDecorators":[{"name":"_newComplainPeriod","description":"","recommendedTypes":[],"indexed":false},{"name":"_triggeredBy","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LogExpirationTriggered(uint256,address)","name":"LogExpirationTriggered","description":"","parameterDecorators":[{"name":"_tokenIdVoucher","description":"","recommendedTypes":[],"indexed":false},{"name":"_triggeredBy","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LogFinalizeVoucher(uint256,address)","name":"LogFinalizeVoucher","description":"","parameterDecorators":[{"name":"_tokenIdVoucher","description":"","recommendedTypes":[],"indexed":false},{"name":"_triggeredBy","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LogFundsReleased(uint256,uint8)","name":"LogFundsReleased","description":"","parameterDecorators":[{"name":"_tokenIdVoucher","description":"","recommendedTypes":[],"indexed":false},{"name":"_type","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LogPromiseCreated(bytes32,uint256,address,uint256,uint256,uint256)","name":"LogPromiseCreated","description":"","parameterDecorators":[{"name":"_promiseId","description":"","recommendedTypes":[],"indexed":true},{"name":"_nonce","description":"","recommendedTypes":[],"indexed":true},{"name":"_seller","description":"","recommendedTypes":[],"indexed":true},{"name":"_validFrom","description":"","recommendedTypes":[],"indexed":false},{"name":"_validTo","description":"","recommendedTypes":[],"indexed":false},{"name":"_idx","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LogVoucherComplain(uint256)","name":"LogVoucherComplain","description":"","parameterDecorators":[{"name":"_tokenIdVoucher","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LogVoucherDelivered(uint256,uint256,address,address,bytes32)","name":"LogVoucherDelivered","description":"","parameterDecorators":[{"name":"_tokenIdSupply","description":"","recommendedTypes":[],"indexed":true},{"name":"_tokenIdVoucher","description":"","recommendedTypes":[],"indexed":false},{"name":"_issuer","description":"","recommendedTypes":[],"indexed":false},{"name":"_holder","description":"","recommendedTypes":[],"indexed":false},{"name":"_promiseId","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LogVoucherFaultCancel(uint256)","name":"LogVoucherFaultCancel","description":"","parameterDecorators":[{"name":"_tokenIdVoucher","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LogVoucherRedeemed(uint256,address,bytes32)","name":"LogVoucherRedeemed","description":"","parameterDecorators":[{"name":"_tokenIdVoucher","description":"","recommendedTypes":[],"indexed":false},{"name":"_holder","description":"","recommendedTypes":[],"indexed":false},{"name":"_promiseId","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LogVoucherRefunded(uint256)","name":"LogVoucherRefunded","description":"","parameterDecorators":[{"name":"_tokenIdVoucher","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Paused(address)","name":"Paused","description":"","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Unpaused(address)","name":"Unpaused","description":"","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"MASK_NF_INDEX()","name":"MASK_NF_INDEX","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"MASK_TYPE()","name":"MASK_TYPE","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"TYPE_NF_BIT()","name":"TYPE_NF_BIT","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"accountSupply(address)","name":"accountSupply","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"burnSupply(address,uint256,uint256)","name":"burnSupply","description":"","parameterDecorators":[{"name":"_issuer","description":"","recommendedTypes":[]},{"name":"_tokenIdSupply","description":"","recommendedTypes":[]},{"name":"_qty","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"cancelFaultPeriod()","name":"cancelFaultPeriod","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"cancelOrFault(uint256)","name":"cancelOrFault","description":"Cancel/Fault transaction by the Seller, admitting to a fault or backing out of the deal.","parameterDecorators":[{"name":"_tokenIdVoucher","description":"ID of the voucher.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"cashierAddress()","name":"cashierAddress","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"complain(uint256)","name":"complain","description":"Issue a complain for a voucher.","parameterDecorators":[{"name":"_tokenIdVoucher","description":"ID of the voucher.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"complainPeriod()","name":"complainPeriod","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"createPaymentMethod(uint256,uint8,address,address)","name":"createPaymentMethod","description":"","parameterDecorators":[{"name":"_tokenIdSupply","description":"","recommendedTypes":[]},{"name":"_paymentMethod","description":"","recommendedTypes":[]},{"name":"_tokenPrice","description":"","recommendedTypes":[]},{"name":"_tokenDeposits","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"createTokenSupplyID(address,uint256,uint256,uint256,uint256,uint256,uint256)","name":"createTokenSupplyID","description":"Creating a new promise for goods or services. Can be reused, e.g. for making different batches of these (but not in prototype).","parameterDecorators":[{"name":"_seller","description":"seller of the promise.","recommendedTypes":[]},{"name":"_validFrom","description":"Start of valid period.","recommendedTypes":[]},{"name":"_validTo","description":"End of valid period.","recommendedTypes":[]},{"name":"_price","description":"Price (payment amount).","recommendedTypes":[]},{"name":"_depositSe","description":"Seller's deposit.","recommendedTypes":[]},{"name":"_depositBu","description":"Buyer's deposit.","recommendedTypes":[]},{"name":"_quantity","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"fillOrder(uint256,address,address)","name":"fillOrder","description":"Fill Voucher Order, iff funds paid, then extract & mint NFT to the voucher holder.","parameterDecorators":[{"name":"_tokenIdSupply","description":"ID of the supply token (ERC-1155).","recommendedTypes":[]},{"name":"_issuer","description":"Address of the token's issuer.","recommendedTypes":[]},{"name":"_holder","description":"Address of the recipient of the voucher (ERC-721).","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getBuyerOrderCosts(uint256)","name":"getBuyerOrderCosts","description":"Get Buyer costs required to make an order for a supply token.","parameterDecorators":[{"name":"_tokenIdSupply","description":"ID of the supply token.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getIdSupplyFromVoucher(uint256)","name":"getIdSupplyFromVoucher","description":"Get the supply token ID from a voucher token.","parameterDecorators":[{"name":"_tokenIdVoucher","description":"ID of the voucher token.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"ID of the supply token.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getOrderCosts(uint256)","name":"getOrderCosts","description":"Get all necessary funds for a supply token.","parameterDecorators":[{"name":"_tokenIdSupply","description":"ID of the supply token.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param2","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getPromiseDeposit(uint256,address)","name":"getPromiseDeposit","description":"","parameterDecorators":[{"name":"_tokenSupplyId","description":"","recommendedTypes":[]},{"name":"_owner","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getPromiseDepositSe(bytes32)","name":"getPromiseDepositSe","description":"Get the seller's deposit for a promise.","parameterDecorators":[{"name":"_promiseId","description":"ID of the promise.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Deposit of the seller.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getPromiseIdFromVoucherId(uint256)","name":"getPromiseIdFromVoucherId","description":"Get the promise ID from a voucher token.","parameterDecorators":[{"name":"_tokenIdVoucher","description":"ID of the voucher token.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"ID of the promise.","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"getPromiseKey(uint256)","name":"getPromiseKey","description":"Get the promise ID at specific index.","parameterDecorators":[{"name":"_idx","description":"Index in the array of promise keys.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Promise ID.","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"getRemQtyForSupply(uint256,address)","name":"getRemQtyForSupply","description":"","parameterDecorators":[{"name":"_tokenSupplyId","description":"","recommendedTypes":[]},{"name":"_owner","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getSupplyHolder(bytes32)","name":"getSupplyHolder","description":"","parameterDecorators":[{"name":"_promiseId","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getTotalSupply(address)","name":"getTotalSupply","description":"Get the current supply of tokens of an account.","parameterDecorators":[{"name":"_account","description":"Address to query.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Balance.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getVoucherDepositToken(uint256)","name":"getVoucherDepositToken","description":"Get the address of the token where the deposits for the supply are held.","parameterDecorators":[{"name":"_tokenIdSupply","description":"ID of the voucher token.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Address of the token.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getVoucherHolder(uint256)","name":"getVoucherHolder","description":"Get the holder of a voucher.","parameterDecorators":[{"name":"_tokenIdVoucher","description":"ID of the voucher token.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Address of the holder.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getVoucherIssuer(uint256)","name":"getVoucherIssuer","description":"Get the issuer of a voucher.","parameterDecorators":[{"name":"_tokenIdVoucher","description":"ID of the voucher token.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Address of the issuer.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getVoucherPaymentMethod(uint256)","name":"getVoucherPaymentMethod","description":"","parameterDecorators":[{"name":"_tokenIdSupply","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"getVoucherPriceToken(uint256)","name":"getVoucherPriceToken","description":"Get the address of the token where the price for the supply is held.","parameterDecorators":[{"name":"_tokenIdSupply","description":"ID of the voucher token.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Address of the token.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getVoucherStatus(uint256)","name":"getVoucherStatus","description":"Get the current status of a voucher.","parameterDecorators":[{"name":"_tokenIdVoucher","description":"ID of the voucher token.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"bool"},{"name":"param2","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isInValidityPeriod(uint256)","name":"isInValidityPeriod","description":"","parameterDecorators":[{"name":"_tokenIdVoucher","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"ordersPromise(uint256)","name":"ordersPromise","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"pause()","name":"pause","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"paused()","name":"paused","description":"Returns true if the contract is paused, and false otherwise.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"paymentDetails(uint256)","name":"paymentDetails","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"paymentMethod","description":"","recommendedTypes":[],"solidityType":"uint8"},{"name":"addressTokenPrice","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"addressTokenDeposits","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"promiseKeys(uint256)","name":"promiseKeys","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"promises(bytes32)","name":"promises","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"promiseId","description":"","recommendedTypes":[],"solidityType":"bytes32"},{"name":"nonce","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"seller","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"validFrom","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"validTo","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"price","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"depositSe","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"depositBu","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"idx","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"redeem(uint256)","name":"redeem","description":"Redemption of the vouchers promise.","parameterDecorators":[{"name":"_tokenIdVoucher","description":"ID of the voucher.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"refund(uint256)","name":"refund","description":"Refunding a voucher.","parameterDecorators":[{"name":"_tokenIdVoucher","description":"ID of the voucher.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setCancelFaultPeriod(uint256)","name":"setCancelFaultPeriod","description":"Set the general cancelOrFault period, should be used sparingly as it has significant consequences. Here done simply for demo purposes.","parameterDecorators":[{"name":"_cancelFaultPeriod","description":"the new value for cancelOrFault period (in number of seconds).","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setCashierAddress(address)","name":"setCashierAddress","description":"Set the address of the Cashier contract.","parameterDecorators":[{"name":"_cashierAddress","description":"The address of the Cashier contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setComplainPeriod(uint256)","name":"setComplainPeriod","description":"Set the general complain period, should be used sparingly as it has significant consequences. Here done simply for demo purposes.","parameterDecorators":[{"name":"_complainPeriod","description":"the new value for complain period (in number of seconds).","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setDepositsReleased(uint256)","name":"setDepositsReleased","description":"Mark voucher token that the deposits were released.","parameterDecorators":[{"name":"_tokenIdVoucher","description":"ID of the voucher token.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setPaymentReleased(uint256)","name":"setPaymentReleased","description":"Mark voucher token that the payment was released.","parameterDecorators":[{"name":"_tokenIdVoucher","description":"ID of the voucher token.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"tokenNonces(address)","name":"tokenNonces","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"triggerExpiration(uint256)","name":"triggerExpiration","description":"Mark voucher token as expired.","parameterDecorators":[{"name":"_tokenIdVoucher","description":"ID of the voucher token.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"triggerFinalizeVoucher(uint256)","name":"triggerFinalizeVoucher","description":"Mark voucher token to the final status.","parameterDecorators":[{"name":"_tokenIdVoucher","description":"ID of the voucher token.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"typeCounters(uint256)","name":"typeCounters","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"typeId()","name":"typeId","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"unpause()","name":"unpause","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"voucherIssuers(uint256)","name":"voucherIssuers","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"vouchersStatus(uint256)","name":"vouchersStatus","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"status","description":"","recommendedTypes":[],"solidityType":"uint8"},{"name":"isPaymentReleased","description":"","recommendedTypes":[],"solidityType":"bool"},{"name":"isDepositsReleased","description":"","recommendedTypes":[],"solidityType":"bool"},{"name":"complainPeriodStart","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"cancelFaultPeriodStart","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "locking"
+  ],
+  "name": "VoucherKernel",
+  "description": "VoucherKernel contract is controlling the core business logic. Notes: - Since this is a demo app, it is not yet optimized. In the next phase, the bulk raw data will be packed into a single bytes32 field and/or pushed off-chain. - The usage of block.timestamp is honored since vouchers are defined with day-precision and the demo app is not covering all edge cases. See: https://ethereum.stackexchange.com/questions/5924/how-do-ethereum-mining-nodes-maintain-a-time-consistent-with-the-network/5931#5931.",
+  "eventDecorators": [
+    {
+      "signature": "LogCancelFaultPeriodChanged(uint256,address)",
+      "name": "LogCancelFaultPeriodChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_newCancelFaultPeriod",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_triggeredBy",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogCashierSet(address,address)",
+      "name": "LogCashierSet",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_newCashier",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_triggeredBy",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogComplainPeriodChanged(uint256,address)",
+      "name": "LogComplainPeriodChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_newComplainPeriod",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_triggeredBy",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogExpirationTriggered(uint256,address)",
+      "name": "LogExpirationTriggered",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_triggeredBy",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogFinalizeVoucher(uint256,address)",
+      "name": "LogFinalizeVoucher",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_triggeredBy",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogFundsReleased(uint256,uint8)",
+      "name": "LogFundsReleased",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_type",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogPromiseCreated(bytes32,uint256,address,uint256,uint256,uint256)",
+      "name": "LogPromiseCreated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_promiseId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_nonce",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_seller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_validFrom",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_validTo",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_idx",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogVoucherComplain(uint256)",
+      "name": "LogVoucherComplain",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogVoucherDelivered(uint256,uint256,address,address,bytes32)",
+      "name": "LogVoucherDelivered",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdSupply",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_tokenIdVoucher",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_issuer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_holder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_promiseId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogVoucherFaultCancel(uint256)",
+      "name": "LogVoucherFaultCancel",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogVoucherRedeemed(uint256,address,bytes32)",
+      "name": "LogVoucherRedeemed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_holder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_promiseId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogVoucherRefunded(uint256)",
+      "name": "LogVoucherRefunded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Paused(address)",
+      "name": "Paused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unpaused(address)",
+      "name": "Unpaused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "MASK_NF_INDEX()",
+      "name": "MASK_NF_INDEX",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MASK_TYPE()",
+      "name": "MASK_TYPE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "TYPE_NF_BIT()",
+      "name": "TYPE_NF_BIT",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "accountSupply(address)",
+      "name": "accountSupply",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "burnSupply(address,uint256,uint256)",
+      "name": "burnSupply",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_issuer",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenIdSupply",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_qty",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cancelFaultPeriod()",
+      "name": "cancelFaultPeriod",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "cancelOrFault(uint256)",
+      "name": "cancelOrFault",
+      "description": "Cancel/Fault transaction by the Seller, admitting to a fault or backing out of the deal.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "ID of the voucher.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cashierAddress()",
+      "name": "cashierAddress",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "complain(uint256)",
+      "name": "complain",
+      "description": "Issue a complain for a voucher.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "ID of the voucher.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "complainPeriod()",
+      "name": "complainPeriod",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "createPaymentMethod(uint256,uint8,address,address)",
+      "name": "createPaymentMethod",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdSupply",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_paymentMethod",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenPrice",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenDeposits",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createTokenSupplyID(address,uint256,uint256,uint256,uint256,uint256,uint256)",
+      "name": "createTokenSupplyID",
+      "description": "Creating a new promise for goods or services. Can be reused, e.g. for making different batches of these (but not in prototype).",
+      "parameterDecorators": [
+        {
+          "name": "_seller",
+          "description": "seller of the promise.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_validFrom",
+          "description": "Start of valid period.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_validTo",
+          "description": "End of valid period.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_price",
+          "description": "Price (payment amount).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_depositSe",
+          "description": "Seller's deposit.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_depositBu",
+          "description": "Buyer's deposit.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_quantity",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "fillOrder(uint256,address,address)",
+      "name": "fillOrder",
+      "description": "Fill Voucher Order, iff funds paid, then extract & mint NFT to the voucher holder.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdSupply",
+          "description": "ID of the supply token (ERC-1155).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_issuer",
+          "description": "Address of the token's issuer.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_holder",
+          "description": "Address of the recipient of the voucher (ERC-721).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getBuyerOrderCosts(uint256)",
+      "name": "getBuyerOrderCosts",
+      "description": "Get Buyer costs required to make an order for a supply token.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdSupply",
+          "description": "ID of the supply token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getIdSupplyFromVoucher(uint256)",
+      "name": "getIdSupplyFromVoucher",
+      "description": "Get the supply token ID from a voucher token.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "ID of the voucher token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "ID of the supply token.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getOrderCosts(uint256)",
+      "name": "getOrderCosts",
+      "description": "Get all necessary funds for a supply token.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdSupply",
+          "description": "ID of the supply token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPromiseDeposit(uint256,address)",
+      "name": "getPromiseDeposit",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenSupplyId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_owner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPromiseDepositSe(bytes32)",
+      "name": "getPromiseDepositSe",
+      "description": "Get the seller's deposit for a promise.",
+      "parameterDecorators": [
+        {
+          "name": "_promiseId",
+          "description": "ID of the promise.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Deposit of the seller.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPromiseIdFromVoucherId(uint256)",
+      "name": "getPromiseIdFromVoucherId",
+      "description": "Get the promise ID from a voucher token.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "ID of the voucher token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "ID of the promise.",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPromiseKey(uint256)",
+      "name": "getPromiseKey",
+      "description": "Get the promise ID at specific index.",
+      "parameterDecorators": [
+        {
+          "name": "_idx",
+          "description": "Index in the array of promise keys.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Promise ID.",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRemQtyForSupply(uint256,address)",
+      "name": "getRemQtyForSupply",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenSupplyId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_owner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSupplyHolder(bytes32)",
+      "name": "getSupplyHolder",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_promiseId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTotalSupply(address)",
+      "name": "getTotalSupply",
+      "description": "Get the current supply of tokens of an account.",
+      "parameterDecorators": [
+        {
+          "name": "_account",
+          "description": "Address to query.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Balance.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVoucherDepositToken(uint256)",
+      "name": "getVoucherDepositToken",
+      "description": "Get the address of the token where the deposits for the supply are held.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdSupply",
+          "description": "ID of the voucher token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Address of the token.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVoucherHolder(uint256)",
+      "name": "getVoucherHolder",
+      "description": "Get the holder of a voucher.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "ID of the voucher token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Address of the holder.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVoucherIssuer(uint256)",
+      "name": "getVoucherIssuer",
+      "description": "Get the issuer of a voucher.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "ID of the voucher token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Address of the issuer.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVoucherPaymentMethod(uint256)",
+      "name": "getVoucherPaymentMethod",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdSupply",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVoucherPriceToken(uint256)",
+      "name": "getVoucherPriceToken",
+      "description": "Get the address of the token where the price for the supply is held.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdSupply",
+          "description": "ID of the voucher token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Address of the token.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVoucherStatus(uint256)",
+      "name": "getVoucherStatus",
+      "description": "Get the current status of a voucher.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "ID of the voucher token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isInValidityPeriod(uint256)",
+      "name": "isInValidityPeriod",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ordersPromise(uint256)",
+      "name": "ordersPromise",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pause()",
+      "name": "pause",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "paused()",
+      "name": "paused",
+      "description": "Returns true if the contract is paused, and false otherwise.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "paymentDetails(uint256)",
+      "name": "paymentDetails",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "paymentMethod",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        },
+        {
+          "name": "addressTokenPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "addressTokenDeposits",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "promiseKeys(uint256)",
+      "name": "promiseKeys",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "promises(bytes32)",
+      "name": "promises",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "promiseId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        },
+        {
+          "name": "nonce",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "seller",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "validFrom",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "validTo",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "depositSe",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "depositBu",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "idx",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "redeem(uint256)",
+      "name": "redeem",
+      "description": "Redemption of the vouchers promise.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "ID of the voucher.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "refund(uint256)",
+      "name": "refund",
+      "description": "Refunding a voucher.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "ID of the voucher.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setCancelFaultPeriod(uint256)",
+      "name": "setCancelFaultPeriod",
+      "description": "Set the general cancelOrFault period, should be used sparingly as it has significant consequences. Here done simply for demo purposes.",
+      "parameterDecorators": [
+        {
+          "name": "_cancelFaultPeriod",
+          "description": "the new value for cancelOrFault period (in number of seconds).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setCashierAddress(address)",
+      "name": "setCashierAddress",
+      "description": "Set the address of the Cashier contract.",
+      "parameterDecorators": [
+        {
+          "name": "_cashierAddress",
+          "description": "The address of the Cashier contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setComplainPeriod(uint256)",
+      "name": "setComplainPeriod",
+      "description": "Set the general complain period, should be used sparingly as it has significant consequences. Here done simply for demo purposes.",
+      "parameterDecorators": [
+        {
+          "name": "_complainPeriod",
+          "description": "the new value for complain period (in number of seconds).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDepositsReleased(uint256)",
+      "name": "setDepositsReleased",
+      "description": "Mark voucher token that the deposits were released.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "ID of the voucher token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setPaymentReleased(uint256)",
+      "name": "setPaymentReleased",
+      "description": "Mark voucher token that the payment was released.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "ID of the voucher token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tokenNonces(address)",
+      "name": "tokenNonces",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "triggerExpiration(uint256)",
+      "name": "triggerExpiration",
+      "description": "Mark voucher token as expired.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "ID of the voucher token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "triggerFinalizeVoucher(uint256)",
+      "name": "triggerFinalizeVoucher",
+      "description": "Mark voucher token to the final status.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenIdVoucher",
+          "description": "ID of the voucher token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "typeCounters(uint256)",
+      "name": "typeCounters",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "typeId()",
+      "name": "typeId",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unpause()",
+      "name": "unpause",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "voucherIssuers(uint256)",
+      "name": "voucherIssuers",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "vouchersStatus(uint256)",
+      "name": "vouchersStatus",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "status",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        },
+        {
+          "name": "isPaymentReleased",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "isDepositsReleased",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "complainPeriodStart",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "cancelFaultPeriodStart",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

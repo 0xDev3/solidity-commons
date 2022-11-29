@@ -1,1 +1,686 @@
-{"schema":"../schema.json","tags":["swaps","uniswap"],"name":"UniswapConnector03","description":"","eventDecorators":[{"signature":"FlashClosed(address,uint256,uint256)","name":"FlashClosed","description":"","parameterDecorators":[{"name":"from","description":"","recommendedTypes":[],"indexed":true},{"name":"quantity","description":"","recommendedTypes":[],"indexed":false},{"name":"payout","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"FlashOpened(address,uint256,uint256)","name":"FlashOpened","description":"","parameterDecorators":[{"name":"from","description":"","recommendedTypes":[],"indexed":true},{"name":"quantity","description":"","recommendedTypes":[],"indexed":false},{"name":"premium","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Initialized(address)","name":"Initialized","description":"","parameterDecorators":[{"name":"from","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"WroteOption(address,uint256)","name":"WroteOption","description":"","parameterDecorators":[{"name":"from","description":"","recommendedTypes":[],"indexed":true},{"name":"quantity","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"addShortLiquidityWithUnderlying(address,uint256,uint256,uint256,address,uint256)","name":"addShortLiquidityWithUnderlying","description":"Pulls underlying tokens from msg.sender and pushes UNI-V2 liquidity tokens to the \"to\" address. underlyingToken -> redeemToken -> UNI-V2. Adds redeemToken liquidity to a redeem<>token pair by minting shortOptionTokens with underlyingTokens.","parameterDecorators":[{"name":"optionAddress","description":"The address of the optionToken to get the redeemToken to mint then provide liquidity for.","recommendedTypes":[]},{"name":"quantityOptions","description":"The quantity of underlyingTokens to use to mint option + redeem tokens.","recommendedTypes":[]},{"name":"amountBMax","description":"The minimum quantity of shortOptionTokens expected to provide liquidity with.","recommendedTypes":[]},{"name":"amountBMin","description":"The minimum quantity of otherTokens expected to provide liquidity with.","recommendedTypes":[]},{"name":"to","description":"The address that receives UNI-V2 shares.","recommendedTypes":[]},{"name":"deadline","description":"The timestamp to expire a pending transaction.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param2","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"closeFlashLong(address,uint256,uint256)","name":"closeFlashLong","description":"IMPORTANT: If minPayout is 0, this function will cost the caller to close the option, for no gain. Closes a longOptionToken position by flash swapping in redeemTokens, closing the option, and paying back in underlyingTokens.","parameterDecorators":[{"name":"optionToken","description":"The address of the longOptionTokens to close.","recommendedTypes":[]},{"name":"amountRedeems","description":"The quantity of redeemTokens to borrow to close the options.","recommendedTypes":[]},{"name":"minPayout","description":"The minimum payout of underlyingTokens sent out to the user.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"deployUniswapMarket(address,address)","name":"deployUniswapMarket","description":"Creates a UniswapV2Pair by calling `createPair` on the UniswapV2Factory.","parameterDecorators":[{"name":"optionAddress","description":"","recommendedTypes":[]},{"name":"otherToken","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":false},{"signature":"factory()","name":"factory","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"flashCloseLongOptionsThenSwap(address,address,uint256,uint256,address[],address)","name":"flashCloseLongOptionsThenSwap","description":"IMPORTANT: If minPayout is 0, the `to` address is liable for negative payouts *if* that occurs. Sends shortOptionTokens to msg.sender, and pays back the UniswapV2Pair in underlyingTokens.","parameterDecorators":[{"name":"pairAddress","description":"The address of the redeemToken<>underlyingToken UniswapV2Pair contract.","recommendedTypes":[]},{"name":"optionAddress","description":"The address of the longOptionTokes to close.","recommendedTypes":[]},{"name":"flashLoanQuantity","description":"The quantity of shortOptionTokens borrowed to use to close longOptionTokens.","recommendedTypes":[]},{"name":"minPayout","description":"The minimum payout of underlyingTokens sent to the `to` address.","recommendedTypes":[]},{"name":"path","description":"underlyingTokens -> shortOptionTokens, because we are paying the input of underlyingTokens.","recommendedTypes":[]},{"name":"to","description":"The address which is sent the underlyingToken payout, or liable to pay for a negative payout.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"flashMintShortOptionsThenSwap(address,address,uint256,uint256,address[],address)","name":"flashMintShortOptionsThenSwap","description":"If the first address in the path is not the shortOptionToken address, the tx will fail. Receives underlyingTokens from a UniswapV2Pair.swap() call from a pair with reserve0 = shortOptionTokens and reserve1 = underlyingTokens. Uses underlyingTokens to mint long (option) + short (redeem) tokens. Sends longOptionTokens to msg.sender, and pays back the UniswapV2Pair the shortOptionTokens, AND any remainder quantity of underlyingTokens (paid by msg.sender).","parameterDecorators":[{"name":"pairAddress","description":"","recommendedTypes":[]},{"name":"optionAddress","description":"The address of the Option contract.","recommendedTypes":[]},{"name":"flashLoanQuantity","description":"The quantity of options to mint using borrowed underlyingTokens.","recommendedTypes":[]},{"name":"maxPremium","description":"The maximum quantity of underlyingTokens to pay for the optionTokens.","recommendedTypes":[]},{"name":"path","description":"The token addresses to trade through using their Uniswap V2 pools. Assumes path[0] = shortOptionToken.","recommendedTypes":[]},{"name":"to","description":"The address to send the shortOptionToken proceeds and longOptionTokens to.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"getClosePremium(address,uint256)","name":"getClosePremium","description":"Also gets the cost, a negative payout, which will be 0 unless the reserve ratio is incorrectly set. Gets the total premium payout to sell long option tokens proportional to `quantity` of `shortOptionToken`s.","parameterDecorators":[{"name":"optionToken","description":"The option to get the close premium of.","recommendedTypes":[]},{"name":"quantityShort","description":"The quantity of short option tokens that will be closed.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getName()","name":"getName","description":"Gets the name of the contract.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true},{"signature":"getOpenPremium(address,uint256)","name":"getOpenPremium","description":"Also returns the negative premium, which will be 0 in most cases. Gets the total premium cost to buy `quantity` of `optionToken`s.","parameterDecorators":[{"name":"optionToken","description":"The option to get the close premium of.","recommendedTypes":[]},{"name":"quantityLong","description":"The quantity of long option tokens that will be closed.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getUniswapMarketForTokens(address,address)","name":"getUniswapMarketForTokens","description":"Gets a UniswapV2Pair address for two tokens by calling the UniswapV2Factory.","parameterDecorators":[{"name":"token0","description":"","recommendedTypes":[]},{"name":"token1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getVersion()","name":"getVersion","description":"Gets the version of the contract.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"mintOptionsThenFlashCloseLong(address,uint256,uint256)","name":"mintOptionsThenFlashCloseLong","description":"IMPORTANT: if `minPayout` is 0, this function can cost the caller `underlyingToken`s. Write options by minting option tokens and selling the long option tokens for premium.","parameterDecorators":[{"name":"optionToken","description":"The option contract to underwrite.","recommendedTypes":[]},{"name":"writeQuantity","description":"The quantity of option tokens to write and equally, the quantity of underlyings to deposit.","recommendedTypes":[]},{"name":"minPayout","description":"The minimum amount of underlyingTokens to receive from selling long option tokens.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"mintShortOptionsThenSwapToTokens(address,uint256,uint256,address[],address,uint256)","name":"mintShortOptionsThenSwapToTokens","description":"If the first address in the path is not the shortOptionToken address, the tx will fail. underlyingToken -> shortOptionToken -> quoteToken. IMPORTANT: redeemTokens = shortOptionTokens. Mints long + short option tokens, then swaps the shortOptionTokens (redeem) for tokens.","parameterDecorators":[{"name":"optionToken","description":"The address of the Option contract.","recommendedTypes":[]},{"name":"amountIn","description":"The quantity of options to mint.","recommendedTypes":[]},{"name":"amountOutMin","description":"The minimum quantity of tokens to receive in exchange for the shortOptionTokens.","recommendedTypes":[]},{"name":"path","description":"The token addresses to trade through using their Uniswap V2 pools. Assumes path[0] = shortOptionToken.","recommendedTypes":[]},{"name":"to","description":"The address to send the shortOptionToken proceeds and longOptionTokens to.","recommendedTypes":[]},{"name":"deadline","description":"The timestamp for a trade to fail at if not successful.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"bool Whether the transaction was successful or not.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"openFlashLong(address,uint256,uint256)","name":"openFlashLong","description":"IMPORTANT: amountOutMin parameter is the price to swap shortOptionTokens to underlyingTokens. IMPORTANT: If the ratio between shortOptionTokens and underlyingTokens is 1:1, then only the swap fee (0.30%) has to be paid. Opens a longOptionToken position by minting long + short tokens, then selling the short tokens.","parameterDecorators":[{"name":"optionToken","description":"The option address.","recommendedTypes":[]},{"name":"amountOptions","description":"The quantity of longOptionTokens to purchase.","recommendedTypes":[]},{"name":"maxPremium","description":"The maximum quantity of underlyingTokens to pay for the optionTokens.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"removeShortLiquidityThenCloseOptions(address,uint256,uint256,uint256,address,uint256)","name":"removeShortLiquidityThenCloseOptions","description":"Pulls UNI-V2 liquidity shares with shortOption<>underlying token, and optionTokens from msg.sender. Then closes the longOptionTokens and withdraws underlyingTokens to the \"to\" address. Sends underlyingTokens from the burned UNI-V2 liquidity shares to the \"to\" address. UNI-V2 -> optionToken -> underlyingToken. Combines Uniswap V2 Router \"removeLiquidity\" function with Primitive \"closeOptions\" function.","parameterDecorators":[{"name":"optionAddress","description":"The address of the option that will be closed from burned UNI-V2 liquidity shares.","recommendedTypes":[]},{"name":"liquidity","description":"The quantity of liquidity tokens to pull from msg.sender and burn.","recommendedTypes":[]},{"name":"amountAMin","description":"The minimum quantity of shortOptionTokens to receive from removing liquidity.","recommendedTypes":[]},{"name":"amountBMin","description":"The minimum quantity of underlyingTokens to receive from removing liquidity.","recommendedTypes":[]},{"name":"to","description":"The address that receives underlyingTokens from burned UNI-V2, and underlyingTokens from closed options.","recommendedTypes":[]},{"name":"deadline","description":"The timestamp to expire a pending transaction.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"router()","name":"router","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"trader()","name":"trader","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"uniswapV2Call(address,uint256,uint256,bytes)","name":"uniswapV2Call","description":"The callback function triggered in a UniswapV2Pair.swap() call when the `data` parameter has data.","parameterDecorators":[{"name":"sender","description":"The original msg.sender of the UniswapV2Pair.swap() call.","recommendedTypes":[]},{"name":"amount0","description":"The quantity of token0 received to the `to` address in the swap() call.","recommendedTypes":[]},{"name":"amount1","description":"The quantity of token1 received to the `to` address in the swap() call.","recommendedTypes":[]},{"name":"data","description":"The payload passed in the `data` parameter of the swap() call.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "swaps",
+    "uniswap"
+  ],
+  "name": "UniswapConnector03",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "FlashClosed(address,uint256,uint256)",
+      "name": "FlashClosed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "quantity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "payout",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "FlashOpened(address,uint256,uint256)",
+      "name": "FlashOpened",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "quantity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "premium",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Initialized(address)",
+      "name": "Initialized",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "WroteOption(address,uint256)",
+      "name": "WroteOption",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "quantity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addShortLiquidityWithUnderlying(address,uint256,uint256,uint256,address,uint256)",
+      "name": "addShortLiquidityWithUnderlying",
+      "description": "Pulls underlying tokens from msg.sender and pushes UNI-V2 liquidity tokens to the \"to\" address. underlyingToken -> redeemToken -> UNI-V2. Adds redeemToken liquidity to a redeem<>token pair by minting shortOptionTokens with underlyingTokens.",
+      "parameterDecorators": [
+        {
+          "name": "optionAddress",
+          "description": "The address of the optionToken to get the redeemToken to mint then provide liquidity for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quantityOptions",
+          "description": "The quantity of underlyingTokens to use to mint option + redeem tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountBMax",
+          "description": "The minimum quantity of shortOptionTokens expected to provide liquidity with.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountBMin",
+          "description": "The minimum quantity of otherTokens expected to provide liquidity with.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address that receives UNI-V2 shares.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The timestamp to expire a pending transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "closeFlashLong(address,uint256,uint256)",
+      "name": "closeFlashLong",
+      "description": "IMPORTANT: If minPayout is 0, this function will cost the caller to close the option, for no gain. Closes a longOptionToken position by flash swapping in redeemTokens, closing the option, and paying back in underlyingTokens.",
+      "parameterDecorators": [
+        {
+          "name": "optionToken",
+          "description": "The address of the longOptionTokens to close.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountRedeems",
+          "description": "The quantity of redeemTokens to borrow to close the options.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minPayout",
+          "description": "The minimum payout of underlyingTokens sent out to the user.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deployUniswapMarket(address,address)",
+      "name": "deployUniswapMarket",
+      "description": "Creates a UniswapV2Pair by calling `createPair` on the UniswapV2Factory.",
+      "parameterDecorators": [
+        {
+          "name": "optionAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "otherToken",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "factory()",
+      "name": "factory",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "flashCloseLongOptionsThenSwap(address,address,uint256,uint256,address[],address)",
+      "name": "flashCloseLongOptionsThenSwap",
+      "description": "IMPORTANT: If minPayout is 0, the `to` address is liable for negative payouts *if* that occurs. Sends shortOptionTokens to msg.sender, and pays back the UniswapV2Pair in underlyingTokens.",
+      "parameterDecorators": [
+        {
+          "name": "pairAddress",
+          "description": "The address of the redeemToken<>underlyingToken UniswapV2Pair contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "optionAddress",
+          "description": "The address of the longOptionTokes to close.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "flashLoanQuantity",
+          "description": "The quantity of shortOptionTokens borrowed to use to close longOptionTokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minPayout",
+          "description": "The minimum payout of underlyingTokens sent to the `to` address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "path",
+          "description": "underlyingTokens -> shortOptionTokens, because we are paying the input of underlyingTokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address which is sent the underlyingToken payout, or liable to pay for a negative payout.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "flashMintShortOptionsThenSwap(address,address,uint256,uint256,address[],address)",
+      "name": "flashMintShortOptionsThenSwap",
+      "description": "If the first address in the path is not the shortOptionToken address, the tx will fail. Receives underlyingTokens from a UniswapV2Pair.swap() call from a pair with reserve0 = shortOptionTokens and reserve1 = underlyingTokens. Uses underlyingTokens to mint long (option) + short (redeem) tokens. Sends longOptionTokens to msg.sender, and pays back the UniswapV2Pair the shortOptionTokens, AND any remainder quantity of underlyingTokens (paid by msg.sender).",
+      "parameterDecorators": [
+        {
+          "name": "pairAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "optionAddress",
+          "description": "The address of the Option contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "flashLoanQuantity",
+          "description": "The quantity of options to mint using borrowed underlyingTokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxPremium",
+          "description": "The maximum quantity of underlyingTokens to pay for the optionTokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "path",
+          "description": "The token addresses to trade through using their Uniswap V2 pools. Assumes path[0] = shortOptionToken.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address to send the shortOptionToken proceeds and longOptionTokens to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getClosePremium(address,uint256)",
+      "name": "getClosePremium",
+      "description": "Also gets the cost, a negative payout, which will be 0 unless the reserve ratio is incorrectly set. Gets the total premium payout to sell long option tokens proportional to `quantity` of `shortOptionToken`s.",
+      "parameterDecorators": [
+        {
+          "name": "optionToken",
+          "description": "The option to get the close premium of.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quantityShort",
+          "description": "The quantity of short option tokens that will be closed.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getName()",
+      "name": "getName",
+      "description": "Gets the name of the contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getOpenPremium(address,uint256)",
+      "name": "getOpenPremium",
+      "description": "Also returns the negative premium, which will be 0 in most cases. Gets the total premium cost to buy `quantity` of `optionToken`s.",
+      "parameterDecorators": [
+        {
+          "name": "optionToken",
+          "description": "The option to get the close premium of.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quantityLong",
+          "description": "The quantity of long option tokens that will be closed.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUniswapMarketForTokens(address,address)",
+      "name": "getUniswapMarketForTokens",
+      "description": "Gets a UniswapV2Pair address for two tokens by calling the UniswapV2Factory.",
+      "parameterDecorators": [
+        {
+          "name": "token0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "token1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVersion()",
+      "name": "getVersion",
+      "description": "Gets the version of the contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "mintOptionsThenFlashCloseLong(address,uint256,uint256)",
+      "name": "mintOptionsThenFlashCloseLong",
+      "description": "IMPORTANT: if `minPayout` is 0, this function can cost the caller `underlyingToken`s. Write options by minting option tokens and selling the long option tokens for premium.",
+      "parameterDecorators": [
+        {
+          "name": "optionToken",
+          "description": "The option contract to underwrite.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "writeQuantity",
+          "description": "The quantity of option tokens to write and equally, the quantity of underlyings to deposit.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minPayout",
+          "description": "The minimum amount of underlyingTokens to receive from selling long option tokens.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "mintShortOptionsThenSwapToTokens(address,uint256,uint256,address[],address,uint256)",
+      "name": "mintShortOptionsThenSwapToTokens",
+      "description": "If the first address in the path is not the shortOptionToken address, the tx will fail. underlyingToken -> shortOptionToken -> quoteToken. IMPORTANT: redeemTokens = shortOptionTokens. Mints long + short option tokens, then swaps the shortOptionTokens (redeem) for tokens.",
+      "parameterDecorators": [
+        {
+          "name": "optionToken",
+          "description": "The address of the Option contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountIn",
+          "description": "The quantity of options to mint.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountOutMin",
+          "description": "The minimum quantity of tokens to receive in exchange for the shortOptionTokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "path",
+          "description": "The token addresses to trade through using their Uniswap V2 pools. Assumes path[0] = shortOptionToken.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address to send the shortOptionToken proceeds and longOptionTokens to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The timestamp for a trade to fail at if not successful.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "bool Whether the transaction was successful or not.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "openFlashLong(address,uint256,uint256)",
+      "name": "openFlashLong",
+      "description": "IMPORTANT: amountOutMin parameter is the price to swap shortOptionTokens to underlyingTokens. IMPORTANT: If the ratio between shortOptionTokens and underlyingTokens is 1:1, then only the swap fee (0.30%) has to be paid. Opens a longOptionToken position by minting long + short tokens, then selling the short tokens.",
+      "parameterDecorators": [
+        {
+          "name": "optionToken",
+          "description": "The option address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountOptions",
+          "description": "The quantity of longOptionTokens to purchase.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxPremium",
+          "description": "The maximum quantity of underlyingTokens to pay for the optionTokens.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeShortLiquidityThenCloseOptions(address,uint256,uint256,uint256,address,uint256)",
+      "name": "removeShortLiquidityThenCloseOptions",
+      "description": "Pulls UNI-V2 liquidity shares with shortOption<>underlying token, and optionTokens from msg.sender. Then closes the longOptionTokens and withdraws underlyingTokens to the \"to\" address. Sends underlyingTokens from the burned UNI-V2 liquidity shares to the \"to\" address. UNI-V2 -> optionToken -> underlyingToken. Combines Uniswap V2 Router \"removeLiquidity\" function with Primitive \"closeOptions\" function.",
+      "parameterDecorators": [
+        {
+          "name": "optionAddress",
+          "description": "The address of the option that will be closed from burned UNI-V2 liquidity shares.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "liquidity",
+          "description": "The quantity of liquidity tokens to pull from msg.sender and burn.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountAMin",
+          "description": "The minimum quantity of shortOptionTokens to receive from removing liquidity.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountBMin",
+          "description": "The minimum quantity of underlyingTokens to receive from removing liquidity.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address that receives underlyingTokens from burned UNI-V2, and underlyingTokens from closed options.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The timestamp to expire a pending transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "router()",
+      "name": "router",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "trader()",
+      "name": "trader",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "uniswapV2Call(address,uint256,uint256,bytes)",
+      "name": "uniswapV2Call",
+      "description": "The callback function triggered in a UniswapV2Pair.swap() call when the `data` parameter has data.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "The original msg.sender of the UniswapV2Pair.swap() call.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount0",
+          "description": "The quantity of token0 received to the `to` address in the swap() call.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount1",
+          "description": "The quantity of token1 received to the `to` address in the swap() call.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "The payload passed in the `data` parameter of the swap() call.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

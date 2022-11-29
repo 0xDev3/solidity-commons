@@ -1,1 +1,187 @@
-{"schema":"../schema.json","tags":["tokens","dao"],"name":"Payer","description":"Payer contract. This contract is used to make multiple ERC20 payments by the DAO with a single proposal. The owner of this contract sets which addresses will be paid and how much, and the DAO simply transfer()s tokens to this contract. Then, anyone can trigger this contract to send the tokens to their destinations. This is to avoid having to make a separate approve() proposal by the DAO.","eventDecorators":[{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Events.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"getDestinationsAndAmounts()","name":"getDestinationsAndAmounts","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_destinations","description":"","recommendedTypes":[],"solidityType":"address[]"},{"name":"_amounts","description":"","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getRequiredDeposit()","name":"getRequiredDeposit","description":"Returns the required deposit to make the payments.","parameterDecorators":[],"returnDecorators":[{"name":"requiredDeposit","description":"Required deposit to make the payments.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getTokenAddress()","name":"getTokenAddress","description":"Returns the address of the token that the payments are made in.","parameterDecorators":[],"returnDecorators":[{"name":"tokenAddress","description":"Token address.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"isReadyToPay()","name":"isReadyToPay","description":"Called to check if makePayments() is ready to be called.","parameterDecorators":[],"returnDecorators":[{"name":"state","description":"If the contract is ready to pay.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"makePayments()","name":"makePayments","description":"Called to have the contract make payments. The call will revert if the contract does not have adequate funds.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"paymentsSet()","name":"paymentsSet","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setPayments(address[],uint256[])","name":"setPayments","description":"Called by the contract owner to set the parameters of the next payment. Since the payment parameters are designed to be immutable, if incorrect parameters are used, the contract will go out of order and will have to be redeployed. If tokens are sent to the contract despite incorrect parameters have been used, the tokens may get stuck. This method is put behind onlyOwner to prevent griefers from calling it with incorrect parameters.","parameterDecorators":[{"name":"_destinations","description":"Addresses that the payments will be made to.","recommendedTypes":[]},{"name":"_amounts","description":"Amounts that will be paid.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "dao"
+  ],
+  "name": "Payer",
+  "description": "Payer contract. This contract is used to make multiple ERC20 payments by the DAO with a single proposal. The owner of this contract sets which addresses will be paid and how much, and the DAO simply transfer()s tokens to this contract. Then, anyone can trigger this contract to send the tokens to their destinations. This is to avoid having to make a separate approve() proposal by the DAO.",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Events.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "getDestinationsAndAmounts()",
+      "name": "getDestinationsAndAmounts",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_destinations",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "_amounts",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRequiredDeposit()",
+      "name": "getRequiredDeposit",
+      "description": "Returns the required deposit to make the payments.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "requiredDeposit",
+          "description": "Required deposit to make the payments.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokenAddress()",
+      "name": "getTokenAddress",
+      "description": "Returns the address of the token that the payments are made in.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "tokenAddress",
+          "description": "Token address.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isReadyToPay()",
+      "name": "isReadyToPay",
+      "description": "Called to check if makePayments() is ready to be called.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "state",
+          "description": "If the contract is ready to pay.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "makePayments()",
+      "name": "makePayments",
+      "description": "Called to have the contract make payments. The call will revert if the contract does not have adequate funds.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "paymentsSet()",
+      "name": "paymentsSet",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setPayments(address[],uint256[])",
+      "name": "setPayments",
+      "description": "Called by the contract owner to set the parameters of the next payment. Since the payment parameters are designed to be immutable, if incorrect parameters are used, the contract will go out of order and will have to be redeployed. If tokens are sent to the contract despite incorrect parameters have been used, the tokens may get stuck. This method is put behind onlyOwner to prevent griefers from calling it with incorrect parameters.",
+      "parameterDecorators": [
+        {
+          "name": "_destinations",
+          "description": "Addresses that the payments will be made to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amounts",
+          "description": "Amounts that will be paid.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

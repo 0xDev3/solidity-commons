@@ -1,1 +1,498 @@
-{"schema":"../schema.json","tags":[],"name":"TestPaymasterEverythingAccepted","description":"","eventDecorators":[{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"caller","description":"- The account that called the function.","recommendedTypes":[],"indexed":true},{"name":"relayer","description":"- The relayer address to be added or removed.","recommendedTypes":[],"indexed":true}]},{"signature":"SampleRecipientPostCall(bool,uint256)","name":"SampleRecipientPostCall","description":"","parameterDecorators":[{"name":"caller","description":"- The account that called the function.","recommendedTypes":[],"indexed":false},{"name":"relayer","description":"- The relayer address to be added or removed.","recommendedTypes":[],"indexed":false}]},{"signature":"SampleRecipientPreCall()","name":"SampleRecipientPreCall","description":"","parameterDecorators":[]}],"functionDecorators":[{"signature":"CALLDATA_SIZE_LIMIT()","name":"CALLDATA_SIZE_LIMIT","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"FORWARDER_HUB_OVERHEAD()","name":"FORWARDER_HUB_OVERHEAD","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"PAYMASTER_ACCEPTANCE_BUDGET()","name":"PAYMASTER_ACCEPTANCE_BUDGET","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"POST_RELAYED_CALL_GAS_LIMIT()","name":"POST_RELAYED_CALL_GAS_LIMIT","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"PRE_RELAYED_CALL_GAS_LIMIT()","name":"PRE_RELAYED_CALL_GAS_LIMIT","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"_verifyForwarder(tuple(tuple,tuple))","name":"_verifyForwarder","description":"","parameterDecorators":[{"name":"relayRequest","description":"","recommendedTypes":[],"parameters":[{"name":"request","description":"","type":"tuple"},{"name":"relayData","description":"","type":"tuple"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":true},{"signature":"deposit()","name":"deposit","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getGasAndDataLimits()","name":"getGasAndDataLimits","description":"Return the Gas Limits for Paymaster's functions and maximum msg.data length values for this Paymaster. This function allows different paymasters to have different properties without changes to the RelayHub.","parameterDecorators":[],"returnDecorators":[{"name":"limits","description":"An instance of the `GasAndDataLimits` struct ##### `acceptanceBudget` If the transactions consumes more than `acceptanceBudget` this Paymaster will be charged for gas no matter what. Transaction that gets rejected after consuming more than `acceptanceBudget` gas is on this Paymaster's expense. Should be set to an amount gas this Paymaster expects to spend deciding whether to accept or reject a request. This includes gas consumed by calculations in the `preRelayedCall`, `Forwarder` and the recipient contract. :warning: **Warning** :warning: As long this value is above `preRelayedCallGasLimit` (see defaults in `BasePaymaster`), the Paymaster is guaranteed it will never pay for rejected transactions. If this value is below `preRelayedCallGasLimit`, it might might make Paymaster open to a \"griefing\" attack. The relayers should prefer lower `acceptanceBudget`, as it improves their chances of being compensated. From a Relay's point of view, this is the highest gas value a bad Paymaster may cost the relay, since the paymaster will pay anything above that value regardless of whether the transaction succeeds or reverts. Specifying value too high might make the call rejected by relayers (see `maxAcceptanceBudget` in server config). ##### `preRelayedCallGasLimit` The max gas usage of preRelayedCall. Any revert of the `preRelayedCall` is a request rejection by the paymaster. As long as `acceptanceBudget` is above `preRelayedCallGasLimit`, any such revert is not payed by the paymaster. ##### `postRelayedCallGasLimit` The max gas usage of postRelayedCall. The Paymaster is not charged for the maximum, only for actually used gas. Note that an OOG will revert the inner transaction, but the paymaster will be charged for it anyway.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"getRelayHub()","name":"getRelayHub","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The address of the `RelayHub` that is trusted by this Paymaster to execute the requests.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getTrustedForwarder()","name":"getTrustedForwarder","description":":warning: **Warning** :warning: using incorrect Forwarder may cause the Paymaster to agreeing to pay for invalid transactions.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The address of the `Forwarder` that is trusted by this Paymaster to execute the requests.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"postRelayedCall(bytes,bool,uint256,tuple(uint256,uint256,uint256,uint256,uint256,address,address,address,bytes,uint256))","name":"postRelayedCall","description":"This method is called after the actual relayed function call. It may be used to record the transaction (e.g. charge the caller by some contract logic) for this call. :warning: **Warning** :warning: This method MUST be protected with relayHubOnly() in case it modifies state. Revert in this functions causes a revert of the client's relayed call (and preRelayedCall(), but the Paymaster is still committed to pay the relay for the entire transaction.","parameterDecorators":[{"name":"context","description":"The call context, as returned by the preRelayedCall.","recommendedTypes":[]},{"name":"success","description":"`true` if the relayed call succeeded, false if it reverted.","recommendedTypes":[]},{"name":"gasUseWithoutPost","description":"The actual amount of gas used by the entire transaction, EXCEPT the gas used by the postRelayedCall itself.","recommendedTypes":[]},{"name":"relayData","description":"The relay params of the request. can be used by relayHub.calculateCharge().","recommendedTypes":[],"parameters":[{"name":"maxFeePerGas","description":"","type":"uint256"},{"name":"maxPriorityFeePerGas","description":"","type":"uint256"},{"name":"pctRelayFee","description":"","type":"uint256"},{"name":"baseRelayFee","description":"","type":"uint256"},{"name":"transactionCalldataGasUsed","description":"","type":"uint256"},{"name":"relayWorker","description":"","type":"address"},{"name":"paymaster","description":"","type":"address"},{"name":"forwarder","description":"","type":"address"},{"name":"paymasterData","description":"","type":"bytes"},{"name":"clientId","description":"","type":"uint256"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"preRelayedCall(tuple(tuple,tuple),bytes,bytes,uint256)","name":"preRelayedCall","description":"","parameterDecorators":[{"name":"relayRequest","description":"","recommendedTypes":[],"parameters":[{"name":"request","description":"","type":"tuple"},{"name":"relayData","description":"","type":"tuple"}]},{"name":"signature","description":"","recommendedTypes":[]},{"name":"approvalData","description":"","recommendedTypes":[]},{"name":"maxPossibleGas","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setRelayHub(address)","name":"setRelayHub","description":"The owner of the Paymaster can change the instance of the RelayHub this Paymaster works with. :warning: **Warning** :warning: The deposit on the previous RelayHub must be withdrawn first.","parameterDecorators":[{"name":"hub","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setTrustedForwarder(address)","name":"setTrustedForwarder","description":"The owner of the Paymaster can change the instance of the Forwarder this Paymaster works with.the Recipients must trust this Forwarder as well in order for the configuration to remain functional.","parameterDecorators":[{"name":"forwarder","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"supportsInterface(bytes4)","name":"supportsInterface","description":"Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.","parameterDecorators":[{"name":"interfaceId","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"versionPaymaster()","name":"versionPaymaster","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"version The SemVer string of this Paymaster's version.","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true},{"signature":"withdrawAll(address)","name":"withdrawAll","description":"","parameterDecorators":[{"name":"destination","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdrawRelayHubDepositTo(uint256,address)","name":"withdrawRelayHubDepositTo","description":"Withdraw deposit from the RelayHub.","parameterDecorators":[{"name":"amount","description":"The amount to be subtracted from the sender.","recommendedTypes":[]},{"name":"target","description":"The target to which the amount will be transferred.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "TestPaymasterEverythingAccepted",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "caller",
+          "description": "- The account that called the function.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "relayer",
+          "description": "- The relayer address to be added or removed.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "SampleRecipientPostCall(bool,uint256)",
+      "name": "SampleRecipientPostCall",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "caller",
+          "description": "- The account that called the function.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "relayer",
+          "description": "- The relayer address to be added or removed.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SampleRecipientPreCall()",
+      "name": "SampleRecipientPreCall",
+      "description": "",
+      "parameterDecorators": []
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "CALLDATA_SIZE_LIMIT()",
+      "name": "CALLDATA_SIZE_LIMIT",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "FORWARDER_HUB_OVERHEAD()",
+      "name": "FORWARDER_HUB_OVERHEAD",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "PAYMASTER_ACCEPTANCE_BUDGET()",
+      "name": "PAYMASTER_ACCEPTANCE_BUDGET",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "POST_RELAYED_CALL_GAS_LIMIT()",
+      "name": "POST_RELAYED_CALL_GAS_LIMIT",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "PRE_RELAYED_CALL_GAS_LIMIT()",
+      "name": "PRE_RELAYED_CALL_GAS_LIMIT",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "_verifyForwarder(tuple(tuple,tuple))",
+      "name": "_verifyForwarder",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "relayRequest",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "request",
+              "description": "",
+              "type": "tuple"
+            },
+            {
+              "name": "relayData",
+              "description": "",
+              "type": "tuple"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deposit()",
+      "name": "deposit",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getGasAndDataLimits()",
+      "name": "getGasAndDataLimits",
+      "description": "Return the Gas Limits for Paymaster's functions and maximum msg.data length values for this Paymaster. This function allows different paymasters to have different properties without changes to the RelayHub.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "limits",
+          "description": "An instance of the `GasAndDataLimits` struct ##### `acceptanceBudget` If the transactions consumes more than `acceptanceBudget` this Paymaster will be charged for gas no matter what. Transaction that gets rejected after consuming more than `acceptanceBudget` gas is on this Paymaster's expense. Should be set to an amount gas this Paymaster expects to spend deciding whether to accept or reject a request. This includes gas consumed by calculations in the `preRelayedCall`, `Forwarder` and the recipient contract. :warning: **Warning** :warning: As long this value is above `preRelayedCallGasLimit` (see defaults in `BasePaymaster`), the Paymaster is guaranteed it will never pay for rejected transactions. If this value is below `preRelayedCallGasLimit`, it might might make Paymaster open to a \"griefing\" attack. The relayers should prefer lower `acceptanceBudget`, as it improves their chances of being compensated. From a Relay's point of view, this is the highest gas value a bad Paymaster may cost the relay, since the paymaster will pay anything above that value regardless of whether the transaction succeeds or reverts. Specifying value too high might make the call rejected by relayers (see `maxAcceptanceBudget` in server config). ##### `preRelayedCallGasLimit` The max gas usage of preRelayedCall. Any revert of the `preRelayedCall` is a request rejection by the paymaster. As long as `acceptanceBudget` is above `preRelayedCallGasLimit`, any such revert is not payed by the paymaster. ##### `postRelayedCallGasLimit` The max gas usage of postRelayedCall. The Paymaster is not charged for the maximum, only for actually used gas. Note that an OOG will revert the inner transaction, but the paymaster will be charged for it anyway.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRelayHub()",
+      "name": "getRelayHub",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The address of the `RelayHub` that is trusted by this Paymaster to execute the requests.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTrustedForwarder()",
+      "name": "getTrustedForwarder",
+      "description": ":warning: **Warning** :warning: using incorrect Forwarder may cause the Paymaster to agreeing to pay for invalid transactions.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The address of the `Forwarder` that is trusted by this Paymaster to execute the requests.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "postRelayedCall(bytes,bool,uint256,tuple(uint256,uint256,uint256,uint256,uint256,address,address,address,bytes,uint256))",
+      "name": "postRelayedCall",
+      "description": "This method is called after the actual relayed function call. It may be used to record the transaction (e.g. charge the caller by some contract logic) for this call. :warning: **Warning** :warning: This method MUST be protected with relayHubOnly() in case it modifies state. Revert in this functions causes a revert of the client's relayed call (and preRelayedCall(), but the Paymaster is still committed to pay the relay for the entire transaction.",
+      "parameterDecorators": [
+        {
+          "name": "context",
+          "description": "The call context, as returned by the preRelayedCall.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "success",
+          "description": "`true` if the relayed call succeeded, false if it reverted.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "gasUseWithoutPost",
+          "description": "The actual amount of gas used by the entire transaction, EXCEPT the gas used by the postRelayedCall itself.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "relayData",
+          "description": "The relay params of the request. can be used by relayHub.calculateCharge().",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "maxFeePerGas",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "maxPriorityFeePerGas",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "pctRelayFee",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "baseRelayFee",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "transactionCalldataGasUsed",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "relayWorker",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "paymaster",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "forwarder",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "paymasterData",
+              "description": "",
+              "type": "bytes"
+            },
+            {
+              "name": "clientId",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "preRelayedCall(tuple(tuple,tuple),bytes,bytes,uint256)",
+      "name": "preRelayedCall",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "relayRequest",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "request",
+              "description": "",
+              "type": "tuple"
+            },
+            {
+              "name": "relayData",
+              "description": "",
+              "type": "tuple"
+            }
+          ]
+        },
+        {
+          "name": "signature",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "approvalData",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxPossibleGas",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRelayHub(address)",
+      "name": "setRelayHub",
+      "description": "The owner of the Paymaster can change the instance of the RelayHub this Paymaster works with. :warning: **Warning** :warning: The deposit on the previous RelayHub must be withdrawn first.",
+      "parameterDecorators": [
+        {
+          "name": "hub",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setTrustedForwarder(address)",
+      "name": "setTrustedForwarder",
+      "description": "The owner of the Paymaster can change the instance of the Forwarder this Paymaster works with.the Recipients must trust this Forwarder as well in order for the configuration to remain functional.",
+      "parameterDecorators": [
+        {
+          "name": "forwarder",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "supportsInterface(bytes4)",
+      "name": "supportsInterface",
+      "description": "Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.",
+      "parameterDecorators": [
+        {
+          "name": "interfaceId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "versionPaymaster()",
+      "name": "versionPaymaster",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "version The SemVer string of this Paymaster's version.",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdrawAll(address)",
+      "name": "withdrawAll",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "destination",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawRelayHubDepositTo(uint256,address)",
+      "name": "withdrawRelayHubDepositTo",
+      "description": "Withdraw deposit from the RelayHub.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "The amount to be subtracted from the sender.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "target",
+          "description": "The target to which the amount will be transferred.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

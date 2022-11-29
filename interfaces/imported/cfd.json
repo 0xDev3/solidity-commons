@@ -1,1 +1,937 @@
-{"schema":"../schema.json","tags":[],"name":"CFD","description":"","eventDecorators":[{"signature":"MarginChanged(address,address,int256,int256,uint256)","name":"MarginChanged","description":"","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[],"indexed":true},{"name":"exchange","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"fundingPayment","description":"","recommendedTypes":[],"indexed":false},{"name":"overnightFee","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OvernightFeePayed(uint256,uint256,uint256,uint256)","name":"OvernightFeePayed","description":"This event is emitted when overnight fee payed.","parameterDecorators":[{"name":"blockNumber","description":"the block number when overnight Fee payed.","recommendedTypes":[],"indexed":false},{"name":"totalOpenNotional","description":"the total open notional.","recommendedTypes":[],"indexed":false},{"name":"overnightFee","description":"the total overinight fee this time.","recommendedTypes":[],"indexed":false},{"name":"rate","description":"current overnight feerate.","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Paused(address)","name":"Paused","description":"","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PositionAdjusted(address,address,int256,uint256,uint256)","name":"PositionAdjusted","description":"","parameterDecorators":[{"name":"exchange","description":"","recommendedTypes":[],"indexed":true},{"name":"trader","description":"","recommendedTypes":[],"indexed":true},{"name":"newPositionSize","description":"","recommendedTypes":[],"indexed":false},{"name":"oldLiquidityIndex","description":"","recommendedTypes":[],"indexed":false},{"name":"newLiquidityIndex","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PositionChanged(address,address,uint256,uint256,int256,uint256,int256,int256,int256,uint256,uint256,uint256,int256,uint256)","name":"PositionChanged","description":"This event is emitted when position change.","parameterDecorators":[{"name":"trader","description":"the address which execute this transaction.","recommendedTypes":[],"indexed":true},{"name":"exchange","description":"IExchange address.","recommendedTypes":[],"indexed":true},{"name":"margin","description":"margin.","recommendedTypes":[],"indexed":false},{"name":"positionNotional","description":"margin * leverage.","recommendedTypes":[],"indexed":false},{"name":"exchangedPositionSize","description":"position size, e.g. ETHUSDC or LINKUSDC.","recommendedTypes":[],"indexed":false},{"name":"fee","description":"transaction fee.","recommendedTypes":[],"indexed":false},{"name":"positionSizeAfter","description":"position size after this transaction, might be increased or decreased.","recommendedTypes":[],"indexed":false},{"name":"realizedPnl","description":"realized pnl after this position changed.","recommendedTypes":[],"indexed":false},{"name":"unrealizedPnlAfter","description":"unrealized pnl after this position changed.","recommendedTypes":[],"indexed":false},{"name":"badDebt","description":"position change amount cleared by insurance funds.","recommendedTypes":[],"indexed":false},{"name":"liquidationPenalty","description":"amount of remaining margin lost due to liquidation.","recommendedTypes":[],"indexed":false},{"name":"spotPrice","description":"quote asset reserve / base asset reserve.","recommendedTypes":[],"indexed":false},{"name":"fundingPayment","description":"funding payment (+: trader paid, -: trader received).","recommendedTypes":[],"indexed":false},{"name":"overnightPayment","description":"overnight payment.","recommendedTypes":[],"indexed":false}]},{"signature":"PositionLiquidated(address,address,uint256,uint256,uint256,address,uint256)","name":"PositionLiquidated","description":"This event is emitted when position liquidated.","parameterDecorators":[{"name":"trader","description":"the account address being liquidated.","recommendedTypes":[],"indexed":true},{"name":"exchange","description":"IExchange address.","recommendedTypes":[],"indexed":true},{"name":"positionNotional","description":"liquidated position value minus liquidationFee.","recommendedTypes":[],"indexed":false},{"name":"positionSize","description":"liquidated position size.","recommendedTypes":[],"indexed":false},{"name":"liquidationFee","description":"liquidation fee to the liquidator.","recommendedTypes":[],"indexed":false},{"name":"liquidator","description":"the address which execute this transaction.","recommendedTypes":[],"indexed":false},{"name":"badDebt","description":"liquidation fee amount cleared by insurance funds.","recommendedTypes":[],"indexed":false}]},{"signature":"PositionSettled(address,address,uint256)","name":"PositionSettled","description":"","parameterDecorators":[{"name":"exchange","description":"","recommendedTypes":[],"indexed":true},{"name":"trader","description":"","recommendedTypes":[],"indexed":true},{"name":"valueTransferred","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RestrictionModeEntered(address,uint256)","name":"RestrictionModeEntered","description":"","parameterDecorators":[{"name":"exchange","description":"","recommendedTypes":[],"indexed":false},{"name":"blockNumber","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Unpaused(address)","name":"Unpaused","description":"","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"addMargin(address,tuple(uint256))","name":"addMargin","description":"add margin to increase margin ratio.","parameterDecorators":[{"name":"_exchange","description":"IExchange address.","recommendedTypes":[]},{"name":"_addedMargin","description":"added margin in 18 digits.","recommendedTypes":[],"parameters":[{"name":"d","description":"","type":"uint256"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"adjustPosition(address)","name":"adjustPosition","description":"adjust msg.sender's position when liquidity migration happened.","parameterDecorators":[{"name":"_exchange","description":"Exchange address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"cfdVault()","name":"cfdVault","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"closePosition(address,tuple(uint256))","name":"closePosition","description":"close all the positions.","parameterDecorators":[{"name":"_exchange","description":"IExchange address.","recommendedTypes":[]},{"name":"_quoteAssetAmountLimit","description":"","recommendedTypes":[],"parameters":[{"name":"d","description":"","type":"uint256"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getLatestCumulativeOvernightFeeRate(address)","name":"getLatestCumulativeOvernightFeeRate","description":"get latest cumulative overnight feerate.","parameterDecorators":[{"name":"_exchange","description":"IExchange address.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"latest cumulative overnight feerate in 18 digits.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"getLatestCumulativePremiumFraction(address)","name":"getLatestCumulativePremiumFraction","description":"get latest cumulative premium fraction.","parameterDecorators":[{"name":"_exchange","description":"IExchange address.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"latest cumulative premium fraction in 18 digits.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"getMMLiquidity(address)","name":"getMMLiquidity","description":"get MM liquidity.","parameterDecorators":[{"name":"_exchange","description":"IExchange address.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"MM liquidity in 18 digits.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"getMarginRatio(address,address)","name":"getMarginRatio","description":"get margin ratio, marginRatio = (margin + funding payments + unrealized Pnl) / openNotional use spot and twap price to calculate unrealized Pnl, final unrealized Pnl depends on which one is higher.","parameterDecorators":[{"name":"_exchange","description":"IExchange address.","recommendedTypes":[]},{"name":"_trader","description":"trader address.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"margin ratio in 18 digits.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"getPosition(address,address)","name":"getPosition","description":"get personal position information, and adjust size if migration is necessary.","parameterDecorators":[{"name":"_exchange","description":"IExchange address.","recommendedTypes":[]},{"name":"_trader","description":"trader address.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"struct Position.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"getPositionNotionalAndUnrealizedPnl(address,address,uint8)","name":"getPositionNotionalAndUnrealizedPnl","description":"get position notional and unrealized Pnl without fee expense and funding payment.","parameterDecorators":[{"name":"_exchange","description":"IExchange address.","recommendedTypes":[]},{"name":"_trader","description":"trader address.","recommendedTypes":[]},{"name":"_pnlCalcOption","description":"enum PnlCalcOption, SPOT_PRICE for spot price and TWAP for twap price.","recommendedTypes":[]}],"returnDecorators":[{"name":"positionNotional","description":"position notional.","recommendedTypes":[],"solidityType":"tuple"},{"name":"unrealizedPnl","description":"unrealized Pnl.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"getUnadjustedPosition(address,address)","name":"getUnadjustedPosition","description":"","parameterDecorators":[{"name":"_exchange","description":"","recommendedTypes":[]},{"name":"_trader","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"position","description":"","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"initialize(address,address)","name":"initialize","description":"","parameterDecorators":[{"name":"_systemsettings","description":"","recommendedTypes":[]},{"name":"_cfdVault","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"liquidate(address,address)","name":"liquidate","description":"liquidate trader's underwater position. Require trader's margin ratio less than maintenance margin ratio. liquidator can NOT open any positions in the same block to prevent from price manipulation.","parameterDecorators":[{"name":"_exchange","description":"IExchange address.","recommendedTypes":[]},{"name":"_trader","description":"trader address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"nextOvernightFeeTime()","name":"nextOvernightFeeTime","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"openInterestNotionalMap(address)","name":"openInterestNotionalMap","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"d","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"openPosition(address,uint8,tuple(uint256),tuple(uint256),tuple(uint256))","name":"openPosition","description":"open a position.","parameterDecorators":[{"name":"_exchange","description":"exchange address.","recommendedTypes":[]},{"name":"_side","description":"enum Side; BUY for long and SELL for short.","recommendedTypes":[]},{"name":"_quoteAssetAmount","description":"quote asset amount in 18 digits. Can Not be 0.","recommendedTypes":[],"parameters":[{"name":"d","description":"","type":"uint256"}]},{"name":"_leverage","description":"leverage in 18 digits. Can Not be 0.","recommendedTypes":[],"parameters":[{"name":"d","description":"","type":"uint256"}]},{"name":"_baseAssetAmountLimit","description":"minimum base asset amount expected to get to prevent from slippage.","recommendedTypes":[],"parameters":[{"name":"d","description":"","type":"uint256"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"pause(bool)","name":"pause","description":"","parameterDecorators":[{"name":"_pause","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"paused()","name":"paused","description":"Returns true if the contract is paused, and false otherwise.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"payFunding(address)","name":"payFunding","description":"if funding rate is positive, traders with long position pay traders with short position and vice versa.","parameterDecorators":[{"name":"_exchange","description":"IExchange address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"payOvernightFee(address)","name":"payOvernightFee","description":"if overnight fee rate is positive, traders with long position pay traders with short position and vice versa.","parameterDecorators":[{"name":"_exchange","description":"IExchange address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"removeMargin(address,tuple(uint256))","name":"removeMargin","description":"remove margin to decrease margin ratio.","parameterDecorators":[{"name":"_exchange","description":"IExchange address.","recommendedTypes":[]},{"name":"_removedMargin","description":"removed margin in 18 digits.","recommendedTypes":[],"parameters":[{"name":"d","description":"","type":"uint256"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setSystemSettings(address)","name":"setSystemSettings","description":"set system settings.","parameterDecorators":[{"name":"_systemSettings","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setWhitelist(address)","name":"setWhitelist","description":"add an address in the whitelist. People in the whitelist can hold unlimited positions. only owner can call.","parameterDecorators":[{"name":"_whitelist","description":"an address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"settlePosition(address)","name":"settlePosition","description":"settle all the positions when exchange is shutdown. The settlement price is according to IExchange.settlementPrice.","parameterDecorators":[{"name":"_exchange","description":"IExchange address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"systemSettings()","name":"systemSettings","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "CFD",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "MarginChanged(address,address,int256,int256,uint256)",
+      "name": "MarginChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "exchange",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "fundingPayment",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "overnightFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OvernightFeePayed(uint256,uint256,uint256,uint256)",
+      "name": "OvernightFeePayed",
+      "description": "This event is emitted when overnight fee payed.",
+      "parameterDecorators": [
+        {
+          "name": "blockNumber",
+          "description": "the block number when overnight Fee payed.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalOpenNotional",
+          "description": "the total open notional.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "overnightFee",
+          "description": "the total overinight fee this time.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "rate",
+          "description": "current overnight feerate.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Paused(address)",
+      "name": "Paused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PositionAdjusted(address,address,int256,uint256,uint256)",
+      "name": "PositionAdjusted",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "exchange",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "trader",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newPositionSize",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "oldLiquidityIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newLiquidityIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PositionChanged(address,address,uint256,uint256,int256,uint256,int256,int256,int256,uint256,uint256,uint256,int256,uint256)",
+      "name": "PositionChanged",
+      "description": "This event is emitted when position change.",
+      "parameterDecorators": [
+        {
+          "name": "trader",
+          "description": "the address which execute this transaction.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "exchange",
+          "description": "IExchange address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "margin",
+          "description": "margin.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "positionNotional",
+          "description": "margin * leverage.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "exchangedPositionSize",
+          "description": "position size, e.g. ETHUSDC or LINKUSDC.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "fee",
+          "description": "transaction fee.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "positionSizeAfter",
+          "description": "position size after this transaction, might be increased or decreased.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "realizedPnl",
+          "description": "realized pnl after this position changed.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "unrealizedPnlAfter",
+          "description": "unrealized pnl after this position changed.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "badDebt",
+          "description": "position change amount cleared by insurance funds.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "liquidationPenalty",
+          "description": "amount of remaining margin lost due to liquidation.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "spotPrice",
+          "description": "quote asset reserve / base asset reserve.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "fundingPayment",
+          "description": "funding payment (+: trader paid, -: trader received).",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "overnightPayment",
+          "description": "overnight payment.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PositionLiquidated(address,address,uint256,uint256,uint256,address,uint256)",
+      "name": "PositionLiquidated",
+      "description": "This event is emitted when position liquidated.",
+      "parameterDecorators": [
+        {
+          "name": "trader",
+          "description": "the account address being liquidated.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "exchange",
+          "description": "IExchange address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "positionNotional",
+          "description": "liquidated position value minus liquidationFee.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "positionSize",
+          "description": "liquidated position size.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "liquidationFee",
+          "description": "liquidation fee to the liquidator.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "liquidator",
+          "description": "the address which execute this transaction.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "badDebt",
+          "description": "liquidation fee amount cleared by insurance funds.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PositionSettled(address,address,uint256)",
+      "name": "PositionSettled",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "exchange",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "trader",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "valueTransferred",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RestrictionModeEntered(address,uint256)",
+      "name": "RestrictionModeEntered",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "exchange",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "blockNumber",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unpaused(address)",
+      "name": "Unpaused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addMargin(address,tuple(uint256))",
+      "name": "addMargin",
+      "description": "add margin to increase margin ratio.",
+      "parameterDecorators": [
+        {
+          "name": "_exchange",
+          "description": "IExchange address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_addedMargin",
+          "description": "added margin in 18 digits.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "d",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "adjustPosition(address)",
+      "name": "adjustPosition",
+      "description": "adjust msg.sender's position when liquidity migration happened.",
+      "parameterDecorators": [
+        {
+          "name": "_exchange",
+          "description": "Exchange address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cfdVault()",
+      "name": "cfdVault",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "closePosition(address,tuple(uint256))",
+      "name": "closePosition",
+      "description": "close all the positions.",
+      "parameterDecorators": [
+        {
+          "name": "_exchange",
+          "description": "IExchange address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_quoteAssetAmountLimit",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "d",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getLatestCumulativeOvernightFeeRate(address)",
+      "name": "getLatestCumulativeOvernightFeeRate",
+      "description": "get latest cumulative overnight feerate.",
+      "parameterDecorators": [
+        {
+          "name": "_exchange",
+          "description": "IExchange address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "latest cumulative overnight feerate in 18 digits.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getLatestCumulativePremiumFraction(address)",
+      "name": "getLatestCumulativePremiumFraction",
+      "description": "get latest cumulative premium fraction.",
+      "parameterDecorators": [
+        {
+          "name": "_exchange",
+          "description": "IExchange address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "latest cumulative premium fraction in 18 digits.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getMMLiquidity(address)",
+      "name": "getMMLiquidity",
+      "description": "get MM liquidity.",
+      "parameterDecorators": [
+        {
+          "name": "_exchange",
+          "description": "IExchange address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "MM liquidity in 18 digits.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getMarginRatio(address,address)",
+      "name": "getMarginRatio",
+      "description": "get margin ratio, marginRatio = (margin + funding payments + unrealized Pnl) / openNotional use spot and twap price to calculate unrealized Pnl, final unrealized Pnl depends on which one is higher.",
+      "parameterDecorators": [
+        {
+          "name": "_exchange",
+          "description": "IExchange address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_trader",
+          "description": "trader address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "margin ratio in 18 digits.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPosition(address,address)",
+      "name": "getPosition",
+      "description": "get personal position information, and adjust size if migration is necessary.",
+      "parameterDecorators": [
+        {
+          "name": "_exchange",
+          "description": "IExchange address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_trader",
+          "description": "trader address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "struct Position.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPositionNotionalAndUnrealizedPnl(address,address,uint8)",
+      "name": "getPositionNotionalAndUnrealizedPnl",
+      "description": "get position notional and unrealized Pnl without fee expense and funding payment.",
+      "parameterDecorators": [
+        {
+          "name": "_exchange",
+          "description": "IExchange address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_trader",
+          "description": "trader address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_pnlCalcOption",
+          "description": "enum PnlCalcOption, SPOT_PRICE for spot price and TWAP for twap price.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "positionNotional",
+          "description": "position notional.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        },
+        {
+          "name": "unrealizedPnl",
+          "description": "unrealized Pnl.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUnadjustedPosition(address,address)",
+      "name": "getUnadjustedPosition",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_exchange",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_trader",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "position",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,address)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_systemsettings",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_cfdVault",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "liquidate(address,address)",
+      "name": "liquidate",
+      "description": "liquidate trader's underwater position. Require trader's margin ratio less than maintenance margin ratio. liquidator can NOT open any positions in the same block to prevent from price manipulation.",
+      "parameterDecorators": [
+        {
+          "name": "_exchange",
+          "description": "IExchange address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_trader",
+          "description": "trader address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "nextOvernightFeeTime()",
+      "name": "nextOvernightFeeTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "openInterestNotionalMap(address)",
+      "name": "openInterestNotionalMap",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "d",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "openPosition(address,uint8,tuple(uint256),tuple(uint256),tuple(uint256))",
+      "name": "openPosition",
+      "description": "open a position.",
+      "parameterDecorators": [
+        {
+          "name": "_exchange",
+          "description": "exchange address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_side",
+          "description": "enum Side; BUY for long and SELL for short.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_quoteAssetAmount",
+          "description": "quote asset amount in 18 digits. Can Not be 0.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "d",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "name": "_leverage",
+          "description": "leverage in 18 digits. Can Not be 0.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "d",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "name": "_baseAssetAmountLimit",
+          "description": "minimum base asset amount expected to get to prevent from slippage.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "d",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pause(bool)",
+      "name": "pause",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_pause",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "paused()",
+      "name": "paused",
+      "description": "Returns true if the contract is paused, and false otherwise.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "payFunding(address)",
+      "name": "payFunding",
+      "description": "if funding rate is positive, traders with long position pay traders with short position and vice versa.",
+      "parameterDecorators": [
+        {
+          "name": "_exchange",
+          "description": "IExchange address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "payOvernightFee(address)",
+      "name": "payOvernightFee",
+      "description": "if overnight fee rate is positive, traders with long position pay traders with short position and vice versa.",
+      "parameterDecorators": [
+        {
+          "name": "_exchange",
+          "description": "IExchange address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeMargin(address,tuple(uint256))",
+      "name": "removeMargin",
+      "description": "remove margin to decrease margin ratio.",
+      "parameterDecorators": [
+        {
+          "name": "_exchange",
+          "description": "IExchange address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_removedMargin",
+          "description": "removed margin in 18 digits.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "d",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setSystemSettings(address)",
+      "name": "setSystemSettings",
+      "description": "set system settings.",
+      "parameterDecorators": [
+        {
+          "name": "_systemSettings",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setWhitelist(address)",
+      "name": "setWhitelist",
+      "description": "add an address in the whitelist. People in the whitelist can hold unlimited positions. only owner can call.",
+      "parameterDecorators": [
+        {
+          "name": "_whitelist",
+          "description": "an address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "settlePosition(address)",
+      "name": "settlePosition",
+      "description": "settle all the positions when exchange is shutdown. The settlement price is according to IExchange.settlementPrice.",
+      "parameterDecorators": [
+        {
+          "name": "_exchange",
+          "description": "IExchange address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "systemSettings()",
+      "name": "systemSettings",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

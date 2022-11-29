@@ -1,1 +1,379 @@
-{"schema":"../schema.json","tags":["strategies"],"name":"PrizeFlush","description":"TricleStaking V1 PrizeFlush. The PrizeFlush contract helps capture interest from the PrizePool and move collected funds to a designated PrizeDistributor contract. When deployed, the destination, reserve and strategy addresses are set and used as static parameters during every \"flush\" execution. The parameters can be reset by the Owner if necessary.","eventDecorators":[{"signature":"Deployed(address,address,address)","name":"Deployed","description":"Emitted when contract has been deployed.","parameterDecorators":[{"name":"destination","description":"Destination address.","recommendedTypes":[],"indexed":true},{"name":"reserve","description":"Strategy address.","recommendedTypes":[],"indexed":true},{"name":"strategy","description":"Reserve address.","recommendedTypes":[],"indexed":true}]},{"signature":"DestinationSet(address)","name":"DestinationSet","description":"Emit when destination is set.","parameterDecorators":[{"name":"destination","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Flushed(address,uint256)","name":"Flushed","description":"Emit when the flush function has executed.","parameterDecorators":[{"name":"destination","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ManagerTransferred(address,address)","name":"ManagerTransferred","description":"","parameterDecorators":[{"name":"previousManager","description":"","recommendedTypes":[],"indexed":true},{"name":"newManager","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnershipOffered(address)","name":"OwnershipOffered","description":"","parameterDecorators":[{"name":"pendingOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"ReserveSet(address)","name":"ReserveSet","description":"Emit when reserve is set.","parameterDecorators":[{"name":"reserve","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"StrategySet(address)","name":"StrategySet","description":"Emit when strategy is set.","parameterDecorators":[{"name":"strategy","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"claimOwnership()","name":"claimOwnership","description":"Allows the `_pendingOwner` address to finalize the transfer. This function is only callable by the `_pendingOwner`.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"flush()","name":"flush","description":"Migrate interest from PrizePool to PrizeDistributor in a single transaction. Captures interest, checkpoint data and transfers tokens to final destination.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"True if operation is successful.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"getDestination()","name":"getDestination","description":"Read global destination variable.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getReserve()","name":"getReserve","description":"Read global reserve variable.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getStrategy()","name":"getStrategy","description":"Read global strategy variable.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"manager()","name":"manager","description":"Gets current `_manager`.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Current `_manager` address.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"pendingOwner()","name":"pendingOwner","description":"Gets current `_pendingOwner`.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Current `_pendingOwner` address.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Renounce ownership of the contract. Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setDestination(address)","name":"setDestination","description":"Set global destination variable.","parameterDecorators":[{"name":"_destination","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":false},{"signature":"setManager(address)","name":"setManager","description":"Set or change of manager. Throws if called by any account other than the owner.","parameterDecorators":[{"name":"_newManager","description":"New _manager address.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Boolean to indicate if the operation was successful or not.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"setReserve(address)","name":"setReserve","description":"Set global reserve variable.","parameterDecorators":[{"name":"_reserve","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":false},{"signature":"setStrategy(address)","name":"setStrategy","description":"Set global strategy variable.","parameterDecorators":[{"name":"_strategy","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Allows current owner to set the `_pendingOwner` address.","parameterDecorators":[{"name":"_newOwner","description":"Address to transfer ownership to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "strategies"
+  ],
+  "name": "PrizeFlush",
+  "description": "TricleStaking V1 PrizeFlush. The PrizeFlush contract helps capture interest from the PrizePool and move collected funds to a designated PrizeDistributor contract. When deployed, the destination, reserve and strategy addresses are set and used as static parameters during every \"flush\" execution. The parameters can be reset by the Owner if necessary.",
+  "eventDecorators": [
+    {
+      "signature": "Deployed(address,address,address)",
+      "name": "Deployed",
+      "description": "Emitted when contract has been deployed.",
+      "parameterDecorators": [
+        {
+          "name": "destination",
+          "description": "Destination address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "reserve",
+          "description": "Strategy address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "strategy",
+          "description": "Reserve address.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "DestinationSet(address)",
+      "name": "DestinationSet",
+      "description": "Emit when destination is set.",
+      "parameterDecorators": [
+        {
+          "name": "destination",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Flushed(address,uint256)",
+      "name": "Flushed",
+      "description": "Emit when the flush function has executed.",
+      "parameterDecorators": [
+        {
+          "name": "destination",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ManagerTransferred(address,address)",
+      "name": "ManagerTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousManager",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newManager",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipOffered(address)",
+      "name": "OwnershipOffered",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "pendingOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ReserveSet(address)",
+      "name": "ReserveSet",
+      "description": "Emit when reserve is set.",
+      "parameterDecorators": [
+        {
+          "name": "reserve",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "StrategySet(address)",
+      "name": "StrategySet",
+      "description": "Emit when strategy is set.",
+      "parameterDecorators": [
+        {
+          "name": "strategy",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "claimOwnership()",
+      "name": "claimOwnership",
+      "description": "Allows the `_pendingOwner` address to finalize the transfer. This function is only callable by the `_pendingOwner`.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "flush()",
+      "name": "flush",
+      "description": "Migrate interest from PrizePool to PrizeDistributor in a single transaction. Captures interest, checkpoint data and transfers tokens to final destination.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "True if operation is successful.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getDestination()",
+      "name": "getDestination",
+      "description": "Read global destination variable.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getReserve()",
+      "name": "getReserve",
+      "description": "Read global reserve variable.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getStrategy()",
+      "name": "getStrategy",
+      "description": "Read global strategy variable.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "manager()",
+      "name": "manager",
+      "description": "Gets current `_manager`.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Current `_manager` address.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pendingOwner()",
+      "name": "pendingOwner",
+      "description": "Gets current `_pendingOwner`.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Current `_pendingOwner` address.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Renounce ownership of the contract. Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDestination(address)",
+      "name": "setDestination",
+      "description": "Set global destination variable.",
+      "parameterDecorators": [
+        {
+          "name": "_destination",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setManager(address)",
+      "name": "setManager",
+      "description": "Set or change of manager. Throws if called by any account other than the owner.",
+      "parameterDecorators": [
+        {
+          "name": "_newManager",
+          "description": "New _manager address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Boolean to indicate if the operation was successful or not.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setReserve(address)",
+      "name": "setReserve",
+      "description": "Set global reserve variable.",
+      "parameterDecorators": [
+        {
+          "name": "_reserve",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setStrategy(address)",
+      "name": "setStrategy",
+      "description": "Set global strategy variable.",
+      "parameterDecorators": [
+        {
+          "name": "_strategy",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Allows current owner to set the `_pendingOwner` address.",
+      "parameterDecorators": [
+        {
+          "name": "_newOwner",
+          "description": "Address to transfer ownership to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

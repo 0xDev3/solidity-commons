@@ -1,1 +1,385 @@
-{"schema":"../schema.json","tags":[],"name":"CommissionContract","description":"","eventDecorators":[{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Received(address,uint256)","name":"Received","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[],"indexed":false},{"name":"param1","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"calcCommission(uint256,uint256,uint256)","name":"calcCommission","description":"","parameterDecorators":[{"name":"_tokenId","description":"","recommendedTypes":[]},{"name":"_value","description":"","recommendedTypes":[]},{"name":"tokenSoldTimes","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"platform","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"creator","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"buyer","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"divide(address,uint256,uint256)","name":"divide","description":"","parameterDecorators":[{"name":"_money","description":"","recommendedTypes":[]},{"name":"_tokenId","description":"","recommendedTypes":[]},{"name":"_amount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getCommissionRate(uint256)","name":"getCommissionRate","description":"","parameterDecorators":[{"name":"_tokenId","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"firstSell","description":"","recommendedTypes":[],"solidityType":"uint16"},{"name":"platformRate","description":"","recommendedTypes":[],"solidityType":"uint16"},{"name":"creatorRate","description":"","recommendedTypes":[],"solidityType":"uint16"},{"name":"buyerRate","description":"","recommendedTypes":[],"solidityType":"uint16"}],"emittableEvents":[],"readOnly":true},{"signature":"getCreators(uint256)","name":"getCreators","description":"","parameterDecorators":[{"name":"_tokenId","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"tuple[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getDefaultRate()","name":"getDefaultRate","description":"","parameterDecorators":[],"returnDecorators":[{"name":"firstSell","description":"","recommendedTypes":[],"solidityType":"uint16"},{"name":"platform","description":"","recommendedTypes":[],"solidityType":"uint16"},{"name":"creator","description":"","recommendedTypes":[],"solidityType":"uint16"},{"name":"buyer","description":"","recommendedTypes":[],"solidityType":"uint16"}],"emittableEvents":[],"readOnly":true},{"signature":"isCreator(uint256,address)","name":"isCreator","description":"","parameterDecorators":[{"name":"_tokenId","description":"","recommendedTypes":[]},{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"resetCreators(uint256)","name":"resetCreators","description":"","parameterDecorators":[{"name":"_tokenId","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setCommissionRate(uint256,uint16,uint16,uint16,uint16)","name":"setCommissionRate","description":"","parameterDecorators":[{"name":"_tokenId","description":"","recommendedTypes":[]},{"name":"firstSell","description":"","recommendedTypes":[]},{"name":"platformRate","description":"","recommendedTypes":[]},{"name":"creatorRate","description":"","recommendedTypes":[]},{"name":"buyerRate","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setCreators(uint256,address[],uint16[])","name":"setCreators","description":"","parameterDecorators":[{"name":"_tokenId","description":"","recommendedTypes":[]},{"name":"_creators","description":"","recommendedTypes":[]},{"name":"_dividens","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setDefaultRate(uint16,uint16,uint16,uint16)","name":"setDefaultRate","description":"","parameterDecorators":[{"name":"firstSell","description":"","recommendedTypes":[]},{"name":"platform","description":"","recommendedTypes":[]},{"name":"creator","description":"","recommendedTypes":[]},{"name":"buyer","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "CommissionContract",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Received(address,uint256)",
+      "name": "Received",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "calcCommission(uint256,uint256,uint256)",
+      "name": "calcCommission",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_value",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenSoldTimes",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "platform",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "creator",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "buyer",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "divide(address,uint256,uint256)",
+      "name": "divide",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_money",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getCommissionRate(uint256)",
+      "name": "getCommissionRate",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "firstSell",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        },
+        {
+          "name": "platformRate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        },
+        {
+          "name": "creatorRate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        },
+        {
+          "name": "buyerRate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCreators(uint256)",
+      "name": "getCreators",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getDefaultRate()",
+      "name": "getDefaultRate",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "firstSell",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        },
+        {
+          "name": "platform",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        },
+        {
+          "name": "creator",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        },
+        {
+          "name": "buyer",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isCreator(uint256,address)",
+      "name": "isCreator",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "resetCreators(uint256)",
+      "name": "resetCreators",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setCommissionRate(uint256,uint16,uint16,uint16,uint16)",
+      "name": "setCommissionRate",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "firstSell",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "platformRate",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "creatorRate",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "buyerRate",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setCreators(uint256,address[],uint16[])",
+      "name": "setCreators",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_creators",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_dividens",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDefaultRate(uint16,uint16,uint16,uint16)",
+      "name": "setDefaultRate",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "firstSell",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "platform",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "creator",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "buyer",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

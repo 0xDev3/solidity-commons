@@ -1,1 +1,289 @@
-{"schema":"../schema.json","tags":["swaps","flash loans","uniswap"],"name":"ComFlash","description":"Flash contract implementation. An example contract using the Uniswap V3 flash function.","eventDecorators":[],"functionDecorators":[{"signature":"WETH9()","name":"WETH9","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"comptroller()","name":"comptroller","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"factory()","name":"factory","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"initFlash(tuple(address,address,uint24,uint256,uint256,uint24,uint24))","name":"initFlash","description":"Calls the pools flash function with data needed in `uniswapV3FlashCallback`.","parameterDecorators":[{"name":"params","description":"The parameters necessary for flash and the callback, passed in as FlashParams.","recommendedTypes":[],"parameters":[{"name":"token0","description":"","type":"address"},{"name":"token1","description":"","type":"address"},{"name":"fee1","description":"","type":"uint24"},{"name":"amount0","description":"","type":"uint256"},{"name":"amount1","description":"","type":"uint256"},{"name":"fee2","description":"","type":"uint24"},{"name":"fee3","description":"","type":"uint24"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"liquidate(address,address,address,uint256,uint24)","name":"liquidate","description":"Liquidate a Compound user with a flash swap.","parameterDecorators":[{"name":"_borrower","description":"(address): the Compound user to liquidate.","recommendedTypes":[]},{"name":"_repayCToken","description":"(address): a CToken for which the user is in debt.","recommendedTypes":[]},{"name":"_seizeCToken","description":"(address): a CToken for which the user has a supply balance.","recommendedTypes":[]},{"name":"_amount","description":"(uint): the amount (specified in units of _repayCToken.underlying) to flash loan and pay off.","recommendedTypes":[]},{"name":"poolFee","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"liquidateS(address,address,address,uint24)","name":"liquidateS","description":"Liquidate a Compound user with a flash swap, auto-computing liquidation amount.","parameterDecorators":[{"name":"_borrower","description":"(address): the Compound user to liquidate.","recommendedTypes":[]},{"name":"_repayCToken","description":"(address): a CToken for which the user is in debt.","recommendedTypes":[]},{"name":"_seizeCToken","description":"(address): a CToken for which the user has a supply balance.","recommendedTypes":[]},{"name":"_poolFee","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"priceOracle()","name":"priceOracle","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"refundETH()","name":"refundETH","description":"Refunds any ETH balance held by this contract to the `msg.sender`. Useful for bundling with mint or increase liquidity that uses ether, or exact output swaps that use ether for the input amount.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"swapRouter()","name":"swapRouter","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"sweepToken(address,uint256,address)","name":"sweepToken","description":"Transfers the full amount of a token held by this contract to recipient. The amountMinimum parameter prevents malicious contracts from stealing the token from users.","parameterDecorators":[{"name":"token","description":"The contract address of the token which will be transferred to `recipient`.","recommendedTypes":[]},{"name":"amountMinimum","description":"The minimum amount of token required for a transfer.","recommendedTypes":[]},{"name":"recipient","description":"The destination address of the token.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"uniswapV3FlashCallback(uint256,uint256,bytes)","name":"uniswapV3FlashCallback","description":"implements the callback called from flash. fails if the flash is not profitable, meaning the amountOut from the flash is less than the amount borrowed.","parameterDecorators":[{"name":"fee0","description":"The fee from calling flash for token0.","recommendedTypes":[]},{"name":"fee1","description":"The fee from calling flash for token1.","recommendedTypes":[]},{"name":"data","description":"The data needed in the callback passed as FlashCallbackData from `initFlash`.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unwrapWETH9(uint256,address)","name":"unwrapWETH9","description":"Unwraps the contract's WETH9 balance and sends it to recipient as ETH. The amountMinimum parameter prevents malicious contracts from stealing WETH9 from users.","parameterDecorators":[{"name":"amountMinimum","description":"The minimum amount of WETH9 to unwrap.","recommendedTypes":[]},{"name":"recipient","description":"The address receiving ETH.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "swaps",
+    "flash loans",
+    "uniswap"
+  ],
+  "name": "ComFlash",
+  "description": "Flash contract implementation. An example contract using the Uniswap V3 flash function.",
+  "eventDecorators": [],
+  "functionDecorators": [
+    {
+      "signature": "WETH9()",
+      "name": "WETH9",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "comptroller()",
+      "name": "comptroller",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "factory()",
+      "name": "factory",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initFlash(tuple(address,address,uint24,uint256,uint256,uint24,uint24))",
+      "name": "initFlash",
+      "description": "Calls the pools flash function with data needed in `uniswapV3FlashCallback`.",
+      "parameterDecorators": [
+        {
+          "name": "params",
+          "description": "The parameters necessary for flash and the callback, passed in as FlashParams.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "token0",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "token1",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "fee1",
+              "description": "",
+              "type": "uint24"
+            },
+            {
+              "name": "amount0",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "amount1",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "fee2",
+              "description": "",
+              "type": "uint24"
+            },
+            {
+              "name": "fee3",
+              "description": "",
+              "type": "uint24"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "liquidate(address,address,address,uint256,uint24)",
+      "name": "liquidate",
+      "description": "Liquidate a Compound user with a flash swap.",
+      "parameterDecorators": [
+        {
+          "name": "_borrower",
+          "description": "(address): the Compound user to liquidate.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_repayCToken",
+          "description": "(address): a CToken for which the user is in debt.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_seizeCToken",
+          "description": "(address): a CToken for which the user has a supply balance.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "(uint): the amount (specified in units of _repayCToken.underlying) to flash loan and pay off.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "poolFee",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "liquidateS(address,address,address,uint24)",
+      "name": "liquidateS",
+      "description": "Liquidate a Compound user with a flash swap, auto-computing liquidation amount.",
+      "parameterDecorators": [
+        {
+          "name": "_borrower",
+          "description": "(address): the Compound user to liquidate.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_repayCToken",
+          "description": "(address): a CToken for which the user is in debt.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_seizeCToken",
+          "description": "(address): a CToken for which the user has a supply balance.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_poolFee",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "priceOracle()",
+      "name": "priceOracle",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "refundETH()",
+      "name": "refundETH",
+      "description": "Refunds any ETH balance held by this contract to the `msg.sender`. Useful for bundling with mint or increase liquidity that uses ether, or exact output swaps that use ether for the input amount.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapRouter()",
+      "name": "swapRouter",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "sweepToken(address,uint256,address)",
+      "name": "sweepToken",
+      "description": "Transfers the full amount of a token held by this contract to recipient. The amountMinimum parameter prevents malicious contracts from stealing the token from users.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "The contract address of the token which will be transferred to `recipient`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountMinimum",
+          "description": "The minimum amount of token required for a transfer.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "recipient",
+          "description": "The destination address of the token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "uniswapV3FlashCallback(uint256,uint256,bytes)",
+      "name": "uniswapV3FlashCallback",
+      "description": "implements the callback called from flash. fails if the flash is not profitable, meaning the amountOut from the flash is less than the amount borrowed.",
+      "parameterDecorators": [
+        {
+          "name": "fee0",
+          "description": "The fee from calling flash for token0.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fee1",
+          "description": "The fee from calling flash for token1.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "The data needed in the callback passed as FlashCallbackData from `initFlash`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unwrapWETH9(uint256,address)",
+      "name": "unwrapWETH9",
+      "description": "Unwraps the contract's WETH9 balance and sends it to recipient as ETH. The amountMinimum parameter prevents malicious contracts from stealing WETH9 from users.",
+      "parameterDecorators": [
+        {
+          "name": "amountMinimum",
+          "description": "The minimum amount of WETH9 to unwrap.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "recipient",
+          "description": "The address receiving ETH.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

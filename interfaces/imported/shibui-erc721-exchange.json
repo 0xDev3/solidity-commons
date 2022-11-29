@@ -1,1 +1,909 @@
-{"schema":"../schema.json","tags":["nft","dao"],"name":"ERC721ExchangeUpgradeable","description":"Shibui 🌊 ERC721 Exchange. Handles the creation and execution of sell and buy orders for ERC721 assets. Central exchange of the ShibuiNFT Marketplace for ERC721 assets.","eventDecorators":[{"signature":"BuyOrderBooked(address,address,address,uint256,uint256,uint256,address)","name":"BuyOrderBooked","description":"Emitted when `bookBuyOrder` is called.","parameterDecorators":[{"name":"buyer","description":"","recommendedTypes":[],"indexed":true},{"name":"owner","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenContractAddress","description":"","recommendedTypes":[],"indexed":true},{"name":"tokenId","description":"","recommendedTypes":[],"indexed":true},{"name":"expiration","description":"","recommendedTypes":[],"indexed":false},{"name":"offer","description":"","recommendedTypes":[],"indexed":false},{"name":"token","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"BuyOrderCanceled(address,address,uint256)","name":"BuyOrderCanceled","description":"Emitted when `cancelBuyOrder` is call edor when `exerciseBuyOrder` completes.","parameterDecorators":[{"name":"buyer","description":"","recommendedTypes":[],"indexed":true},{"name":"tokenContractAddress","description":"","recommendedTypes":[],"indexed":true},{"name":"tokenId","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"BuyOrderExercised(address,address,address,uint256,uint256,address)","name":"BuyOrderExercised","description":"Emitted when `acceptBuy` is called.","parameterDecorators":[{"name":"buyer","description":"","recommendedTypes":[],"indexed":false},{"name":"seller","description":"","recommendedTypes":[],"indexed":true},{"name":"tokenContractAddress","description":"","recommendedTypes":[],"indexed":true},{"name":"tokenId","description":"","recommendedTypes":[],"indexed":true},{"name":"offer","description":"","recommendedTypes":[],"indexed":false},{"name":"token","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Paused(address)","name":"Paused","description":"","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SellOrderBooked(address,address,uint256,uint256,uint256,address)","name":"SellOrderBooked","description":"Emitted when `bookSellOrder` is called.","parameterDecorators":[{"name":"seller","description":"","recommendedTypes":[],"indexed":true},{"name":"tokenContractAddress","description":"","recommendedTypes":[],"indexed":true},{"name":"tokenId","description":"","recommendedTypes":[],"indexed":true},{"name":"expiration","description":"","recommendedTypes":[],"indexed":false},{"name":"price","description":"","recommendedTypes":[],"indexed":false},{"name":"token","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SellOrderCanceled(address,address,uint256)","name":"SellOrderCanceled","description":"Emitted when `cancelSellOrder` is called or when `exerciseSellOrder` completes.","parameterDecorators":[{"name":"seller","description":"","recommendedTypes":[],"indexed":true},{"name":"tokenContractAddress","description":"","recommendedTypes":[],"indexed":true},{"name":"tokenId","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"SellOrderExercised(address,address,address,address,uint256,uint256,address)","name":"SellOrderExercised","description":"Emitted when `exerciseSellOrder` is called.","parameterDecorators":[{"name":"seller","description":"","recommendedTypes":[],"indexed":true},{"name":"recipient","description":"","recommendedTypes":[],"indexed":false},{"name":"buyer","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenContractAddress","description":"","recommendedTypes":[],"indexed":true},{"name":"tokenId","description":"","recommendedTypes":[],"indexed":true},{"name":"price","description":"","recommendedTypes":[],"indexed":false},{"name":"token","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Unpaused(address)","name":"Unpaused","description":"","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"__ERC721Exchange_init(address,uint256,address,address,address)","name":"__ERC721Exchange_init","description":"Function acting as the contracts constructor.","parameterDecorators":[{"name":"_systemFeeWallet","description":"Address to which system fees get paid.","recommendedTypes":[]},{"name":"_systemFeePerMille","description":"The default system fee %. Example: 10 => 1%, 25 => 2,5%, 300 => 30%.","recommendedTypes":[]},{"name":"_royaltyEngine","description":"Address of the RoyaltyEngine deployment.","recommendedTypes":[]},{"name":"_orderBook","description":"Address of the shared OrderBook deployment.","recommendedTypes":[]},{"name":"_wethAddress","description":"Address of the canonical WETH deployment.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"bookBuyOrder(address,address,uint256,uint256,uint256,address)","name":"bookBuyOrder","description":"Stores a new offer/bid for a given ERC721 asset. If `_token` is a zero address then the order will treat it as being WETH.","parameterDecorators":[{"name":"_owner","description":"The current owner of the desired ERC721 asset.","recommendedTypes":[]},{"name":"_tokenContractAddress","description":"The ERC721 asset contract address.","recommendedTypes":[]},{"name":"_tokenId","description":"ID of the desired ERC721 asset.","recommendedTypes":[]},{"name":"_expiration","description":"Time of order expiration defined as a UNIX timestamp.","recommendedTypes":[]},{"name":"_offer","description":"The offered amount in wei for the given ERC721 asset.","recommendedTypes":[]},{"name":"_token","description":"Alternative ERC20 asset used for payment.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"bookSellOrder(address,uint256,uint256,uint256,address)","name":"bookSellOrder","description":"If `_token` is a zero address then the order will treat it as plain ETH.","parameterDecorators":[{"name":"_tokenContractAddress","description":"The ERC721 asset contract address of the desired SellOrder.","recommendedTypes":[]},{"name":"_tokenId","description":"ID of the desired ERC721 asset.","recommendedTypes":[]},{"name":"_expiration","description":"Time of order expiration defined as a UNIX timestamp.","recommendedTypes":[]},{"name":"_price","description":"The price in wei of the given ERC721 asset.","recommendedTypes":[]},{"name":"_token","description":"Alternative ERC20 asset used for payment.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"buyOrderExists(address,address,uint256)","name":"buyOrderExists","description":"This relies on the fact that for one we treat expired orders as non-existant and that the default for structs in a mapping is that they have all their values set to 0. So if a order doesn't exist it will have an expiration of 0.","parameterDecorators":[{"name":"_buyer","description":"Address of the buy order creator.","recommendedTypes":[]},{"name":"_tokenContractAddress","description":"Address of the ERC721 token contract.","recommendedTypes":[]},{"name":"_tokenId","description":"ID of the token being bought.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The validy of the queried order.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"cancelBuyOrder(address,uint256)","name":"cancelBuyOrder","description":"Cancels a given BuyOrder and emits \"BuyOrderCanceled\". Can only be executed by the listed BuyOrder placer.","parameterDecorators":[{"name":"_tokenContractAddress","description":"Address of the ERC721 token contract.","recommendedTypes":[]},{"name":"_tokenId","description":"ID of the token being bid on.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"cancelSellOrder(address,uint256)","name":"cancelSellOrder","description":"Cancels a given SellOrder and emits \"SellOrderCanceled\". Can only be executed by the listed SellOrder seller.","parameterDecorators":[{"name":"_tokenContractAddress","description":"Address of the ERC721 token contract.","recommendedTypes":[]},{"name":"_tokenId","description":"ID of the token being sold.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"exerciseBuyOrder(address,address,uint256,uint256,uint256,address)","name":"exerciseBuyOrder","description":"If `_token` is a zero address then the order will treat it as being WETH.","parameterDecorators":[{"name":"_bidder","description":"Address that placed the bid.","recommendedTypes":[]},{"name":"_tokenContractAddress","description":"The ERC721 asset contract address.","recommendedTypes":[]},{"name":"_tokenId","description":"ID of the desired ERC721 asset.","recommendedTypes":[]},{"name":"_expiration","description":"Time of order expiration defined as a UNIX timestamp.","recommendedTypes":[]},{"name":"_offer","description":"The offered amount in wei for the given ERC721 asset.","recommendedTypes":[]},{"name":"_token","description":"Alternative ERC20 asset used for payment.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"exerciseSellOrder(address,address,uint256,uint256,uint256,address,address)","name":"exerciseSellOrder","description":"If `_token` is a zero address then the order will treat it as plain ETH.","parameterDecorators":[{"name":"_seller","description":"The seller address of the desired SellOrder.","recommendedTypes":[]},{"name":"_tokenContractAddress","description":"The ERC721 asset contract address of the desired SellOrder.","recommendedTypes":[]},{"name":"_tokenId","description":"ID of the desired ERC721 asset.","recommendedTypes":[]},{"name":"_expiration","description":"Time of order expiration defined as a UNIX timestamp.","recommendedTypes":[]},{"name":"_price","description":"The price in wei of the given ERC721 asset.","recommendedTypes":[]},{"name":"_recipient","description":"The address of the ERC721 asset recipient.","recommendedTypes":[]},{"name":"_token","description":"Alternative ERC20 asset used for payment.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getBuyOrder(address,address,uint256)","name":"getBuyOrder","description":"Finds the order matching the passed parameters. The returned order is possibly expired.","parameterDecorators":[{"name":"_buyer","description":"Address of the buy order creator.","recommendedTypes":[]},{"name":"_tokenContractAddress","description":"Address of the ERC721 token contract.","recommendedTypes":[]},{"name":"_tokenId","description":"ID of the token being bought.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Struct containing all the order data.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"getSellOrder(address,address,uint256)","name":"getSellOrder","description":"Finds the order matching the passed parameters. The returned order is possibly expired.","parameterDecorators":[{"name":"_seller","description":"Address of the sell order owner.","recommendedTypes":[]},{"name":"_tokenContractAddress","description":"Address of the ERC721 token contract.","recommendedTypes":[]},{"name":"_tokenId","description":"ID of the token being sold.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Struct containing all the order data.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"goTowardsTheSunset()","name":"goTowardsTheSunset","description":"Sunsets the contract. Pauses the contracts -> sets the owner to address(0) (kills any management features) -> sets the contract as sunset.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"orderBook()","name":"orderBook","description":"Address of the \"OrderBook\" deployment.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"pause()","name":"pause","description":"Pauses the execution and creation of sell orders on the exchange. Should only be used in emergencies.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"paused()","name":"paused","description":"Returns true if the contract is paused, and false otherwise.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"royaltyEngine()","name":"royaltyEngine","description":"Address of the \"RoyaltyEngineV1\" deployment.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"sellOrderExists(address,address,uint256)","name":"sellOrderExists","description":"This relies on the fact that for one we treat expired orders as non-existant and that the default for structs in a mapping is that they have all their values set to 0. So if a order doesn't exist it will have an expiration of 0.","parameterDecorators":[{"name":"_seller","description":"Address of the sell order owner.","recommendedTypes":[]},{"name":"_tokenContractAddress","description":"Address of the ERC721 token contract.","recommendedTypes":[]},{"name":"_tokenId","description":"ID of the token being sold.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The validy of the queried order.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"setOrderBook(address)","name":"setOrderBook","description":"Sets the new OrderBook address.","parameterDecorators":[{"name":"_newOrderBook","description":"New address for the OrderBook.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setRoyaltyEngine(address)","name":"setRoyaltyEngine","description":"Sets the new RoyaltyEngine address.","parameterDecorators":[{"name":"_newRoyaltyEngine","description":"New address for the RoyaltyEngine.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setSystemFeePerMille(uint256)","name":"setSystemFeePerMille","description":"Sets the new overall fee %. Example: 10 => 1%, 25 => 2,5%, 300 => 30%.","parameterDecorators":[{"name":"_newSystemFeePerMille","description":"New fee amount.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setSystemFeeWallet(address)","name":"setSystemFeeWallet","description":"Sets the new wallet to which all system fees get paid.","parameterDecorators":[{"name":"_newSystemFeeWallet","description":"Address of the new system fee wallet.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"sunset()","name":"sunset","description":"Returns the status of the sunset.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The status of sunset.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"supportsInterface(bytes4)","name":"supportsInterface","description":"","parameterDecorators":[{"name":"interfaceId","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unpause()","name":"unpause","description":"Unpauses the execution and creation of sell orders on the exchange. Should only be used in emergencies.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"version()","name":"version","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The current exchange version.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"wETH()","name":"wETH","description":"Addeess of the main canonical WETH deployment.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"withdraw()","name":"withdraw","description":"Withdraws any Ether in-case it's ever accidentaly sent to the contract.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "nft",
+    "dao"
+  ],
+  "name": "ERC721ExchangeUpgradeable",
+  "description": "Shibui 🌊 ERC721 Exchange. Handles the creation and execution of sell and buy orders for ERC721 assets. Central exchange of the ShibuiNFT Marketplace for ERC721 assets.",
+  "eventDecorators": [
+    {
+      "signature": "BuyOrderBooked(address,address,address,uint256,uint256,uint256,address)",
+      "name": "BuyOrderBooked",
+      "description": "Emitted when `bookBuyOrder` is called.",
+      "parameterDecorators": [
+        {
+          "name": "buyer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenContractAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "expiration",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "offer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BuyOrderCanceled(address,address,uint256)",
+      "name": "BuyOrderCanceled",
+      "description": "Emitted when `cancelBuyOrder` is call edor when `exerciseBuyOrder` completes.",
+      "parameterDecorators": [
+        {
+          "name": "buyer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenContractAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "BuyOrderExercised(address,address,address,uint256,uint256,address)",
+      "name": "BuyOrderExercised",
+      "description": "Emitted when `acceptBuy` is called.",
+      "parameterDecorators": [
+        {
+          "name": "buyer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "seller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenContractAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "offer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Paused(address)",
+      "name": "Paused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SellOrderBooked(address,address,uint256,uint256,uint256,address)",
+      "name": "SellOrderBooked",
+      "description": "Emitted when `bookSellOrder` is called.",
+      "parameterDecorators": [
+        {
+          "name": "seller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenContractAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "expiration",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SellOrderCanceled(address,address,uint256)",
+      "name": "SellOrderCanceled",
+      "description": "Emitted when `cancelSellOrder` is called or when `exerciseSellOrder` completes.",
+      "parameterDecorators": [
+        {
+          "name": "seller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenContractAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "SellOrderExercised(address,address,address,address,uint256,uint256,address)",
+      "name": "SellOrderExercised",
+      "description": "Emitted when `exerciseSellOrder` is called.",
+      "parameterDecorators": [
+        {
+          "name": "seller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "buyer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenContractAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unpaused(address)",
+      "name": "Unpaused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "__ERC721Exchange_init(address,uint256,address,address,address)",
+      "name": "__ERC721Exchange_init",
+      "description": "Function acting as the contracts constructor.",
+      "parameterDecorators": [
+        {
+          "name": "_systemFeeWallet",
+          "description": "Address to which system fees get paid.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_systemFeePerMille",
+          "description": "The default system fee %. Example: 10 => 1%, 25 => 2,5%, 300 => 30%.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_royaltyEngine",
+          "description": "Address of the RoyaltyEngine deployment.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_orderBook",
+          "description": "Address of the shared OrderBook deployment.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_wethAddress",
+          "description": "Address of the canonical WETH deployment.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "bookBuyOrder(address,address,uint256,uint256,uint256,address)",
+      "name": "bookBuyOrder",
+      "description": "Stores a new offer/bid for a given ERC721 asset. If `_token` is a zero address then the order will treat it as being WETH.",
+      "parameterDecorators": [
+        {
+          "name": "_owner",
+          "description": "The current owner of the desired ERC721 asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenContractAddress",
+          "description": "The ERC721 asset contract address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "ID of the desired ERC721 asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_expiration",
+          "description": "Time of order expiration defined as a UNIX timestamp.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_offer",
+          "description": "The offered amount in wei for the given ERC721 asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_token",
+          "description": "Alternative ERC20 asset used for payment.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "bookSellOrder(address,uint256,uint256,uint256,address)",
+      "name": "bookSellOrder",
+      "description": "If `_token` is a zero address then the order will treat it as plain ETH.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenContractAddress",
+          "description": "The ERC721 asset contract address of the desired SellOrder.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "ID of the desired ERC721 asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_expiration",
+          "description": "Time of order expiration defined as a UNIX timestamp.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_price",
+          "description": "The price in wei of the given ERC721 asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_token",
+          "description": "Alternative ERC20 asset used for payment.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "buyOrderExists(address,address,uint256)",
+      "name": "buyOrderExists",
+      "description": "This relies on the fact that for one we treat expired orders as non-existant and that the default for structs in a mapping is that they have all their values set to 0. So if a order doesn't exist it will have an expiration of 0.",
+      "parameterDecorators": [
+        {
+          "name": "_buyer",
+          "description": "Address of the buy order creator.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenContractAddress",
+          "description": "Address of the ERC721 token contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "ID of the token being bought.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The validy of the queried order.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "cancelBuyOrder(address,uint256)",
+      "name": "cancelBuyOrder",
+      "description": "Cancels a given BuyOrder and emits \"BuyOrderCanceled\". Can only be executed by the listed BuyOrder placer.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenContractAddress",
+          "description": "Address of the ERC721 token contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "ID of the token being bid on.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cancelSellOrder(address,uint256)",
+      "name": "cancelSellOrder",
+      "description": "Cancels a given SellOrder and emits \"SellOrderCanceled\". Can only be executed by the listed SellOrder seller.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenContractAddress",
+          "description": "Address of the ERC721 token contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "ID of the token being sold.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "exerciseBuyOrder(address,address,uint256,uint256,uint256,address)",
+      "name": "exerciseBuyOrder",
+      "description": "If `_token` is a zero address then the order will treat it as being WETH.",
+      "parameterDecorators": [
+        {
+          "name": "_bidder",
+          "description": "Address that placed the bid.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenContractAddress",
+          "description": "The ERC721 asset contract address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "ID of the desired ERC721 asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_expiration",
+          "description": "Time of order expiration defined as a UNIX timestamp.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_offer",
+          "description": "The offered amount in wei for the given ERC721 asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_token",
+          "description": "Alternative ERC20 asset used for payment.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "exerciseSellOrder(address,address,uint256,uint256,uint256,address,address)",
+      "name": "exerciseSellOrder",
+      "description": "If `_token` is a zero address then the order will treat it as plain ETH.",
+      "parameterDecorators": [
+        {
+          "name": "_seller",
+          "description": "The seller address of the desired SellOrder.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenContractAddress",
+          "description": "The ERC721 asset contract address of the desired SellOrder.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "ID of the desired ERC721 asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_expiration",
+          "description": "Time of order expiration defined as a UNIX timestamp.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_price",
+          "description": "The price in wei of the given ERC721 asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_recipient",
+          "description": "The address of the ERC721 asset recipient.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_token",
+          "description": "Alternative ERC20 asset used for payment.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getBuyOrder(address,address,uint256)",
+      "name": "getBuyOrder",
+      "description": "Finds the order matching the passed parameters. The returned order is possibly expired.",
+      "parameterDecorators": [
+        {
+          "name": "_buyer",
+          "description": "Address of the buy order creator.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenContractAddress",
+          "description": "Address of the ERC721 token contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "ID of the token being bought.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Struct containing all the order data.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSellOrder(address,address,uint256)",
+      "name": "getSellOrder",
+      "description": "Finds the order matching the passed parameters. The returned order is possibly expired.",
+      "parameterDecorators": [
+        {
+          "name": "_seller",
+          "description": "Address of the sell order owner.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenContractAddress",
+          "description": "Address of the ERC721 token contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "ID of the token being sold.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Struct containing all the order data.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "goTowardsTheSunset()",
+      "name": "goTowardsTheSunset",
+      "description": "Sunsets the contract. Pauses the contracts -> sets the owner to address(0) (kills any management features) -> sets the contract as sunset.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "orderBook()",
+      "name": "orderBook",
+      "description": "Address of the \"OrderBook\" deployment.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pause()",
+      "name": "pause",
+      "description": "Pauses the execution and creation of sell orders on the exchange. Should only be used in emergencies.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "paused()",
+      "name": "paused",
+      "description": "Returns true if the contract is paused, and false otherwise.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "royaltyEngine()",
+      "name": "royaltyEngine",
+      "description": "Address of the \"RoyaltyEngineV1\" deployment.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "sellOrderExists(address,address,uint256)",
+      "name": "sellOrderExists",
+      "description": "This relies on the fact that for one we treat expired orders as non-existant and that the default for structs in a mapping is that they have all their values set to 0. So if a order doesn't exist it will have an expiration of 0.",
+      "parameterDecorators": [
+        {
+          "name": "_seller",
+          "description": "Address of the sell order owner.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenContractAddress",
+          "description": "Address of the ERC721 token contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "ID of the token being sold.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The validy of the queried order.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setOrderBook(address)",
+      "name": "setOrderBook",
+      "description": "Sets the new OrderBook address.",
+      "parameterDecorators": [
+        {
+          "name": "_newOrderBook",
+          "description": "New address for the OrderBook.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRoyaltyEngine(address)",
+      "name": "setRoyaltyEngine",
+      "description": "Sets the new RoyaltyEngine address.",
+      "parameterDecorators": [
+        {
+          "name": "_newRoyaltyEngine",
+          "description": "New address for the RoyaltyEngine.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setSystemFeePerMille(uint256)",
+      "name": "setSystemFeePerMille",
+      "description": "Sets the new overall fee %. Example: 10 => 1%, 25 => 2,5%, 300 => 30%.",
+      "parameterDecorators": [
+        {
+          "name": "_newSystemFeePerMille",
+          "description": "New fee amount.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setSystemFeeWallet(address)",
+      "name": "setSystemFeeWallet",
+      "description": "Sets the new wallet to which all system fees get paid.",
+      "parameterDecorators": [
+        {
+          "name": "_newSystemFeeWallet",
+          "description": "Address of the new system fee wallet.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "sunset()",
+      "name": "sunset",
+      "description": "Returns the status of the sunset.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The status of sunset.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "supportsInterface(bytes4)",
+      "name": "supportsInterface",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "interfaceId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unpause()",
+      "name": "unpause",
+      "description": "Unpauses the execution and creation of sell orders on the exchange. Should only be used in emergencies.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "version()",
+      "name": "version",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The current exchange version.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "wETH()",
+      "name": "wETH",
+      "description": "Addeess of the main canonical WETH deployment.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw()",
+      "name": "withdraw",
+      "description": "Withdraws any Ether in-case it's ever accidentaly sent to the contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

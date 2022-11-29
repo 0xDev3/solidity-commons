@@ -1,1 +1,326 @@
-{"schema":"../schema.json","tags":["dao"],"name":"Org","description":"Org. Org is a contract that serves as a smart wallet for US nonprofit organizations. It holds the organization's federal Tax ID number as taxID, and allows for an address to submit a Claim struct to the contract whereby the organization can directly receive grant awards from Endaoment Funds.","eventDecorators":[{"signature":"CashOutComplete(uint256)","name":"CashOutComplete","description":"","parameterDecorators":[{"name":"cashOutAmount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ClaimApproved(string,tuple)","name":"ClaimApproved","description":"","parameterDecorators":[{"name":"claimId","description":"","recommendedTypes":[],"indexed":false},{"name":"claim","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ClaimCreated(string,tuple)","name":"ClaimCreated","description":"","parameterDecorators":[{"name":"claimId","description":"","recommendedTypes":[],"indexed":false},{"name":"claim","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ClaimRejected(string,tuple)","name":"ClaimRejected","description":"","parameterDecorators":[{"name":"claimId","description":"","recommendedTypes":[],"indexed":false},{"name":"claim","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"activeClaim()","name":"activeClaim","description":"","parameterDecorators":[],"returnDecorators":[{"name":"firstName","description":"","recommendedTypes":[],"solidityType":"string"},{"name":"lastName","description":"","recommendedTypes":[],"solidityType":"string"},{"name":"eMail","description":"","recommendedTypes":[],"solidityType":"string"},{"name":"desiredWallet","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"approveClaim(string)","name":"approveClaim","description":"Approves an Organization Claim and emits a `ClaimApproved` event.","parameterDecorators":[{"name":"claimId","description":"UUID of the claim being approved.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"cashOutOrg(address)","name":"cashOutOrg","description":"Cashes out Organization Contract and emits a `CashOutComplete` event.","parameterDecorators":[{"name":"tokenAddress","description":"ERC20 address of desired token withdrawal.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claimRequest(string,string,string,string,address)","name":"claimRequest","description":"Creates Organization Claim and emits a `ClaimCreated` event.","parameterDecorators":[{"name":"claimId","description":"UUID representing this claim.","recommendedTypes":[]},{"name":"fName","description":"First name of Administrator.","recommendedTypes":[]},{"name":"lName","description":"Last name of Administrator.","recommendedTypes":[]},{"name":"eMail","description":"Email contact for Organization Administrator.","recommendedTypes":[]},{"name":"orgAdminWalletAddress","description":"Wallet address of Organization's Administrator.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getTokenBalance(address)","name":"getTokenBalance","description":"Retrieves Token Balance of Org Contract.","parameterDecorators":[{"name":"tokenAddress","description":"Address of desired token to query for balance.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Balance of conract in token base unit of provided tokenAddress.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"initializeOrg(uint256,address)","name":"initializeOrg","description":"Create new Organization Contract. Using initializer instead of constructor for minimal proxy support. This function can only be called once in the contract's lifetime.","parameterDecorators":[{"name":"ein","description":"The U.S. Tax Identification Number for the Organization.","recommendedTypes":[]},{"name":"orgFactory","description":"Address of the Factory contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"orgFactoryContract()","name":"orgFactoryContract","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"orgWallet()","name":"orgWallet","description":"Org Wallet convenience accessor.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The wallet specified in the active, approved claim.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"pendingClaims(string)","name":"pendingClaims","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"firstName","description":"","recommendedTypes":[],"solidityType":"string"},{"name":"lastName","description":"","recommendedTypes":[],"solidityType":"string"},{"name":"eMail","description":"","recommendedTypes":[],"solidityType":"string"},{"name":"desiredWallet","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"rejectClaim(string)","name":"rejectClaim","description":"Rejects an Organization Claim and emits a 'ClaimRejected` event.","parameterDecorators":[{"name":"claimId","description":"UUID of the claim being rejected.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"taxId()","name":"taxId","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "dao"
+  ],
+  "name": "Org",
+  "description": "Org. Org is a contract that serves as a smart wallet for US nonprofit organizations. It holds the organization's federal Tax ID number as taxID, and allows for an address to submit a Claim struct to the contract whereby the organization can directly receive grant awards from Endaoment Funds.",
+  "eventDecorators": [
+    {
+      "signature": "CashOutComplete(uint256)",
+      "name": "CashOutComplete",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "cashOutAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ClaimApproved(string,tuple)",
+      "name": "ClaimApproved",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "claimId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "claim",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ClaimCreated(string,tuple)",
+      "name": "ClaimCreated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "claimId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "claim",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ClaimRejected(string,tuple)",
+      "name": "ClaimRejected",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "claimId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "claim",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "activeClaim()",
+      "name": "activeClaim",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "firstName",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        },
+        {
+          "name": "lastName",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        },
+        {
+          "name": "eMail",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        },
+        {
+          "name": "desiredWallet",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "approveClaim(string)",
+      "name": "approveClaim",
+      "description": "Approves an Organization Claim and emits a `ClaimApproved` event.",
+      "parameterDecorators": [
+        {
+          "name": "claimId",
+          "description": "UUID of the claim being approved.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cashOutOrg(address)",
+      "name": "cashOutOrg",
+      "description": "Cashes out Organization Contract and emits a `CashOutComplete` event.",
+      "parameterDecorators": [
+        {
+          "name": "tokenAddress",
+          "description": "ERC20 address of desired token withdrawal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimRequest(string,string,string,string,address)",
+      "name": "claimRequest",
+      "description": "Creates Organization Claim and emits a `ClaimCreated` event.",
+      "parameterDecorators": [
+        {
+          "name": "claimId",
+          "description": "UUID representing this claim.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fName",
+          "description": "First name of Administrator.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "lName",
+          "description": "Last name of Administrator.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "eMail",
+          "description": "Email contact for Organization Administrator.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "orgAdminWalletAddress",
+          "description": "Wallet address of Organization's Administrator.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getTokenBalance(address)",
+      "name": "getTokenBalance",
+      "description": "Retrieves Token Balance of Org Contract.",
+      "parameterDecorators": [
+        {
+          "name": "tokenAddress",
+          "description": "Address of desired token to query for balance.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Balance of conract in token base unit of provided tokenAddress.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initializeOrg(uint256,address)",
+      "name": "initializeOrg",
+      "description": "Create new Organization Contract. Using initializer instead of constructor for minimal proxy support. This function can only be called once in the contract's lifetime.",
+      "parameterDecorators": [
+        {
+          "name": "ein",
+          "description": "The U.S. Tax Identification Number for the Organization.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "orgFactory",
+          "description": "Address of the Factory contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "orgFactoryContract()",
+      "name": "orgFactoryContract",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "orgWallet()",
+      "name": "orgWallet",
+      "description": "Org Wallet convenience accessor.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The wallet specified in the active, approved claim.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pendingClaims(string)",
+      "name": "pendingClaims",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "firstName",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        },
+        {
+          "name": "lastName",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        },
+        {
+          "name": "eMail",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        },
+        {
+          "name": "desiredWallet",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rejectClaim(string)",
+      "name": "rejectClaim",
+      "description": "Rejects an Organization Claim and emits a 'ClaimRejected` event.",
+      "parameterDecorators": [
+        {
+          "name": "claimId",
+          "description": "UUID of the claim being rejected.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "taxId()",
+      "name": "taxId",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

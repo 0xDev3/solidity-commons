@@ -1,1 +1,295 @@
-{"schema":"../schema.json","tags":["bridges"],"name":"GenericHandlerUpgradeable","description":"Handles generic deposits and deposit executions. This contract is intended to be used with the Bridge contract.","eventDecorators":[{"signature":"Initialized(uint8)","name":"Initialized","description":"Emitted when asset tokens are supplied to sponsor the yield source.","parameterDecorators":[{"name":"version","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"_bridgeAddress()","name":"_bridgeAddress","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"_contractAddressToDepositFunctionDepositorOffset(address)","name":"_contractAddressToDepositFunctionDepositorOffset","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"_contractAddressToDepositFunctionSignature(address)","name":"_contractAddressToDepositFunctionSignature","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes4"}],"emittableEvents":[],"readOnly":true},{"signature":"_contractAddressToExecuteFunctionSignature(address)","name":"_contractAddressToExecuteFunctionSignature","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes4"}],"emittableEvents":[],"readOnly":true},{"signature":"_contractAddressToResourceID(address)","name":"_contractAddressToResourceID","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"_contractWhitelist(address)","name":"_contractWhitelist","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"_resourceIDToContractAddress(bytes32)","name":"_resourceIDToContractAddress","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"deposit(bytes32,address,bytes)","name":"deposit","description":"A deposit is initiated by making a deposit in the Bridge contract.Data passed into the function should be constructed as follows: len(data) uint256 bytes 0 - 32 data bytes bytes 64 - END{contractAddress} is required to be whitelistedIf {_contractAddressToDepositFunctionSignature}[{contractAddress}] is set, {metaData} is expected to consist of needed function arguments.","parameterDecorators":[{"name":"resourceID","description":"ResourceID used to find address of contract to be used for deposit.","recommendedTypes":[]},{"name":"depositor","description":"Address of the account making deposit in the Bridge contract.","recommendedTypes":[]},{"name":"data","description":"Consists of: {resourceID}, {lenMetaData}, and {metaData} all padded to 32 bytes.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the raw bytes returned from the call to {contractAddress}.","recommendedTypes":[],"solidityType":"bytes"}],"emittableEvents":[],"readOnly":false},{"signature":"executeProposal(bytes32,bytes)","name":"executeProposal","description":"Proposal execution should be initiated when a proposal is finalized in the Bridge contract.Data passed into the function should be constructed as follows: len(data) uint256 bytes 0 - 32 data bytes bytes 32 - END{contractAddress} is required to be whitelistedIf {_contractAddressToExecuteFunctionSignature}[{contractAddress}] is set, {metaData} is expected to consist of needed function arguments.","parameterDecorators":[{"name":"resourceID","description":"","recommendedTypes":[]},{"name":"data","description":"Consists of {resourceID}, {lenMetaData}, and {metaData}.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"initialize(address)","name":"initialize","description":"","parameterDecorators":[{"name":"bridgeAddress","description":"Contract address of previously deployed Bridge.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"removeResource(bytes32,address)","name":"removeResource","description":"","parameterDecorators":[{"name":"resourceID","description":"","recommendedTypes":[]},{"name":"contractAddress","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setResource(bytes32,address,bytes4,uint256,bytes4)","name":"setResource","description":"First verifies {_resourceIDToContractAddress}[{resourceID}] and {_contractAddressToResourceID}[{contractAddress}] are not already set, then sets {_resourceIDToContractAddress} with {contractAddress}, {_contractAddressToResourceID} with {resourceID}, {_contractAddressToDepositFunctionSignature} with {depositFunctionSig}, {_contractAddressToDepositFunctionDepositorOffset} with {depositFunctionDepositorOffset}, {_contractAddressToExecuteFunctionSignature} with {executeFunctionSig}, and {_contractWhitelist} to true for {contractAddress}.","parameterDecorators":[{"name":"resourceID","description":"ResourceID to be used when making deposits.","recommendedTypes":[]},{"name":"contractAddress","description":"Address of contract to be called when a deposit is made and a deposited is executed.","recommendedTypes":[]},{"name":"depositFunctionSig","description":"Function signature of method to be called in {contractAddress} when a deposit is made.","recommendedTypes":[]},{"name":"depositFunctionDepositorOffset","description":"Depositor address position offset in the metadata, in bytes.","recommendedTypes":[]},{"name":"executeFunctionSig","description":"Function signature of method to be called in {contractAddress} when a deposit is executed.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "bridges"
+  ],
+  "name": "GenericHandlerUpgradeable",
+  "description": "Handles generic deposits and deposit executions. This contract is intended to be used with the Bridge contract.",
+  "eventDecorators": [
+    {
+      "signature": "Initialized(uint8)",
+      "name": "Initialized",
+      "description": "Emitted when asset tokens are supplied to sponsor the yield source.",
+      "parameterDecorators": [
+        {
+          "name": "version",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "_bridgeAddress()",
+      "name": "_bridgeAddress",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "_contractAddressToDepositFunctionDepositorOffset(address)",
+      "name": "_contractAddressToDepositFunctionDepositorOffset",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "_contractAddressToDepositFunctionSignature(address)",
+      "name": "_contractAddressToDepositFunctionSignature",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes4"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "_contractAddressToExecuteFunctionSignature(address)",
+      "name": "_contractAddressToExecuteFunctionSignature",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes4"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "_contractAddressToResourceID(address)",
+      "name": "_contractAddressToResourceID",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "_contractWhitelist(address)",
+      "name": "_contractWhitelist",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "_resourceIDToContractAddress(bytes32)",
+      "name": "_resourceIDToContractAddress",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deposit(bytes32,address,bytes)",
+      "name": "deposit",
+      "description": "A deposit is initiated by making a deposit in the Bridge contract.Data passed into the function should be constructed as follows: len(data) uint256 bytes 0 - 32 data bytes bytes 64 - END{contractAddress} is required to be whitelistedIf {_contractAddressToDepositFunctionSignature}[{contractAddress}] is set, {metaData} is expected to consist of needed function arguments.",
+      "parameterDecorators": [
+        {
+          "name": "resourceID",
+          "description": "ResourceID used to find address of contract to be used for deposit.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "depositor",
+          "description": "Address of the account making deposit in the Bridge contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "Consists of: {resourceID}, {lenMetaData}, and {metaData} all padded to 32 bytes.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the raw bytes returned from the call to {contractAddress}.",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "executeProposal(bytes32,bytes)",
+      "name": "executeProposal",
+      "description": "Proposal execution should be initiated when a proposal is finalized in the Bridge contract.Data passed into the function should be constructed as follows: len(data) uint256 bytes 0 - 32 data bytes bytes 32 - END{contractAddress} is required to be whitelistedIf {_contractAddressToExecuteFunctionSignature}[{contractAddress}] is set, {metaData} is expected to consist of needed function arguments.",
+      "parameterDecorators": [
+        {
+          "name": "resourceID",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "Consists of {resourceID}, {lenMetaData}, and {metaData}.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialize(address)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "bridgeAddress",
+          "description": "Contract address of previously deployed Bridge.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeResource(bytes32,address)",
+      "name": "removeResource",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "resourceID",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "contractAddress",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setResource(bytes32,address,bytes4,uint256,bytes4)",
+      "name": "setResource",
+      "description": "First verifies {_resourceIDToContractAddress}[{resourceID}] and {_contractAddressToResourceID}[{contractAddress}] are not already set, then sets {_resourceIDToContractAddress} with {contractAddress}, {_contractAddressToResourceID} with {resourceID}, {_contractAddressToDepositFunctionSignature} with {depositFunctionSig}, {_contractAddressToDepositFunctionDepositorOffset} with {depositFunctionDepositorOffset}, {_contractAddressToExecuteFunctionSignature} with {executeFunctionSig}, and {_contractWhitelist} to true for {contractAddress}.",
+      "parameterDecorators": [
+        {
+          "name": "resourceID",
+          "description": "ResourceID to be used when making deposits.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "contractAddress",
+          "description": "Address of contract to be called when a deposit is made and a deposited is executed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "depositFunctionSig",
+          "description": "Function signature of method to be called in {contractAddress} when a deposit is made.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "depositFunctionDepositorOffset",
+          "description": "Depositor address position offset in the metadata, in bytes.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "executeFunctionSig",
+          "description": "Function signature of method to be called in {contractAddress} when a deposit is executed.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

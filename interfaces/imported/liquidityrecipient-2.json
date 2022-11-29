@@ -1,1 +1,360 @@
-{"schema":"../schema.json","tags":["liquidity"],"name":"LiquidityRecipient","description":"","eventDecorators":[{"signature":"LiquidityProvided(uint256,uint256,uint256)","name":"LiquidityProvided","description":"An event emitted when a vote has been cast on a proposal.","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":false},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":false},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":false}]},{"signature":"LiquidityRemoved(uint256,uint256,uint256)","name":"LiquidityRemoved","description":"An event emitted when a vote has been cast on a proposal.","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":false},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":false},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"controller()","name":"controller","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"doHardWork()","name":"doHardWork","description":"Adds liquidity to Uniswap. There is no vault for this cannot be invoked via controller. It has to be restricted for market manipulation reasons, so only governance can call this method.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"farm()","name":"farm","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getReward(address)","name":"getReward","description":"","parameterDecorators":[{"name":"pool","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"governance()","name":"governance","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"salvage(address,address,uint256)","name":"salvage","description":"Salvages a token.","parameterDecorators":[{"name":"recipient","description":"","recommendedTypes":[]},{"name":"token","description":"","recommendedTypes":[]},{"name":"amount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setStorage(address)","name":"setStorage","description":"","parameterDecorators":[{"name":"_store","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"settleLoan()","name":"settleLoan","description":"Prepares for settling the loan to the strategy by withdrawing all liquidity from Uniswap, and providing approvals to the strategy (for WETH) and to treasury (for FARM). The strategy will make the WETH withdrawal by the pull pattern, and so will the treasury.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"stake(address,uint256)","name":"stake","description":"","parameterDecorators":[{"name":"pool","description":"","recommendedTypes":[]},{"name":"amount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"store()","name":"store","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"takeLoan(uint256)","name":"takeLoan","description":"Borrows the set amount of WETH from the strategy, and will invest all available liquidity to Uniswap. This assumes that an approval from the strategy exists.","parameterDecorators":[{"name":"amount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"treasury()","name":"treasury","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"uniLp()","name":"uniLp","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"uniswap()","name":"uniswap","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"unsalvagableTokens(address)","name":"unsalvagableTokens","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"unstake(address)","name":"unstake","description":"","parameterDecorators":[{"name":"pool","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"weth()","name":"weth","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"wethOverdraft()","name":"wethOverdraft","description":"If Uniswap returns less FARM and more WETH, the WETH excess will be present in this strategy. The governance can send this WETH to the treasury by invoking this function through the strategy. The strategy ensures that this function is not called unless the entire WETH loan was settled.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"wethStrategy()","name":"wethStrategy","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "liquidity"
+  ],
+  "name": "LiquidityRecipient",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "LiquidityProvided(uint256,uint256,uint256)",
+      "name": "LiquidityProvided",
+      "description": "An event emitted when a vote has been cast on a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LiquidityRemoved(uint256,uint256,uint256)",
+      "name": "LiquidityRemoved",
+      "description": "An event emitted when a vote has been cast on a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "controller()",
+      "name": "controller",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "doHardWork()",
+      "name": "doHardWork",
+      "description": "Adds liquidity to Uniswap. There is no vault for this cannot be invoked via controller. It has to be restricted for market manipulation reasons, so only governance can call this method.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "farm()",
+      "name": "farm",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getReward(address)",
+      "name": "getReward",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "pool",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "governance()",
+      "name": "governance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "salvage(address,address,uint256)",
+      "name": "salvage",
+      "description": "Salvages a token.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setStorage(address)",
+      "name": "setStorage",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_store",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "settleLoan()",
+      "name": "settleLoan",
+      "description": "Prepares for settling the loan to the strategy by withdrawing all liquidity from Uniswap, and providing approvals to the strategy (for WETH) and to treasury (for FARM). The strategy will make the WETH withdrawal by the pull pattern, and so will the treasury.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stake(address,uint256)",
+      "name": "stake",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "pool",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "store()",
+      "name": "store",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "takeLoan(uint256)",
+      "name": "takeLoan",
+      "description": "Borrows the set amount of WETH from the strategy, and will invest all available liquidity to Uniswap. This assumes that an approval from the strategy exists.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "treasury()",
+      "name": "treasury",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "uniLp()",
+      "name": "uniLp",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "uniswap()",
+      "name": "uniswap",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unsalvagableTokens(address)",
+      "name": "unsalvagableTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unstake(address)",
+      "name": "unstake",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "pool",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "weth()",
+      "name": "weth",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "wethOverdraft()",
+      "name": "wethOverdraft",
+      "description": "If Uniswap returns less FARM and more WETH, the WETH excess will be present in this strategy. The governance can send this WETH to the treasury by invoking this function through the strategy. The strategy ensures that this function is not called unless the entire WETH loan was settled.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "wethStrategy()",
+      "name": "wethStrategy",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

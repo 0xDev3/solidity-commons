@@ -1,1 +1,438 @@
-{"schema":"../schema.json","tags":["strategies"],"name":"CvxCrvStrategy","description":"CvxCrvStrategy.","eventDecorators":[{"signature":"ClaimedReward(address,uint256)","name":"ClaimedReward","description":"Emitted when IDLE rate is changed. To be emitted when a withdrawal occurs.","parameterDecorators":[{"name":"rewardToken","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Emitted when IDLE rate is changed. To be emitted when a withdrawal occurs.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Withdrawn(address,uint256,address)","name":"Withdrawn","description":"Emitted when IDLE rate is changed. To be emitted when a withdrawal occurs.","parameterDecorators":[{"name":"_token","description":"","recommendedTypes":[],"indexed":true},{"name":"_amount","description":"","recommendedTypes":[],"indexed":true},{"name":"_to","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"balanceOf()","name":"balanceOf","description":"balance of this address in \"want\" tokens.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"checkPoolIndex(uint256)","name":"checkPoolIndex","description":"","parameterDecorators":[{"name":"index","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"claim(address)","name":"claim","description":"","parameterDecorators":[{"name":"_rewardToken","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"configure(address,address,address,tuple(address,address,address,address,address,uint256))","name":"configure","description":"","parameterDecorators":[{"name":"_wantAddress","description":"","recommendedTypes":[]},{"name":"_controllerAddress","description":"","recommendedTypes":[]},{"name":"_governance","description":"","recommendedTypes":[]},{"name":"_poolSettings","description":"","recommendedTypes":[],"parameters":[{"name":"crvRewards","description":"","type":"address"},{"name":"cvxRewards","description":"","type":"address"},{"name":"convexBooster","description":"","type":"address"},{"name":"crvDepositor","description":"","type":"address"},{"name":"crvToken","description":"","type":"address"},{"name":"poolIndex","description":"","type":"uint256"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"controller()","name":"controller","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"convertAndStakeTokens(uint256)","name":"convertAndStakeTokens","description":"","parameterDecorators":[{"name":"_amount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"convertTokens(uint256)","name":"convertTokens","description":"","parameterDecorators":[{"name":"_amount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"deposit()","name":"deposit","description":"Function that controller calls.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getRewards()","name":"getRewards","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"poolSettings()","name":"poolSettings","description":"","parameterDecorators":[],"returnDecorators":[{"name":"crvRewards","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"cvxRewards","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"convexBooster","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"crvDepositor","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"crvToken","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"poolIndex","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setController(address)","name":"setController","description":"Usual setter with check if param is new.","parameterDecorators":[{"name":"_newController","description":"New value.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setPoolIndex(uint256)","name":"setPoolIndex","description":"","parameterDecorators":[{"name":"_newPoolIndex","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setWant(address)","name":"setWant","description":"Usual setter with check if param is new.","parameterDecorators":[{"name":"_newWant","description":"New value.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"want()","name":"want","description":"Usual getter (inherited from IStrategy).","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"withdraw(uint256)","name":"withdraw","description":"Withdraw partial funds, normally used with a vault withdrawal. Controller | Vault role - withdraw should always return to Vault.","parameterDecorators":[{"name":"_amount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdraw(address)","name":"withdraw","description":"must exclude any tokens used in the yield. Controller role - withdraw should return to Controller.","parameterDecorators":[{"name":"_token","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "strategies"
+  ],
+  "name": "CvxCrvStrategy",
+  "description": "CvxCrvStrategy.",
+  "eventDecorators": [
+    {
+      "signature": "ClaimedReward(address,uint256)",
+      "name": "ClaimedReward",
+      "description": "Emitted when IDLE rate is changed. To be emitted when a withdrawal occurs.",
+      "parameterDecorators": [
+        {
+          "name": "rewardToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emitted when IDLE rate is changed. To be emitted when a withdrawal occurs.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Withdrawn(address,uint256,address)",
+      "name": "Withdrawn",
+      "description": "Emitted when IDLE rate is changed. To be emitted when a withdrawal occurs.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "balanceOf()",
+      "name": "balanceOf",
+      "description": "balance of this address in \"want\" tokens.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "checkPoolIndex(uint256)",
+      "name": "checkPoolIndex",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claim(address)",
+      "name": "claim",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_rewardToken",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "configure(address,address,address,tuple(address,address,address,address,address,uint256))",
+      "name": "configure",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_wantAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_controllerAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_governance",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_poolSettings",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "crvRewards",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "cvxRewards",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "convexBooster",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "crvDepositor",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "crvToken",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "poolIndex",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "controller()",
+      "name": "controller",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "convertAndStakeTokens(uint256)",
+      "name": "convertAndStakeTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "convertTokens(uint256)",
+      "name": "convertTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deposit()",
+      "name": "deposit",
+      "description": "Function that controller calls.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getRewards()",
+      "name": "getRewards",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "poolSettings()",
+      "name": "poolSettings",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "crvRewards",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "cvxRewards",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "convexBooster",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "crvDepositor",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "crvToken",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "poolIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setController(address)",
+      "name": "setController",
+      "description": "Usual setter with check if param is new.",
+      "parameterDecorators": [
+        {
+          "name": "_newController",
+          "description": "New value.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setPoolIndex(uint256)",
+      "name": "setPoolIndex",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_newPoolIndex",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setWant(address)",
+      "name": "setWant",
+      "description": "Usual setter with check if param is new.",
+      "parameterDecorators": [
+        {
+          "name": "_newWant",
+          "description": "New value.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "want()",
+      "name": "want",
+      "description": "Usual getter (inherited from IStrategy).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw(uint256)",
+      "name": "withdraw",
+      "description": "Withdraw partial funds, normally used with a vault withdrawal. Controller | Vault role - withdraw should always return to Vault.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(address)",
+      "name": "withdraw",
+      "description": "must exclude any tokens used in the yield. Controller role - withdraw should return to Controller.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

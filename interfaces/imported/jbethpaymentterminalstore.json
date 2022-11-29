@@ -1,1 +1,575 @@
-{"schema":"../schema.json","tags":[],"name":"JBETHPaymentTerminalStore","description":"Aside from the public view methods, the external methods should be called by the associated terminal. This contract manages all bookkeeping for inflows and outflows of funds for a terminal.","eventDecorators":[{"signature":"DelegateDidPay(address,tuple)","name":"DelegateDidPay","description":"Emitted when a edition is created reserving the corresponding token IDs.","parameterDecorators":[{"name":"delegate","description":"","recommendedTypes":[],"indexed":true},{"name":"data","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"DelegateDidRedeem(address,tuple)","name":"DelegateDidRedeem","description":"Emitted when a edition is created reserving the corresponding token IDs.","parameterDecorators":[{"name":"delegate","description":"","recommendedTypes":[],"indexed":true},{"name":"data","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"balanceOf(uint256)","name":"balanceOf","description":"The amount of ETH that each project has. _projectId The ID of the project to get the balance of.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"claimFor(address)","name":"claimFor","description":"Allows this store to be claimed by an address so that it recognized the address as its terminal.","parameterDecorators":[{"name":"_terminal","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"currentOverflowOf(uint256)","name":"currentOverflowOf","description":"Gets the current overflowed amount (in the terminal's currency) in this terminal for a specified project.","parameterDecorators":[{"name":"_projectId","description":"The ID of the project to get overflow for.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The current amount of overflow that project has in this terminal.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"currentTotalOverflowOf(uint256)","name":"currentTotalOverflowOf","description":"Gets the current overflowed amount (in the terminal's currency) for a specified project across all terminals.","parameterDecorators":[{"name":"_projectId","description":"The ID of the project to get total overflow for.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The current total amount of overflow that project has across all terminals.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"directory()","name":"directory","description":"The directory of terminals and controllers for projects.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"fundingCycleStore()","name":"fundingCycleStore","description":"The contract storing all funding cycle configurations.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"prices()","name":"prices","description":"The contract that exposes price feeds.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"projects()","name":"projects","description":"The Projects contract which mints ERC-721's that represent project ownership and transfers.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"reclaimableOverflowOf(uint256,uint256)","name":"reclaimableOverflowOf","description":"The amount of overflowed ETH that can be reclaimed by the specified number of tokens. If the project has an active funding cycle reconfiguration ballot, the project's ballot redemption rate is used.","parameterDecorators":[{"name":"_projectId","description":"The ID of the project to get a reclaimable amount for.","recommendedTypes":[]},{"name":"_tokenCount","description":"The number of tokens to make the calculation with.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The amount of overflowed ETH that can be reclaimed.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"recordAddedBalanceFor(uint256,uint256)","name":"recordAddedBalanceFor","description":"Records newly added funds for the project. Only the associated payment terminal can record an added balance.","parameterDecorators":[{"name":"_projectId","description":"The ID of the project to which the funds being added belong.","recommendedTypes":[]},{"name":"_amount","description":"The amount added, in wei.","recommendedTypes":[]}],"returnDecorators":[{"name":"fundingCycle","description":"The current funding cycle for the project.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":false},{"signature":"recordDistributionFor(uint256,uint256,uint256,uint256)","name":"recordDistributionFor","description":"Records newly distributed funds for a project. Only the associated payment terminal can record a distribution.","parameterDecorators":[{"name":"_projectId","description":"The ID of the project that is having funds distributed.","recommendedTypes":[]},{"name":"_amount","description":"The amount being distributed as a fixed point number.","recommendedTypes":[]},{"name":"_currency","description":"The expected currency of the `_amount` being tapped. This must match the project's current funding cycle's currency.","recommendedTypes":[]},{"name":"_minReturnedWei","description":"The minimum number of wei that should be distributed.","recommendedTypes":[]}],"returnDecorators":[{"name":"fundingCycle","description":"The funding cycle during which the withdrawal was made.","recommendedTypes":[],"solidityType":"tuple"},{"name":"distributedAmount","description":"The amount distribution in wei.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"recordMigration(uint256)","name":"recordMigration","description":"Records the migration of this terminal to another.","parameterDecorators":[{"name":"_projectId","description":"The ID of the project being migrated.","recommendedTypes":[]}],"returnDecorators":[{"name":"balance","description":"The project's current balance.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"recordPaymentFrom(address,uint256,uint256,uint256,uint256,string,bytes)","name":"recordPaymentFrom","description":"Records newly contributed ETH to a project. Mint's the project's tokens according to values provided by a configured data source. If no data source is configured, mints tokens proportional to the amount of the contribution.Only the associated payment terminal can record a payment.","parameterDecorators":[{"name":"_payer","description":"The original address that sent the payment to the terminal.","recommendedTypes":[]},{"name":"_amount","description":"The amount that is being paid in wei.","recommendedTypes":[]},{"name":"_projectId","description":"The ID of the project being paid.","recommendedTypes":[]},{"name":"_preferClaimedTokensAndBeneficiary","description":"Two properties are included in this packed uint256: The first bit contains the flag indicating whether the request prefers to issue tokens claimed as ERC-20s. The remaining bits contains the address that should receive benefits from the payment. This design is necessary two prevent a \"Stack too deep\" compiler error that comes up if the variables are declared seperately.","recommendedTypes":[]},{"name":"_minReturnedTokens","description":"The minimum number of tokens expected to be minted in return.","recommendedTypes":[]},{"name":"_memo","description":"A memo that will be included in the published event.","recommendedTypes":[]},{"name":"_delegateMetadata","description":"Bytes to send along to the delegate, if one is used.","recommendedTypes":[]}],"returnDecorators":[{"name":"fundingCycle","description":"The project's funding cycle during which payment was made.","recommendedTypes":[],"solidityType":"tuple"},{"name":"weight","description":"The weight according to which new token supply was minted.","recommendedTypes":[],"solidityType":"uint256"},{"name":"tokenCount","description":"The number of tokens that were minted.","recommendedTypes":[],"solidityType":"uint256"},{"name":"memo","description":"A memo that should be passed along to the emitted event.","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":false},{"signature":"recordRedemptionFor(address,uint256,uint256,uint256,address,string,bytes)","name":"recordRedemptionFor","description":"Records newly redeemed tokens of a project. Only the associated payment terminal can record a redemption.","parameterDecorators":[{"name":"_holder","description":"The account that is having its tokens redeemed.","recommendedTypes":[]},{"name":"_projectId","description":"The ID of the project to which the tokens being redeemed belong.","recommendedTypes":[]},{"name":"_tokenCount","description":"The number of tokens to redeem.","recommendedTypes":[]},{"name":"_minReturnedWei","description":"The minimum amount of wei expected in return.","recommendedTypes":[]},{"name":"_beneficiary","description":"The address that will benefit from the claimed amount.","recommendedTypes":[]},{"name":"_memo","description":"A memo to pass along to the emitted event.","recommendedTypes":[]},{"name":"_delegateMetadata","description":"Bytes to send along to the delegate, if one is used.","recommendedTypes":[]}],"returnDecorators":[{"name":"fundingCycle","description":"The funding cycle during which the redemption was made.","recommendedTypes":[],"solidityType":"tuple"},{"name":"reclaimAmount","description":"The amount of wei reclaimed.","recommendedTypes":[],"solidityType":"uint256"},{"name":"memo","description":"A memo that should be passed along to the emitted event.","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":false},{"signature":"recordUsedAllowanceOf(uint256,uint256,uint256,uint256)","name":"recordUsedAllowanceOf","description":"Records newly used allowance funds of a project. Only the associated payment terminal can record a used allowance.","parameterDecorators":[{"name":"_projectId","description":"The ID of the project to use the allowance of.","recommendedTypes":[]},{"name":"_amount","description":"The amount of the allowance to use as a fixed point number.","recommendedTypes":[]},{"name":"_currency","description":"The currency of the `_amount` value. Must match the funding cycle's currency.","recommendedTypes":[]},{"name":"_minReturnedWei","description":"The amount of wei that is expected to be withdrawn.","recommendedTypes":[]}],"returnDecorators":[{"name":"fundingCycle","description":"The funding cycle during which the withdrawal is being made.","recommendedTypes":[],"solidityType":"tuple"},{"name":"withdrawnAmount","description":"The amount withdrawn in wei.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"terminal()","name":"terminal","description":"The associated payment terminal for which this contract stores data.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"tokenStore()","name":"tokenStore","description":"The contract that manages token minting and burning.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"usedDistributionLimitOf(uint256,uint256)","name":"usedDistributionLimitOf","description":"The amount (in the terminal's currency) that a project has distributed from its limit during the current funding cycle.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"usedOverflowAllowanceOf(uint256,uint256)","name":"usedOverflowAllowanceOf","description":"The amount of overflow (in the terminal's currency) that a project has used from its allowance during the current funding cycle configuration.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "JBETHPaymentTerminalStore",
+  "description": "Aside from the public view methods, the external methods should be called by the associated terminal. This contract manages all bookkeeping for inflows and outflows of funds for a terminal.",
+  "eventDecorators": [
+    {
+      "signature": "DelegateDidPay(address,tuple)",
+      "name": "DelegateDidPay",
+      "description": "Emitted when a edition is created reserving the corresponding token IDs.",
+      "parameterDecorators": [
+        {
+          "name": "delegate",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DelegateDidRedeem(address,tuple)",
+      "name": "DelegateDidRedeem",
+      "description": "Emitted when a edition is created reserving the corresponding token IDs.",
+      "parameterDecorators": [
+        {
+          "name": "delegate",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "balanceOf(uint256)",
+      "name": "balanceOf",
+      "description": "The amount of ETH that each project has. _projectId The ID of the project to get the balance of.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claimFor(address)",
+      "name": "claimFor",
+      "description": "Allows this store to be claimed by an address so that it recognized the address as its terminal.",
+      "parameterDecorators": [
+        {
+          "name": "_terminal",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "currentOverflowOf(uint256)",
+      "name": "currentOverflowOf",
+      "description": "Gets the current overflowed amount (in the terminal's currency) in this terminal for a specified project.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project to get overflow for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The current amount of overflow that project has in this terminal.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "currentTotalOverflowOf(uint256)",
+      "name": "currentTotalOverflowOf",
+      "description": "Gets the current overflowed amount (in the terminal's currency) for a specified project across all terminals.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project to get total overflow for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The current total amount of overflow that project has across all terminals.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "directory()",
+      "name": "directory",
+      "description": "The directory of terminals and controllers for projects.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "fundingCycleStore()",
+      "name": "fundingCycleStore",
+      "description": "The contract storing all funding cycle configurations.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "prices()",
+      "name": "prices",
+      "description": "The contract that exposes price feeds.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "projects()",
+      "name": "projects",
+      "description": "The Projects contract which mints ERC-721's that represent project ownership and transfers.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "reclaimableOverflowOf(uint256,uint256)",
+      "name": "reclaimableOverflowOf",
+      "description": "The amount of overflowed ETH that can be reclaimed by the specified number of tokens. If the project has an active funding cycle reconfiguration ballot, the project's ballot redemption rate is used.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project to get a reclaimable amount for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenCount",
+          "description": "The number of tokens to make the calculation with.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The amount of overflowed ETH that can be reclaimed.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "recordAddedBalanceFor(uint256,uint256)",
+      "name": "recordAddedBalanceFor",
+      "description": "Records newly added funds for the project. Only the associated payment terminal can record an added balance.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project to which the funds being added belong.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The amount added, in wei.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "fundingCycle",
+          "description": "The current funding cycle for the project.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "recordDistributionFor(uint256,uint256,uint256,uint256)",
+      "name": "recordDistributionFor",
+      "description": "Records newly distributed funds for a project. Only the associated payment terminal can record a distribution.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project that is having funds distributed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The amount being distributed as a fixed point number.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_currency",
+          "description": "The expected currency of the `_amount` being tapped. This must match the project's current funding cycle's currency.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minReturnedWei",
+          "description": "The minimum number of wei that should be distributed.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "fundingCycle",
+          "description": "The funding cycle during which the withdrawal was made.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        },
+        {
+          "name": "distributedAmount",
+          "description": "The amount distribution in wei.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "recordMigration(uint256)",
+      "name": "recordMigration",
+      "description": "Records the migration of this terminal to another.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project being migrated.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "balance",
+          "description": "The project's current balance.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "recordPaymentFrom(address,uint256,uint256,uint256,uint256,string,bytes)",
+      "name": "recordPaymentFrom",
+      "description": "Records newly contributed ETH to a project. Mint's the project's tokens according to values provided by a configured data source. If no data source is configured, mints tokens proportional to the amount of the contribution.Only the associated payment terminal can record a payment.",
+      "parameterDecorators": [
+        {
+          "name": "_payer",
+          "description": "The original address that sent the payment to the terminal.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The amount that is being paid in wei.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_projectId",
+          "description": "The ID of the project being paid.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_preferClaimedTokensAndBeneficiary",
+          "description": "Two properties are included in this packed uint256: The first bit contains the flag indicating whether the request prefers to issue tokens claimed as ERC-20s. The remaining bits contains the address that should receive benefits from the payment. This design is necessary two prevent a \"Stack too deep\" compiler error that comes up if the variables are declared seperately.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minReturnedTokens",
+          "description": "The minimum number of tokens expected to be minted in return.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_memo",
+          "description": "A memo that will be included in the published event.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_delegateMetadata",
+          "description": "Bytes to send along to the delegate, if one is used.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "fundingCycle",
+          "description": "The project's funding cycle during which payment was made.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        },
+        {
+          "name": "weight",
+          "description": "The weight according to which new token supply was minted.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "tokenCount",
+          "description": "The number of tokens that were minted.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "memo",
+          "description": "A memo that should be passed along to the emitted event.",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "recordRedemptionFor(address,uint256,uint256,uint256,address,string,bytes)",
+      "name": "recordRedemptionFor",
+      "description": "Records newly redeemed tokens of a project. Only the associated payment terminal can record a redemption.",
+      "parameterDecorators": [
+        {
+          "name": "_holder",
+          "description": "The account that is having its tokens redeemed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_projectId",
+          "description": "The ID of the project to which the tokens being redeemed belong.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenCount",
+          "description": "The number of tokens to redeem.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minReturnedWei",
+          "description": "The minimum amount of wei expected in return.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_beneficiary",
+          "description": "The address that will benefit from the claimed amount.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_memo",
+          "description": "A memo to pass along to the emitted event.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_delegateMetadata",
+          "description": "Bytes to send along to the delegate, if one is used.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "fundingCycle",
+          "description": "The funding cycle during which the redemption was made.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        },
+        {
+          "name": "reclaimAmount",
+          "description": "The amount of wei reclaimed.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "memo",
+          "description": "A memo that should be passed along to the emitted event.",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "recordUsedAllowanceOf(uint256,uint256,uint256,uint256)",
+      "name": "recordUsedAllowanceOf",
+      "description": "Records newly used allowance funds of a project. Only the associated payment terminal can record a used allowance.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project to use the allowance of.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The amount of the allowance to use as a fixed point number.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_currency",
+          "description": "The currency of the `_amount` value. Must match the funding cycle's currency.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minReturnedWei",
+          "description": "The amount of wei that is expected to be withdrawn.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "fundingCycle",
+          "description": "The funding cycle during which the withdrawal is being made.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        },
+        {
+          "name": "withdrawnAmount",
+          "description": "The amount withdrawn in wei.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "terminal()",
+      "name": "terminal",
+      "description": "The associated payment terminal for which this contract stores data.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tokenStore()",
+      "name": "tokenStore",
+      "description": "The contract that manages token minting and burning.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "usedDistributionLimitOf(uint256,uint256)",
+      "name": "usedDistributionLimitOf",
+      "description": "The amount (in the terminal's currency) that a project has distributed from its limit during the current funding cycle.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "usedOverflowAllowanceOf(uint256,uint256)",
+      "name": "usedOverflowAllowanceOf",
+      "description": "The amount of overflow (in the terminal's currency) that a project has used from its allowance during the current funding cycle configuration.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

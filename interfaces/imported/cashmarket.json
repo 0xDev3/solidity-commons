@@ -1,1 +1,1231 @@
-{"schema":"../schema.json","tags":["tokens"],"name":"CashMarket","description":"CashMarket. Marketplace for trading cash to fCash tokens. Implements a specialized AMM for trading such assets.","eventDecorators":[{"signature":"AddLiquidity(address,uint32,uint128,uint128,uint128)","name":"AddLiquidity","description":"Event emitted for each executed trade.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":true},{"name":"maturity","description":"","recommendedTypes":[],"indexed":false},{"name":"tokens","description":"","recommendedTypes":[],"indexed":false},{"name":"fCash","description":"","recommendedTypes":[],"indexed":false},{"name":"cash","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Event emitted for each executed trade.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"RemoveLiquidity(address,uint32,uint128,uint128,uint128)","name":"RemoveLiquidity","description":"Event emitted for each executed trade.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":true},{"name":"maturity","description":"","recommendedTypes":[],"indexed":false},{"name":"tokens","description":"","recommendedTypes":[],"indexed":false},{"name":"fCash","description":"","recommendedTypes":[],"indexed":false},{"name":"cash","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TakeCurrentCash(address,uint32,uint128,uint128,uint128)","name":"TakeCurrentCash","description":"Event emitted for each executed trade.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":true},{"name":"maturity","description":"","recommendedTypes":[],"indexed":false},{"name":"fCash","description":"","recommendedTypes":[],"indexed":false},{"name":"cash","description":"","recommendedTypes":[],"indexed":false},{"name":"fee","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TakefCash(address,uint32,uint128,uint128,uint128)","name":"TakefCash","description":"Event emitted for each executed trade.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":true},{"name":"maturity","description":"","recommendedTypes":[],"indexed":false},{"name":"fCash","description":"","recommendedTypes":[],"indexed":false},{"name":"cash","description":"","recommendedTypes":[],"indexed":false},{"name":"fee","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"UpdateFees(uint32,uint128)","name":"UpdateFees","description":"Event emitted for each executed trade.","parameterDecorators":[{"name":"liquidityFee","description":"","recommendedTypes":[],"indexed":false},{"name":"transactionFee","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"UpdateMaxTradeSize(uint128)","name":"UpdateMaxTradeSize","description":"Event emitted for each executed trade.","parameterDecorators":[{"name":"maxTradeSize","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"UpdateRateFactors(uint32,uint16)","name":"UpdateRateFactors","description":"Event emitted for each executed trade.","parameterDecorators":[{"name":"rateAnchor","description":"","recommendedTypes":[],"indexed":false},{"name":"rateScalar","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"CASH_GROUP()","name":"CASH_GROUP","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"DIRECTORY()","name":"DIRECTORY","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"G_LIQUIDITY_FEE()","name":"G_LIQUIDITY_FEE","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"G_MATURITY_LENGTH()","name":"G_MATURITY_LENGTH","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"G_MAX_TRADE_SIZE()","name":"G_MAX_TRADE_SIZE","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":true},{"signature":"G_NUM_MATURITIES()","name":"G_NUM_MATURITIES","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"G_RATE_ANCHOR()","name":"G_RATE_ANCHOR","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"G_RATE_SCALAR()","name":"G_RATE_SCALAR","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint16"}],"emittableEvents":[],"readOnly":true},{"signature":"G_TRANSACTION_FEE()","name":"G_TRANSACTION_FEE","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":true},{"signature":"addLiquidity(uint32,uint128,uint128,uint32,uint32,uint32)","name":"addLiquidity","description":"Adds some amount of cash to the liquidity pool up to the corresponding amount defined by `maxfCash`. Mints liquidity tokens back to the sender. - TRADE_FAILED_MAX_TIME: maturity specified is not yet active - MARKET_INACTIVE: maturity is not a valid one - OVER_MAX_FCASH: fCash amount required exceeds supplied maxfCash - OUT_OF_IMPLIED_RATE_BOUNDS: depositing cash would require more fCash than specified - INSUFFICIENT_BALANCE: insufficient cash to deposit into market.","parameterDecorators":[{"name":"maturity","description":"the maturity to add liquidity to.","recommendedTypes":[]},{"name":"cash","description":"the amount of cash to add to the pool.","recommendedTypes":[]},{"name":"maxfCash","description":"the max amount of fCash to add to the pool. When initializing a pool this is the amount of fCash that will be added.","recommendedTypes":[]},{"name":"minImpliedRate","description":"the minimum implied rate that we will add liquidity at.","recommendedTypes":[]},{"name":"maxImpliedRate","description":"the maximum implied rate that we will add liquidity at.","recommendedTypes":[]},{"name":"maxTime","description":"after this time the trade will fail.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"addLiquidityOnBehalf(address,uint32,uint128,uint128,uint32,uint32)","name":"addLiquidityOnBehalf","description":"Used by ERC1155 contract to add liquidity. skip.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[]},{"name":"maturity","description":"","recommendedTypes":[]},{"name":"cash","description":"","recommendedTypes":[]},{"name":"maxfCash","description":"","recommendedTypes":[]},{"name":"minImpliedRate","description":"","recommendedTypes":[]},{"name":"maxImpliedRate","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getActiveMaturities()","name":"getActiveMaturities","description":"Gets the maturities for all the active markets.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getCurrentCashTofCash(uint32,uint128)","name":"getCurrentCashTofCash","description":"Given the amount of fCash to purchase, returns the amount of cash this would cost at the current block.","parameterDecorators":[{"name":"maturity","description":"the maturity of the fCash.","recommendedTypes":[]},{"name":"fCashAmount","description":"the amount of fCash to purchase.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the amount of cash this would cost, returns 0 on trade failure.","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":true},{"signature":"getCurrentCashTofCashAtTime(uint32,uint128,uint32)","name":"getCurrentCashTofCashAtTime","description":"Given the amount of fCash to purchase, returns the amount of cash this would cost. - CANNOT_GET_PRICE_FOR_MATURITY: can only get prices before the maturity.","parameterDecorators":[{"name":"maturity","description":"the maturity of the fCash.","recommendedTypes":[]},{"name":"fCashAmount","description":"the amount of fCash to purchase.","recommendedTypes":[]},{"name":"blockTime","description":"the time to calculate the price at.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the amount of cash this would cost, returns 0 on trade failure.","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":true},{"signature":"getMarket(uint32)","name":"getMarket","description":"Returns the market object at the specified maturity.","parameterDecorators":[{"name":"maturity","description":"the maturity of the market.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"A market object with these values: - `totalfCash`: total amount of fCash available at the maturity - `totalLiquidity`: total amount of liquidity tokens - `totalCurrentCash`: total amount of current cash available at maturity - `rateScalar`: determines the slippage rate during trading - `rateAnchor`: determines the base rate at market instantiation - `lastImpliedRate`: the last rate that the market traded at, used to smooth rates between periods of trading inactivity.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"getMarketRates()","name":"getMarketRates","description":"Gets the exchange rates for all the active markets.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getRate(uint32)","name":"getRate","description":"Returns the current mid exchange rate of cash to fCash. This is NOT the rate that users will be able to trade it, those calculations depend on trade size and you must use the `getCurrentCashTofCash` or `getfCashToCurrentCash` methods.","parameterDecorators":[{"name":"maturity","description":"the maturity to get the rate for.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"getfCashToCurrentCash(uint32,uint128)","name":"getfCashToCurrentCash","description":"Given the amount of fCash put into a market, how much cash this would purchase at the current block.","parameterDecorators":[{"name":"maturity","description":"the maturity of the fCash.","recommendedTypes":[]},{"name":"fCashAmount","description":"the amount of fCash to input.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the amount of cash this would purchase, returns 0 if the trade will fail.","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":true},{"signature":"getfCashToCurrentCashAtTime(uint32,uint128,uint32)","name":"getfCashToCurrentCashAtTime","description":"Given the amount of fCash put into a market, how much cash this would purchase at the given time. fCash exchange rates change as we go towards maturity. - CANNOT_GET_PRICE_FOR_MATURITY: can only get prices before the maturity.","parameterDecorators":[{"name":"maturity","description":"the maturity of the fCash.","recommendedTypes":[]},{"name":"fCashAmount","description":"the amount of fCash to input.","recommendedTypes":[]},{"name":"blockTime","description":"the specified block time.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the amount of cash this would purchase, returns 0 if the trade will fail.","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":true},{"signature":"initialize(address,address)","name":"initialize","description":"","parameterDecorators":[{"name":"directory","description":"","recommendedTypes":[]},{"name":"owner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"initializeDependencies()","name":"initializeDependencies","description":"skip.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"isOwner()","name":"isOwner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"markets(uint32)","name":"markets","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"totalfCash","description":"","recommendedTypes":[],"solidityType":"uint128"},{"name":"totalLiquidity","description":"","recommendedTypes":[],"solidityType":"uint128"},{"name":"totalCurrentCash","description":"","recommendedTypes":[],"solidityType":"uint128"},{"name":"rateScalar","description":"","recommendedTypes":[],"solidityType":"uint16"},{"name":"rateAnchor","description":"","recommendedTypes":[],"solidityType":"uint32"},{"name":"lastImpliedRate","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"removeLiquidity(uint32,uint128,uint32)","name":"removeLiquidity","description":"Removes liquidity from the fCash market. The sender's liquidity tokens are burned and they are credited back with fCash and cash at the prevailing exchange rate. This function only works when removing liquidity from an active market. For markets that are matured, the sender must settle their liquidity token via `Portfolios.settleMaturedAssets`. - TRADE_FAILED_MAX_TIME: maturity specified is not yet active - MARKET_INACTIVE: maturity is not a valid one - INSUFFICIENT_BALANCE: account does not have sufficient tokens to remove.","parameterDecorators":[{"name":"maturity","description":"the maturity to remove liquidity from.","recommendedTypes":[]},{"name":"amount","description":"the amount of liquidity tokens to burn.","recommendedTypes":[]},{"name":"maxTime","description":"after this block the trade will fail.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the amount of cash claim the removed liquidity tokens have.","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":false},{"signature":"removeLiquidityOnBehalf(address,uint32,uint128)","name":"removeLiquidityOnBehalf","description":"Used by ERC1155 contract to remove liquidity. skip.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[]},{"name":"maturity","description":"","recommendedTypes":[]},{"name":"amount","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Renouncing to ownership will leave the contract without an owner. It will not be possible to call the functions with the `onlyOwner` modifier anymore. Allows the current owner to relinquish control of the contract.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setContract(uint8,address)","name":"setContract","description":"","parameterDecorators":[{"name":"name","description":"","recommendedTypes":[]},{"name":"contractAddress","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setFee(uint32,uint128)","name":"setFee","description":"Sets fee parameters for the market. Liquidity Fees are set as basis points and shift the traded exchange rate. A basis point is the equivalent of 1e5 if INSTRUMENT_PRECISION is set to 1e9. Transaction fees are set as a percentage shifted by 1e18. For example a 1% transaction fee will be set as 1.01e18. governance.","parameterDecorators":[{"name":"liquidityFee","description":"a change in the traded exchange rate paid to liquidity providers.","recommendedTypes":[]},{"name":"transactionFee","description":"percentage of a transaction that accrues to the reserve account.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMaxTradeSize(uint128)","name":"setMaxTradeSize","description":"Sets the maximum amount that can be traded in a single trade. governance.","parameterDecorators":[{"name":"amount","description":"the max trade size.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setParameters(uint8,uint16,uint32,uint32,uint32,uint32)","name":"setParameters","description":"Sets governance parameters on the rate oracle. skip.","parameterDecorators":[{"name":"cashGroupId","description":"this cannot change once set.","recommendedTypes":[]},{"name":"param0","description":"","recommendedTypes":[]},{"name":"precision","description":"will only take effect on a new maturity.","recommendedTypes":[]},{"name":"maturityLength","description":"will take effect immediately, must be careful.","recommendedTypes":[]},{"name":"numMaturities","description":"will take effect immediately, makers can create new markets.","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setRateFactors(uint32,uint16)","name":"setRateFactors","description":"Sets rate factors that will determine the liquidity curve. Rate Anchor is set as the target annualized exchange rate so 1.10 * INSTRUMENT_PRECISION represents a target annualized rate of 10%. Rate anchor will be scaled accordingly when a fCash market is initialized. As a general default, INSTRUMENT_PRECISION will be set to 1e9. governance.","parameterDecorators":[{"name":"rateAnchor","description":"the offset of the liquidity curve.","recommendedTypes":[]},{"name":"rateScalar","description":"the sensitivity of the liquidity curve to changes.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"settleLiquidityToken(address,uint128,uint32)","name":"settleLiquidityToken","description":"Settles a liquidity token into fCash and cash. Can only be called by the Portfolios contract. skip.","parameterDecorators":[{"name":"account","description":"the account that is holding the token.","recommendedTypes":[]},{"name":"tokenAmount","description":"the amount of token to settle.","recommendedTypes":[]},{"name":"maturity","description":"when the token matures.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the amount of cash to settle to the account.","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":false},{"signature":"takeCurrentCash(uint32,uint128,uint32,uint32)","name":"takeCurrentCash","description":"Receive cash in exchange for a fCash obligation. Equivalent to borrowing cash at a fixed rate. - TRADE_FAILED_MAX_TIME: maturity specified is not yet active - MARKET_INACTIVE: maturity is not a valid one - TRADE_FAILED_TOO_LARGE: trade is larger than allowed by the governance settings - TRADE_FAILED_LACK_OF_LIQUIDITY: there is insufficient liquidity in this maturity to handle the trade - TRADE_FAILED_SLIPPAGE: trade is greater than the max implied rate set - INSUFFICIENT_FREE_COLLATERAL: insufficient free collateral to take on the debt.","parameterDecorators":[{"name":"maturity","description":"the maturity of the fCash being exchanged for current cash.","recommendedTypes":[]},{"name":"fCashAmount","description":"the amount of fCash to sell, will convert this amount to current cash at the prevailing exchange rate.","recommendedTypes":[]},{"name":"maxTime","description":"after this time the trade will not settle.","recommendedTypes":[]},{"name":"maxImpliedRate","description":"the maximum implied maturity rate that the borrower will accept.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the amount of cash purchased, `fCashAmount - cash` determines the fixed interested owed.","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":false},{"signature":"takeCurrentCashOnBehalf(address,uint32,uint128,uint32)","name":"takeCurrentCashOnBehalf","description":"Used by ERC1155 contract to take cash. skip.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[]},{"name":"maturity","description":"","recommendedTypes":[]},{"name":"fCashAmount","description":"","recommendedTypes":[]},{"name":"maxImpliedRate","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":false},{"signature":"takefCash(uint32,uint128,uint32,uint128)","name":"takefCash","description":"Deposit cash in return for the right to receive cash at the specified maturity. Equivalent to lending cash at a fixed rate. - TRADE_FAILED_MAX_TIME: maturity specified is not yet active - MARKET_INACTIVE: maturity is not a valid one - TRADE_FAILED_TOO_LARGE: trade is larger than allowed by the governance settings - TRADE_FAILED_LACK_OF_LIQUIDITY: there is insufficient liquidity in this maturity to handle the trade - TRADE_FAILED_SLIPPAGE: trade is lower than the min implied rate set - INSUFFICIENT_BALANCE: not enough cash to complete this trade.","parameterDecorators":[{"name":"maturity","description":"the maturity to receive fCash in.","recommendedTypes":[]},{"name":"fCashAmount","description":"the amount of fCash to purchase.","recommendedTypes":[]},{"name":"maxTime","description":"after this time the trade will not settle.","recommendedTypes":[]},{"name":"minImpliedRate","description":"the minimum implied rate that the lender will accept.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"the amount of cash deposited to the market, `fCashAmount - cash` is the interest to be received.","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":false},{"signature":"takefCashOnBehalf(address,uint32,uint128,uint32)","name":"takefCashOnBehalf","description":"Used by ERC1155 contract to take fCash. skip.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[]},{"name":"maturity","description":"","recommendedTypes":[]},{"name":"fCashAmount","description":"","recommendedTypes":[]},{"name":"minImpliedRate","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":false},{"signature":"tradeCashReceiver(address,uint128,uint128,uint32)","name":"tradeCashReceiver","description":"Turns fCash tokens into a current cash. Used by portfolios when settling cash. This method currently sells `maxfCash` every time since it's not possible to calculate the amount of fCash to sell from `cashRequired`. skip.","parameterDecorators":[{"name":"account","description":"that holds the fCash.","recommendedTypes":[]},{"name":"cashRequired","description":"amount of cash that needs to be raised.","recommendedTypes":[]},{"name":"maxfCash","description":"the maximum amount of fCash that can be sold.","recommendedTypes":[]},{"name":"maturity","description":"the maturity of the fCash.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":false},{"signature":"tradeLiquidityToken(uint128,uint128,uint32)","name":"tradeLiquidityToken","description":"Called by the portfolios contract when a liquidity token is being converted for cash. skip.","parameterDecorators":[{"name":"cashRequired","description":"the amount of cash required.","recommendedTypes":[]},{"name":"maxTokenAmount","description":"the max balance of tokens available.","recommendedTypes":[]},{"name":"maturity","description":"when the token matures.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint128"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint128"},{"name":"param2","description":"","recommendedTypes":[],"solidityType":"uint128"}],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Allows the current owner to transfer control of the contract to a newOwner.","parameterDecorators":[{"name":"newOwner","description":"The address to transfer ownership to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens"
+  ],
+  "name": "CashMarket",
+  "description": "CashMarket. Marketplace for trading cash to fCash tokens. Implements a specialized AMM for trading such assets.",
+  "eventDecorators": [
+    {
+      "signature": "AddLiquidity(address,uint32,uint128,uint128,uint128)",
+      "name": "AddLiquidity",
+      "description": "Event emitted for each executed trade.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "maturity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokens",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "fCash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "cash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Event emitted for each executed trade.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RemoveLiquidity(address,uint32,uint128,uint128,uint128)",
+      "name": "RemoveLiquidity",
+      "description": "Event emitted for each executed trade.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "maturity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokens",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "fCash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "cash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TakeCurrentCash(address,uint32,uint128,uint128,uint128)",
+      "name": "TakeCurrentCash",
+      "description": "Event emitted for each executed trade.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "maturity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "fCash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "cash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "fee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TakefCash(address,uint32,uint128,uint128,uint128)",
+      "name": "TakefCash",
+      "description": "Event emitted for each executed trade.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "maturity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "fCash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "cash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "fee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UpdateFees(uint32,uint128)",
+      "name": "UpdateFees",
+      "description": "Event emitted for each executed trade.",
+      "parameterDecorators": [
+        {
+          "name": "liquidityFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "transactionFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UpdateMaxTradeSize(uint128)",
+      "name": "UpdateMaxTradeSize",
+      "description": "Event emitted for each executed trade.",
+      "parameterDecorators": [
+        {
+          "name": "maxTradeSize",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UpdateRateFactors(uint32,uint16)",
+      "name": "UpdateRateFactors",
+      "description": "Event emitted for each executed trade.",
+      "parameterDecorators": [
+        {
+          "name": "rateAnchor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "rateScalar",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "CASH_GROUP()",
+      "name": "CASH_GROUP",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "DIRECTORY()",
+      "name": "DIRECTORY",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "G_LIQUIDITY_FEE()",
+      "name": "G_LIQUIDITY_FEE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "G_MATURITY_LENGTH()",
+      "name": "G_MATURITY_LENGTH",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "G_MAX_TRADE_SIZE()",
+      "name": "G_MAX_TRADE_SIZE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "G_NUM_MATURITIES()",
+      "name": "G_NUM_MATURITIES",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "G_RATE_ANCHOR()",
+      "name": "G_RATE_ANCHOR",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "G_RATE_SCALAR()",
+      "name": "G_RATE_SCALAR",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "G_TRANSACTION_FEE()",
+      "name": "G_TRANSACTION_FEE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addLiquidity(uint32,uint128,uint128,uint32,uint32,uint32)",
+      "name": "addLiquidity",
+      "description": "Adds some amount of cash to the liquidity pool up to the corresponding amount defined by `maxfCash`. Mints liquidity tokens back to the sender. - TRADE_FAILED_MAX_TIME: maturity specified is not yet active - MARKET_INACTIVE: maturity is not a valid one - OVER_MAX_FCASH: fCash amount required exceeds supplied maxfCash - OUT_OF_IMPLIED_RATE_BOUNDS: depositing cash would require more fCash than specified - INSUFFICIENT_BALANCE: insufficient cash to deposit into market.",
+      "parameterDecorators": [
+        {
+          "name": "maturity",
+          "description": "the maturity to add liquidity to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "cash",
+          "description": "the amount of cash to add to the pool.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxfCash",
+          "description": "the max amount of fCash to add to the pool. When initializing a pool this is the amount of fCash that will be added.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minImpliedRate",
+          "description": "the minimum implied rate that we will add liquidity at.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxImpliedRate",
+          "description": "the maximum implied rate that we will add liquidity at.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxTime",
+          "description": "after this time the trade will fail.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addLiquidityOnBehalf(address,uint32,uint128,uint128,uint32,uint32)",
+      "name": "addLiquidityOnBehalf",
+      "description": "Used by ERC1155 contract to add liquidity. skip.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maturity",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "cash",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxfCash",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minImpliedRate",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxImpliedRate",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getActiveMaturities()",
+      "name": "getActiveMaturities",
+      "description": "Gets the maturities for all the active markets.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentCashTofCash(uint32,uint128)",
+      "name": "getCurrentCashTofCash",
+      "description": "Given the amount of fCash to purchase, returns the amount of cash this would cost at the current block.",
+      "parameterDecorators": [
+        {
+          "name": "maturity",
+          "description": "the maturity of the fCash.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fCashAmount",
+          "description": "the amount of fCash to purchase.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the amount of cash this would cost, returns 0 on trade failure.",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentCashTofCashAtTime(uint32,uint128,uint32)",
+      "name": "getCurrentCashTofCashAtTime",
+      "description": "Given the amount of fCash to purchase, returns the amount of cash this would cost. - CANNOT_GET_PRICE_FOR_MATURITY: can only get prices before the maturity.",
+      "parameterDecorators": [
+        {
+          "name": "maturity",
+          "description": "the maturity of the fCash.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fCashAmount",
+          "description": "the amount of fCash to purchase.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "blockTime",
+          "description": "the time to calculate the price at.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the amount of cash this would cost, returns 0 on trade failure.",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getMarket(uint32)",
+      "name": "getMarket",
+      "description": "Returns the market object at the specified maturity.",
+      "parameterDecorators": [
+        {
+          "name": "maturity",
+          "description": "the maturity of the market.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "A market object with these values: - `totalfCash`: total amount of fCash available at the maturity - `totalLiquidity`: total amount of liquidity tokens - `totalCurrentCash`: total amount of current cash available at maturity - `rateScalar`: determines the slippage rate during trading - `rateAnchor`: determines the base rate at market instantiation - `lastImpliedRate`: the last rate that the market traded at, used to smooth rates between periods of trading inactivity.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getMarketRates()",
+      "name": "getMarketRates",
+      "description": "Gets the exchange rates for all the active markets.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRate(uint32)",
+      "name": "getRate",
+      "description": "Returns the current mid exchange rate of cash to fCash. This is NOT the rate that users will be able to trade it, those calculations depend on trade size and you must use the `getCurrentCashTofCash` or `getfCashToCurrentCash` methods.",
+      "parameterDecorators": [
+        {
+          "name": "maturity",
+          "description": "the maturity to get the rate for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getfCashToCurrentCash(uint32,uint128)",
+      "name": "getfCashToCurrentCash",
+      "description": "Given the amount of fCash put into a market, how much cash this would purchase at the current block.",
+      "parameterDecorators": [
+        {
+          "name": "maturity",
+          "description": "the maturity of the fCash.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fCashAmount",
+          "description": "the amount of fCash to input.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the amount of cash this would purchase, returns 0 if the trade will fail.",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getfCashToCurrentCashAtTime(uint32,uint128,uint32)",
+      "name": "getfCashToCurrentCashAtTime",
+      "description": "Given the amount of fCash put into a market, how much cash this would purchase at the given time. fCash exchange rates change as we go towards maturity. - CANNOT_GET_PRICE_FOR_MATURITY: can only get prices before the maturity.",
+      "parameterDecorators": [
+        {
+          "name": "maturity",
+          "description": "the maturity of the fCash.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fCashAmount",
+          "description": "the amount of fCash to input.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "blockTime",
+          "description": "the specified block time.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the amount of cash this would purchase, returns 0 if the trade will fail.",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,address)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "directory",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initializeDependencies()",
+      "name": "initializeDependencies",
+      "description": "skip.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isOwner()",
+      "name": "isOwner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "markets(uint32)",
+      "name": "markets",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalfCash",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "totalLiquidity",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "totalCurrentCash",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "rateScalar",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        },
+        {
+          "name": "rateAnchor",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        },
+        {
+          "name": "lastImpliedRate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeLiquidity(uint32,uint128,uint32)",
+      "name": "removeLiquidity",
+      "description": "Removes liquidity from the fCash market. The sender's liquidity tokens are burned and they are credited back with fCash and cash at the prevailing exchange rate. This function only works when removing liquidity from an active market. For markets that are matured, the sender must settle their liquidity token via `Portfolios.settleMaturedAssets`. - TRADE_FAILED_MAX_TIME: maturity specified is not yet active - MARKET_INACTIVE: maturity is not a valid one - INSUFFICIENT_BALANCE: account does not have sufficient tokens to remove.",
+      "parameterDecorators": [
+        {
+          "name": "maturity",
+          "description": "the maturity to remove liquidity from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "the amount of liquidity tokens to burn.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxTime",
+          "description": "after this block the trade will fail.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the amount of cash claim the removed liquidity tokens have.",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeLiquidityOnBehalf(address,uint32,uint128)",
+      "name": "removeLiquidityOnBehalf",
+      "description": "Used by ERC1155 contract to remove liquidity. skip.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maturity",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Renouncing to ownership will leave the contract without an owner. It will not be possible to call the functions with the `onlyOwner` modifier anymore. Allows the current owner to relinquish control of the contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setContract(uint8,address)",
+      "name": "setContract",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "name",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "contractAddress",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setFee(uint32,uint128)",
+      "name": "setFee",
+      "description": "Sets fee parameters for the market. Liquidity Fees are set as basis points and shift the traded exchange rate. A basis point is the equivalent of 1e5 if INSTRUMENT_PRECISION is set to 1e9. Transaction fees are set as a percentage shifted by 1e18. For example a 1% transaction fee will be set as 1.01e18. governance.",
+      "parameterDecorators": [
+        {
+          "name": "liquidityFee",
+          "description": "a change in the traded exchange rate paid to liquidity providers.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "transactionFee",
+          "description": "percentage of a transaction that accrues to the reserve account.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMaxTradeSize(uint128)",
+      "name": "setMaxTradeSize",
+      "description": "Sets the maximum amount that can be traded in a single trade. governance.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "the max trade size.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setParameters(uint8,uint16,uint32,uint32,uint32,uint32)",
+      "name": "setParameters",
+      "description": "Sets governance parameters on the rate oracle. skip.",
+      "parameterDecorators": [
+        {
+          "name": "cashGroupId",
+          "description": "this cannot change once set.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "precision",
+          "description": "will only take effect on a new maturity.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maturityLength",
+          "description": "will take effect immediately, must be careful.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "numMaturities",
+          "description": "will take effect immediately, makers can create new markets.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRateFactors(uint32,uint16)",
+      "name": "setRateFactors",
+      "description": "Sets rate factors that will determine the liquidity curve. Rate Anchor is set as the target annualized exchange rate so 1.10 * INSTRUMENT_PRECISION represents a target annualized rate of 10%. Rate anchor will be scaled accordingly when a fCash market is initialized. As a general default, INSTRUMENT_PRECISION will be set to 1e9. governance.",
+      "parameterDecorators": [
+        {
+          "name": "rateAnchor",
+          "description": "the offset of the liquidity curve.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "rateScalar",
+          "description": "the sensitivity of the liquidity curve to changes.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "settleLiquidityToken(address,uint128,uint32)",
+      "name": "settleLiquidityToken",
+      "description": "Settles a liquidity token into fCash and cash. Can only be called by the Portfolios contract. skip.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "the account that is holding the token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenAmount",
+          "description": "the amount of token to settle.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maturity",
+          "description": "when the token matures.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the amount of cash to settle to the account.",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "takeCurrentCash(uint32,uint128,uint32,uint32)",
+      "name": "takeCurrentCash",
+      "description": "Receive cash in exchange for a fCash obligation. Equivalent to borrowing cash at a fixed rate. - TRADE_FAILED_MAX_TIME: maturity specified is not yet active - MARKET_INACTIVE: maturity is not a valid one - TRADE_FAILED_TOO_LARGE: trade is larger than allowed by the governance settings - TRADE_FAILED_LACK_OF_LIQUIDITY: there is insufficient liquidity in this maturity to handle the trade - TRADE_FAILED_SLIPPAGE: trade is greater than the max implied rate set - INSUFFICIENT_FREE_COLLATERAL: insufficient free collateral to take on the debt.",
+      "parameterDecorators": [
+        {
+          "name": "maturity",
+          "description": "the maturity of the fCash being exchanged for current cash.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fCashAmount",
+          "description": "the amount of fCash to sell, will convert this amount to current cash at the prevailing exchange rate.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxTime",
+          "description": "after this time the trade will not settle.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxImpliedRate",
+          "description": "the maximum implied maturity rate that the borrower will accept.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the amount of cash purchased, `fCashAmount - cash` determines the fixed interested owed.",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "takeCurrentCashOnBehalf(address,uint32,uint128,uint32)",
+      "name": "takeCurrentCashOnBehalf",
+      "description": "Used by ERC1155 contract to take cash. skip.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maturity",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fCashAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxImpliedRate",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "takefCash(uint32,uint128,uint32,uint128)",
+      "name": "takefCash",
+      "description": "Deposit cash in return for the right to receive cash at the specified maturity. Equivalent to lending cash at a fixed rate. - TRADE_FAILED_MAX_TIME: maturity specified is not yet active - MARKET_INACTIVE: maturity is not a valid one - TRADE_FAILED_TOO_LARGE: trade is larger than allowed by the governance settings - TRADE_FAILED_LACK_OF_LIQUIDITY: there is insufficient liquidity in this maturity to handle the trade - TRADE_FAILED_SLIPPAGE: trade is lower than the min implied rate set - INSUFFICIENT_BALANCE: not enough cash to complete this trade.",
+      "parameterDecorators": [
+        {
+          "name": "maturity",
+          "description": "the maturity to receive fCash in.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fCashAmount",
+          "description": "the amount of fCash to purchase.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxTime",
+          "description": "after this time the trade will not settle.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minImpliedRate",
+          "description": "the minimum implied rate that the lender will accept.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the amount of cash deposited to the market, `fCashAmount - cash` is the interest to be received.",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "takefCashOnBehalf(address,uint32,uint128,uint32)",
+      "name": "takefCashOnBehalf",
+      "description": "Used by ERC1155 contract to take fCash. skip.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maturity",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fCashAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minImpliedRate",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeCashReceiver(address,uint128,uint128,uint32)",
+      "name": "tradeCashReceiver",
+      "description": "Turns fCash tokens into a current cash. Used by portfolios when settling cash. This method currently sells `maxfCash` every time since it's not possible to calculate the amount of fCash to sell from `cashRequired`. skip.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "that holds the fCash.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "cashRequired",
+          "description": "amount of cash that needs to be raised.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxfCash",
+          "description": "the maximum amount of fCash that can be sold.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maturity",
+          "description": "the maturity of the fCash.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeLiquidityToken(uint128,uint128,uint32)",
+      "name": "tradeLiquidityToken",
+      "description": "Called by the portfolios contract when a liquidity token is being converted for cash. skip.",
+      "parameterDecorators": [
+        {
+          "name": "cashRequired",
+          "description": "the amount of cash required.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxTokenAmount",
+          "description": "the max balance of tokens available.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maturity",
+          "description": "when the token matures.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Allows the current owner to transfer control of the contract to a newOwner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "The address to transfer ownership to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

@@ -1,1 +1,784 @@
-{"schema":"../schema.json","tags":[],"name":"Identity","description":"Implementation of the `IERC734` \"KeyHolder\" and the `IERC735` \"ClaimHolder\" interfaces into a common Identity Contract. This implementation has a separate contract were it declares all storage, allowing for it to be used as an upgradable logic contract.","eventDecorators":[{"signature":"Approved(uint256,bool)","name":"Approved","description":"","parameterDecorators":[{"name":"executionId","description":"","recommendedTypes":[],"indexed":true},{"name":"approved","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ClaimAdded(bytes32,uint256,uint256,address,bytes,bytes,string)","name":"ClaimAdded","description":"","parameterDecorators":[{"name":"claimId","description":"","recommendedTypes":[],"indexed":true},{"name":"topic","description":"","recommendedTypes":[],"indexed":true},{"name":"scheme","description":"","recommendedTypes":[],"indexed":false},{"name":"issuer","description":"","recommendedTypes":[],"indexed":true},{"name":"signature","description":"","recommendedTypes":[],"indexed":false},{"name":"data","description":"","recommendedTypes":[],"indexed":false},{"name":"uri","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ClaimChanged(bytes32,uint256,uint256,address,bytes,bytes,string)","name":"ClaimChanged","description":"","parameterDecorators":[{"name":"claimId","description":"","recommendedTypes":[],"indexed":true},{"name":"topic","description":"","recommendedTypes":[],"indexed":true},{"name":"scheme","description":"","recommendedTypes":[],"indexed":false},{"name":"issuer","description":"","recommendedTypes":[],"indexed":true},{"name":"signature","description":"","recommendedTypes":[],"indexed":false},{"name":"data","description":"","recommendedTypes":[],"indexed":false},{"name":"uri","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ClaimRemoved(bytes32,uint256,uint256,address,bytes,bytes,string)","name":"ClaimRemoved","description":"","parameterDecorators":[{"name":"claimId","description":"","recommendedTypes":[],"indexed":true},{"name":"topic","description":"","recommendedTypes":[],"indexed":true},{"name":"scheme","description":"","recommendedTypes":[],"indexed":false},{"name":"issuer","description":"","recommendedTypes":[],"indexed":true},{"name":"signature","description":"","recommendedTypes":[],"indexed":false},{"name":"data","description":"","recommendedTypes":[],"indexed":false},{"name":"uri","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ClaimRequested(uint256,uint256,uint256,address,bytes,bytes,string)","name":"ClaimRequested","description":"","parameterDecorators":[{"name":"claimRequestId","description":"","recommendedTypes":[],"indexed":true},{"name":"topic","description":"","recommendedTypes":[],"indexed":true},{"name":"scheme","description":"","recommendedTypes":[],"indexed":false},{"name":"issuer","description":"","recommendedTypes":[],"indexed":true},{"name":"signature","description":"","recommendedTypes":[],"indexed":false},{"name":"data","description":"","recommendedTypes":[],"indexed":false},{"name":"uri","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Executed(uint256,address,uint256,bytes)","name":"Executed","description":"","parameterDecorators":[{"name":"executionId","description":"","recommendedTypes":[],"indexed":true},{"name":"to","description":"","recommendedTypes":[],"indexed":true},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":true},{"name":"data","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ExecutionFailed(uint256,address,uint256,bytes)","name":"ExecutionFailed","description":"","parameterDecorators":[{"name":"executionId","description":"","recommendedTypes":[],"indexed":true},{"name":"to","description":"","recommendedTypes":[],"indexed":true},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":true},{"name":"data","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ExecutionRequested(uint256,address,uint256,bytes)","name":"ExecutionRequested","description":"","parameterDecorators":[{"name":"executionId","description":"","recommendedTypes":[],"indexed":true},{"name":"to","description":"","recommendedTypes":[],"indexed":true},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":true},{"name":"data","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"KeyAdded(bytes32,uint256,uint256)","name":"KeyAdded","description":"","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":true},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":true},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":true}]},{"signature":"KeyRemoved(bytes32,uint256,uint256)","name":"KeyRemoved","description":"","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":true},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":true},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":true}]},{"signature":"KeysRequiredChanged(uint256,uint256)","name":"KeysRequiredChanged","description":"","parameterDecorators":[{"name":"purpose","description":"","recommendedTypes":[],"indexed":false},{"name":"number","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"addClaim(uint256,uint256,address,bytes,bytes,string)","name":"addClaim","description":"Implementation of the addClaim function from the ERC-735 standard Require that the msg.sender has claim signer key.","parameterDecorators":[{"name":"_topic","description":"The type of claim.","recommendedTypes":[]},{"name":"_scheme","description":"The scheme with which this claim SHOULD be verified or how it should be processed.","recommendedTypes":[]},{"name":"_issuer","description":"The issuers identity contract address, or the address used to sign the above signature.","recommendedTypes":[]},{"name":"_signature","description":"Signature which is the proof that the claim issuer issued a claim of topic for this identity. it MUST be a signed message of the following structure: keccak256(abi.encode(address identityHolder_address, uint256 _ topic, bytes data)).","recommendedTypes":[]},{"name":"_data","description":"The hash of the claim data, sitting in another location, a bit-mask, call data, or actual data based on the claim scheme.","recommendedTypes":[]},{"name":"_uri","description":"The location of the claim, this can be HTTP links, swarm hashes, IPFS hashes, and such.","recommendedTypes":[]}],"returnDecorators":[{"name":"claimRequestId","description":"Returns claimRequestId: COULD be send to the approve function, to approve or reject this claim. triggers ClaimAdded event.","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":false},{"signature":"addKey(bytes32,uint256,uint256)","name":"addKey","description":"implementation of the addKey function of the ERC-734 standard Adds a _key to the identity. The _purpose specifies the purpose of key. Initially we propose four purposes: 1: MANAGEMENT keys, which can manage the identity 2: ACTION keys, which perform actions in this identities name (signing, logins, transactions, etc.) 3: CLAIM signer keys, used to sign claims on other identities which need to be revokable. 4: ENCRYPTION keys, used to encrypt data e.g. hold in claims. MUST only be done by keys of purpose 1, or the identity itself. If its the identity itself, the approval process will determine its approval.","parameterDecorators":[{"name":"_key","description":"keccak256 representation of an ethereum address.","recommendedTypes":[]},{"name":"_purpose","description":"a uint256[] Array of the key types, like 1 = MANAGEMENT, 2 = ACTION, 3 = CLAIM, 4 = ENCRYPTION.","recommendedTypes":[]},{"name":"_type","description":"type of key used, which would be a uint256 for different key types. e.g. 1 = ECDSA, 2 = RSA, etc.","recommendedTypes":[]}],"returnDecorators":[{"name":"success","description":"Returns TRUE if the addition was successful and FALSE if not.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"approve(uint256,bool)","name":"approve","description":"","parameterDecorators":[{"name":"_id","description":"","recommendedTypes":[]},{"name":"_approve","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"success","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"execute(address,uint256,bytes)","name":"execute","description":"","parameterDecorators":[{"name":"_to","description":"","recommendedTypes":[]},{"name":"_value","description":"","recommendedTypes":[]},{"name":"_data","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"executionId","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"getClaim(bytes32)","name":"getClaim","description":"Implementation of the getClaim function from the ERC-735 standard.","parameterDecorators":[{"name":"_claimId","description":"The identity of the claim i.e. keccak256(abi.encode(_issuer, _topic)).","recommendedTypes":[]}],"returnDecorators":[{"name":"topic","description":"Returns all the parameters of the claim for the specified _claimId (topic, scheme, signature, issuer, data, uri) .","recommendedTypes":[],"solidityType":"uint256"},{"name":"scheme","description":"Returns all the parameters of the claim for the specified _claimId (topic, scheme, signature, issuer, data, uri) .","recommendedTypes":[],"solidityType":"uint256"},{"name":"issuer","description":"Returns all the parameters of the claim for the specified _claimId (topic, scheme, signature, issuer, data, uri) .","recommendedTypes":[],"solidityType":"address"},{"name":"signature","description":"Returns all the parameters of the claim for the specified _claimId (topic, scheme, signature, issuer, data, uri) .","recommendedTypes":[],"solidityType":"bytes"},{"name":"data","description":"Returns all the parameters of the claim for the specified _claimId (topic, scheme, signature, issuer, data, uri) .","recommendedTypes":[],"solidityType":"bytes"},{"name":"uri","description":"Returns all the parameters of the claim for the specified _claimId (topic, scheme, signature, issuer, data, uri) .","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true},{"signature":"getClaimIdsByTopic(uint256)","name":"getClaimIdsByTopic","description":"Implementation of the getClaimIdsByTopic function from the ERC-735 standard. used to get all the claims from the specified topic.","parameterDecorators":[{"name":"_topic","description":"The identity of the claim i.e. keccak256(abi.encode(_issuer, _topic)).","recommendedTypes":[]}],"returnDecorators":[{"name":"claimIds","description":"Returns an array of claim IDs by topic.","recommendedTypes":[],"solidityType":"bytes32[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getKey(bytes32)","name":"getKey","description":"Implementation of the getKey function from the ERC-734 standard.","parameterDecorators":[{"name":"_key","description":"The public key. for non-hex and long keys, its the Keccak256 hash of the key.","recommendedTypes":[]}],"returnDecorators":[{"name":"purposes","description":"Returns the full key data, if present in the identity.","recommendedTypes":[],"solidityType":"uint256[]"},{"name":"keyType","description":"Returns the full key data, if present in the identity.","recommendedTypes":[],"solidityType":"uint256"},{"name":"key","description":"Returns the full key data, if present in the identity.","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"getKeyPurposes(bytes32)","name":"getKeyPurposes","description":"gets the purposes of a key.","parameterDecorators":[{"name":"_key","description":"The public key. for non-hex and long keys, its the Keccak256 hash of the key.","recommendedTypes":[]}],"returnDecorators":[{"name":"_purposes","description":"Returns the purposes of the specified key.","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getKeysByPurpose(uint256)","name":"getKeysByPurpose","description":"gets all the keys with a specific purpose from an identity.","parameterDecorators":[{"name":"_purpose","description":"a uint256[] Array of the key types, like 1 = MANAGEMENT, 2 = ACTION, 3 = CLAIM, 4 = ENCRYPTION.","recommendedTypes":[]}],"returnDecorators":[{"name":"_keys","description":"Returns an array of public key bytes32 hold by this identity and having the specified purpose.","recommendedTypes":[],"solidityType":"bytes32[]"}],"emittableEvents":[],"readOnly":true},{"signature":"initialize(address)","name":"initialize","description":"","parameterDecorators":[{"name":"initialManagementKey","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"keyHasPurpose(bytes32,uint256)","name":"keyHasPurpose","description":"Returns true if the key has MANAGEMENT purpose or the specified purpose.","parameterDecorators":[{"name":"_key","description":"","recommendedTypes":[]},{"name":"_purpose","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"result","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"removeClaim(bytes32)","name":"removeClaim","description":"Implementation of the removeClaim function from the ERC-735 standard Require that the msg.sender has management key. Can only be removed by the claim issuer, or the claim holder itself.","parameterDecorators":[{"name":"_claimId","description":"The identity of the claim i.e. keccak256(abi.encode(_issuer, _topic)).","recommendedTypes":[]}],"returnDecorators":[{"name":"success","description":"Returns TRUE when the claim was removed. triggers ClaimRemoved event.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"removeKey(bytes32,uint256)","name":"removeKey","description":"","parameterDecorators":[{"name":"_key","description":"","recommendedTypes":[]},{"name":"_purpose","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"success","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"version()","name":"version","description":"Returns the string of the current version.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "Identity",
+  "description": "Implementation of the `IERC734` \"KeyHolder\" and the `IERC735` \"ClaimHolder\" interfaces into a common Identity Contract. This implementation has a separate contract were it declares all storage, allowing for it to be used as an upgradable logic contract.",
+  "eventDecorators": [
+    {
+      "signature": "Approved(uint256,bool)",
+      "name": "Approved",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "executionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "approved",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ClaimAdded(bytes32,uint256,uint256,address,bytes,bytes,string)",
+      "name": "ClaimAdded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "claimId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "topic",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "scheme",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "issuer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "signature",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "uri",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ClaimChanged(bytes32,uint256,uint256,address,bytes,bytes,string)",
+      "name": "ClaimChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "claimId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "topic",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "scheme",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "issuer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "signature",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "uri",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ClaimRemoved(bytes32,uint256,uint256,address,bytes,bytes,string)",
+      "name": "ClaimRemoved",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "claimId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "topic",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "scheme",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "issuer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "signature",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "uri",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ClaimRequested(uint256,uint256,uint256,address,bytes,bytes,string)",
+      "name": "ClaimRequested",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "claimRequestId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "topic",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "scheme",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "issuer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "signature",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "uri",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Executed(uint256,address,uint256,bytes)",
+      "name": "Executed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "executionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ExecutionFailed(uint256,address,uint256,bytes)",
+      "name": "ExecutionFailed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "executionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ExecutionRequested(uint256,address,uint256,bytes)",
+      "name": "ExecutionRequested",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "executionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "KeyAdded(bytes32,uint256,uint256)",
+      "name": "KeyAdded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "KeyRemoved(bytes32,uint256,uint256)",
+      "name": "KeyRemoved",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "KeysRequiredChanged(uint256,uint256)",
+      "name": "KeysRequiredChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "purpose",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "number",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addClaim(uint256,uint256,address,bytes,bytes,string)",
+      "name": "addClaim",
+      "description": "Implementation of the addClaim function from the ERC-735 standard Require that the msg.sender has claim signer key.",
+      "parameterDecorators": [
+        {
+          "name": "_topic",
+          "description": "The type of claim.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_scheme",
+          "description": "The scheme with which this claim SHOULD be verified or how it should be processed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_issuer",
+          "description": "The issuers identity contract address, or the address used to sign the above signature.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_signature",
+          "description": "Signature which is the proof that the claim issuer issued a claim of topic for this identity. it MUST be a signed message of the following structure: keccak256(abi.encode(address identityHolder_address, uint256 _ topic, bytes data)).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "The hash of the claim data, sitting in another location, a bit-mask, call data, or actual data based on the claim scheme.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_uri",
+          "description": "The location of the claim, this can be HTTP links, swarm hashes, IPFS hashes, and such.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "claimRequestId",
+          "description": "Returns claimRequestId: COULD be send to the approve function, to approve or reject this claim. triggers ClaimAdded event.",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addKey(bytes32,uint256,uint256)",
+      "name": "addKey",
+      "description": "implementation of the addKey function of the ERC-734 standard Adds a _key to the identity. The _purpose specifies the purpose of key. Initially we propose four purposes: 1: MANAGEMENT keys, which can manage the identity 2: ACTION keys, which perform actions in this identities name (signing, logins, transactions, etc.) 3: CLAIM signer keys, used to sign claims on other identities which need to be revokable. 4: ENCRYPTION keys, used to encrypt data e.g. hold in claims. MUST only be done by keys of purpose 1, or the identity itself. If its the identity itself, the approval process will determine its approval.",
+      "parameterDecorators": [
+        {
+          "name": "_key",
+          "description": "keccak256 representation of an ethereum address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_purpose",
+          "description": "a uint256[] Array of the key types, like 1 = MANAGEMENT, 2 = ACTION, 3 = CLAIM, 4 = ENCRYPTION.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_type",
+          "description": "type of key used, which would be a uint256 for different key types. e.g. 1 = ECDSA, 2 = RSA, etc.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "Returns TRUE if the addition was successful and FALSE if not.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "approve(uint256,bool)",
+      "name": "approve",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_id",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_approve",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "execute(address,uint256,bytes)",
+      "name": "execute",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_to",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_value",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "executionId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getClaim(bytes32)",
+      "name": "getClaim",
+      "description": "Implementation of the getClaim function from the ERC-735 standard.",
+      "parameterDecorators": [
+        {
+          "name": "_claimId",
+          "description": "The identity of the claim i.e. keccak256(abi.encode(_issuer, _topic)).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "topic",
+          "description": "Returns all the parameters of the claim for the specified _claimId (topic, scheme, signature, issuer, data, uri) .",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "scheme",
+          "description": "Returns all the parameters of the claim for the specified _claimId (topic, scheme, signature, issuer, data, uri) .",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "issuer",
+          "description": "Returns all the parameters of the claim for the specified _claimId (topic, scheme, signature, issuer, data, uri) .",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "signature",
+          "description": "Returns all the parameters of the claim for the specified _claimId (topic, scheme, signature, issuer, data, uri) .",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        },
+        {
+          "name": "data",
+          "description": "Returns all the parameters of the claim for the specified _claimId (topic, scheme, signature, issuer, data, uri) .",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        },
+        {
+          "name": "uri",
+          "description": "Returns all the parameters of the claim for the specified _claimId (topic, scheme, signature, issuer, data, uri) .",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getClaimIdsByTopic(uint256)",
+      "name": "getClaimIdsByTopic",
+      "description": "Implementation of the getClaimIdsByTopic function from the ERC-735 standard. used to get all the claims from the specified topic.",
+      "parameterDecorators": [
+        {
+          "name": "_topic",
+          "description": "The identity of the claim i.e. keccak256(abi.encode(_issuer, _topic)).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "claimIds",
+          "description": "Returns an array of claim IDs by topic.",
+          "recommendedTypes": [],
+          "solidityType": "bytes32[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getKey(bytes32)",
+      "name": "getKey",
+      "description": "Implementation of the getKey function from the ERC-734 standard.",
+      "parameterDecorators": [
+        {
+          "name": "_key",
+          "description": "The public key. for non-hex and long keys, its the Keccak256 hash of the key.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "purposes",
+          "description": "Returns the full key data, if present in the identity.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "keyType",
+          "description": "Returns the full key data, if present in the identity.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "key",
+          "description": "Returns the full key data, if present in the identity.",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getKeyPurposes(bytes32)",
+      "name": "getKeyPurposes",
+      "description": "gets the purposes of a key.",
+      "parameterDecorators": [
+        {
+          "name": "_key",
+          "description": "The public key. for non-hex and long keys, its the Keccak256 hash of the key.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_purposes",
+          "description": "Returns the purposes of the specified key.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getKeysByPurpose(uint256)",
+      "name": "getKeysByPurpose",
+      "description": "gets all the keys with a specific purpose from an identity.",
+      "parameterDecorators": [
+        {
+          "name": "_purpose",
+          "description": "a uint256[] Array of the key types, like 1 = MANAGEMENT, 2 = ACTION, 3 = CLAIM, 4 = ENCRYPTION.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_keys",
+          "description": "Returns an array of public key bytes32 hold by this identity and having the specified purpose.",
+          "recommendedTypes": [],
+          "solidityType": "bytes32[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "initialManagementKey",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "keyHasPurpose(bytes32,uint256)",
+      "name": "keyHasPurpose",
+      "description": "Returns true if the key has MANAGEMENT purpose or the specified purpose.",
+      "parameterDecorators": [
+        {
+          "name": "_key",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_purpose",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "result",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeClaim(bytes32)",
+      "name": "removeClaim",
+      "description": "Implementation of the removeClaim function from the ERC-735 standard Require that the msg.sender has management key. Can only be removed by the claim issuer, or the claim holder itself.",
+      "parameterDecorators": [
+        {
+          "name": "_claimId",
+          "description": "The identity of the claim i.e. keccak256(abi.encode(_issuer, _topic)).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "Returns TRUE when the claim was removed. triggers ClaimRemoved event.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeKey(bytes32,uint256)",
+      "name": "removeKey",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_key",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_purpose",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "version()",
+      "name": "version",
+      "description": "Returns the string of the current version.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

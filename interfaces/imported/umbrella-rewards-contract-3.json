@@ -1,1 +1,372 @@
-{"schema":"../schema.json","tags":["tokens","vesting"],"name":"LinearVesting","description":"Umbrella Rewards contract. Deploy contract. Mint tokens reward for this contract. Then as owner call .setupDistribution() and then start(). This contract serves TOKEN DISTRIBUTION AT LAUNCH for: - node, founders, early contributors etc... It can be used for future distributions for next milestones also as its functionality stays the same. It supports linear vesting.","eventDecorators":[{"signature":"LogCancel(address,uint256,uint256)","name":"LogCancel","description":"","parameterDecorators":[{"name":"access","description":"TRUE if the Watcher was given permissions, FALSE if permissions were removed.","recommendedTypes":[],"indexed":true},{"name":"domain","description":"the remote domain of the Home contract for the Replica.","recommendedTypes":[],"indexed":false},{"name":"watcher","description":"the address of the Watcher.","recommendedTypes":[],"indexed":false}]},{"signature":"LogClaimed(address,uint256)","name":"LogClaimed","description":"","parameterDecorators":[{"name":"recipient","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LogSetup(uint256,address)","name":"LogSetup","description":"","parameterDecorators":[{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"rewardToken","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"LogStart(uint256)","name":"LogStart","description":"","parameterDecorators":[{"name":"startTime","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"balanceOf(address)","name":"balanceOf","description":"","parameterDecorators":[{"name":"_address","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"cancel(address)","name":"cancel","description":"","parameterDecorators":[{"name":"_participant","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claim()","name":"claim","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"distributionStartTime()","name":"distributionStartTime","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"leftoverReceiver()","name":"leftoverReceiver","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"paidSoFar()","name":"paidSoFar","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"rewards(address)","name":"rewards","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"total","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"duration","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"paid","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"selfDestruct()","name":"selfDestruct","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setupDistribution(address,address[],uint256[],uint256[])","name":"setupDistribution","description":"","parameterDecorators":[{"name":"_token","description":"","recommendedTypes":[]},{"name":"_participants","description":"","recommendedTypes":[]},{"name":"_rewards","description":"","recommendedTypes":[]},{"name":"_durations","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setupDone()","name":"setupDone","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"start()","name":"start","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"token()","name":"token","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"totalVestingAmount()","name":"totalVestingAmount","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "vesting"
+  ],
+  "name": "LinearVesting",
+  "description": "Umbrella Rewards contract. Deploy contract. Mint tokens reward for this contract. Then as owner call .setupDistribution() and then start(). This contract serves TOKEN DISTRIBUTION AT LAUNCH for: - node, founders, early contributors etc... It can be used for future distributions for next milestones also as its functionality stays the same. It supports linear vesting.",
+  "eventDecorators": [
+    {
+      "signature": "LogCancel(address,uint256,uint256)",
+      "name": "LogCancel",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "access",
+          "description": "TRUE if the Watcher was given permissions, FALSE if permissions were removed.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "domain",
+          "description": "the remote domain of the Home contract for the Replica.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "watcher",
+          "description": "the address of the Watcher.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogClaimed(address,uint256)",
+      "name": "LogClaimed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogSetup(uint256,address)",
+      "name": "LogSetup",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "rewardToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "LogStart(uint256)",
+      "name": "LogStart",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "startTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "balanceOf(address)",
+      "name": "balanceOf",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_address",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "cancel(address)",
+      "name": "cancel",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_participant",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claim()",
+      "name": "claim",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "distributionStartTime()",
+      "name": "distributionStartTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "leftoverReceiver()",
+      "name": "leftoverReceiver",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "paidSoFar()",
+      "name": "paidSoFar",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rewards(address)",
+      "name": "rewards",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "total",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "duration",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "paid",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "selfDestruct()",
+      "name": "selfDestruct",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setupDistribution(address,address[],uint256[],uint256[])",
+      "name": "setupDistribution",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_participants",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_rewards",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_durations",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setupDone()",
+      "name": "setupDone",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "start()",
+      "name": "start",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalVestingAmount()",
+      "name": "totalVestingAmount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

@@ -1,1 +1,989 @@
-{"schema":"../schema.json","tags":["tokens","staking","voting","voting"],"name":"StakeLogic","description":"the Stake app consists of the StakeLogic & StakeData contracts. voting data and staked balances are held within StakeData for an easier upgrade path. staking governanceToken tokens allows for: a. distribution of awards to stakers b. governance of apps; as stakers can vote for or against proposals (proposed app upgrades).","eventDecorators":[{"signature":"NewInterval(uint256,uint256,uint256)","name":"NewInterval","description":"A DApp has been deauthorized by a user for a worker.","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":false},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":false},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":false}]},{"signature":"Off()","name":"Off","description":"A DApp has been deauthorized by a user for a worker.","parameterDecorators":[]},{"signature":"Redeemed(address,uint256,uint256,uint256,uint256)","name":"Redeemed","description":"A DApp has been deauthorized by a user for a worker.","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[],"indexed":true},{"name":"quantity","description":"","recommendedTypes":[],"indexed":false},{"name":"start","description":"","recommendedTypes":[],"indexed":false},{"name":"end","description":"","recommendedTypes":[],"indexed":false},{"name":"intervalIndex","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Restaked(address,uint256,uint256,uint256,uint256)","name":"Restaked","description":"A DApp has been deauthorized by a user for a worker.","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[],"indexed":true},{"name":"quantity","description":"","recommendedTypes":[],"indexed":false},{"name":"start","description":"","recommendedTypes":[],"indexed":false},{"name":"end","description":"","recommendedTypes":[],"indexed":false},{"name":"intervalIndex","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Retired()","name":"Retired","description":"A DApp has been deauthorized by a user for a worker.","parameterDecorators":[]},{"signature":"Reward(address,address,uint256,uint256,uint256,uint256)","name":"Reward","description":"A DApp has been deauthorized by a user for a worker.","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[],"indexed":true},{"name":"asset","description":"","recommendedTypes":[],"indexed":false},{"name":"reward","description":"","recommendedTypes":[],"indexed":false},{"name":"start","description":"","recommendedTypes":[],"indexed":false},{"name":"end","description":"","recommendedTypes":[],"indexed":false},{"name":"intervalIndex","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Staked(address,uint256,uint256,uint256,uint256)","name":"Staked","description":"A DApp has been deauthorized by a user for a worker.","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[],"indexed":true},{"name":"quantity","description":"","recommendedTypes":[],"indexed":false},{"name":"start","description":"","recommendedTypes":[],"indexed":false},{"name":"end","description":"","recommendedTypes":[],"indexed":false},{"name":"intervalIndex","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Voted(uint32,address,uint256,uint256,address)","name":"Voted","description":"A DApp has been deauthorized by a user for a worker.","parameterDecorators":[{"name":"appId","description":"","recommendedTypes":[],"indexed":true},{"name":"proposal","description":"","recommendedTypes":[],"indexed":true},{"name":"approvals","description":"","recommendedTypes":[],"indexed":false},{"name":"disapprovals","description":"","recommendedTypes":[],"indexed":false},{"name":"account","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"VotingConcluded(uint32,address,uint256,uint256,bool)","name":"VotingConcluded","description":"A DApp has been deauthorized by a user for a worker.","parameterDecorators":[{"name":"appId","description":"","recommendedTypes":[],"indexed":true},{"name":"proposal","description":"","recommendedTypes":[],"indexed":true},{"name":"approvals","description":"","recommendedTypes":[],"indexed":false},{"name":"disapprovals","description":"","recommendedTypes":[],"indexed":false},{"name":"result","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"activationInterval()","name":"activationInterval","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"addToken(address)","name":"addToken","description":"","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"calculateIntervalReward(uint256,uint256,uint256)","name":"calculateIntervalReward","description":"calculate the reward for token for the interval: [`start`, `end`) provided for on-going operational queries.","parameterDecorators":[{"name":"start","description":"","recommendedTypes":[]},{"name":"end","description":"","recommendedTypes":[]},{"name":"index","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"credit(address,address,uint256)","name":"credit","description":"once an asset has been deposited into the app's safe within Gluon, the app is given the chance to do it's own per account/asset bookkeeping.","parameterDecorators":[{"name":"account","description":"any Ethereum address.","recommendedTypes":[]},{"name":"asset","description":"any ERC20 token or ETH (represented by address 0x0).","recommendedTypes":[]},{"name":"quantity","description":"quantity of asset.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"currentIntervalIndex()","name":"currentIntervalIndex","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"currentLogic()","name":"currentLogic","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"address the address of currently active (latest) version of me (the app contract).","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"data()","name":"data","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"debit(address,bytes)","name":"debit","description":"before an asset can be withdrawn from the app's safe within Gluon, the quantity and asset to withdraw must be derived from `parameters`. if the app is account/asset based, it should take this opportunity to: - also derive the owning account from `parameters` - prove that the owning account indeed has the derived quantity of the derived asset - do it's own per account/asset bookkeeping notice that the derived account is not necessarily the same as the provided account; a classic usage example is an account transfers assets across app (in which case the provided account would be the target app).","parameterDecorators":[{"name":"account","description":"any Ethereum address to which `quantity` of `asset` would be transferred to.","recommendedTypes":[]},{"name":"parameters","description":"a bytes-marshalled record containing all data needed for the app-specific logic.","recommendedTypes":[]}],"returnDecorators":[{"name":"asset","description":"any ERC20 token or ETH (represented by address 0x0).","recommendedTypes":[],"solidityType":"address"},{"name":"quantity","description":"quantity of asset.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"deleteVoteTally(address)","name":"deleteVoteTally","description":"cleanup when deleting a proposal.","parameterDecorators":[{"name":"proposal","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"ensureInterval()","name":"ensureInterval","description":"establish an interval if none exists.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getInterval(uint256)","name":"getInterval","description":"","parameterDecorators":[{"name":"intervalIndex","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"worth","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"rewards","description":"","recommendedTypes":[],"solidityType":"uint256[]"},{"name":"start","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"end","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getToBeDistributed()","name":"getToBeDistributed","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getTokens()","name":"getTokens","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address[]"}],"emittableEvents":[],"readOnly":true},{"signature":"gluon()","name":"gluon","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"governanceToken()","name":"governanceToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"id()","name":"id","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"init(uint256)","name":"init","description":"","parameterDecorators":[{"name":"intervalId","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"intervalSize()","name":"intervalSize","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"intervals(uint256)","name":"intervals","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"worth","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"start","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"end","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"isOn()","name":"isOn","description":"app state is active, i.e: current & active.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"name()","name":"name","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"quorumPercentage()","name":"quorumPercentage","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"redeem(address,uint256)","name":"redeem","description":"redeeming enables both withdrawing and restaking. first, the quantities {toRestake, toStake, toWithdraw} are calculated from the last staked amount and the given quantity to redeem, then `toWithdraw` will be transfer to the account, and `toRestake` will be staked in the current interval. the calculated values are returned to calling functions for further processing.","parameterDecorators":[{"name":"account","description":"the staking account.","recommendedTypes":[]},{"name":"quantity","description":"how much to redeem.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"toRestake how much of the staked amount from previously staked interval will be carried over to current stake interval.","recommendedTypes":[],"solidityType":"uint256"},{"name":"_1","description":"toStake how much (beyond toRestake) will be staked for the remainder of the current interval.","recommendedTypes":[],"solidityType":"uint256"},{"name":"_2","description":"toWithdraw how much would no longer be staked and instead transferred back to the staker account.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"registerApiKey(address)","name":"registerApiKey","description":"","parameterDecorators":[{"name":"apiKey","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setIntervalSize(uint256)","name":"setIntervalSize","description":"","parameterDecorators":[{"name":"intervalSize_","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setUpgradeOperator(address)","name":"setUpgradeOperator","description":"","parameterDecorators":[{"name":"upgradeOperator_","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"stakeLocation(address)","name":"stakeLocation","description":"","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"stakes(address)","name":"stakes","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"intervalIndex","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"quantity","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"worth","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"state()","name":"state","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"switchOff()","name":"switchOff","description":"halt the app. this action is irreversible. (the only option at this point is have a proposal that will get to approval, then activated.) should be called by an app-owner when the app has been compromised. Note the constraint that all apps but Registry & Stake must be halted first!.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"toBeDistributed(uint256)","name":"toBeDistributed","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"tokens(uint256)","name":"tokens","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"transferToLatestStakeAfterRetire()","name":"transferToLatestStakeAfterRetire","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"upgrade()","name":"upgrade","description":"upgrade the app to a new version; the approved proposal. by the end of this call the approved proposal would be the current and active version of the app.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"upgradeOperator()","name":"upgradeOperator","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"voteAppUpgrade(uint32,bool)","name":"voteAppUpgrade","description":"vote for the current app proposal.","parameterDecorators":[{"name":"appId","description":"the app the sender is voting for.","recommendedTypes":[]},{"name":"side","description":"yay or nay: true => approve, false => disapprove.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdrawFromApp(uint32,bytes)","name":"withdrawFromApp","description":"","parameterDecorators":[{"name":"appId","description":"","recommendedTypes":[]},{"name":"withdrawData","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "staking",
+    "voting",
+    "voting"
+  ],
+  "name": "StakeLogic",
+  "description": "the Stake app consists of the StakeLogic & StakeData contracts. voting data and staked balances are held within StakeData for an easier upgrade path. staking governanceToken tokens allows for: a. distribution of awards to stakers b. governance of apps; as stakers can vote for or against proposals (proposed app upgrades).",
+  "eventDecorators": [
+    {
+      "signature": "NewInterval(uint256,uint256,uint256)",
+      "name": "NewInterval",
+      "description": "A DApp has been deauthorized by a user for a worker.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Off()",
+      "name": "Off",
+      "description": "A DApp has been deauthorized by a user for a worker.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "Redeemed(address,uint256,uint256,uint256,uint256)",
+      "name": "Redeemed",
+      "description": "A DApp has been deauthorized by a user for a worker.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "quantity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "start",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "end",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "intervalIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Restaked(address,uint256,uint256,uint256,uint256)",
+      "name": "Restaked",
+      "description": "A DApp has been deauthorized by a user for a worker.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "quantity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "start",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "end",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "intervalIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Retired()",
+      "name": "Retired",
+      "description": "A DApp has been deauthorized by a user for a worker.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "Reward(address,address,uint256,uint256,uint256,uint256)",
+      "name": "Reward",
+      "description": "A DApp has been deauthorized by a user for a worker.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "asset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "reward",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "start",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "end",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "intervalIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Staked(address,uint256,uint256,uint256,uint256)",
+      "name": "Staked",
+      "description": "A DApp has been deauthorized by a user for a worker.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "quantity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "start",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "end",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "intervalIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Voted(uint32,address,uint256,uint256,address)",
+      "name": "Voted",
+      "description": "A DApp has been deauthorized by a user for a worker.",
+      "parameterDecorators": [
+        {
+          "name": "appId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "proposal",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "approvals",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "disapprovals",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "VotingConcluded(uint32,address,uint256,uint256,bool)",
+      "name": "VotingConcluded",
+      "description": "A DApp has been deauthorized by a user for a worker.",
+      "parameterDecorators": [
+        {
+          "name": "appId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "proposal",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "approvals",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "disapprovals",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "result",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "activationInterval()",
+      "name": "activationInterval",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addToken(address)",
+      "name": "addToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "calculateIntervalReward(uint256,uint256,uint256)",
+      "name": "calculateIntervalReward",
+      "description": "calculate the reward for token for the interval: [`start`, `end`) provided for on-going operational queries.",
+      "parameterDecorators": [
+        {
+          "name": "start",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "end",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "credit(address,address,uint256)",
+      "name": "credit",
+      "description": "once an asset has been deposited into the app's safe within Gluon, the app is given the chance to do it's own per account/asset bookkeeping.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "any Ethereum address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "asset",
+          "description": "any ERC20 token or ETH (represented by address 0x0).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quantity",
+          "description": "quantity of asset.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "currentIntervalIndex()",
+      "name": "currentIntervalIndex",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "currentLogic()",
+      "name": "currentLogic",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "address the address of currently active (latest) version of me (the app contract).",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "data()",
+      "name": "data",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "debit(address,bytes)",
+      "name": "debit",
+      "description": "before an asset can be withdrawn from the app's safe within Gluon, the quantity and asset to withdraw must be derived from `parameters`. if the app is account/asset based, it should take this opportunity to: - also derive the owning account from `parameters` - prove that the owning account indeed has the derived quantity of the derived asset - do it's own per account/asset bookkeeping notice that the derived account is not necessarily the same as the provided account; a classic usage example is an account transfers assets across app (in which case the provided account would be the target app).",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "any Ethereum address to which `quantity` of `asset` would be transferred to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "parameters",
+          "description": "a bytes-marshalled record containing all data needed for the app-specific logic.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "asset",
+          "description": "any ERC20 token or ETH (represented by address 0x0).",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "quantity",
+          "description": "quantity of asset.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deleteVoteTally(address)",
+      "name": "deleteVoteTally",
+      "description": "cleanup when deleting a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "proposal",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "ensureInterval()",
+      "name": "ensureInterval",
+      "description": "establish an interval if none exists.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getInterval(uint256)",
+      "name": "getInterval",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "intervalIndex",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "worth",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "rewards",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "start",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "end",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getToBeDistributed()",
+      "name": "getToBeDistributed",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokens()",
+      "name": "getTokens",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "gluon()",
+      "name": "gluon",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "governanceToken()",
+      "name": "governanceToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "id()",
+      "name": "id",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "init(uint256)",
+      "name": "init",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "intervalId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "intervalSize()",
+      "name": "intervalSize",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "intervals(uint256)",
+      "name": "intervals",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "worth",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "start",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "end",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isOn()",
+      "name": "isOn",
+      "description": "app state is active, i.e: current & active.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "name()",
+      "name": "name",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "quorumPercentage()",
+      "name": "quorumPercentage",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "redeem(address,uint256)",
+      "name": "redeem",
+      "description": "redeeming enables both withdrawing and restaking. first, the quantities {toRestake, toStake, toWithdraw} are calculated from the last staked amount and the given quantity to redeem, then `toWithdraw` will be transfer to the account, and `toRestake` will be staked in the current interval. the calculated values are returned to calling functions for further processing.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "the staking account.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quantity",
+          "description": "how much to redeem.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "toRestake how much of the staked amount from previously staked interval will be carried over to current stake interval.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_1",
+          "description": "toStake how much (beyond toRestake) will be staked for the remainder of the current interval.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_2",
+          "description": "toWithdraw how much would no longer be staked and instead transferred back to the staker account.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "registerApiKey(address)",
+      "name": "registerApiKey",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "apiKey",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setIntervalSize(uint256)",
+      "name": "setIntervalSize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "intervalSize_",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setUpgradeOperator(address)",
+      "name": "setUpgradeOperator",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "upgradeOperator_",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stakeLocation(address)",
+      "name": "stakeLocation",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "stakes(address)",
+      "name": "stakes",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "intervalIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "quantity",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "worth",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "state()",
+      "name": "state",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "switchOff()",
+      "name": "switchOff",
+      "description": "halt the app. this action is irreversible. (the only option at this point is have a proposal that will get to approval, then activated.) should be called by an app-owner when the app has been compromised. Note the constraint that all apps but Registry & Stake must be halted first!.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "toBeDistributed(uint256)",
+      "name": "toBeDistributed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tokens(uint256)",
+      "name": "tokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferToLatestStakeAfterRetire()",
+      "name": "transferToLatestStakeAfterRetire",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upgrade()",
+      "name": "upgrade",
+      "description": "upgrade the app to a new version; the approved proposal. by the end of this call the approved proposal would be the current and active version of the app.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeOperator()",
+      "name": "upgradeOperator",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "voteAppUpgrade(uint32,bool)",
+      "name": "voteAppUpgrade",
+      "description": "vote for the current app proposal.",
+      "parameterDecorators": [
+        {
+          "name": "appId",
+          "description": "the app the sender is voting for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "side",
+          "description": "yay or nay: true => approve, false => disapprove.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawFromApp(uint32,bytes)",
+      "name": "withdrawFromApp",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "appId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "withdrawData",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

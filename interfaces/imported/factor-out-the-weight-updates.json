@@ -1,1 +1,277 @@
-{"schema":"../schema.json","tags":["balancer"],"name":"SmartPoolManager","description":"Factor out the weight updates.","eventDecorators":[],"functionDecorators":[{"signature":"exitPool(IConfigurableRightsPool,IBPool,uint256,uint256[])","name":"exitPool","description":"Exit a pool - redeem pool tokens for underlying assets.","parameterDecorators":[{"name":"self","description":"- ConfigurableRightsPool instance calling the library.","recommendedTypes":[]},{"name":"bPool","description":"- Core BPool the CRP is wrapping.","recommendedTypes":[]},{"name":"poolAmountIn","description":"- amount of pool tokens to redeem.","recommendedTypes":[]},{"name":"minAmountsOut","description":"- minimum amount of asset tokens to receive.","recommendedTypes":[]}],"returnDecorators":[{"name":"exitFee","description":"- calculated exit fee.","recommendedTypes":[],"solidityType":"uint256"},{"name":"pAiAfterExitFee","description":"- final amount in (after accounting for exit fee).","recommendedTypes":[],"solidityType":"uint256"},{"name":"actualAmountsOut","description":"- calculated amounts of each token to pull.","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"exitswapExternAmountOut(IConfigurableRightsPool,IBPool,address,uint256,uint256)","name":"exitswapExternAmountOut","description":"Exit a pool - redeem pool tokens for a specific amount of underlying assets Asset must be present in the pool.","parameterDecorators":[{"name":"self","description":"- ConfigurableRightsPool instance calling the library.","recommendedTypes":[]},{"name":"bPool","description":"- Core BPool the CRP is wrapping.","recommendedTypes":[]},{"name":"tokenOut","description":"- which token the caller wants to receive.","recommendedTypes":[]},{"name":"tokenAmountOut","description":"- amount of underlying asset tokens to receive.","recommendedTypes":[]},{"name":"maxPoolAmountIn","description":"- maximum pool tokens to be redeemed.","recommendedTypes":[]}],"returnDecorators":[{"name":"exitFee","description":"- calculated exit fee.","recommendedTypes":[],"solidityType":"uint256"},{"name":"poolAmountIn","description":"- amount of pool tokens redeemed.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"exitswapPoolAmountIn(IConfigurableRightsPool,IBPool,address,uint256,uint256)","name":"exitswapPoolAmountIn","description":"Exit a pool - redeem a specific number of pool tokens for an underlying asset Asset must be present in the pool, and will incur an EXIT_FEE (if set to non-zero).","parameterDecorators":[{"name":"self","description":"- ConfigurableRightsPool instance calling the library.","recommendedTypes":[]},{"name":"bPool","description":"- Core BPool the CRP is wrapping.","recommendedTypes":[]},{"name":"tokenOut","description":"- which token the caller wants to receive.","recommendedTypes":[]},{"name":"poolAmountIn","description":"- amount of pool tokens to redeem.","recommendedTypes":[]},{"name":"minAmountOut","description":"- minimum asset tokens to receive.","recommendedTypes":[]}],"returnDecorators":[{"name":"exitFee","description":"- calculated exit fee.","recommendedTypes":[],"solidityType":"uint256"},{"name":"tokenAmountOut","description":"- amount of asset tokens returned.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"joinPool(IConfigurableRightsPool,IBPool,uint256,uint256[])","name":"joinPool","description":"Join a pool.","parameterDecorators":[{"name":"self","description":"- ConfigurableRightsPool instance calling the library.","recommendedTypes":[]},{"name":"bPool","description":"- Core BPool the CRP is wrapping.","recommendedTypes":[]},{"name":"poolAmountOut","description":"- number of pool tokens to receive.","recommendedTypes":[]},{"name":"maxAmountsIn","description":"- Max amount of asset tokens to spend.","recommendedTypes":[]}],"returnDecorators":[{"name":"actualAmountsIn","description":"- calculated values of the tokens to pull in.","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"joinswapExternAmountIn(IConfigurableRightsPool,IBPool,address,uint256,uint256)","name":"joinswapExternAmountIn","description":"Join by swapping a fixed amount of an external token in (must be present in the pool) System calculates the pool token amount.","parameterDecorators":[{"name":"self","description":"- ConfigurableRightsPool instance calling the library.","recommendedTypes":[]},{"name":"bPool","description":"- Core BPool the CRP is wrapping.","recommendedTypes":[]},{"name":"tokenIn","description":"- which token we're transferring in.","recommendedTypes":[]},{"name":"tokenAmountIn","description":"- amount of deposit.","recommendedTypes":[]},{"name":"minPoolAmountOut","description":"- minimum of pool tokens to receive.","recommendedTypes":[]}],"returnDecorators":[{"name":"poolAmountOut","description":"- amount of pool tokens minted and transferred.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"joinswapPoolAmountOut(IConfigurableRightsPool,IBPool,address,uint256,uint256)","name":"joinswapPoolAmountOut","description":"Join by swapping an external token in (must be present in the pool) To receive an exact amount of pool tokens out. System calculates the deposit amount.","parameterDecorators":[{"name":"self","description":"- ConfigurableRightsPool instance calling the library.","recommendedTypes":[]},{"name":"bPool","description":"- Core BPool the CRP is wrapping.","recommendedTypes":[]},{"name":"tokenIn","description":"- which token we're transferring in (system calculates amount required).","recommendedTypes":[]},{"name":"poolAmountOut","description":"- amount of pool tokens to be received.","recommendedTypes":[]},{"name":"maxAmountIn","description":"- Maximum asset tokens that can be pulled to pay for the pool tokens.","recommendedTypes":[]}],"returnDecorators":[{"name":"tokenAmountIn","description":"- amount of asset tokens transferred in to purchase the pool tokens.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "balancer"
+  ],
+  "name": "SmartPoolManager",
+  "description": "Factor out the weight updates.",
+  "eventDecorators": [],
+  "functionDecorators": [
+    {
+      "signature": "exitPool(IConfigurableRightsPool,IBPool,uint256,uint256[])",
+      "name": "exitPool",
+      "description": "Exit a pool - redeem pool tokens for underlying assets.",
+      "parameterDecorators": [
+        {
+          "name": "self",
+          "description": "- ConfigurableRightsPool instance calling the library.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "bPool",
+          "description": "- Core BPool the CRP is wrapping.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "poolAmountIn",
+          "description": "- amount of pool tokens to redeem.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minAmountsOut",
+          "description": "- minimum amount of asset tokens to receive.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "exitFee",
+          "description": "- calculated exit fee.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "pAiAfterExitFee",
+          "description": "- final amount in (after accounting for exit fee).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "actualAmountsOut",
+          "description": "- calculated amounts of each token to pull.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "exitswapExternAmountOut(IConfigurableRightsPool,IBPool,address,uint256,uint256)",
+      "name": "exitswapExternAmountOut",
+      "description": "Exit a pool - redeem pool tokens for a specific amount of underlying assets Asset must be present in the pool.",
+      "parameterDecorators": [
+        {
+          "name": "self",
+          "description": "- ConfigurableRightsPool instance calling the library.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "bPool",
+          "description": "- Core BPool the CRP is wrapping.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenOut",
+          "description": "- which token the caller wants to receive.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenAmountOut",
+          "description": "- amount of underlying asset tokens to receive.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxPoolAmountIn",
+          "description": "- maximum pool tokens to be redeemed.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "exitFee",
+          "description": "- calculated exit fee.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "poolAmountIn",
+          "description": "- amount of pool tokens redeemed.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "exitswapPoolAmountIn(IConfigurableRightsPool,IBPool,address,uint256,uint256)",
+      "name": "exitswapPoolAmountIn",
+      "description": "Exit a pool - redeem a specific number of pool tokens for an underlying asset Asset must be present in the pool, and will incur an EXIT_FEE (if set to non-zero).",
+      "parameterDecorators": [
+        {
+          "name": "self",
+          "description": "- ConfigurableRightsPool instance calling the library.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "bPool",
+          "description": "- Core BPool the CRP is wrapping.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenOut",
+          "description": "- which token the caller wants to receive.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "poolAmountIn",
+          "description": "- amount of pool tokens to redeem.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minAmountOut",
+          "description": "- minimum asset tokens to receive.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "exitFee",
+          "description": "- calculated exit fee.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "tokenAmountOut",
+          "description": "- amount of asset tokens returned.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "joinPool(IConfigurableRightsPool,IBPool,uint256,uint256[])",
+      "name": "joinPool",
+      "description": "Join a pool.",
+      "parameterDecorators": [
+        {
+          "name": "self",
+          "description": "- ConfigurableRightsPool instance calling the library.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "bPool",
+          "description": "- Core BPool the CRP is wrapping.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "poolAmountOut",
+          "description": "- number of pool tokens to receive.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxAmountsIn",
+          "description": "- Max amount of asset tokens to spend.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "actualAmountsIn",
+          "description": "- calculated values of the tokens to pull in.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "joinswapExternAmountIn(IConfigurableRightsPool,IBPool,address,uint256,uint256)",
+      "name": "joinswapExternAmountIn",
+      "description": "Join by swapping a fixed amount of an external token in (must be present in the pool) System calculates the pool token amount.",
+      "parameterDecorators": [
+        {
+          "name": "self",
+          "description": "- ConfigurableRightsPool instance calling the library.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "bPool",
+          "description": "- Core BPool the CRP is wrapping.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenIn",
+          "description": "- which token we're transferring in.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenAmountIn",
+          "description": "- amount of deposit.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minPoolAmountOut",
+          "description": "- minimum of pool tokens to receive.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "poolAmountOut",
+          "description": "- amount of pool tokens minted and transferred.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "joinswapPoolAmountOut(IConfigurableRightsPool,IBPool,address,uint256,uint256)",
+      "name": "joinswapPoolAmountOut",
+      "description": "Join by swapping an external token in (must be present in the pool) To receive an exact amount of pool tokens out. System calculates the deposit amount.",
+      "parameterDecorators": [
+        {
+          "name": "self",
+          "description": "- ConfigurableRightsPool instance calling the library.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "bPool",
+          "description": "- Core BPool the CRP is wrapping.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenIn",
+          "description": "- which token we're transferring in (system calculates amount required).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "poolAmountOut",
+          "description": "- amount of pool tokens to be received.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxAmountIn",
+          "description": "- Maximum asset tokens that can be pulled to pay for the pool tokens.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "tokenAmountIn",
+          "description": "- amount of asset tokens transferred in to purchase the pool tokens.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

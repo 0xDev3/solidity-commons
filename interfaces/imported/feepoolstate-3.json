@@ -1,1 +1,480 @@
-{"schema":"../schema.json","tags":[],"name":"FeePoolState","description":"","eventDecorators":[{"signature":"IssuanceDebtRatioEntry(address,uint256,uint256)","name":"IssuanceDebtRatioEntry","description":"","parameterDecorators":[{"name":"access","description":"TRUE if the Watcher was given permissions, FALSE if permissions were removed.","recommendedTypes":[],"indexed":true},{"name":"domain","description":"the remote domain of the Home contract for the Replica.","recommendedTypes":[],"indexed":false},{"name":"watcher","description":"the address of the Watcher.","recommendedTypes":[],"indexed":false}]},{"signature":"SelfDestructTerminated()","name":"SelfDestructTerminated","description":"","parameterDecorators":[]},{"signature":"SelfDestructed(address)","name":"SelfDestructed","description":"","parameterDecorators":[{"name":"beneficiary","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SelfDestructInitiated(uint256)","name":"SelfDestructInitiated","description":"","parameterDecorators":[{"name":"selfDestructDelay","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SelfDestructBeneficiaryUpdated(address)","name":"SelfDestructBeneficiaryUpdated","description":"","parameterDecorators":[{"name":"newBeneficiary","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnerNominated(address)","name":"OwnerNominated","description":"","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnerChanged(address,address)","name":"OwnerChanged","description":"","parameterDecorators":[{"name":"oldOwner","description":"","recommendedTypes":[],"indexed":false},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"nominateNewOwner(address)","name":"nominateNewOwner","description":"Nominate a new owner of this contract. Only the current owner may nominate a new owner.","parameterDecorators":[{"name":"_owner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"initiationTime()","name":"initiationTime","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setFeePool(address)","name":"setFeePool","description":"set the FeePool contract as it is the only authority to be able to call appendAccountIssuanceRecord with the onlyFeePool modifer. Must be set by owner when FeePool logic is upgraded.","parameterDecorators":[{"name":"_feePool","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setSelfDestructBeneficiary(address)","name":"setSelfDestructBeneficiary","description":"Set the beneficiary address of this contract. Only the contract owner may call this. The provided beneficiary must be non-null.","parameterDecorators":[{"name":"_beneficiary","description":"The address to pay any eth contained in this contract to upon self-destruction.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"terminateSelfDestruct()","name":"terminateSelfDestruct","description":"Terminate and reset the self-destruction timer. Only the contract owner may call this.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"importIssuerData(address[],uint256[],uint256,uint256)","name":"importIssuerData","description":"Import issuer data from shadowsState.issuerData on FeePeriodClose() block #. Only callable by the contract owner, and only for 6 weeks after deployment.","parameterDecorators":[{"name":"accounts","description":"Array of issuing addresses.","recommendedTypes":[]},{"name":"ratios","description":"Array of debt ratios.","recommendedTypes":[]},{"name":"periodToInsert","description":"The Fee Period to insert the historical records into.","recommendedTypes":[]},{"name":"feePeriodCloseIndex","description":"An accounts debtEntryIndex is valid when within the fee peroid, since the input ratio will be an average of the pervious periods it just needs to be > recentFeePeriods[periodToInsert].startingDebtIndex < recentFeePeriods[periodToInsert - 1].startingDebtIndex.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"nominatedOwner()","name":"nominatedOwner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"acceptOwnership()","name":"acceptOwnership","description":"Accept the nomination to be owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"accountIssuanceLedger(address,uint256)","name":"accountIssuanceLedger","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"debtPercentage","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"debtEntryIndex","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"appendAccountIssuanceRecord(address,uint256,uint256,uint256)","name":"appendAccountIssuanceRecord","description":"Logs an accounts issuance data in the current fee period which is then stored historically. onlyFeePool to call me on shadows.issue() & shadows.burn() calls to store the locked DOWS per fee period so we know to allocate the correct proportions of fees and rewards per period accountIssuanceLedger[account][0] has the latest locked amount for the current period. This can be update as many time accountIssuanceLedger[account][1-2] has the last locked amount for a previous period they minted or burned.","parameterDecorators":[{"name":"account","description":"Message.Senders account address.","recommendedTypes":[]},{"name":"debtRatio","description":"Debt of this account as a percentage of the global debt.","recommendedTypes":[]},{"name":"debtEntryIndex","description":"The index in the global debt ledger. shadows.shadowsState().issuanceData(account).","recommendedTypes":[]},{"name":"currentPeriodStartDebtIndex","description":"The startingDebtIndex of the current fee period.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"selfDestruct()","name":"selfDestruct","description":"If the self-destruction delay has elapsed, destroy this contract and remit any ether it owns to the beneficiary address. Only the contract owner may call this.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"SELFDESTRUCT_DELAY()","name":"SELFDESTRUCT_DELAY","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"feePool()","name":"feePool","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getAccountsDebtEntry(address,uint256)","name":"getAccountsDebtEntry","description":"Get an accounts issuanceData for.","parameterDecorators":[{"name":"account","description":"users account.","recommendedTypes":[]},{"name":"index","description":"Index in the array to retrieve. Upto FEE_PERIOD_LENGTH.","recommendedTypes":[]}],"returnDecorators":[{"name":"debtPercentage","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"debtEntryIndex","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"selfDestructInitiated()","name":"selfDestructInitiated","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"initiateSelfDestruct()","name":"initiateSelfDestruct","description":"Begin the self-destruction counter of this contract. Once the delay has elapsed, the contract may be self-destructed. Only the contract owner may call this.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"selfDestructBeneficiary()","name":"selfDestructBeneficiary","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"FEE_PERIOD_LENGTH()","name":"FEE_PERIOD_LENGTH","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"applicableIssuanceData(address,uint256)","name":"applicableIssuanceData","description":"Find the oldest debtEntryIndex for the corresponding closingDebtIndex.","parameterDecorators":[{"name":"account","description":"users account.","recommendedTypes":[]},{"name":"closingDebtIndex","description":"the last periods debt index on close.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "FeePoolState",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "IssuanceDebtRatioEntry(address,uint256,uint256)",
+      "name": "IssuanceDebtRatioEntry",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "access",
+          "description": "TRUE if the Watcher was given permissions, FALSE if permissions were removed.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "domain",
+          "description": "the remote domain of the Home contract for the Replica.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "watcher",
+          "description": "the address of the Watcher.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SelfDestructTerminated()",
+      "name": "SelfDestructTerminated",
+      "description": "",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "SelfDestructed(address)",
+      "name": "SelfDestructed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SelfDestructInitiated(uint256)",
+      "name": "SelfDestructInitiated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "selfDestructDelay",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SelfDestructBeneficiaryUpdated(address)",
+      "name": "SelfDestructBeneficiaryUpdated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "newBeneficiary",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnerNominated(address)",
+      "name": "OwnerNominated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnerChanged(address,address)",
+      "name": "OwnerChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "oldOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "nominateNewOwner(address)",
+      "name": "nominateNewOwner",
+      "description": "Nominate a new owner of this contract. Only the current owner may nominate a new owner.",
+      "parameterDecorators": [
+        {
+          "name": "_owner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initiationTime()",
+      "name": "initiationTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setFeePool(address)",
+      "name": "setFeePool",
+      "description": "set the FeePool contract as it is the only authority to be able to call appendAccountIssuanceRecord with the onlyFeePool modifer. Must be set by owner when FeePool logic is upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "_feePool",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setSelfDestructBeneficiary(address)",
+      "name": "setSelfDestructBeneficiary",
+      "description": "Set the beneficiary address of this contract. Only the contract owner may call this. The provided beneficiary must be non-null.",
+      "parameterDecorators": [
+        {
+          "name": "_beneficiary",
+          "description": "The address to pay any eth contained in this contract to upon self-destruction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "terminateSelfDestruct()",
+      "name": "terminateSelfDestruct",
+      "description": "Terminate and reset the self-destruction timer. Only the contract owner may call this.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "importIssuerData(address[],uint256[],uint256,uint256)",
+      "name": "importIssuerData",
+      "description": "Import issuer data from shadowsState.issuerData on FeePeriodClose() block #. Only callable by the contract owner, and only for 6 weeks after deployment.",
+      "parameterDecorators": [
+        {
+          "name": "accounts",
+          "description": "Array of issuing addresses.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ratios",
+          "description": "Array of debt ratios.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "periodToInsert",
+          "description": "The Fee Period to insert the historical records into.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "feePeriodCloseIndex",
+          "description": "An accounts debtEntryIndex is valid when within the fee peroid, since the input ratio will be an average of the pervious periods it just needs to be > recentFeePeriods[periodToInsert].startingDebtIndex < recentFeePeriods[periodToInsert - 1].startingDebtIndex.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "nominatedOwner()",
+      "name": "nominatedOwner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "acceptOwnership()",
+      "name": "acceptOwnership",
+      "description": "Accept the nomination to be owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "accountIssuanceLedger(address,uint256)",
+      "name": "accountIssuanceLedger",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "debtPercentage",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "debtEntryIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "appendAccountIssuanceRecord(address,uint256,uint256,uint256)",
+      "name": "appendAccountIssuanceRecord",
+      "description": "Logs an accounts issuance data in the current fee period which is then stored historically. onlyFeePool to call me on shadows.issue() & shadows.burn() calls to store the locked DOWS per fee period so we know to allocate the correct proportions of fees and rewards per period accountIssuanceLedger[account][0] has the latest locked amount for the current period. This can be update as many time accountIssuanceLedger[account][1-2] has the last locked amount for a previous period they minted or burned.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "Message.Senders account address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "debtRatio",
+          "description": "Debt of this account as a percentage of the global debt.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "debtEntryIndex",
+          "description": "The index in the global debt ledger. shadows.shadowsState().issuanceData(account).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "currentPeriodStartDebtIndex",
+          "description": "The startingDebtIndex of the current fee period.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "selfDestruct()",
+      "name": "selfDestruct",
+      "description": "If the self-destruction delay has elapsed, destroy this contract and remit any ether it owns to the beneficiary address. Only the contract owner may call this.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "SELFDESTRUCT_DELAY()",
+      "name": "SELFDESTRUCT_DELAY",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "feePool()",
+      "name": "feePool",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAccountsDebtEntry(address,uint256)",
+      "name": "getAccountsDebtEntry",
+      "description": "Get an accounts issuanceData for.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "users account.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "Index in the array to retrieve. Upto FEE_PERIOD_LENGTH.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "debtPercentage",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "debtEntryIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "selfDestructInitiated()",
+      "name": "selfDestructInitiated",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initiateSelfDestruct()",
+      "name": "initiateSelfDestruct",
+      "description": "Begin the self-destruction counter of this contract. Once the delay has elapsed, the contract may be self-destructed. Only the contract owner may call this.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "selfDestructBeneficiary()",
+      "name": "selfDestructBeneficiary",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "FEE_PERIOD_LENGTH()",
+      "name": "FEE_PERIOD_LENGTH",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "applicableIssuanceData(address,uint256)",
+      "name": "applicableIssuanceData",
+      "description": "Find the oldest debtEntryIndex for the corresponding closingDebtIndex.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "users account.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "closingDebtIndex",
+          "description": "the last periods debt index on close.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

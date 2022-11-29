@@ -1,1 +1,609 @@
-{"schema":"../schema.json","tags":["locking","compound"],"name":"Pool","description":"The Pool contract for PoolTogether. All monetary values are stored internally as fixed point 24.","eventDecorators":[{"signature":"BoughtTickets(address,int256,uint256)","name":"BoughtTickets","description":"Triggers on new deposit call.","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[],"indexed":true},{"name":"count","description":"","recommendedTypes":[],"indexed":false},{"name":"totalPrice","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Withdrawn(address,int256)","name":"Withdrawn","description":"Triggers on new deposit call.","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PoolLocked()","name":"PoolLocked","description":"Triggers on new deposit call.","parameterDecorators":[]},{"signature":"PoolUnlocked()","name":"PoolUnlocked","description":"Triggers on new deposit call.","parameterDecorators":[]},{"signature":"PoolComplete(address)","name":"PoolComplete","description":"Triggers on new deposit call.","parameterDecorators":[{"name":"winner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Triggers on new deposit call.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"lock(bytes32)","name":"lock","description":"Pools the deposits and supplies them to Compound. Can only be called by the owner when the pool is open. Fires the PoolLocked event.","parameterDecorators":[{"name":"_secretHash","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"entryCount()","name":"entryCount","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"allowLockAnytime()","name":"allowLockAnytime","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"supplyRateMantissa()","name":"supplyRateMantissa","description":"Extracts the supplyRateMantissa value from the money market contract.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"withdraw()","name":"withdraw","description":"Transfers a users deposit, and potential winnings, back to them. The Pool must be unlocked. The user must have deposited funds. Fires the Withdrawn event.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"buyTickets(int256)","name":"buyTickets","description":"Buys a pool ticket. Only possible while the Pool is in the \"open\" state. The user can buy any number of tickets. Each ticket is a chance at winning.","parameterDecorators":[{"name":"_countNonFixed","description":"The number of tickets the user wishes to buy.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getInfo()","name":"getInfo","description":"Retrieves information about the pool.","parameterDecorators":[],"returnDecorators":[{"name":"entryTotal","description":"","recommendedTypes":[],"solidityType":"int256"},{"name":"startBlock","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"endBlock","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"poolState","description":"","recommendedTypes":[],"solidityType":"uint8"},{"name":"winner","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"supplyBalanceTotal","description":"","recommendedTypes":[],"solidityType":"int256"},{"name":"ticketCost","description":"","recommendedTypes":[],"solidityType":"int256"},{"name":"participantCount","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"maxPoolSize","description":"","recommendedTypes":[],"solidityType":"int256"},{"name":"estimatedInterestFixedPoint18","description":"","recommendedTypes":[],"solidityType":"int256"},{"name":"hashOfSecret","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"SUM_TREE_KEY()","name":"SUM_TREE_KEY","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"feeAmount()","name":"feeAmount","description":"Calculates the size of the fee based on the gross winnings.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"balanceOf(address)","name":"balanceOf","description":"Calculates a user's remaining balance. This is their winnings less how much they've withdrawn.","parameterDecorators":[{"name":"_addr","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Renouncing to ownership will leave the contract without an owner. It will not be possible to call the functions with the `onlyOwner` modifier anymore. Allows the current owner to relinquish control of the contract.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getEntry(address)","name":"getEntry","description":"Retrieves information about a user's entry in the Pool.","parameterDecorators":[{"name":"_addr","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"addr","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"amount","description":"","recommendedTypes":[],"solidityType":"int256"},{"name":"ticketCount","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"withdrawn","description":"","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":true},{"signature":"complete(bytes32)","name":"complete","description":"Withdraws the deposit from Compound and selects a winner. Can only be called by the owner after the lock end block. Fires the PoolUnlocked event.","parameterDecorators":[{"name":"_secret","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"netWinnings()","name":"netWinnings","description":"Returns the total interest on the pool less the fee as a whole number.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"isOwner()","name":"isOwner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"currentInterestFractionFixedPoint24()","name":"currentInterestFractionFixedPoint24","description":"Estimates the current effective interest rate using the money market's current supplyRateMantissa and the lock duration in blocks.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":true},{"signature":"unlock()","name":"unlock","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"state()","name":"state","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"initialize(address)","name":"initialize","description":"The Ownable constructor sets the original `owner` of the contract to the sender account.","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"randomToken()","name":"randomToken","description":"Selects a random number in the range from [0, total tokens deposited).","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"moneyMarket()","name":"moneyMarket","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"maxPoolSizeFixedPoint24(int256)","name":"maxPoolSizeFixedPoint24","description":"Calculates the maximum pool size so that it doesn't overflow after earning interest. poolSize = totalDeposits + totalDeposits * interest => totalDeposits = poolSize / (1 + interest).","parameterDecorators":[{"name":"_maxValueFixedPoint24","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":true},{"signature":"winnings(address)","name":"winnings","description":"Calculates a user's winnings. This is their deposit plus their winnings, if any.","parameterDecorators":[{"name":"_addr","description":"The address of the user.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":true},{"signature":"winnerAddress()","name":"winnerAddress","description":"Selects and returns the winner's address.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Allows the current owner to transfer control of the contract to a newOwner.","parameterDecorators":[{"name":"newOwner","description":"The address to transfer ownership to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"token()","name":"token","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "locking",
+    "compound"
+  ],
+  "name": "Pool",
+  "description": "The Pool contract for PoolTogether. All monetary values are stored internally as fixed point 24.",
+  "eventDecorators": [
+    {
+      "signature": "BoughtTickets(address,int256,uint256)",
+      "name": "BoughtTickets",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "count",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Withdrawn(address,int256)",
+      "name": "Withdrawn",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PoolLocked()",
+      "name": "PoolLocked",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "PoolUnlocked()",
+      "name": "PoolUnlocked",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "PoolComplete(address)",
+      "name": "PoolComplete",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "winner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "lock(bytes32)",
+      "name": "lock",
+      "description": "Pools the deposits and supplies them to Compound. Can only be called by the owner when the pool is open. Fires the PoolLocked event.",
+      "parameterDecorators": [
+        {
+          "name": "_secretHash",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "entryCount()",
+      "name": "entryCount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "allowLockAnytime()",
+      "name": "allowLockAnytime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "supplyRateMantissa()",
+      "name": "supplyRateMantissa",
+      "description": "Extracts the supplyRateMantissa value from the money market contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw()",
+      "name": "withdraw",
+      "description": "Transfers a users deposit, and potential winnings, back to them. The Pool must be unlocked. The user must have deposited funds. Fires the Withdrawn event.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "buyTickets(int256)",
+      "name": "buyTickets",
+      "description": "Buys a pool ticket. Only possible while the Pool is in the \"open\" state. The user can buy any number of tickets. Each ticket is a chance at winning.",
+      "parameterDecorators": [
+        {
+          "name": "_countNonFixed",
+          "description": "The number of tickets the user wishes to buy.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getInfo()",
+      "name": "getInfo",
+      "description": "Retrieves information about the pool.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "entryTotal",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "startBlock",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "endBlock",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "poolState",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        },
+        {
+          "name": "winner",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "supplyBalanceTotal",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "ticketCost",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "participantCount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "maxPoolSize",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "estimatedInterestFixedPoint18",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "hashOfSecret",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "SUM_TREE_KEY()",
+      "name": "SUM_TREE_KEY",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "feeAmount()",
+      "name": "feeAmount",
+      "description": "Calculates the size of the fee based on the gross winnings.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "balanceOf(address)",
+      "name": "balanceOf",
+      "description": "Calculates a user's remaining balance. This is their winnings less how much they've withdrawn.",
+      "parameterDecorators": [
+        {
+          "name": "_addr",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Renouncing to ownership will leave the contract without an owner. It will not be possible to call the functions with the `onlyOwner` modifier anymore. Allows the current owner to relinquish control of the contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getEntry(address)",
+      "name": "getEntry",
+      "description": "Retrieves information about a user's entry in the Pool.",
+      "parameterDecorators": [
+        {
+          "name": "_addr",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "addr",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "ticketCount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "withdrawn",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "complete(bytes32)",
+      "name": "complete",
+      "description": "Withdraws the deposit from Compound and selects a winner. Can only be called by the owner after the lock end block. Fires the PoolUnlocked event.",
+      "parameterDecorators": [
+        {
+          "name": "_secret",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "netWinnings()",
+      "name": "netWinnings",
+      "description": "Returns the total interest on the pool less the fee as a whole number.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isOwner()",
+      "name": "isOwner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "currentInterestFractionFixedPoint24()",
+      "name": "currentInterestFractionFixedPoint24",
+      "description": "Estimates the current effective interest rate using the money market's current supplyRateMantissa and the lock duration in blocks.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unlock()",
+      "name": "unlock",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "state()",
+      "name": "state",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address)",
+      "name": "initialize",
+      "description": "The Ownable constructor sets the original `owner` of the contract to the sender account.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "randomToken()",
+      "name": "randomToken",
+      "description": "Selects a random number in the range from [0, total tokens deposited).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "moneyMarket()",
+      "name": "moneyMarket",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxPoolSizeFixedPoint24(int256)",
+      "name": "maxPoolSizeFixedPoint24",
+      "description": "Calculates the maximum pool size so that it doesn't overflow after earning interest. poolSize = totalDeposits + totalDeposits * interest => totalDeposits = poolSize / (1 + interest).",
+      "parameterDecorators": [
+        {
+          "name": "_maxValueFixedPoint24",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "winnings(address)",
+      "name": "winnings",
+      "description": "Calculates a user's winnings. This is their deposit plus their winnings, if any.",
+      "parameterDecorators": [
+        {
+          "name": "_addr",
+          "description": "The address of the user.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "winnerAddress()",
+      "name": "winnerAddress",
+      "description": "Selects and returns the winner's address.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Allows the current owner to transfer control of the contract to a newOwner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "The address to transfer ownership to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

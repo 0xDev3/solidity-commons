@@ -1,1 +1,792 @@
-{"schema":"../schema.json","tags":["chainlink"],"name":"Operator","description":"The Chainlink Operator contract. Node operators can deploy this contract to fulfill requests sent to them.","eventDecorators":[{"signature":"AuthorizedSendersChanged(address[],address)","name":"AuthorizedSendersChanged","description":"Event for token purchase logging.","parameterDecorators":[{"name":"senders","description":"","recommendedTypes":[],"indexed":false},{"name":"changedBy","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"CancelOracleRequest(bytes32)","name":"CancelOracleRequest","description":"Event for token purchase logging.","parameterDecorators":[{"name":"requestId","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OracleRequest(bytes32,address,bytes32,uint256,address,bytes4,uint256,uint256,bytes)","name":"OracleRequest","description":"Event for token purchase logging.","parameterDecorators":[{"name":"specId","description":"","recommendedTypes":[],"indexed":true},{"name":"requester","description":"","recommendedTypes":[],"indexed":false},{"name":"requestId","description":"","recommendedTypes":[],"indexed":false},{"name":"payment","description":"","recommendedTypes":[],"indexed":false},{"name":"callbackAddr","description":"","recommendedTypes":[],"indexed":false},{"name":"callbackFunctionId","description":"","recommendedTypes":[],"indexed":false},{"name":"cancelExpiration","description":"","recommendedTypes":[],"indexed":false},{"name":"dataVersion","description":"","recommendedTypes":[],"indexed":false},{"name":"data","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OracleResponse(bytes32)","name":"OracleResponse","description":"Event for token purchase logging.","parameterDecorators":[{"name":"requestId","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnableContractAccepted(address)","name":"OwnableContractAccepted","description":"Event for token purchase logging.","parameterDecorators":[{"name":"acceptedContract","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnershipTransferRequested(address,address)","name":"OwnershipTransferRequested","description":"Event for token purchase logging.","parameterDecorators":[{"name":"from","description":"","recommendedTypes":[],"indexed":true},{"name":"to","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Event for token purchase logging.","parameterDecorators":[{"name":"from","description":"","recommendedTypes":[],"indexed":true},{"name":"to","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"TargetsUpdatedAuthorizedSenders(address[],address[],address)","name":"TargetsUpdatedAuthorizedSenders","description":"Event for token purchase logging.","parameterDecorators":[{"name":"targets","description":"","recommendedTypes":[],"indexed":false},{"name":"senders","description":"","recommendedTypes":[],"indexed":false},{"name":"changedBy","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"acceptAuthorizedReceivers(address[],address[])","name":"acceptAuthorizedReceivers","description":"Accepts ownership of ownable contracts and then immediately sets the authorized sender list on each of the newly owned contracts. This is primarilly intended for Authorized Forwarders but could possibly be extended to work with future contracts.","parameterDecorators":[{"name":"targets","description":"The addresses to set permissions on.","recommendedTypes":[]},{"name":"senders","description":"The addresses that are allowed to send updates.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"acceptOwnableContracts(address[])","name":"acceptOwnableContracts","description":"Accept the ownership of an ownable contract. This is primarilly intended for Authorized Forwarders but could possibly be extended to work with future contracts. Must be the pending owner on the contract.","parameterDecorators":[{"name":"ownable","description":"list of addresses of Ownable contracts to accept.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"acceptOwnership()","name":"acceptOwnership","description":"Allows an ownership transfer to be completed by the recipient.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"cancelOracleRequest(bytes32,uint256,bytes4,uint256)","name":"cancelOracleRequest","description":"Allows recipient to cancel requests sent to this oracle contract. Will transfer the LINK sent for the request back to the recipient address. Given params must hash to a commitment stored on the contract in order for the request to be valid. Emits CancelOracleRequest event.","parameterDecorators":[{"name":"requestId","description":"The request ID.","recommendedTypes":[]},{"name":"payment","description":"The amount of payment given (specified in wei).","recommendedTypes":[]},{"name":"callbackFunc","description":"The requester's specified callback function selector.","recommendedTypes":[]},{"name":"expiration","description":"The time of the expiration for the request.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"cancelOracleRequestByRequester(uint256,uint256,bytes4,uint256)","name":"cancelOracleRequestByRequester","description":"Allows requester to cancel requests sent to this oracle contract. Will transfer the LINK sent for the request back to the recipient address. Given params must hash to a commitment stored on the contract in order for the request to be valid. Emits CancelOracleRequest event.","parameterDecorators":[{"name":"nonce","description":"The nonce used to generate the request ID.","recommendedTypes":[]},{"name":"payment","description":"The amount of payment given (specified in wei).","recommendedTypes":[]},{"name":"callbackFunc","description":"The requester's specified callback function selector.","recommendedTypes":[]},{"name":"expiration","description":"The time of the expiration for the request.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"distributeFunds(address[],uint256[])","name":"distributeFunds","description":"Distribute funds to multiple addresses using ETH send to this payable function. Array length must be equal, ETH sent must equal the sum of amounts. A malicious receiver could cause the distribution to revert, in which case it is expected that the address is removed from the list.","parameterDecorators":[{"name":"receivers","description":"list of addresses.","recommendedTypes":[]},{"name":"amounts","description":"list of amounts.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"fulfillOracleRequest(bytes32,uint256,address,bytes4,uint256,bytes32)","name":"fulfillOracleRequest","description":"Called by the Chainlink node to fulfill requests. Given params must hash back to the commitment stored from `oracleRequest`. Will call the callback address' callback function without bubbling up error checking in a `require` so that the node can get paid.","parameterDecorators":[{"name":"requestId","description":"The fulfillment request ID that must match the requester's.","recommendedTypes":[]},{"name":"payment","description":"The payment amount that will be released for the oracle (specified in wei).","recommendedTypes":[]},{"name":"callbackAddress","description":"The callback address to call for fulfillment.","recommendedTypes":[]},{"name":"callbackFunctionId","description":"The callback function ID to use for fulfillment.","recommendedTypes":[]},{"name":"expiration","description":"The expiration that the node should respond by before the requester can cancel.","recommendedTypes":[]},{"name":"data","description":"The data to return to the consuming contract.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Status if the external call was successful.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"fulfillOracleRequest2(bytes32,uint256,address,bytes4,uint256,bytes)","name":"fulfillOracleRequest2","description":"Called by the Chainlink node to fulfill requests with multi-word support. Given params must hash back to the commitment stored from `oracleRequest`. Will call the callback address' callback function without bubbling up error checking in a `require` so that the node can get paid.","parameterDecorators":[{"name":"requestId","description":"The fulfillment request ID that must match the requester's.","recommendedTypes":[]},{"name":"payment","description":"The payment amount that will be released for the oracle (specified in wei).","recommendedTypes":[]},{"name":"callbackAddress","description":"The callback address to call for fulfillment.","recommendedTypes":[]},{"name":"callbackFunctionId","description":"The callback function ID to use for fulfillment.","recommendedTypes":[]},{"name":"expiration","description":"The expiration that the node should respond by before the requester can cancel.","recommendedTypes":[]},{"name":"data","description":"The data to return to the consuming contract.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Status if the external call was successful.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"getAuthorizedSenders()","name":"getAuthorizedSenders","description":"Retrieve a list of authorized senders.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"array of addresses.","recommendedTypes":[],"solidityType":"address[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getChainlinkToken()","name":"getChainlinkToken","description":"Returns the address of the LINK token. This is the public implementation for chainlinkTokenAddress, which is an internal method of the ChainlinkClient contract.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getExpiryTime()","name":"getExpiryTime","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"isAuthorizedSender(address)","name":"isAuthorizedSender","description":"Use this to check if a node is authorized for fulfilling requests.","parameterDecorators":[{"name":"sender","description":"The address of the Chainlink node.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The authorization status of the node.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"onTokenTransfer(address,uint256,bytes)","name":"onTokenTransfer","description":"Called when LINK is sent to the contract via `transferAndCall`. The data payload's first 2 words will be overwritten by the `sender` and `amount` values to ensure correctness. Calls oracleRequest.","parameterDecorators":[{"name":"sender","description":"Address of the sender.","recommendedTypes":[]},{"name":"amount","description":"Amount of LINK sent (specified in wei).","recommendedTypes":[]},{"name":"data","description":"Payload of the transaction.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"operatorRequest(address,uint256,bytes32,bytes4,uint256,uint256,bytes)","name":"operatorRequest","description":"Creates the Chainlink request. Stores the hash of the params as the on-chain commitment for the request. Emits OracleRequest event for the Chainlink node to detect.","parameterDecorators":[{"name":"sender","description":"The sender of the request.","recommendedTypes":[]},{"name":"payment","description":"The amount of payment given (specified in wei).","recommendedTypes":[]},{"name":"specId","description":"The Job Specification ID.","recommendedTypes":[]},{"name":"callbackFunctionId","description":"The callback function ID for the response.","recommendedTypes":[]},{"name":"nonce","description":"The nonce sent by the requester.","recommendedTypes":[]},{"name":"dataVersion","description":"The specified data version.","recommendedTypes":[]},{"name":"data","description":"The extra request parameters.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"oracleRequest(address,uint256,bytes32,address,bytes4,uint256,uint256,bytes)","name":"oracleRequest","description":"Creates the Chainlink request. This is a backwards compatible API with the Oracle.sol contract, but the behavior changes because callbackAddress is assumed to be the same as the request sender.","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[]},{"name":"payment","description":"The amount of payment given (specified in wei).","recommendedTypes":[]},{"name":"specId","description":"The Job Specification ID.","recommendedTypes":[]},{"name":"callbackAddress","description":"The address the oracle data will be sent to.","recommendedTypes":[]},{"name":"callbackFunctionId","description":"The callback function ID for the response.","recommendedTypes":[]},{"name":"nonce","description":"The nonce sent by the requester.","recommendedTypes":[]},{"name":"dataVersion","description":"The specified data version.","recommendedTypes":[]},{"name":"data","description":"The extra request parameters.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"owner()","name":"owner","description":"Get the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"ownerForward(address,bytes)","name":"ownerForward","description":"Forward a call to another contract. Only callable by the owner.","parameterDecorators":[{"name":"to","description":"address.","recommendedTypes":[]},{"name":"data","description":"to forward.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"ownerTransferAndCall(address,uint256,bytes)","name":"ownerTransferAndCall","description":"Interact with other LinkTokenReceiver contracts by calling transferAndCall.","parameterDecorators":[{"name":"to","description":"The address to transfer to.","recommendedTypes":[]},{"name":"value","description":"The amount to be transferred.","recommendedTypes":[]},{"name":"data","description":"The extra data to be passed to the receiving contract.","recommendedTypes":[]}],"returnDecorators":[{"name":"success","description":"bool.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"setAuthorizedSenders(address[])","name":"setAuthorizedSenders","description":"Sets the fulfillment permission for a given node. Use `true` to allow, `false` to disallow.","parameterDecorators":[{"name":"senders","description":"The addresses of the authorized Chainlink node.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setAuthorizedSendersOn(address[],address[])","name":"setAuthorizedSendersOn","description":"Sets the fulfillment permission for.","parameterDecorators":[{"name":"targets","description":"The addresses to set permissions on.","recommendedTypes":[]},{"name":"senders","description":"The addresses that are allowed to send updates.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnableContracts(address[],address)","name":"transferOwnableContracts","description":"Transfer the ownership of ownable contracts. This is primarilly intended for Authorized Forwarders but could possibly be extended to work with future contracts.","parameterDecorators":[{"name":"ownable","description":"list of addresses to transfer.","recommendedTypes":[]},{"name":"newOwner","description":"address to transfer ownership to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Allows an owner to begin transferring ownership to a new address, pending.","parameterDecorators":[{"name":"to","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"typeAndVersion()","name":"typeAndVersion","description":"The type and version of this contract.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Type and version string.","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true},{"signature":"withdraw(address,uint256)","name":"withdraw","description":"Allows the node operator to withdraw earned LINK to a given address. The owner of the contract can be another wallet and does not have to be a Chainlink node.","parameterDecorators":[{"name":"recipient","description":"The address to send the LINK token to.","recommendedTypes":[]},{"name":"amount","description":"The amount to send (specified in wei).","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdrawable()","name":"withdrawable","description":"Displays the amount of LINK that is available for the node operator to withdraw. We use `ONE_FOR_CONSISTENT_GAS_COST` in place of 0 in storage.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The amount of withdrawable LINK on the contract.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "chainlink"
+  ],
+  "name": "Operator",
+  "description": "The Chainlink Operator contract. Node operators can deploy this contract to fulfill requests sent to them.",
+  "eventDecorators": [
+    {
+      "signature": "AuthorizedSendersChanged(address[],address)",
+      "name": "AuthorizedSendersChanged",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "senders",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "changedBy",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CancelOracleRequest(bytes32)",
+      "name": "CancelOracleRequest",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "requestId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OracleRequest(bytes32,address,bytes32,uint256,address,bytes4,uint256,uint256,bytes)",
+      "name": "OracleRequest",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "specId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "requester",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "requestId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "payment",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "callbackAddr",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "callbackFunctionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "cancelExpiration",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "dataVersion",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OracleResponse(bytes32)",
+      "name": "OracleResponse",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "requestId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnableContractAccepted(address)",
+      "name": "OwnableContractAccepted",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "acceptedContract",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferRequested(address,address)",
+      "name": "OwnershipTransferRequested",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TargetsUpdatedAuthorizedSenders(address[],address[],address)",
+      "name": "TargetsUpdatedAuthorizedSenders",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "targets",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "senders",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "changedBy",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "acceptAuthorizedReceivers(address[],address[])",
+      "name": "acceptAuthorizedReceivers",
+      "description": "Accepts ownership of ownable contracts and then immediately sets the authorized sender list on each of the newly owned contracts. This is primarilly intended for Authorized Forwarders but could possibly be extended to work with future contracts.",
+      "parameterDecorators": [
+        {
+          "name": "targets",
+          "description": "The addresses to set permissions on.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "senders",
+          "description": "The addresses that are allowed to send updates.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "acceptOwnableContracts(address[])",
+      "name": "acceptOwnableContracts",
+      "description": "Accept the ownership of an ownable contract. This is primarilly intended for Authorized Forwarders but could possibly be extended to work with future contracts. Must be the pending owner on the contract.",
+      "parameterDecorators": [
+        {
+          "name": "ownable",
+          "description": "list of addresses of Ownable contracts to accept.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "acceptOwnership()",
+      "name": "acceptOwnership",
+      "description": "Allows an ownership transfer to be completed by the recipient.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cancelOracleRequest(bytes32,uint256,bytes4,uint256)",
+      "name": "cancelOracleRequest",
+      "description": "Allows recipient to cancel requests sent to this oracle contract. Will transfer the LINK sent for the request back to the recipient address. Given params must hash to a commitment stored on the contract in order for the request to be valid. Emits CancelOracleRequest event.",
+      "parameterDecorators": [
+        {
+          "name": "requestId",
+          "description": "The request ID.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "payment",
+          "description": "The amount of payment given (specified in wei).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "callbackFunc",
+          "description": "The requester's specified callback function selector.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "expiration",
+          "description": "The time of the expiration for the request.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cancelOracleRequestByRequester(uint256,uint256,bytes4,uint256)",
+      "name": "cancelOracleRequestByRequester",
+      "description": "Allows requester to cancel requests sent to this oracle contract. Will transfer the LINK sent for the request back to the recipient address. Given params must hash to a commitment stored on the contract in order for the request to be valid. Emits CancelOracleRequest event.",
+      "parameterDecorators": [
+        {
+          "name": "nonce",
+          "description": "The nonce used to generate the request ID.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "payment",
+          "description": "The amount of payment given (specified in wei).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "callbackFunc",
+          "description": "The requester's specified callback function selector.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "expiration",
+          "description": "The time of the expiration for the request.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "distributeFunds(address[],uint256[])",
+      "name": "distributeFunds",
+      "description": "Distribute funds to multiple addresses using ETH send to this payable function. Array length must be equal, ETH sent must equal the sum of amounts. A malicious receiver could cause the distribution to revert, in which case it is expected that the address is removed from the list.",
+      "parameterDecorators": [
+        {
+          "name": "receivers",
+          "description": "list of addresses.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amounts",
+          "description": "list of amounts.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "fulfillOracleRequest(bytes32,uint256,address,bytes4,uint256,bytes32)",
+      "name": "fulfillOracleRequest",
+      "description": "Called by the Chainlink node to fulfill requests. Given params must hash back to the commitment stored from `oracleRequest`. Will call the callback address' callback function without bubbling up error checking in a `require` so that the node can get paid.",
+      "parameterDecorators": [
+        {
+          "name": "requestId",
+          "description": "The fulfillment request ID that must match the requester's.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "payment",
+          "description": "The payment amount that will be released for the oracle (specified in wei).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "callbackAddress",
+          "description": "The callback address to call for fulfillment.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "callbackFunctionId",
+          "description": "The callback function ID to use for fulfillment.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "expiration",
+          "description": "The expiration that the node should respond by before the requester can cancel.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "The data to return to the consuming contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Status if the external call was successful.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "fulfillOracleRequest2(bytes32,uint256,address,bytes4,uint256,bytes)",
+      "name": "fulfillOracleRequest2",
+      "description": "Called by the Chainlink node to fulfill requests with multi-word support. Given params must hash back to the commitment stored from `oracleRequest`. Will call the callback address' callback function without bubbling up error checking in a `require` so that the node can get paid.",
+      "parameterDecorators": [
+        {
+          "name": "requestId",
+          "description": "The fulfillment request ID that must match the requester's.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "payment",
+          "description": "The payment amount that will be released for the oracle (specified in wei).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "callbackAddress",
+          "description": "The callback address to call for fulfillment.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "callbackFunctionId",
+          "description": "The callback function ID to use for fulfillment.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "expiration",
+          "description": "The expiration that the node should respond by before the requester can cancel.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "The data to return to the consuming contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Status if the external call was successful.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getAuthorizedSenders()",
+      "name": "getAuthorizedSenders",
+      "description": "Retrieve a list of authorized senders.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "array of addresses.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getChainlinkToken()",
+      "name": "getChainlinkToken",
+      "description": "Returns the address of the LINK token. This is the public implementation for chainlinkTokenAddress, which is an internal method of the ChainlinkClient contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getExpiryTime()",
+      "name": "getExpiryTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isAuthorizedSender(address)",
+      "name": "isAuthorizedSender",
+      "description": "Use this to check if a node is authorized for fulfilling requests.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "The address of the Chainlink node.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The authorization status of the node.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "onTokenTransfer(address,uint256,bytes)",
+      "name": "onTokenTransfer",
+      "description": "Called when LINK is sent to the contract via `transferAndCall`. The data payload's first 2 words will be overwritten by the `sender` and `amount` values to ensure correctness. Calls oracleRequest.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "Address of the sender.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "Amount of LINK sent (specified in wei).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "Payload of the transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "operatorRequest(address,uint256,bytes32,bytes4,uint256,uint256,bytes)",
+      "name": "operatorRequest",
+      "description": "Creates the Chainlink request. Stores the hash of the params as the on-chain commitment for the request. Emits OracleRequest event for the Chainlink node to detect.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "The sender of the request.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "payment",
+          "description": "The amount of payment given (specified in wei).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "specId",
+          "description": "The Job Specification ID.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "callbackFunctionId",
+          "description": "The callback function ID for the response.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "nonce",
+          "description": "The nonce sent by the requester.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "dataVersion",
+          "description": "The specified data version.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "The extra request parameters.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "oracleRequest(address,uint256,bytes32,address,bytes4,uint256,uint256,bytes)",
+      "name": "oracleRequest",
+      "description": "Creates the Chainlink request. This is a backwards compatible API with the Oracle.sol contract, but the behavior changes because callbackAddress is assumed to be the same as the request sender.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "payment",
+          "description": "The amount of payment given (specified in wei).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "specId",
+          "description": "The Job Specification ID.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "callbackAddress",
+          "description": "The address the oracle data will be sent to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "callbackFunctionId",
+          "description": "The callback function ID for the response.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "nonce",
+          "description": "The nonce sent by the requester.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "dataVersion",
+          "description": "The specified data version.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "The extra request parameters.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Get the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ownerForward(address,bytes)",
+      "name": "ownerForward",
+      "description": "Forward a call to another contract. Only callable by the owner.",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "to forward.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "ownerTransferAndCall(address,uint256,bytes)",
+      "name": "ownerTransferAndCall",
+      "description": "Interact with other LinkTokenReceiver contracts by calling transferAndCall.",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "The address to transfer to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "The amount to be transferred.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "The extra data to be passed to the receiving contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "bool.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setAuthorizedSenders(address[])",
+      "name": "setAuthorizedSenders",
+      "description": "Sets the fulfillment permission for a given node. Use `true` to allow, `false` to disallow.",
+      "parameterDecorators": [
+        {
+          "name": "senders",
+          "description": "The addresses of the authorized Chainlink node.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setAuthorizedSendersOn(address[],address[])",
+      "name": "setAuthorizedSendersOn",
+      "description": "Sets the fulfillment permission for.",
+      "parameterDecorators": [
+        {
+          "name": "targets",
+          "description": "The addresses to set permissions on.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "senders",
+          "description": "The addresses that are allowed to send updates.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnableContracts(address[],address)",
+      "name": "transferOwnableContracts",
+      "description": "Transfer the ownership of ownable contracts. This is primarilly intended for Authorized Forwarders but could possibly be extended to work with future contracts.",
+      "parameterDecorators": [
+        {
+          "name": "ownable",
+          "description": "list of addresses to transfer.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newOwner",
+          "description": "address to transfer ownership to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Allows an owner to begin transferring ownership to a new address, pending.",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "typeAndVersion()",
+      "name": "typeAndVersion",
+      "description": "The type and version of this contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Type and version string.",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw(address,uint256)",
+      "name": "withdraw",
+      "description": "Allows the node operator to withdraw earned LINK to a given address. The owner of the contract can be another wallet and does not have to be a Chainlink node.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "The address to send the LINK token to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "The amount to send (specified in wei).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawable()",
+      "name": "withdrawable",
+      "description": "Displays the amount of LINK that is available for the node operator to withdraw. We use `ONE_FOR_CONSISTENT_GAS_COST` in place of 0 in storage.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The amount of withdrawable LINK on the contract.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

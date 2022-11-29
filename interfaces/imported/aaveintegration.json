@@ -1,1 +1,374 @@
-{"schema":"../schema.json","tags":["aave"],"name":"AaveIntegration","description":"AaveIntegration. VERSION: 1.1 DATE: 2020-03-26. A simple connection to deposit and withdraw bAssets from Aave.","eventDecorators":[{"signature":"Deposit(address,address,uint256)","name":"Deposit","description":"","parameterDecorators":[{"name":"_bAsset","description":"","recommendedTypes":[],"indexed":true},{"name":"_pToken","description":"","recommendedTypes":[],"indexed":false},{"name":"_amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PTokenAdded(address,address)","name":"PTokenAdded","description":"","parameterDecorators":[{"name":"_bAsset","description":"","recommendedTypes":[],"indexed":true},{"name":"_pToken","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PlatformWithdrawal(address,address,uint256,uint256)","name":"PlatformWithdrawal","description":"","parameterDecorators":[{"name":"bAsset","description":"","recommendedTypes":[],"indexed":true},{"name":"pToken","description":"","recommendedTypes":[],"indexed":false},{"name":"totalAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"userAmount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Whitelisted(address)","name":"Whitelisted","description":"","parameterDecorators":[{"name":"_address","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Withdrawal(address,address,uint256)","name":"Withdrawal","description":"","parameterDecorators":[{"name":"_bAsset","description":"","recommendedTypes":[],"indexed":true},{"name":"_pToken","description":"","recommendedTypes":[],"indexed":false},{"name":"_amount","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"bAssetToPToken(address)","name":"bAssetToPToken","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"checkBalance(address)","name":"checkBalance","description":"Get the total bAsset value held in the platform This includes any interest that was generated since depositing Aave gradually increases the balances of all aToken holders, as the interest grows.","parameterDecorators":[{"name":"_bAsset","description":"Address of the bAsset.","recommendedTypes":[]}],"returnDecorators":[{"name":"balance","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"deposit(address,uint256,bool)","name":"deposit","description":"Deposit a quantity of bAsset into the platform. Credited aTokens remain here in the vault. Can only be called by whitelisted addresses (mAsset and corresponding BasketManager).","parameterDecorators":[{"name":"_bAsset","description":"Address for the bAsset.","recommendedTypes":[]},{"name":"_amount","description":"Units of bAsset to deposit.","recommendedTypes":[]},{"name":"_hasTxFee","description":"Is the bAsset known to have a tx fee?.","recommendedTypes":[]}],"returnDecorators":[{"name":"quantityDeposited","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"nexus()","name":"nexus","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"platformAddress()","name":"platformAddress","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"reApproveAllTokens()","name":"reApproveAllTokens","description":"Re-approve the spending of all bAssets by the Aave lending pool core, if for some reason is it necessary for example if the address of core changes. Only callable through Governance.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setPTokenAddress(address,address)","name":"setPTokenAddress","description":"Provide support for bAsset by passing its pToken address. This method can only be called by the system Governor.","parameterDecorators":[{"name":"_bAsset","description":"Address for the bAsset.","recommendedTypes":[]},{"name":"_pToken","description":"Address for the corresponding platform token.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"whitelist(address)","name":"whitelist","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"withdraw(address,address,uint256,bool)","name":"withdraw","description":"Withdraw a quantity of bAsset from the platform.","parameterDecorators":[{"name":"_receiver","description":"Address to which the bAsset should be sent.","recommendedTypes":[]},{"name":"_bAsset","description":"Address of the bAsset.","recommendedTypes":[]},{"name":"_amount","description":"Units of bAsset to send to recipient.","recommendedTypes":[]},{"name":"_hasTxFee","description":"Is the bAsset known to have a tx fee?.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdraw(address,address,uint256,uint256,bool)","name":"withdraw","description":"Withdraw a quantity of bAsset from the platform.","parameterDecorators":[{"name":"_receiver","description":"Address to which the bAsset should be sent.","recommendedTypes":[]},{"name":"_bAsset","description":"Address of the bAsset.","recommendedTypes":[]},{"name":"_amount","description":"Units of bAsset to send to recipient.","recommendedTypes":[]},{"name":"_totalAmount","description":"Total units to pull from lending platform.","recommendedTypes":[]},{"name":"_hasTxFee","description":"Is the bAsset known to have a tx fee?.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdrawRaw(address,address,uint256)","name":"withdrawRaw","description":"Withdraw a quantity of bAsset from the cache.","parameterDecorators":[{"name":"_receiver","description":"Address to which the bAsset should be sent.","recommendedTypes":[]},{"name":"_bAsset","description":"Address of the bAsset.","recommendedTypes":[]},{"name":"_amount","description":"Units of bAsset to withdraw.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "aave"
+  ],
+  "name": "AaveIntegration",
+  "description": "AaveIntegration. VERSION: 1.1 DATE: 2020-03-26. A simple connection to deposit and withdraw bAssets from Aave.",
+  "eventDecorators": [
+    {
+      "signature": "Deposit(address,address,uint256)",
+      "name": "Deposit",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_bAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_pToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PTokenAdded(address,address)",
+      "name": "PTokenAdded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_bAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_pToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PlatformWithdrawal(address,address,uint256,uint256)",
+      "name": "PlatformWithdrawal",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "bAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "pToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "userAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Whitelisted(address)",
+      "name": "Whitelisted",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_address",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Withdrawal(address,address,uint256)",
+      "name": "Withdrawal",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_bAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_pToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "bAssetToPToken(address)",
+      "name": "bAssetToPToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "checkBalance(address)",
+      "name": "checkBalance",
+      "description": "Get the total bAsset value held in the platform This includes any interest that was generated since depositing Aave gradually increases the balances of all aToken holders, as the interest grows.",
+      "parameterDecorators": [
+        {
+          "name": "_bAsset",
+          "description": "Address of the bAsset.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "balance",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deposit(address,uint256,bool)",
+      "name": "deposit",
+      "description": "Deposit a quantity of bAsset into the platform. Credited aTokens remain here in the vault. Can only be called by whitelisted addresses (mAsset and corresponding BasketManager).",
+      "parameterDecorators": [
+        {
+          "name": "_bAsset",
+          "description": "Address for the bAsset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "Units of bAsset to deposit.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_hasTxFee",
+          "description": "Is the bAsset known to have a tx fee?.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "quantityDeposited",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "nexus()",
+      "name": "nexus",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "platformAddress()",
+      "name": "platformAddress",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "reApproveAllTokens()",
+      "name": "reApproveAllTokens",
+      "description": "Re-approve the spending of all bAssets by the Aave lending pool core, if for some reason is it necessary for example if the address of core changes. Only callable through Governance.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setPTokenAddress(address,address)",
+      "name": "setPTokenAddress",
+      "description": "Provide support for bAsset by passing its pToken address. This method can only be called by the system Governor.",
+      "parameterDecorators": [
+        {
+          "name": "_bAsset",
+          "description": "Address for the bAsset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_pToken",
+          "description": "Address for the corresponding platform token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "whitelist(address)",
+      "name": "whitelist",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw(address,address,uint256,bool)",
+      "name": "withdraw",
+      "description": "Withdraw a quantity of bAsset from the platform.",
+      "parameterDecorators": [
+        {
+          "name": "_receiver",
+          "description": "Address to which the bAsset should be sent.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_bAsset",
+          "description": "Address of the bAsset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "Units of bAsset to send to recipient.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_hasTxFee",
+          "description": "Is the bAsset known to have a tx fee?.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(address,address,uint256,uint256,bool)",
+      "name": "withdraw",
+      "description": "Withdraw a quantity of bAsset from the platform.",
+      "parameterDecorators": [
+        {
+          "name": "_receiver",
+          "description": "Address to which the bAsset should be sent.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_bAsset",
+          "description": "Address of the bAsset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "Units of bAsset to send to recipient.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_totalAmount",
+          "description": "Total units to pull from lending platform.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_hasTxFee",
+          "description": "Is the bAsset known to have a tx fee?.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawRaw(address,address,uint256)",
+      "name": "withdrawRaw",
+      "description": "Withdraw a quantity of bAsset from the cache.",
+      "parameterDecorators": [
+        {
+          "name": "_receiver",
+          "description": "Address to which the bAsset should be sent.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_bAsset",
+          "description": "Address of the bAsset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "Units of bAsset to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

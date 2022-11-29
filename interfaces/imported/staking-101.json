@@ -1,1 +1,421 @@
-{"schema":"../schema.json","tags":[],"name":"Staking","description":"","eventDecorators":[{"signature":"claimed(uint256)","name":"claimed","description":"Event for token purchase logging.","parameterDecorators":[{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"releaseStake(address,address[],uint256[],address)","name":"releaseStake","description":"","parameterDecorators":[{"name":"_tokenAddr","description":"","recommendedTypes":[]},{"name":"_stakers","description":"","recommendedTypes":[]},{"name":"_amounts","description":"","recommendedTypes":[]},{"name":"_dest","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"claim(address,address)","name":"claim","description":"claim dividends for a particular token that user has stake in.","parameterDecorators":[{"name":"_tokenAddr","description":"the token that the claim is made on.","recommendedTypes":[]},{"name":"_receiver","description":"the address which the claim is paid to.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"StakeTokenAddr()","name":"StakeTokenAddr","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"tokenCummRewardPerStake(address)","name":"tokenCummRewardPerStake","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"finalizeWithdraw(uint256,address)","name":"finalizeWithdraw","description":"finalize withdraw of stake.","parameterDecorators":[{"name":"_amount","description":"","recommendedTypes":[]},{"name":"_tokenAddr","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"tokenTotalStaked(address)","name":"tokenTotalStaked","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"initWithdraw(address)","name":"initWithdraw","description":"request to withdraw stake from a particular token, must wait 4 weeks.","parameterDecorators":[{"name":"_tokenAddr","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"removeToken(address)","name":"removeToken","description":"remove approved token address from the mapping.","parameterDecorators":[{"name":"_tokenAddr","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"stake(uint256,address)","name":"stake","description":"stake a specific amount to a token.","parameterDecorators":[{"name":"_amount","description":"the amount to be staked.","recommendedTypes":[]},{"name":"_tokenAddr","description":"the token the user wish to stake on for demo purposes, not requiring user to actually send in tokens right now.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"Mediator(address)","name":"Mediator","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"userCummRewardPerStake(address,address)","name":"userCummRewardPerStake","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"addToken(address)","name":"addToken","description":"add approved token address to the mapping.","parameterDecorators":[{"name":"_tokenAddr","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"StakeMap(address,address)","name":"StakeMap","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"amount","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"requested","description":"","recommendedTypes":[],"solidityType":"bool"},{"name":"releaseDate","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"distribute(uint256,address)","name":"distribute","description":"demo version. pay out dividends to stakers, update how much per token each staker can claim.","parameterDecorators":[{"name":"_reward","description":"the aggregate amount to be send to all stakers.","recommendedTypes":[]},{"name":"_tokenAddr","description":"the token that this dividend gets paied out in.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"allowedTokens(address)","name":"allowedTokens","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "Staking",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "claimed(uint256)",
+      "name": "claimed",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "releaseStake(address,address[],uint256[],address)",
+      "name": "releaseStake",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenAddr",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_stakers",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amounts",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_dest",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claim(address,address)",
+      "name": "claim",
+      "description": "claim dividends for a particular token that user has stake in.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenAddr",
+          "description": "the token that the claim is made on.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_receiver",
+          "description": "the address which the claim is paid to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "StakeTokenAddr()",
+      "name": "StakeTokenAddr",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tokenCummRewardPerStake(address)",
+      "name": "tokenCummRewardPerStake",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "finalizeWithdraw(uint256,address)",
+      "name": "finalizeWithdraw",
+      "description": "finalize withdraw of stake.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenAddr",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tokenTotalStaked(address)",
+      "name": "tokenTotalStaked",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initWithdraw(address)",
+      "name": "initWithdraw",
+      "description": "request to withdraw stake from a particular token, must wait 4 weeks.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenAddr",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeToken(address)",
+      "name": "removeToken",
+      "description": "remove approved token address from the mapping.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenAddr",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stake(uint256,address)",
+      "name": "stake",
+      "description": "stake a specific amount to a token.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "the amount to be staked.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenAddr",
+          "description": "the token the user wish to stake on for demo purposes, not requiring user to actually send in tokens right now.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "Mediator(address)",
+      "name": "Mediator",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "userCummRewardPerStake(address,address)",
+      "name": "userCummRewardPerStake",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addToken(address)",
+      "name": "addToken",
+      "description": "add approved token address to the mapping.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenAddr",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "StakeMap(address,address)",
+      "name": "StakeMap",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "requested",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "releaseDate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "distribute(uint256,address)",
+      "name": "distribute",
+      "description": "demo version. pay out dividends to stakers, update how much per token each staker can claim.",
+      "parameterDecorators": [
+        {
+          "name": "_reward",
+          "description": "the aggregate amount to be send to all stakers.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenAddr",
+          "description": "the token that this dividend gets paied out in.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "allowedTokens(address)",
+      "name": "allowedTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

@@ -1,1 +1,1064 @@
-{"schema":"../schema.json","tags":["arbitrum"],"name":"ArbRelayHub","description":"The RelayHub Implementation for Arbitrum. This contract implements the `IRelayHub` interface for the Arbitrum-compatible Rollups.This implementation relies on the `ArbSys` built-ins that do not exist outside of Arbitrum.","eventDecorators":[{"signature":"Deposited(address,address,uint256)","name":"Deposited","description":"Emitted when `depositFor` is called, including the amount and account that was funded.","parameterDecorators":[{"name":"paymaster","description":"","recommendedTypes":[],"indexed":true},{"name":"from","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"HubDeprecated(uint256)","name":"HubDeprecated","description":"This event is emitted in case this `RelayHub` is deprecated and will stop serving transactions soon.","parameterDecorators":[{"name":"fallbackOracle","description":"The address of the fallback oracle.","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"RelayHubConfigured(tuple)","name":"RelayHubConfigured","description":"","parameterDecorators":[{"name":"fallbackOracle","description":"The address of the fallback oracle.","recommendedTypes":[],"indexed":false}]},{"signature":"RelayWorkersAdded(address,address[],uint256)","name":"RelayWorkersAdded","description":"Emitted when relays are added by a relayManager.","parameterDecorators":[{"name":"relayManager","description":"","recommendedTypes":[],"indexed":true},{"name":"newRelayWorkers","description":"","recommendedTypes":[],"indexed":false},{"name":"workersCount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"StakingTokenDataChanged(address,uint256)","name":"StakingTokenDataChanged","description":"Emitted for each token configured for staking in setMinimumStakes.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[],"indexed":false},{"name":"minimumStake","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TransactionRejectedByPaymaster(address,address,bytes32,address,address,address,bytes4,uint256,bytes)","name":"TransactionRejectedByPaymaster","description":"Emitted when an attempt to relay a call fails and the `Paymaster` does not accept the transaction. The actual relayed call was not executed, and the recipient not charged.","parameterDecorators":[{"name":"relayManager","description":"","recommendedTypes":[],"indexed":true},{"name":"paymaster","description":"","recommendedTypes":[],"indexed":true},{"name":"relayRequestID","description":"","recommendedTypes":[],"indexed":true},{"name":"from","description":"","recommendedTypes":[],"indexed":false},{"name":"to","description":"","recommendedTypes":[],"indexed":false},{"name":"relayWorker","description":"","recommendedTypes":[],"indexed":false},{"name":"selector","description":"","recommendedTypes":[],"indexed":false},{"name":"innerGasUsed","description":"","recommendedTypes":[],"indexed":false},{"name":"reason","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TransactionRelayed(address,address,bytes32,address,address,address,bytes4,uint8,uint256)","name":"TransactionRelayed","description":"Emitted when a transaction is relayed. Note that the actual internal function call might be reverted. The reason for a revert will be indicated in the `status` field of a corresponding `RelayCallStatus` value.`charge` is the Ether value deducted from the `Paymaster` balance. The amount added to the `relayManager` balance will be lower if there is an activated `devFee` in the `config`.","parameterDecorators":[{"name":"relayManager","description":"","recommendedTypes":[],"indexed":true},{"name":"relayWorker","description":"","recommendedTypes":[],"indexed":true},{"name":"relayRequestID","description":"","recommendedTypes":[],"indexed":true},{"name":"from","description":"","recommendedTypes":[],"indexed":false},{"name":"to","description":"","recommendedTypes":[],"indexed":false},{"name":"paymaster","description":"","recommendedTypes":[],"indexed":false},{"name":"selector","description":"","recommendedTypes":[],"indexed":false},{"name":"status","description":"","recommendedTypes":[],"indexed":false},{"name":"charge","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TransactionResult(uint8,bytes)","name":"TransactionResult","description":"This event is emitted in case the internal function returns a value or reverts with a revert string.","parameterDecorators":[{"name":"status","description":"","recommendedTypes":[],"indexed":false},{"name":"returnValue","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Withdrawn(address,address,uint256)","name":"Withdrawn","description":"Emitted when an account withdraws funds from the `RelayHub`.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":true},{"name":"dest","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"addRelayWorkers(address[])","name":"addRelayWorkers","description":"Add new worker addresses controlled by the sender who must be a staked Relay Manager address. Emits a `RelayWorkersAdded` event. This function can be called multiple times, emitting new events.","parameterDecorators":[{"name":"newRelayWorkers","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"aggregateGasleft()","name":"aggregateGasleft","description":"Includes the 'storage gas' specific to the Arbitrum Rollup.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"A total measurable amount of gas left to current execution. Same as 'gasleft()' for pure EVMs.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"arbsys()","name":"arbsys","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"balanceOf(address)","name":"balanceOf","description":"","parameterDecorators":[{"name":"target","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"An account's balance. It can be either a deposit of a `Paymaster`, or a revenue of a Relay Manager.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"calculateCharge(uint256,tuple(uint256,uint256,uint256,uint256,uint256,address,address,address,bytes,uint256))","name":"calculateCharge","description":"The fee is expressed as a base fee in wei plus percentage of the actual charge. For example, a value '40' stands for a 40% fee, so the recipient will be charged for 1.4 times the spent amount.","parameterDecorators":[{"name":"gasUsed","description":"An amount of gas used by the transaction.","recommendedTypes":[]},{"name":"relayData","description":"The details of a transaction signed by the sender.","recommendedTypes":[],"parameters":[{"name":"maxFeePerGas","description":"","type":"uint256"},{"name":"maxPriorityFeePerGas","description":"","type":"uint256"},{"name":"pctRelayFee","description":"","type":"uint256"},{"name":"baseRelayFee","description":"","type":"uint256"},{"name":"transactionCalldataGasUsed","description":"","type":"uint256"},{"name":"relayWorker","description":"","type":"address"},{"name":"paymaster","description":"","type":"address"},{"name":"forwarder","description":"","type":"address"},{"name":"paymasterData","description":"","type":"bytes"},{"name":"clientId","description":"","type":"uint256"}]}],"returnDecorators":[{"name":"_0","description":"The calculated charge, in wei.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"calculateDevCharge(uint256)","name":"calculateDevCharge","description":"The fee is expressed as a percentage of the actual charge. For example, a value '40' stands for a 40% fee, so the Relay Manager will only get 60% of the `charge`.","parameterDecorators":[{"name":"charge","description":"The amount of Ether in wei the Paymaster will be charged for this transaction.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The calculated devFee, in wei.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"depositFor(address)","name":"depositFor","description":"Deposits ether for a `Paymaster`, so that it can and pay for relayed transactions. :warning: **Warning** :warning: Unused balance can only be withdrawn by the holder itself, by calling `withdraw`. Emits a `Deposited` event.","parameterDecorators":[{"name":"target","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"deprecateHub(uint256)","name":"deprecateHub","description":"Deprecate hub by reverting all incoming `relayCall()` calls starting from a given timestamp.","parameterDecorators":[{"name":"_deprecationTime","description":"The timestamp in seconds after which the `RelayHub` stops serving transactions.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getBatchGateway()","name":"getBatchGateway","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The `BatchGateway` address for this `RelayHub`.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getConfiguration()","name":"getConfiguration","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The configuration of the `RelayHub`.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"getCreationBlock()","name":"getCreationBlock","description":"Uses `ArbSys` L2 block number specific to the Arbitrum Rollup.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The block number in which the contract has been deployed.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getDeprecationTime()","name":"getDeprecationTime","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The timestamp from which the hub no longer allows relaying calls.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getL1CreationBlock()","name":"getL1CreationBlock","description":"Uses original L1 block number.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The block number in which the contract has been deployed.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getMinimumStakePerToken(address)","name":"getMinimumStakePerToken","description":"","parameterDecorators":[{"name":"token","description":"An address of an ERC-20 compatible tokens.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The minimum amount of a given `token` that needs to be staked so that the Relay Manager is considered to be 'staked' by this `RelayHub`. Zero value means this token is not allowed for staking.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getPenalizer()","name":"getPenalizer","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The `Penalizer` address for this `RelayHub`.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getRelayRegistrar()","name":"getRelayRegistrar","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The `RelayRegistrar` address for this `RelayHub`.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getStakeManager()","name":"getStakeManager","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The `StakeManager` address for this `RelayHub`.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getWorkerCount(address)","name":"getWorkerCount","description":"","parameterDecorators":[{"name":"manager","description":"An address of the Relay Manager.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The count of Relay Workers associated with this Relay Manager.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getWorkerManager(address)","name":"getWorkerManager","description":"","parameterDecorators":[{"name":"worker","description":"An address of the Relay Worker.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The address of its Relay Manager.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"innerRelayCall(tuple(tuple,tuple),bytes,bytes,tuple(uint256,uint256,uint256,uint256),uint256,uint256)","name":"innerRelayCall","description":"","parameterDecorators":[{"name":"relayRequest","description":"","recommendedTypes":[],"parameters":[{"name":"request","description":"","type":"tuple"},{"name":"relayData","description":"","type":"tuple"}]},{"name":"signature","description":"","recommendedTypes":[]},{"name":"approvalData","description":"","recommendedTypes":[]},{"name":"gasAndDataLimits","description":"","recommendedTypes":[],"parameters":[{"name":"acceptanceBudget","description":"","type":"uint256"},{"name":"preRelayedCallGasLimit","description":"","type":"uint256"},{"name":"postRelayedCallGasLimit","description":"","type":"uint256"},{"name":"calldataSizeLimit","description":"","type":"uint256"}]},{"name":"totalInitialGas","description":"","recommendedTypes":[]},{"name":"maxPossibleGas","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"bytes"}],"emittableEvents":[],"readOnly":false},{"signature":"isDeprecated()","name":"isDeprecated","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"`true` if the `RelayHub` is deprecated, `false` it it is not deprecated and can serve transactions.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"penalize(address,address)","name":"penalize","description":"In case the Relay Worker has been found to be in violation of some rules by the `Penalizer` contract, the `Penalizer` will call this method to execute a penalization. The `RelayHub` will look up the Relay Manager of the given Relay Worker and will forward the call to the `StakeManager` contract. The `RelayHub` does not perform the actual penalization either.","parameterDecorators":[{"name":"relayWorker","description":"The address of the Relay Worker that committed a penalizable offense.","recommendedTypes":[]},{"name":"beneficiary","description":"The address that called the `Penalizer` and will receive a reward for it.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"relayCall(uint256,tuple(tuple,tuple),bytes,bytes)","name":"relayCall","description":"","parameterDecorators":[{"name":"maxAcceptanceBudget","description":"","recommendedTypes":[]},{"name":"relayRequest","description":"","recommendedTypes":[],"parameters":[{"name":"request","description":"","type":"tuple"},{"name":"relayData","description":"","type":"tuple"}]},{"name":"signature","description":"","recommendedTypes":[]},{"name":"approvalData","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"paymasterAccepted","description":"","recommendedTypes":[],"solidityType":"bool"},{"name":"returnValue","description":"","recommendedTypes":[],"solidityType":"bytes"}],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setConfiguration(tuple(uint256,uint256,uint256,uint256,uint256,address,uint8))","name":"setConfiguration","description":"Sets or changes the configuration of this `RelayHub`.","parameterDecorators":[{"name":"_config","description":"The new configuration.","recommendedTypes":[],"parameters":[{"name":"maxWorkerCount","description":"","type":"uint256"},{"name":"gasReserve","description":"","type":"uint256"},{"name":"postOverhead","description":"","type":"uint256"},{"name":"gasOverhead","description":"","type":"uint256"},{"name":"minimumUnstakeDelay","description":"","type":"uint256"},{"name":"devAddress","description":"","type":"address"},{"name":"devFee","description":"","type":"uint8"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMinimumStakes(address[],uint256[])","name":"setMinimumStakes","description":"Sets or changes the minimum amount of a given `token` that needs to be staked so that the Relay Manager is considered to be 'staked' by this `RelayHub`. Zero value means this token is not allowed for staking.","parameterDecorators":[{"name":"token","description":"An array of addresses of ERC-20 compatible tokens.","recommendedTypes":[]},{"name":"minimumStake","description":"An array of minimal amounts necessary for a corresponding token, in wei.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"supportsInterface(bytes4)","name":"supportsInterface","description":"Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.","parameterDecorators":[{"name":"interfaceId","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"verifyCanRegister(address)","name":"verifyCanRegister","description":"","parameterDecorators":[{"name":"relayManager","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":true},{"signature":"verifyRelayManagerStaked(address)","name":"verifyRelayManagerStaked","description":"Uses `StakeManager` to decide if the Relay Manager can be considered staked or not. Returns if the stake's token, amount and delay satisfy all requirements, reverts otherwise.","parameterDecorators":[{"name":"relayManager","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":true},{"signature":"versionHub()","name":"versionHub","description":"","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"a SemVer-compliant version of the `RelayHub` contract.","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true},{"signature":"withdraw(uint256,address)","name":"withdraw","description":"Withdraws from an account's balance, sending it back to the caller. Relay Managers call this to retrieve their revenue, and `Paymasters` can also use it to reduce their funding. Emits a `Withdrawn` event.","parameterDecorators":[{"name":"amount","description":"","recommendedTypes":[]},{"name":"dest","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "arbitrum"
+  ],
+  "name": "ArbRelayHub",
+  "description": "The RelayHub Implementation for Arbitrum. This contract implements the `IRelayHub` interface for the Arbitrum-compatible Rollups.This implementation relies on the `ArbSys` built-ins that do not exist outside of Arbitrum.",
+  "eventDecorators": [
+    {
+      "signature": "Deposited(address,address,uint256)",
+      "name": "Deposited",
+      "description": "Emitted when `depositFor` is called, including the amount and account that was funded.",
+      "parameterDecorators": [
+        {
+          "name": "paymaster",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "HubDeprecated(uint256)",
+      "name": "HubDeprecated",
+      "description": "This event is emitted in case this `RelayHub` is deprecated and will stop serving transactions soon.",
+      "parameterDecorators": [
+        {
+          "name": "fallbackOracle",
+          "description": "The address of the fallback oracle.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RelayHubConfigured(tuple)",
+      "name": "RelayHubConfigured",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "fallbackOracle",
+          "description": "The address of the fallback oracle.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RelayWorkersAdded(address,address[],uint256)",
+      "name": "RelayWorkersAdded",
+      "description": "Emitted when relays are added by a relayManager.",
+      "parameterDecorators": [
+        {
+          "name": "relayManager",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newRelayWorkers",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "workersCount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "StakingTokenDataChanged(address,uint256)",
+      "name": "StakingTokenDataChanged",
+      "description": "Emitted for each token configured for staking in setMinimumStakes.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "minimumStake",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TransactionRejectedByPaymaster(address,address,bytes32,address,address,address,bytes4,uint256,bytes)",
+      "name": "TransactionRejectedByPaymaster",
+      "description": "Emitted when an attempt to relay a call fails and the `Paymaster` does not accept the transaction. The actual relayed call was not executed, and the recipient not charged.",
+      "parameterDecorators": [
+        {
+          "name": "relayManager",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "paymaster",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "relayRequestID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "relayWorker",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "selector",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "innerGasUsed",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "reason",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TransactionRelayed(address,address,bytes32,address,address,address,bytes4,uint8,uint256)",
+      "name": "TransactionRelayed",
+      "description": "Emitted when a transaction is relayed. Note that the actual internal function call might be reverted. The reason for a revert will be indicated in the `status` field of a corresponding `RelayCallStatus` value.`charge` is the Ether value deducted from the `Paymaster` balance. The amount added to the `relayManager` balance will be lower if there is an activated `devFee` in the `config`.",
+      "parameterDecorators": [
+        {
+          "name": "relayManager",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "relayWorker",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "relayRequestID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "paymaster",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "selector",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "status",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "charge",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TransactionResult(uint8,bytes)",
+      "name": "TransactionResult",
+      "description": "This event is emitted in case the internal function returns a value or reverts with a revert string.",
+      "parameterDecorators": [
+        {
+          "name": "status",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "returnValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Withdrawn(address,address,uint256)",
+      "name": "Withdrawn",
+      "description": "Emitted when an account withdraws funds from the `RelayHub`.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "dest",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addRelayWorkers(address[])",
+      "name": "addRelayWorkers",
+      "description": "Add new worker addresses controlled by the sender who must be a staked Relay Manager address. Emits a `RelayWorkersAdded` event. This function can be called multiple times, emitting new events.",
+      "parameterDecorators": [
+        {
+          "name": "newRelayWorkers",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "aggregateGasleft()",
+      "name": "aggregateGasleft",
+      "description": "Includes the 'storage gas' specific to the Arbitrum Rollup.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "A total measurable amount of gas left to current execution. Same as 'gasleft()' for pure EVMs.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "arbsys()",
+      "name": "arbsys",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "balanceOf(address)",
+      "name": "balanceOf",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "target",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "An account's balance. It can be either a deposit of a `Paymaster`, or a revenue of a Relay Manager.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateCharge(uint256,tuple(uint256,uint256,uint256,uint256,uint256,address,address,address,bytes,uint256))",
+      "name": "calculateCharge",
+      "description": "The fee is expressed as a base fee in wei plus percentage of the actual charge. For example, a value '40' stands for a 40% fee, so the recipient will be charged for 1.4 times the spent amount.",
+      "parameterDecorators": [
+        {
+          "name": "gasUsed",
+          "description": "An amount of gas used by the transaction.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "relayData",
+          "description": "The details of a transaction signed by the sender.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "maxFeePerGas",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "maxPriorityFeePerGas",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "pctRelayFee",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "baseRelayFee",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "transactionCalldataGasUsed",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "relayWorker",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "paymaster",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "forwarder",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "paymasterData",
+              "description": "",
+              "type": "bytes"
+            },
+            {
+              "name": "clientId",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The calculated charge, in wei.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateDevCharge(uint256)",
+      "name": "calculateDevCharge",
+      "description": "The fee is expressed as a percentage of the actual charge. For example, a value '40' stands for a 40% fee, so the Relay Manager will only get 60% of the `charge`.",
+      "parameterDecorators": [
+        {
+          "name": "charge",
+          "description": "The amount of Ether in wei the Paymaster will be charged for this transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The calculated devFee, in wei.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "depositFor(address)",
+      "name": "depositFor",
+      "description": "Deposits ether for a `Paymaster`, so that it can and pay for relayed transactions. :warning: **Warning** :warning: Unused balance can only be withdrawn by the holder itself, by calling `withdraw`. Emits a `Deposited` event.",
+      "parameterDecorators": [
+        {
+          "name": "target",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deprecateHub(uint256)",
+      "name": "deprecateHub",
+      "description": "Deprecate hub by reverting all incoming `relayCall()` calls starting from a given timestamp.",
+      "parameterDecorators": [
+        {
+          "name": "_deprecationTime",
+          "description": "The timestamp in seconds after which the `RelayHub` stops serving transactions.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getBatchGateway()",
+      "name": "getBatchGateway",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The `BatchGateway` address for this `RelayHub`.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getConfiguration()",
+      "name": "getConfiguration",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The configuration of the `RelayHub`.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCreationBlock()",
+      "name": "getCreationBlock",
+      "description": "Uses `ArbSys` L2 block number specific to the Arbitrum Rollup.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The block number in which the contract has been deployed.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getDeprecationTime()",
+      "name": "getDeprecationTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The timestamp from which the hub no longer allows relaying calls.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getL1CreationBlock()",
+      "name": "getL1CreationBlock",
+      "description": "Uses original L1 block number.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The block number in which the contract has been deployed.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getMinimumStakePerToken(address)",
+      "name": "getMinimumStakePerToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "An address of an ERC-20 compatible tokens.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The minimum amount of a given `token` that needs to be staked so that the Relay Manager is considered to be 'staked' by this `RelayHub`. Zero value means this token is not allowed for staking.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPenalizer()",
+      "name": "getPenalizer",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The `Penalizer` address for this `RelayHub`.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRelayRegistrar()",
+      "name": "getRelayRegistrar",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The `RelayRegistrar` address for this `RelayHub`.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getStakeManager()",
+      "name": "getStakeManager",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The `StakeManager` address for this `RelayHub`.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getWorkerCount(address)",
+      "name": "getWorkerCount",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "manager",
+          "description": "An address of the Relay Manager.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The count of Relay Workers associated with this Relay Manager.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getWorkerManager(address)",
+      "name": "getWorkerManager",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "worker",
+          "description": "An address of the Relay Worker.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The address of its Relay Manager.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "innerRelayCall(tuple(tuple,tuple),bytes,bytes,tuple(uint256,uint256,uint256,uint256),uint256,uint256)",
+      "name": "innerRelayCall",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "relayRequest",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "request",
+              "description": "",
+              "type": "tuple"
+            },
+            {
+              "name": "relayData",
+              "description": "",
+              "type": "tuple"
+            }
+          ]
+        },
+        {
+          "name": "signature",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "approvalData",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "gasAndDataLimits",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "acceptanceBudget",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "preRelayedCallGasLimit",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "postRelayedCallGasLimit",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "calldataSizeLimit",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "name": "totalInitialGas",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxPossibleGas",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isDeprecated()",
+      "name": "isDeprecated",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "`true` if the `RelayHub` is deprecated, `false` it it is not deprecated and can serve transactions.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "penalize(address,address)",
+      "name": "penalize",
+      "description": "In case the Relay Worker has been found to be in violation of some rules by the `Penalizer` contract, the `Penalizer` will call this method to execute a penalization. The `RelayHub` will look up the Relay Manager of the given Relay Worker and will forward the call to the `StakeManager` contract. The `RelayHub` does not perform the actual penalization either.",
+      "parameterDecorators": [
+        {
+          "name": "relayWorker",
+          "description": "The address of the Relay Worker that committed a penalizable offense.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "beneficiary",
+          "description": "The address that called the `Penalizer` and will receive a reward for it.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "relayCall(uint256,tuple(tuple,tuple),bytes,bytes)",
+      "name": "relayCall",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "maxAcceptanceBudget",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "relayRequest",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "request",
+              "description": "",
+              "type": "tuple"
+            },
+            {
+              "name": "relayData",
+              "description": "",
+              "type": "tuple"
+            }
+          ]
+        },
+        {
+          "name": "signature",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "approvalData",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "paymasterAccepted",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "returnValue",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setConfiguration(tuple(uint256,uint256,uint256,uint256,uint256,address,uint8))",
+      "name": "setConfiguration",
+      "description": "Sets or changes the configuration of this `RelayHub`.",
+      "parameterDecorators": [
+        {
+          "name": "_config",
+          "description": "The new configuration.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "maxWorkerCount",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "gasReserve",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "postOverhead",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "gasOverhead",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "minimumUnstakeDelay",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "devAddress",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "devFee",
+              "description": "",
+              "type": "uint8"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMinimumStakes(address[],uint256[])",
+      "name": "setMinimumStakes",
+      "description": "Sets or changes the minimum amount of a given `token` that needs to be staked so that the Relay Manager is considered to be 'staked' by this `RelayHub`. Zero value means this token is not allowed for staking.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "An array of addresses of ERC-20 compatible tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minimumStake",
+          "description": "An array of minimal amounts necessary for a corresponding token, in wei.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "supportsInterface(bytes4)",
+      "name": "supportsInterface",
+      "description": "Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.",
+      "parameterDecorators": [
+        {
+          "name": "interfaceId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "verifyCanRegister(address)",
+      "name": "verifyCanRegister",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "relayManager",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "verifyRelayManagerStaked(address)",
+      "name": "verifyRelayManagerStaked",
+      "description": "Uses `StakeManager` to decide if the Relay Manager can be considered staked or not. Returns if the stake's token, amount and delay satisfy all requirements, reverts otherwise.",
+      "parameterDecorators": [
+        {
+          "name": "relayManager",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "versionHub()",
+      "name": "versionHub",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "a SemVer-compliant version of the `RelayHub` contract.",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw(uint256,address)",
+      "name": "withdraw",
+      "description": "Withdraws from an account's balance, sending it back to the caller. Relay Managers call this to retrieve their revenue, and `Paymasters` can also use it to reduce their funding. Emits a `Withdrawn` event.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "dest",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

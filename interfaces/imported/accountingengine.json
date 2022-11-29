@@ -1,1 +1,966 @@
-{"schema":"../schema.json","tags":[],"name":"AccountingEngine","description":"","eventDecorators":[{"signature":"AddAuthorization(address)","name":"AddAuthorization","description":"Event for RigelTokens purchase logging.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"AuctionDebt(uint256,uint256,uint256)","name":"AuctionDebt","description":"Event for RigelTokens purchase logging.","parameterDecorators":[{"name":"id","description":"","recommendedTypes":[],"indexed":true},{"name":"totalOnAuctionDebt","description":"","recommendedTypes":[],"indexed":false},{"name":"debtBalance","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"AuctionSurplus(uint256,uint256,uint256)","name":"AuctionSurplus","description":"Event for RigelTokens purchase logging.","parameterDecorators":[{"name":"id","description":"","recommendedTypes":[],"indexed":true},{"name":"lastSurplusAuctionTime","description":"","recommendedTypes":[],"indexed":false},{"name":"coinBalance","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"CancelAuctionedDebtWithSurplus(uint256,uint256,uint256,uint256)","name":"CancelAuctionedDebtWithSurplus","description":"Event for RigelTokens purchase logging.","parameterDecorators":[{"name":"RigelTokenAmount","description":"amount of Rigel tokens purchased.","recommendedTypes":[],"indexed":false},{"name":"beneficiary","description":"who got the tokens.","recommendedTypes":[],"indexed":false},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":false},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":false}]},{"signature":"DisableContract(uint256,uint256,uint256,uint256)","name":"DisableContract","description":"Event for RigelTokens purchase logging.","parameterDecorators":[{"name":"RigelTokenAmount","description":"amount of Rigel tokens purchased.","recommendedTypes":[],"indexed":false},{"name":"beneficiary","description":"who got the tokens.","recommendedTypes":[],"indexed":false},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":false},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":false}]},{"signature":"ModifyParameters(bytes32,uint256)","name":"ModifyParameters","description":"Event for RigelTokens purchase logging.","parameterDecorators":[{"name":"parameter","description":"","recommendedTypes":[],"indexed":true},{"name":"data","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ModifyParameters(bytes32,address)","name":"ModifyParameters","description":"Event for RigelTokens purchase logging.","parameterDecorators":[{"name":"parameter","description":"","recommendedTypes":[],"indexed":true},{"name":"data","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PopDebtFromQueue(uint256,uint256,uint256)","name":"PopDebtFromQueue","description":"Event for RigelTokens purchase logging.","parameterDecorators":[{"name":"timestamp","description":"","recommendedTypes":[],"indexed":true},{"name":"debtQueueBlock","description":"","recommendedTypes":[],"indexed":false},{"name":"totalQueuedDebt","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PushDebtToQueue(uint256,uint256,uint256)","name":"PushDebtToQueue","description":"Event for RigelTokens purchase logging.","parameterDecorators":[{"name":"timestamp","description":"","recommendedTypes":[],"indexed":true},{"name":"debtQueueBlock","description":"","recommendedTypes":[],"indexed":false},{"name":"totalQueuedDebt","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RemoveAuthorization(address)","name":"RemoveAuthorization","description":"Event for RigelTokens purchase logging.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SettleDebt(uint256,uint256,uint256)","name":"SettleDebt","description":"Event for RigelTokens purchase logging.","parameterDecorators":[{"name":"rad","description":"","recommendedTypes":[],"indexed":false},{"name":"coinBalance","description":"","recommendedTypes":[],"indexed":false},{"name":"debtBalance","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TransferExtraSurplus(address,uint256,uint256)","name":"TransferExtraSurplus","description":"Event for RigelTokens purchase logging.","parameterDecorators":[{"name":"extraSurplusReceiver","description":"","recommendedTypes":[],"indexed":true},{"name":"lastSurplusAuctionTime","description":"","recommendedTypes":[],"indexed":false},{"name":"coinBalance","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TransferPostSettlementSurplus(address,uint256,uint256)","name":"TransferPostSettlementSurplus","description":"Event for RigelTokens purchase logging.","parameterDecorators":[{"name":"postSettlementSurplusDrain","description":"","recommendedTypes":[],"indexed":false},{"name":"coinBalance","description":"","recommendedTypes":[],"indexed":false},{"name":"debtBalance","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"addAuthorization(address)","name":"addAuthorization","description":"Add auth to an account.","parameterDecorators":[{"name":"account","description":"Account to add auth to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"auctionDebt()","name":"auctionDebt","description":"Start a debt auction (print protocol tokens in exchange for coins so that the system can accumulate surplus). We can only auction debt that is not already being auctioned and is not locked in the debt queue*.","parameterDecorators":[],"returnDecorators":[{"name":"id","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"auctionSurplus()","name":"auctionSurplus","description":"Start a surplus auction. We can only auction surplus if we wait at least 'surplusAuctionDelay' seconds since the last auction trigger, if we keep enough surplus in the buffer and if there is no bad debt left to settle*.","parameterDecorators":[],"returnDecorators":[{"name":"id","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"authorizedAccounts(address)","name":"authorizedAccounts","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"canPrintProtocolTokens()","name":"canPrintProtocolTokens","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"cancelAuctionedDebtWithSurplus(uint256)","name":"cancelAuctionedDebtWithSurplus","description":"Use surplus coins to destroy debt that is/was in a debt auction.","parameterDecorators":[{"name":"rad","description":"Amount of coins/debt to destroy (number with 45 decimals)*.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"contractEnabled()","name":"contractEnabled","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"debtAuctionBidSize()","name":"debtAuctionBidSize","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"debtAuctionHouse()","name":"debtAuctionHouse","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"debtPoppers(uint256)","name":"debtPoppers","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"debtQueue(uint256)","name":"debtQueue","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"disableContract()","name":"disableContract","description":"Disable this contract (normally called by Global Settlement). When it's disabled, the contract will record the current timestamp. Afterwards, the contract tries to settle as much debt as possible (if there's any) with any surplus that's left in the system*.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"disableCooldown()","name":"disableCooldown","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"disableTimestamp()","name":"disableTimestamp","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"extraSurplusIsTransferred()","name":"extraSurplusIsTransferred","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"extraSurplusReceiver()","name":"extraSurplusReceiver","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"initialDebtAuctionMintedTokens()","name":"initialDebtAuctionMintedTokens","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"lastSurplusAuctionTime()","name":"lastSurplusAuctionTime","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"lastSurplusTransferTime()","name":"lastSurplusTransferTime","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"modifyParameters(bytes32,address)","name":"modifyParameters","description":"Modify dependency addresses.","parameterDecorators":[{"name":"parameter","description":"The name of the auction type we want to change the address for.","recommendedTypes":[]},{"name":"data","description":"New address for the auction.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"modifyParameters(bytes32,uint256)","name":"modifyParameters","description":"Modify general uint256 params for auctions.","parameterDecorators":[{"name":"parameter","description":"The name of the parameter modified.","recommendedTypes":[]},{"name":"data","description":"New value for the parameter.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"popDebtDelay()","name":"popDebtDelay","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"popDebtFromQueue(uint256)","name":"popDebtFromQueue","description":"A block of debt can be popped from the queue after popDebtDelay seconds passed since it was added there.","parameterDecorators":[{"name":"debtBlockTimestamp","description":"Timestamp of the block of debt that should be popped out.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"postSettlementSurplusDrain()","name":"postSettlementSurplusDrain","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"protocolTokenAuthority()","name":"protocolTokenAuthority","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"pushDebtToQueue(uint256)","name":"pushDebtToQueue","description":"Push debt (that the system tries to cover with collateral auctions) to a queue. Debt is locked in a queue to give the system enough time to auction collateral and gather surplus.","parameterDecorators":[{"name":"debtBlock","description":"Amount of debt to push.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"removeAuthorization(address)","name":"removeAuthorization","description":"Remove auth from an account.","parameterDecorators":[{"name":"account","description":"Account to remove auth from.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"safeEngine()","name":"safeEngine","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"settleDebt(uint256)","name":"settleDebt","description":"Destroy an equal amount of coins and debt. We can only destroy debt that is not locked in the queue and also not in a debt auction.","parameterDecorators":[{"name":"rad","description":"Amount of coins/debt to destroy (number with 45 decimals)*.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"surplusAuctionAmountToSell()","name":"surplusAuctionAmountToSell","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"surplusAuctionDelay()","name":"surplusAuctionDelay","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"surplusAuctionHouse()","name":"surplusAuctionHouse","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"surplusBuffer()","name":"surplusBuffer","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"surplusTransferAmount()","name":"surplusTransferAmount","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"surplusTransferDelay()","name":"surplusTransferDelay","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"systemStakingPool()","name":"systemStakingPool","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"totalOnAuctionDebt()","name":"totalOnAuctionDebt","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"totalQueuedDebt()","name":"totalQueuedDebt","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferExtraSurplus()","name":"transferExtraSurplus","description":"Send surplus to an address as an alternative to auctions. We can only transfer surplus if we wait at least 'surplusTransferDelay' seconds since the last transfer, if we keep enough surplus in the buffer and if there is no bad debt left to settle*.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferPostSettlementSurplus()","name":"transferPostSettlementSurplus","description":"Transfer any remaining surplus after the disable cooldown has passed. Meant to be a backup in case GlobalSettlement.processSAFE has a bug, governance doesn't have power over the system and there's still surplus left in the AccountingEngine which then blocks GlobalSettlement.setOutstandingCoinSupply. Transfer any remaining surplus after disableCooldown seconds have passed since disabling the contract*.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unqueuedUnauctionedDebt()","name":"unqueuedUnauctionedDebt","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "AccountingEngine",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "AddAuthorization(address)",
+      "name": "AddAuthorization",
+      "description": "Event for RigelTokens purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AuctionDebt(uint256,uint256,uint256)",
+      "name": "AuctionDebt",
+      "description": "Event for RigelTokens purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "totalOnAuctionDebt",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "debtBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AuctionSurplus(uint256,uint256,uint256)",
+      "name": "AuctionSurplus",
+      "description": "Event for RigelTokens purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "lastSurplusAuctionTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "coinBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CancelAuctionedDebtWithSurplus(uint256,uint256,uint256,uint256)",
+      "name": "CancelAuctionedDebtWithSurplus",
+      "description": "Event for RigelTokens purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "RigelTokenAmount",
+          "description": "amount of Rigel tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "beneficiary",
+          "description": "who got the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DisableContract(uint256,uint256,uint256,uint256)",
+      "name": "DisableContract",
+      "description": "Event for RigelTokens purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "RigelTokenAmount",
+          "description": "amount of Rigel tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "beneficiary",
+          "description": "who got the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ModifyParameters(bytes32,uint256)",
+      "name": "ModifyParameters",
+      "description": "Event for RigelTokens purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "parameter",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ModifyParameters(bytes32,address)",
+      "name": "ModifyParameters",
+      "description": "Event for RigelTokens purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "parameter",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PopDebtFromQueue(uint256,uint256,uint256)",
+      "name": "PopDebtFromQueue",
+      "description": "Event for RigelTokens purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "timestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "debtQueueBlock",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalQueuedDebt",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PushDebtToQueue(uint256,uint256,uint256)",
+      "name": "PushDebtToQueue",
+      "description": "Event for RigelTokens purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "timestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "debtQueueBlock",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalQueuedDebt",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RemoveAuthorization(address)",
+      "name": "RemoveAuthorization",
+      "description": "Event for RigelTokens purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SettleDebt(uint256,uint256,uint256)",
+      "name": "SettleDebt",
+      "description": "Event for RigelTokens purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "rad",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "coinBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "debtBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TransferExtraSurplus(address,uint256,uint256)",
+      "name": "TransferExtraSurplus",
+      "description": "Event for RigelTokens purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "extraSurplusReceiver",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "lastSurplusAuctionTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "coinBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TransferPostSettlementSurplus(address,uint256,uint256)",
+      "name": "TransferPostSettlementSurplus",
+      "description": "Event for RigelTokens purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "postSettlementSurplusDrain",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "coinBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "debtBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addAuthorization(address)",
+      "name": "addAuthorization",
+      "description": "Add auth to an account.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "Account to add auth to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "auctionDebt()",
+      "name": "auctionDebt",
+      "description": "Start a debt auction (print protocol tokens in exchange for coins so that the system can accumulate surplus). We can only auction debt that is not already being auctioned and is not locked in the debt queue*.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "auctionSurplus()",
+      "name": "auctionSurplus",
+      "description": "Start a surplus auction. We can only auction surplus if we wait at least 'surplusAuctionDelay' seconds since the last auction trigger, if we keep enough surplus in the buffer and if there is no bad debt left to settle*.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "authorizedAccounts(address)",
+      "name": "authorizedAccounts",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "canPrintProtocolTokens()",
+      "name": "canPrintProtocolTokens",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "cancelAuctionedDebtWithSurplus(uint256)",
+      "name": "cancelAuctionedDebtWithSurplus",
+      "description": "Use surplus coins to destroy debt that is/was in a debt auction.",
+      "parameterDecorators": [
+        {
+          "name": "rad",
+          "description": "Amount of coins/debt to destroy (number with 45 decimals)*.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "contractEnabled()",
+      "name": "contractEnabled",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "debtAuctionBidSize()",
+      "name": "debtAuctionBidSize",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "debtAuctionHouse()",
+      "name": "debtAuctionHouse",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "debtPoppers(uint256)",
+      "name": "debtPoppers",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "debtQueue(uint256)",
+      "name": "debtQueue",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "disableContract()",
+      "name": "disableContract",
+      "description": "Disable this contract (normally called by Global Settlement). When it's disabled, the contract will record the current timestamp. Afterwards, the contract tries to settle as much debt as possible (if there's any) with any surplus that's left in the system*.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "disableCooldown()",
+      "name": "disableCooldown",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "disableTimestamp()",
+      "name": "disableTimestamp",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "extraSurplusIsTransferred()",
+      "name": "extraSurplusIsTransferred",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "extraSurplusReceiver()",
+      "name": "extraSurplusReceiver",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialDebtAuctionMintedTokens()",
+      "name": "initialDebtAuctionMintedTokens",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastSurplusAuctionTime()",
+      "name": "lastSurplusAuctionTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastSurplusTransferTime()",
+      "name": "lastSurplusTransferTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "modifyParameters(bytes32,address)",
+      "name": "modifyParameters",
+      "description": "Modify dependency addresses.",
+      "parameterDecorators": [
+        {
+          "name": "parameter",
+          "description": "The name of the auction type we want to change the address for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "New address for the auction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "modifyParameters(bytes32,uint256)",
+      "name": "modifyParameters",
+      "description": "Modify general uint256 params for auctions.",
+      "parameterDecorators": [
+        {
+          "name": "parameter",
+          "description": "The name of the parameter modified.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "New value for the parameter.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "popDebtDelay()",
+      "name": "popDebtDelay",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "popDebtFromQueue(uint256)",
+      "name": "popDebtFromQueue",
+      "description": "A block of debt can be popped from the queue after popDebtDelay seconds passed since it was added there.",
+      "parameterDecorators": [
+        {
+          "name": "debtBlockTimestamp",
+          "description": "Timestamp of the block of debt that should be popped out.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "postSettlementSurplusDrain()",
+      "name": "postSettlementSurplusDrain",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "protocolTokenAuthority()",
+      "name": "protocolTokenAuthority",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pushDebtToQueue(uint256)",
+      "name": "pushDebtToQueue",
+      "description": "Push debt (that the system tries to cover with collateral auctions) to a queue. Debt is locked in a queue to give the system enough time to auction collateral and gather surplus.",
+      "parameterDecorators": [
+        {
+          "name": "debtBlock",
+          "description": "Amount of debt to push.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeAuthorization(address)",
+      "name": "removeAuthorization",
+      "description": "Remove auth from an account.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "Account to remove auth from.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "safeEngine()",
+      "name": "safeEngine",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "settleDebt(uint256)",
+      "name": "settleDebt",
+      "description": "Destroy an equal amount of coins and debt. We can only destroy debt that is not locked in the queue and also not in a debt auction.",
+      "parameterDecorators": [
+        {
+          "name": "rad",
+          "description": "Amount of coins/debt to destroy (number with 45 decimals)*.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "surplusAuctionAmountToSell()",
+      "name": "surplusAuctionAmountToSell",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "surplusAuctionDelay()",
+      "name": "surplusAuctionDelay",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "surplusAuctionHouse()",
+      "name": "surplusAuctionHouse",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "surplusBuffer()",
+      "name": "surplusBuffer",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "surplusTransferAmount()",
+      "name": "surplusTransferAmount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "surplusTransferDelay()",
+      "name": "surplusTransferDelay",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "systemStakingPool()",
+      "name": "systemStakingPool",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalOnAuctionDebt()",
+      "name": "totalOnAuctionDebt",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalQueuedDebt()",
+      "name": "totalQueuedDebt",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferExtraSurplus()",
+      "name": "transferExtraSurplus",
+      "description": "Send surplus to an address as an alternative to auctions. We can only transfer surplus if we wait at least 'surplusTransferDelay' seconds since the last transfer, if we keep enough surplus in the buffer and if there is no bad debt left to settle*.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferPostSettlementSurplus()",
+      "name": "transferPostSettlementSurplus",
+      "description": "Transfer any remaining surplus after the disable cooldown has passed. Meant to be a backup in case GlobalSettlement.processSAFE has a bug, governance doesn't have power over the system and there's still surplus left in the AccountingEngine which then blocks GlobalSettlement.setOutstandingCoinSupply. Transfer any remaining surplus after disableCooldown seconds have passed since disabling the contract*.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unqueuedUnauctionedDebt()",
+      "name": "unqueuedUnauctionedDebt",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

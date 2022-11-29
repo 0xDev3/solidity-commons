@@ -1,1 +1,295 @@
-{"schema":"../schema.json","tags":["convex"],"name":"BalDepositor","description":"BalDepositor contract. Deposit contract for Prime Pools is based on the convex contract crvDepositor.sol.","eventDecorators":[{"signature":"FeeManagerChanged(address)","name":"FeeManagerChanged","description":"Event for token purchase logging. Emitted when token is purchased by `to` in `token` for `price`.","parameterDecorators":[{"name":"newFeeManager","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LockIncentiveChanged(uint256)","name":"LockIncentiveChanged","description":"Event for token purchase logging. Emitted when token is purchased by `to` in `token` for `price`.","parameterDecorators":[{"name":"newLockIncentive","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"FEE_DENOMINATOR()","name":"FEE_DENOMINATOR","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"burnD2DBal(address,uint256)","name":"burnD2DBal","description":"Burns D2DBal from some address. Only Controller can call this.","parameterDecorators":[{"name":"_from","description":"","recommendedTypes":[]},{"name":"_amount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"d2dBal()","name":"d2dBal","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"deposit(uint256,bool,address)","name":"deposit","description":"Locks initial balance of Weth/Bal in Voter Proxy. Then stakes `_amount` of Weth/Bal tokens to veBal contract Mints & stakes d2dBal in Rewards contract on behalf of caller. VoterProxy `staker` is responsible for sending Weth/Bal tokens to veBal contract via _locktoken() All of the minted d2dBal will be automatically staked to the Rewards contract.","parameterDecorators":[{"name":"_amount","description":"The amount of tokens user wants to stake.","recommendedTypes":[]},{"name":"_lock","description":"boolean whether depositor wants to lock funds immediately.","recommendedTypes":[]},{"name":"_stakeAddress","description":"The Reward contract address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"depositAll(bool,address)","name":"depositAll","description":"Deposits entire Weth/Bal balance of caller. Stakes same amount in Rewards contract.","parameterDecorators":[{"name":"_lock","description":"boolean whether depositor wants to lock funds immediately.","recommendedTypes":[]},{"name":"_stakeAddress","description":"The Reward contract address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"feeManager()","name":"feeManager","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"incentiveBal()","name":"incentiveBal","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"initialLock()","name":"initialLock","description":"Locks initial Weth/Bal balance in veBal contract via voterProxy contract.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"lockBalancer()","name":"lockBalancer","description":"Locks tokens in vBal contract and mints reward tokens to sender. Needed in order to lockFunds on behalf of someone else.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"lockIncentive()","name":"lockIncentive","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setFeeManager(address)","name":"setFeeManager","description":"Sets the contracts feeManager variable.","parameterDecorators":[{"name":"_feeManager","description":"The address of the fee manager.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setFees(uint256)","name":"setFees","description":"Sets the lock incentive variable.","parameterDecorators":[{"name":"_lockIncentive","description":"Time to lock tokens.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"staker()","name":"staker","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"unlockTime()","name":"unlockTime","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"veBal()","name":"veBal","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"wethBal()","name":"wethBal","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "convex"
+  ],
+  "name": "BalDepositor",
+  "description": "BalDepositor contract. Deposit contract for Prime Pools is based on the convex contract crvDepositor.sol.",
+  "eventDecorators": [
+    {
+      "signature": "FeeManagerChanged(address)",
+      "name": "FeeManagerChanged",
+      "description": "Event for token purchase logging. Emitted when token is purchased by `to` in `token` for `price`.",
+      "parameterDecorators": [
+        {
+          "name": "newFeeManager",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LockIncentiveChanged(uint256)",
+      "name": "LockIncentiveChanged",
+      "description": "Event for token purchase logging. Emitted when token is purchased by `to` in `token` for `price`.",
+      "parameterDecorators": [
+        {
+          "name": "newLockIncentive",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "FEE_DENOMINATOR()",
+      "name": "FEE_DENOMINATOR",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "burnD2DBal(address,uint256)",
+      "name": "burnD2DBal",
+      "description": "Burns D2DBal from some address. Only Controller can call this.",
+      "parameterDecorators": [
+        {
+          "name": "_from",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "d2dBal()",
+      "name": "d2dBal",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deposit(uint256,bool,address)",
+      "name": "deposit",
+      "description": "Locks initial balance of Weth/Bal in Voter Proxy. Then stakes `_amount` of Weth/Bal tokens to veBal contract Mints & stakes d2dBal in Rewards contract on behalf of caller. VoterProxy `staker` is responsible for sending Weth/Bal tokens to veBal contract via _locktoken() All of the minted d2dBal will be automatically staked to the Rewards contract.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "The amount of tokens user wants to stake.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_lock",
+          "description": "boolean whether depositor wants to lock funds immediately.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_stakeAddress",
+          "description": "The Reward contract address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "depositAll(bool,address)",
+      "name": "depositAll",
+      "description": "Deposits entire Weth/Bal balance of caller. Stakes same amount in Rewards contract.",
+      "parameterDecorators": [
+        {
+          "name": "_lock",
+          "description": "boolean whether depositor wants to lock funds immediately.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_stakeAddress",
+          "description": "The Reward contract address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "feeManager()",
+      "name": "feeManager",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "incentiveBal()",
+      "name": "incentiveBal",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialLock()",
+      "name": "initialLock",
+      "description": "Locks initial Weth/Bal balance in veBal contract via voterProxy contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lockBalancer()",
+      "name": "lockBalancer",
+      "description": "Locks tokens in vBal contract and mints reward tokens to sender. Needed in order to lockFunds on behalf of someone else.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lockIncentive()",
+      "name": "lockIncentive",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setFeeManager(address)",
+      "name": "setFeeManager",
+      "description": "Sets the contracts feeManager variable.",
+      "parameterDecorators": [
+        {
+          "name": "_feeManager",
+          "description": "The address of the fee manager.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setFees(uint256)",
+      "name": "setFees",
+      "description": "Sets the lock incentive variable.",
+      "parameterDecorators": [
+        {
+          "name": "_lockIncentive",
+          "description": "Time to lock tokens.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "staker()",
+      "name": "staker",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unlockTime()",
+      "name": "unlockTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "veBal()",
+      "name": "veBal",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "wethBal()",
+      "name": "wethBal",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

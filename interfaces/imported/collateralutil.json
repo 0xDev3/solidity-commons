@@ -1,1 +1,308 @@
-{"schema":"../schema.json","tags":[],"name":"CollateralUtil","description":"","eventDecorators":[{"signature":"CacheUpdated(bytes32,address)","name":"CacheUpdated","description":"Hash to mark updated provenance hash. Emitted when the factory deploys a trigger. The `trigger` is the address at which the trigger was deployed. For `triggerConfigId`, see the function of the same name in this contract. For other attributes, see the docs for the params of `deployTrigger` in this contract.","parameterDecorators":[{"name":"name","description":"","recommendedTypes":[],"indexed":false},{"name":"destination","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"collateralRedeemed(bytes32,uint256,bytes32)","name":"collateralRedeemed","description":"","parameterDecorators":[{"name":"currency","description":"","recommendedTypes":[]},{"name":"amount","description":"","recommendedTypes":[]},{"name":"collateralKey","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"collateral","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getCollateralRatio(tuple(uint256,address,uint256,bytes32,uint256,bool,uint256,uint256,uint256),bytes32)","name":"getCollateralRatio","description":"","parameterDecorators":[{"name":"loan","description":"","recommendedTypes":[],"parameters":[{"name":"id","description":"","type":"uint256"},{"name":"account","description":"","type":"address"},{"name":"collateral","description":"","type":"uint256"},{"name":"currency","description":"","type":"bytes32"},{"name":"amount","description":"","type":"uint256"},{"name":"short","description":"","type":"bool"},{"name":"accruedInterest","description":"","type":"uint256"},{"name":"interestIndex","description":"","type":"uint256"},{"name":"lastInteraction","description":"","type":"uint256"}]},{"name":"collateralKey","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"cratio","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"isResolverCached()","name":"isResolverCached","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"liquidationAmount(tuple(uint256,address,uint256,bytes32,uint256,bool,uint256,uint256,uint256),uint256,bytes32)","name":"liquidationAmount","description":"r = target issuance ratio D = debt value in sUSD V = collateral value in sUSD P = liquidation penalty Calculates amount of synths = (D - V * r) / (1 - (1 + P) * r) Note: if you pass a loan in here that is not eligible for liquidation it will revert. We check the ratio first in liquidateInternal and only pass eligible loans in.","parameterDecorators":[{"name":"loan","description":"","recommendedTypes":[],"parameters":[{"name":"id","description":"","type":"uint256"},{"name":"account","description":"","type":"address"},{"name":"collateral","description":"","type":"uint256"},{"name":"currency","description":"","type":"bytes32"},{"name":"amount","description":"","type":"uint256"},{"name":"short","description":"","type":"bool"},{"name":"accruedInterest","description":"","type":"uint256"},{"name":"interestIndex","description":"","type":"uint256"},{"name":"lastInteraction","description":"","type":"uint256"}]},{"name":"minCratio","description":"","recommendedTypes":[]},{"name":"collateralKey","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"amount","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"maxLoan(uint256,bytes32,uint256,bytes32)","name":"maxLoan","description":"","parameterDecorators":[{"name":"amount","description":"","recommendedTypes":[]},{"name":"currency","description":"","recommendedTypes":[]},{"name":"minCratio","description":"","recommendedTypes":[]},{"name":"collateralKey","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"max","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"rebuildCache()","name":"rebuildCache","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"resolver()","name":"resolver","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"resolverAddressesRequired()","name":"resolverAddressesRequired","description":"","parameterDecorators":[],"returnDecorators":[{"name":"addresses","description":"","recommendedTypes":[],"solidityType":"bytes32[]"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "CollateralUtil",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "CacheUpdated(bytes32,address)",
+      "name": "CacheUpdated",
+      "description": "Hash to mark updated provenance hash. Emitted when the factory deploys a trigger. The `trigger` is the address at which the trigger was deployed. For `triggerConfigId`, see the function of the same name in this contract. For other attributes, see the docs for the params of `deployTrigger` in this contract.",
+      "parameterDecorators": [
+        {
+          "name": "name",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "destination",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "collateralRedeemed(bytes32,uint256,bytes32)",
+      "name": "collateralRedeemed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "currency",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "collateralKey",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "collateral",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCollateralRatio(tuple(uint256,address,uint256,bytes32,uint256,bool,uint256,uint256,uint256),bytes32)",
+      "name": "getCollateralRatio",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "loan",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "id",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "account",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "collateral",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "currency",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "short",
+              "description": "",
+              "type": "bool"
+            },
+            {
+              "name": "accruedInterest",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "interestIndex",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "lastInteraction",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "name": "collateralKey",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "cratio",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isResolverCached()",
+      "name": "isResolverCached",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "liquidationAmount(tuple(uint256,address,uint256,bytes32,uint256,bool,uint256,uint256,uint256),uint256,bytes32)",
+      "name": "liquidationAmount",
+      "description": "r = target issuance ratio D = debt value in sUSD V = collateral value in sUSD P = liquidation penalty Calculates amount of synths = (D - V * r) / (1 - (1 + P) * r) Note: if you pass a loan in here that is not eligible for liquidation it will revert. We check the ratio first in liquidateInternal and only pass eligible loans in.",
+      "parameterDecorators": [
+        {
+          "name": "loan",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "id",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "account",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "collateral",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "currency",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "short",
+              "description": "",
+              "type": "bool"
+            },
+            {
+              "name": "accruedInterest",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "interestIndex",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "lastInteraction",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "name": "minCratio",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "collateralKey",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxLoan(uint256,bytes32,uint256,bytes32)",
+      "name": "maxLoan",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "currency",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minCratio",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "collateralKey",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "max",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rebuildCache()",
+      "name": "rebuildCache",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "resolver()",
+      "name": "resolver",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "resolverAddressesRequired()",
+      "name": "resolverAddressesRequired",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "addresses",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

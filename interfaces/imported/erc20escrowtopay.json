@@ -1,1 +1,319 @@
-{"schema":"../schema.json","tags":["escrows"],"name":"ERC20EscrowToPay","description":"ERC20EscrowToPay. Request Invoice with Escrow.","eventDecorators":[{"signature":"InitiatedEmergencyClaim(bytes)","name":"InitiatedEmergencyClaim","description":"Emitted when an emergency claim is initiated by payee.","parameterDecorators":[{"name":"paymentReference","description":"Reference of the payment related.","recommendedTypes":[],"indexed":true}]},{"signature":"RequestFrozen(bytes)","name":"RequestFrozen","description":"Emitted when a request has been frozen.","parameterDecorators":[{"name":"paymentReference","description":"Reference of the payment related.","recommendedTypes":[],"indexed":true}]},{"signature":"RevertedEmergencyClaim(bytes)","name":"RevertedEmergencyClaim","description":"Emitted when an emergency claim has been reverted by payer.","parameterDecorators":[{"name":"paymentReference","description":"Reference of the payment related.","recommendedTypes":[],"indexed":true}]},{"signature":"TransferWithReferenceAndFee(address,address,uint256,bytes,uint256,address)","name":"TransferWithReferenceAndFee","description":"Emitted when transaction to and from the escrow has been executed.","parameterDecorators":[{"name":"tokenAddress","description":"Address of the ERC20 token smart contract.","recommendedTypes":[],"indexed":false},{"name":"to","description":"Address to the payment issuer, alias payee.","recommendedTypes":[],"indexed":false},{"name":"amount","description":"Amount transfered.","recommendedTypes":[],"indexed":false},{"name":"paymentReference","description":"Reference of the payment related.","recommendedTypes":[],"indexed":true},{"name":"feeAmount","description":"Set to zero when emited by _withdraw function.","recommendedTypes":[],"indexed":false},{"name":"feeAddress","description":"Set to address(0) when emited by _withdraw function.","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"approvePaymentProxyToSpend(address)","name":"approvePaymentProxyToSpend","description":"Authorizes the proxy to spend a new request currency (ERC20).","parameterDecorators":[{"name":"_erc20Address","description":"Address of an ERC20 used as the request currency.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"completeEmergencyClaim(bytes)","name":"completeEmergencyClaim","description":"Allows the payee claim funds after a six months emergency lockperiod . Uses modifiers OnlyPayee, IsInEscrow and IsNotFrozen.","parameterDecorators":[{"name":"_paymentRef","description":"Reference of the related Invoice.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"freezeRequest(bytes)","name":"freezeRequest","description":"Locks the request funds for the payer to recover them after 12 months and cancel any emergency claim. Uses modifiers OnlyPayer, IsInEscrow and IsNotFrozen.unlockDate is set with block.timestamp + twelve months..","parameterDecorators":[{"name":"_paymentRef","description":"Reference of the Invoice related.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"initiateEmergencyClaim(bytes)","name":"initiateEmergencyClaim","description":"Allows the payee to initiate an emergency claim after a six months lockperiod . Uses modifiers OnlyPayee, IsInEscrow, IsNotInEmergencyState and IsNotFrozen.","parameterDecorators":[{"name":"_paymentRef","description":"Reference of the related Invoice.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"payEscrow(address,address,uint256,bytes,uint256,address)","name":"payEscrow","description":"Stores the invoice details, and transfers funds to this Escrow contract. Uses modifier IsNotInEscrow.Uses transferFromWithReferenceAndFee() to transfer funds from the msg.sender, into the escrowcontract and pays the _fees to the _feeAdress.Emits RequestInEscrow(_paymentRef) when the funds are in escrow.","parameterDecorators":[{"name":"_tokenAddress","description":"Address of the ERC20 token smart contract.","recommendedTypes":[]},{"name":"_to","description":"Address to the payment issuer, alias payee.","recommendedTypes":[]},{"name":"_amount","description":"Amount to transfer.","recommendedTypes":[]},{"name":"_paymentRef","description":"Reference of the payment related.","recommendedTypes":[]},{"name":"_feeAmount","description":"Amount of fee to be paid.","recommendedTypes":[]},{"name":"_feeAddress","description":"Address to where the fees will be paid.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"payRequestFromEscrow(bytes)","name":"payRequestFromEscrow","description":"Closes an open escrow and pays the request to payee. Uses OnlyPayer, IsInEscrow, IsNotInEmergencyState and IsNotFrozen.","parameterDecorators":[{"name":"_paymentRef","description":"Reference of the related Invoice.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"paymentProxy()","name":"paymentProxy","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"refundFrozenFunds(bytes)","name":"refundFrozenFunds","description":"Refunds to payer after twelve months and delete the escrow. requires that the request .isFrozen = true and .unlockDate to be lower or equal to block.timestamp.","parameterDecorators":[{"name":"_paymentRef","description":"Reference of the Invoice related.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"requestMapping(bytes)","name":"requestMapping","description":"Mapping is used to store the Requests in escrow.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"tokenAddress","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"payee","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"payer","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"amount","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"unlockDate","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"emergencyClaimDate","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"emergencyState","description":"","recommendedTypes":[],"solidityType":"bool"},{"name":"isFrozen","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"revertEmergencyClaim(bytes)","name":"revertEmergencyClaim","description":"Reverts the emergencyState to false and cancels emergencyClaim. Uses modifiers OnlyPayer, IsInEscrow and IsNotFrozen.Resets emergencyState to false and emergencyClaimDate to zero.","parameterDecorators":[{"name":"_paymentRef","description":"Reference of the Invoice related.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "escrows"
+  ],
+  "name": "ERC20EscrowToPay",
+  "description": "ERC20EscrowToPay. Request Invoice with Escrow.",
+  "eventDecorators": [
+    {
+      "signature": "InitiatedEmergencyClaim(bytes)",
+      "name": "InitiatedEmergencyClaim",
+      "description": "Emitted when an emergency claim is initiated by payee.",
+      "parameterDecorators": [
+        {
+          "name": "paymentReference",
+          "description": "Reference of the payment related.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RequestFrozen(bytes)",
+      "name": "RequestFrozen",
+      "description": "Emitted when a request has been frozen.",
+      "parameterDecorators": [
+        {
+          "name": "paymentReference",
+          "description": "Reference of the payment related.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RevertedEmergencyClaim(bytes)",
+      "name": "RevertedEmergencyClaim",
+      "description": "Emitted when an emergency claim has been reverted by payer.",
+      "parameterDecorators": [
+        {
+          "name": "paymentReference",
+          "description": "Reference of the payment related.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TransferWithReferenceAndFee(address,address,uint256,bytes,uint256,address)",
+      "name": "TransferWithReferenceAndFee",
+      "description": "Emitted when transaction to and from the escrow has been executed.",
+      "parameterDecorators": [
+        {
+          "name": "tokenAddress",
+          "description": "Address of the ERC20 token smart contract.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "to",
+          "description": "Address to the payment issuer, alias payee.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "Amount transfered.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "paymentReference",
+          "description": "Reference of the payment related.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "feeAmount",
+          "description": "Set to zero when emited by _withdraw function.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "feeAddress",
+          "description": "Set to address(0) when emited by _withdraw function.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "approvePaymentProxyToSpend(address)",
+      "name": "approvePaymentProxyToSpend",
+      "description": "Authorizes the proxy to spend a new request currency (ERC20).",
+      "parameterDecorators": [
+        {
+          "name": "_erc20Address",
+          "description": "Address of an ERC20 used as the request currency.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "completeEmergencyClaim(bytes)",
+      "name": "completeEmergencyClaim",
+      "description": "Allows the payee claim funds after a six months emergency lockperiod . Uses modifiers OnlyPayee, IsInEscrow and IsNotFrozen.",
+      "parameterDecorators": [
+        {
+          "name": "_paymentRef",
+          "description": "Reference of the related Invoice.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "freezeRequest(bytes)",
+      "name": "freezeRequest",
+      "description": "Locks the request funds for the payer to recover them after 12 months and cancel any emergency claim. Uses modifiers OnlyPayer, IsInEscrow and IsNotFrozen.unlockDate is set with block.timestamp + twelve months..",
+      "parameterDecorators": [
+        {
+          "name": "_paymentRef",
+          "description": "Reference of the Invoice related.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initiateEmergencyClaim(bytes)",
+      "name": "initiateEmergencyClaim",
+      "description": "Allows the payee to initiate an emergency claim after a six months lockperiod . Uses modifiers OnlyPayee, IsInEscrow, IsNotInEmergencyState and IsNotFrozen.",
+      "parameterDecorators": [
+        {
+          "name": "_paymentRef",
+          "description": "Reference of the related Invoice.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "payEscrow(address,address,uint256,bytes,uint256,address)",
+      "name": "payEscrow",
+      "description": "Stores the invoice details, and transfers funds to this Escrow contract. Uses modifier IsNotInEscrow.Uses transferFromWithReferenceAndFee() to transfer funds from the msg.sender, into the escrowcontract and pays the _fees to the _feeAdress.Emits RequestInEscrow(_paymentRef) when the funds are in escrow.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenAddress",
+          "description": "Address of the ERC20 token smart contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "Address to the payment issuer, alias payee.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "Amount to transfer.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_paymentRef",
+          "description": "Reference of the payment related.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_feeAmount",
+          "description": "Amount of fee to be paid.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_feeAddress",
+          "description": "Address to where the fees will be paid.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "payRequestFromEscrow(bytes)",
+      "name": "payRequestFromEscrow",
+      "description": "Closes an open escrow and pays the request to payee. Uses OnlyPayer, IsInEscrow, IsNotInEmergencyState and IsNotFrozen.",
+      "parameterDecorators": [
+        {
+          "name": "_paymentRef",
+          "description": "Reference of the related Invoice.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "paymentProxy()",
+      "name": "paymentProxy",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "refundFrozenFunds(bytes)",
+      "name": "refundFrozenFunds",
+      "description": "Refunds to payer after twelve months and delete the escrow. requires that the request .isFrozen = true and .unlockDate to be lower or equal to block.timestamp.",
+      "parameterDecorators": [
+        {
+          "name": "_paymentRef",
+          "description": "Reference of the Invoice related.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "requestMapping(bytes)",
+      "name": "requestMapping",
+      "description": "Mapping is used to store the Requests in escrow.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "tokenAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "payee",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "payer",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "unlockDate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "emergencyClaimDate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "emergencyState",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "isFrozen",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "revertEmergencyClaim(bytes)",
+      "name": "revertEmergencyClaim",
+      "description": "Reverts the emergencyState to false and cancels emergencyClaim. Uses modifiers OnlyPayer, IsInEscrow and IsNotFrozen.Resets emergencyState to false and emergencyClaimDate to zero.",
+      "parameterDecorators": [
+        {
+          "name": "_paymentRef",
+          "description": "Reference of the Invoice related.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

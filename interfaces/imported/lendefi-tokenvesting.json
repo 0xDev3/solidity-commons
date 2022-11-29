@@ -1,1 +1,382 @@
-{"schema":"../schema.json","tags":["tokens","lending","vesting"],"name":"LendefiTokenVesting","description":"Lendefi TokenVesting. A token holder contract that can release its token balance gradually like a typical vesting scheme, with a cliff and vesting period. Optionally revocable by the owner.","eventDecorators":[{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"TokenVestingAdded(uint256,address,uint256)","name":"TokenVestingAdded","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"newAmount","description":"new amount.","recommendedTypes":[],"indexed":true},{"name":"prevAmount","description":"previous amount.","recommendedTypes":[],"indexed":true},{"name":"token","description":"token address.","recommendedTypes":[],"indexed":false}]},{"signature":"TokenVestingReleased(uint256,address,uint256)","name":"TokenVestingReleased","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"newAmount","description":"new amount.","recommendedTypes":[],"indexed":true},{"name":"prevAmount","description":"previous amount.","recommendedTypes":[],"indexed":true},{"name":"token","description":"token address.","recommendedTypes":[],"indexed":false}]},{"signature":"TokenVestingRemoved(uint256,address,uint256)","name":"TokenVestingRemoved","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"newAmount","description":"new amount.","recommendedTypes":[],"indexed":true},{"name":"prevAmount","description":"previous amount.","recommendedTypes":[],"indexed":true},{"name":"token","description":"token address.","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"addVesting(uint256,uint256,uint256)","name":"addVesting","description":"Function to add a vesting Since this is onlyOwner protected, tokens are assumed to be transferred to the vesting contract.","parameterDecorators":[{"name":"_beneficiaryIndex","description":"Beneficiary's address index.","recommendedTypes":[]},{"name":"_releaseTime","description":"Time for release.","recommendedTypes":[]},{"name":"_amount","description":"Amount of vesting.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"beneficiary(uint256)","name":"beneficiary","description":"Function to check beneficiary of a vesting.","parameterDecorators":[{"name":"_vestingId","description":"vesting Id.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Beneficiary's address.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"beneficiaryAddress(uint256)","name":"beneficiaryAddress","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"release(uint256)","name":"release","description":"Function to release tokens of a vesting id.","parameterDecorators":[{"name":"_vestingId","description":"vesting Id.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"releaseTime(uint256)","name":"releaseTime","description":"Function to check Release Time of a vesting.","parameterDecorators":[{"name":"_vestingId","description":"vesting Id.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Release Time in unix timestamp.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"removeVesting(uint256)","name":"removeVesting","description":"Function to remove a vesting by owner of vesting contract.","parameterDecorators":[{"name":"_vestingId","description":"vesting Id.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"retrieveExcessTokens(uint256)","name":"retrieveExcessTokens","description":"Function to remove any extra tokens, i.e cancelation of a vesting.","parameterDecorators":[{"name":"_amount","description":"Amount to retrieve.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"token()","name":"token","description":"Token address for vesting contract.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Token contract address.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateBeneficiaryAddress(uint256,address)","name":"updateBeneficiaryAddress","description":"","parameterDecorators":[{"name":"index","description":"","recommendedTypes":[]},{"name":"newAddr","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"vestingAmount(uint256)","name":"vestingAmount","description":"Function to check token amount of a vesting.","parameterDecorators":[{"name":"_vestingId","description":"vesting Id.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Number of tokens for a vesting.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"vestings(uint256)","name":"vestings","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"releaseTime","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"amount","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"beneficiaryIndex","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"released","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "lending",
+    "vesting"
+  ],
+  "name": "LendefiTokenVesting",
+  "description": "Lendefi TokenVesting. A token holder contract that can release its token balance gradually like a typical vesting scheme, with a cliff and vesting period. Optionally revocable by the owner.",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TokenVestingAdded(uint256,address,uint256)",
+      "name": "TokenVestingAdded",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "newAmount",
+          "description": "new amount.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "prevAmount",
+          "description": "previous amount.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token",
+          "description": "token address.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TokenVestingReleased(uint256,address,uint256)",
+      "name": "TokenVestingReleased",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "newAmount",
+          "description": "new amount.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "prevAmount",
+          "description": "previous amount.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token",
+          "description": "token address.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TokenVestingRemoved(uint256,address,uint256)",
+      "name": "TokenVestingRemoved",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "newAmount",
+          "description": "new amount.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "prevAmount",
+          "description": "previous amount.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token",
+          "description": "token address.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addVesting(uint256,uint256,uint256)",
+      "name": "addVesting",
+      "description": "Function to add a vesting Since this is onlyOwner protected, tokens are assumed to be transferred to the vesting contract.",
+      "parameterDecorators": [
+        {
+          "name": "_beneficiaryIndex",
+          "description": "Beneficiary's address index.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_releaseTime",
+          "description": "Time for release.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "Amount of vesting.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "beneficiary(uint256)",
+      "name": "beneficiary",
+      "description": "Function to check beneficiary of a vesting.",
+      "parameterDecorators": [
+        {
+          "name": "_vestingId",
+          "description": "vesting Id.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Beneficiary's address.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "beneficiaryAddress(uint256)",
+      "name": "beneficiaryAddress",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "release(uint256)",
+      "name": "release",
+      "description": "Function to release tokens of a vesting id.",
+      "parameterDecorators": [
+        {
+          "name": "_vestingId",
+          "description": "vesting Id.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "releaseTime(uint256)",
+      "name": "releaseTime",
+      "description": "Function to check Release Time of a vesting.",
+      "parameterDecorators": [
+        {
+          "name": "_vestingId",
+          "description": "vesting Id.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Release Time in unix timestamp.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeVesting(uint256)",
+      "name": "removeVesting",
+      "description": "Function to remove a vesting by owner of vesting contract.",
+      "parameterDecorators": [
+        {
+          "name": "_vestingId",
+          "description": "vesting Id.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "retrieveExcessTokens(uint256)",
+      "name": "retrieveExcessTokens",
+      "description": "Function to remove any extra tokens, i.e cancelation of a vesting.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "Amount to retrieve.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "Token address for vesting contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Token contract address.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateBeneficiaryAddress(uint256,address)",
+      "name": "updateBeneficiaryAddress",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newAddr",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "vestingAmount(uint256)",
+      "name": "vestingAmount",
+      "description": "Function to check token amount of a vesting.",
+      "parameterDecorators": [
+        {
+          "name": "_vestingId",
+          "description": "vesting Id.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Number of tokens for a vesting.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "vestings(uint256)",
+      "name": "vestings",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "releaseTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "beneficiaryIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "released",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

@@ -1,1 +1,1282 @@
-{"schema":"../schema.json","tags":["tokens"],"name":"StakingV1","description":"Staking V1 contract. The Staking Contract contains the logic for BRO Token staking and reward distribution.","eventDecorators":[{"signature":"AdminChanged(address,address)","name":"AdminChanged","description":"","parameterDecorators":[{"name":"previousAdmin","description":"","recommendedTypes":[],"indexed":false},{"name":"newAdmin","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"BBroRewardsClaimed(address,uint256)","name":"BBroRewardsClaimed","description":"Emitted when staked claimed his $bBRO rewards.","parameterDecorators":[{"name":"staker","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"BeaconUpgraded(address)","name":"BeaconUpgraded","description":"","parameterDecorators":[{"name":"beacon","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"BroRewardsClaimed(address,uint256)","name":"BroRewardsClaimed","description":"Emitted when staker claimed his $BRO rewards.","parameterDecorators":[{"name":"staker","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Compounded(address,uint256,uint256)","name":"Compounded","description":"Emitted when staker compunded his $BRO rewards.","parameterDecorators":[{"name":"staker","description":"","recommendedTypes":[],"indexed":true},{"name":"compoundAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"unstakingPeriod","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"DistributionHandled(uint256)","name":"DistributionHandled","description":"","parameterDecorators":[{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Initialized(uint8)","name":"Initialized","description":"","parameterDecorators":[{"name":"version","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Paused(address)","name":"Paused","description":"","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ProtocolMemberStaked(address,uint256,uint256)","name":"ProtocolMemberStaked","description":"Emitted when stake was performed via one of the protocol members.","parameterDecorators":[{"name":"staker","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"unstakingPeriod","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Staked(address,uint256,uint256)","name":"Staked","description":"Emitted when staker staked some amount by specified unstaking period.","parameterDecorators":[{"name":"staker","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"unstakingPeriod","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Unpaused(address)","name":"Unpaused","description":"","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Unstaked(address,uint256,uint256)","name":"Unstaked","description":"Emitted when staker unstaked some amount of tokens from selected unstaking period.","parameterDecorators":[{"name":"staker","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"unstakingPeriod","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Upgraded(address)","name":"Upgraded","description":"","parameterDecorators":[{"name":"implementation","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"WithdrawalCanceled(address,uint256,uint256)","name":"WithdrawalCanceled","description":"Emitted when staker cancelled withdrawal.","parameterDecorators":[{"name":"staker","description":"","recommendedTypes":[],"indexed":true},{"name":"compoundAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"unstakingPeriod","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Withdrawn(address,uint256)","name":"Withdrawn","description":"Emitted when staker withdrew his token after unstaking period was expired.","parameterDecorators":[{"name":"staker","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"PRECISION()","name":"PRECISION","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"addProtocolMember(address)","name":"addProtocolMember","description":"Adds new protocol member.","parameterDecorators":[{"name":"_newMember","description":"new protocol member address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"bBroRewardsBaseIndex()","name":"bBroRewardsBaseIndex","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"bBroRewardsXtraMultiplier()","name":"bBroRewardsXtraMultiplier","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint16"}],"emittableEvents":[],"readOnly":true},{"signature":"bBroToken()","name":"bBroToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"broToken()","name":"broToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"cancelUnstaking(uint256,uint256)","name":"cancelUnstaking","description":"Cancels withdrawal. Moves withdrawn funds back to the unstaking period.","parameterDecorators":[{"name":"_amount","description":"specified amount to find withdrawal.","recommendedTypes":[]},{"name":"_unstakingPeriod","description":"specified unstaking period to find withdrawal.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"claimRewards(bool,bool)","name":"claimRewards","description":"Claimes staker rewards and transferes them to the staker wallet.","parameterDecorators":[{"name":"_claimBro","description":"defines either to claim $BRO rewards or not.","recommendedTypes":[]},{"name":"_claimBBro","description":"defines either to claim $bBRO rewards or not.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"param1","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"compound(uint256)","name":"compound","description":"Compounds staker pending $BRO rewards and deposits them to specified unstaking period.","parameterDecorators":[{"name":"_unstakingPeriod","description":"specified unstaking period.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"distributor()","name":"distributor","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"epochManager()","name":"epochManager","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getStakerInfo(address)","name":"getStakerInfo","description":"Returns staker info.","parameterDecorators":[{"name":"_stakerAddress","description":"staker's address to look for.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"globalBroRewardIndex()","name":"globalBroRewardIndex","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"handleDistribution(uint256)","name":"handleDistribution","description":"Perform action that is required when token distribution happened.","parameterDecorators":[{"name":"_amount","description":"amount of received tokens via distribution.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"increaseUnstakingPeriod(uint256,uint256)","name":"increaseUnstakingPeriod","description":"Increases selected unstaking period. If increase version of unstaking period already exists the contract will move all the funds there and remove the old one.","parameterDecorators":[{"name":"_currentUnstakingPeriod","description":"unstaking period to increase.","recommendedTypes":[]},{"name":"_increasedUnstakingPeriod","description":"increased unstaking period.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"initialize(tuple(address,address,address,address,address[],uint256,uint256,uint256,uint8,uint8,uint256,uint256,uint256,uint256,uint16))","name":"initialize","description":"","parameterDecorators":[{"name":"initParams_","description":"","recommendedTypes":[],"parameters":[{"name":"distributor_","description":"","type":"address"},{"name":"epochManager_","description":"","type":"address"},{"name":"broToken_","description":"","type":"address"},{"name":"bBroToken_","description":"","type":"address"},{"name":"protocolMembers_","description":"","type":"address[]"},{"name":"minBroStakeAmount_","description":"","type":"uint256"},{"name":"minUnstakingPeriod_","description":"","type":"uint256"},{"name":"maxUnstakingPeriod_","description":"","type":"uint256"},{"name":"maxUnstakingPeriodsPerStaker_","description":"","type":"uint8"},{"name":"maxWithdrawalsPerUnstakingPeriod_","description":"","type":"uint8"},{"name":"rewardGeneratingAmountBaseIndex_","description":"","type":"uint256"},{"name":"withdrawalAmountReducePerc_","description":"","type":"uint256"},{"name":"withdrawnBBroRewardReducePerc_","description":"","type":"uint256"},{"name":"bBroRewardsBaseIndex_","description":"","type":"uint256"},{"name":"bBroRewardsXtraMultiplier_","description":"","type":"uint16"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"maxUnstakingPeriod()","name":"maxUnstakingPeriod","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"maxUnstakingPeriodsPerStaker()","name":"maxUnstakingPeriodsPerStaker","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"maxWithdrawalsPerUnstakingPeriod()","name":"maxWithdrawalsPerUnstakingPeriod","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"minBroStakeAmount()","name":"minBroStakeAmount","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"minUnstakingPeriod()","name":"minUnstakingPeriod","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"pause()","name":"pause","description":"Pauses the contract.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"paused()","name":"paused","description":"Returns true if the contract is paused, and false otherwise.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"protocolMemberStake(address,uint256,uint256)","name":"protocolMemberStake","description":"Stake specified amount of $BRO tokens via one of the protocol members.","parameterDecorators":[{"name":"_stakerAddress","description":"staker's address.","recommendedTypes":[]},{"name":"_amount","description":"bonded amount that will be staked.","recommendedTypes":[]},{"name":"_unstakingPeriod","description":"specified unstaking period.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"protocolMemberUnstake(address,uint256,uint256)","name":"protocolMemberUnstake","description":"Unstakes specified amount of $BRO tokens via one of the protocol members. Unstaking period starts at this moment of time.","parameterDecorators":[{"name":"_stakerAddress","description":"staker's address.","recommendedTypes":[]},{"name":"_amount","description":"specified amount to unstake.","recommendedTypes":[]},{"name":"_unstakingPeriod","description":"specified unstaking period.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"protocolMembers(uint256)","name":"protocolMembers","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"proxiableUUID()","name":"proxiableUUID","description":"Implementation of the ERC1822 {proxiableUUID} function. This returns the storage slot used by the implementation. It is used to validate that the this implementation remains valid after an upgrade. IMPORTANT: A proxy pointing at a proxiable contract should not be considered proxiable itself, because this risks bricking a proxy that upgrades to it, by delegating to itself until out of gas. Thus it is critical that this function revert if invoked through a proxy. This is guaranteed by the `notDelegated` modifier.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"removeProtocolMember(address)","name":"removeProtocolMember","description":"Removes address from protocol members list.","parameterDecorators":[{"name":"_member","description":"member address for removal.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"rewardGeneratingAmountBaseIndex()","name":"rewardGeneratingAmountBaseIndex","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setBBroRewardsBaseIndex(uint256)","name":"setBBroRewardsBaseIndex","description":"Sets new $bBRO rewards base index.","parameterDecorators":[{"name":"_newBBroRewardsBaseIndex","description":"new $bBRO rewards base index.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setBBroRewardsXtraMultiplier(uint16)","name":"setBBroRewardsXtraMultiplier","description":"Sets new $bBRO rewards extra multiplier.","parameterDecorators":[{"name":"_newBBroRewardsXtraMultiplier","description":"new $bBRO rewards extra multiplier.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setDistributor(address)","name":"setDistributor","description":"Sets new distributor address.","parameterDecorators":[{"name":"_newDistributor","description":"new distributor.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMaxUnstakingPeriod(uint256)","name":"setMaxUnstakingPeriod","description":"Sets max unstaking period.","parameterDecorators":[{"name":"_newMaxUnstakingPeriod","description":"new max unstaking period.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMaxUnstakingPeriodsPerStaker(uint8)","name":"setMaxUnstakingPeriodsPerStaker","description":"Sets max amount of unstaking periods per staker.","parameterDecorators":[{"name":"_newMaxUnstakingPeriodsPerStaker","description":"new max amount of unstaking periods per staker.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMaxWithdrawalsPerUnstakingPeriod(uint8)","name":"setMaxWithdrawalsPerUnstakingPeriod","description":"Sets new max withdrawals per unstaking period per staker.","parameterDecorators":[{"name":"_newMaxWithdrawalsPerUnstakingPeriod","description":"new max withdrawals per unstaking period per staker.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMinBroStakeAmount(uint256)","name":"setMinBroStakeAmount","description":"Sets new min $BRO stake amount.","parameterDecorators":[{"name":"_newMinBroStakeAmount","description":"new min stake amount.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setMinUnstakingPeriod(uint256)","name":"setMinUnstakingPeriod","description":"Sets min unstaking period.","parameterDecorators":[{"name":"_newMinUnstakingPeriod","description":"new min unstaking period.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setRewardGeneratingAmountBaseIndex(uint256)","name":"setRewardGeneratingAmountBaseIndex","description":"Sets new rewards generating amount base index.","parameterDecorators":[{"name":"_newRewardGeneratingAmountBaseIndex","description":"new rewards generating amount base index.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setWithdrawalAmountReducePerc(uint256)","name":"setWithdrawalAmountReducePerc","description":"Sets new withdrawal amount redice perc.","parameterDecorators":[{"name":"_newWithdrawalAmountReducePerc","description":"new withdrawal amount redice perc.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setWithdrawnBBroRewardReducePerc(uint256)","name":"setWithdrawnBBroRewardReducePerc","description":"Sets new withdrawan $bBRO reward rediced percent.","parameterDecorators":[{"name":"_newWithdrawnBBroRewardReducePerc","description":"new withdrawan $bBRO reward rediced percent.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"stake(uint256,uint256)","name":"stake","description":"Stakes specified amount of $BRO tokens.","parameterDecorators":[{"name":"_amount","description":"amount of $BRO tokens to stake.","recommendedTypes":[]},{"name":"_unstakingPeriod","description":"specified unstaking period.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"supportsDistributions()","name":"supportsDistributions","description":"Returns either contract supports distributions or not.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"totalBroStaked()","name":"totalBroStaked","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"totalStakerRewardsGeneratingBro(address)","name":"totalStakerRewardsGeneratingBro","description":"Returns total amount of rewards generating $BRO by staker address.","parameterDecorators":[{"name":"_stakerAddress","description":"staker's address to look for.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unpause()","name":"unpause","description":"Unpauses the contract.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unstake(uint256,uint256)","name":"unstake","description":"Unstakes specified amount of $BRO tokens. Unstaking period starts at this moment of time.","parameterDecorators":[{"name":"_amount","description":"specified amount to unstake.","recommendedTypes":[]},{"name":"_unstakingPeriod","description":"specified unstaking period.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"upgradeTo(address)","name":"upgradeTo","description":"Upgrade the implementation of the proxy to `newImplementation`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.","parameterDecorators":[{"name":"newImplementation","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":["Upgraded(address)"],"readOnly":false},{"signature":"upgradeToAndCall(address,bytes)","name":"upgradeToAndCall","description":"Upgrade the implementation of the proxy to `newImplementation`, and subsequently execute the function call encoded in `data`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.","parameterDecorators":[{"name":"newImplementation","description":"","recommendedTypes":[]},{"name":"data","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":["Upgraded(address)"],"readOnly":false},{"signature":"withdraw()","name":"withdraw","description":"Removes all expired withdrawals and transferes unstaked amount to the staker.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdrawalAmountReducePerc()","name":"withdrawalAmountReducePerc","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"withdrawnBBroRewardReducePerc()","name":"withdrawnBBroRewardReducePerc","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens"
+  ],
+  "name": "StakingV1",
+  "description": "Staking V1 contract. The Staking Contract contains the logic for BRO Token staking and reward distribution.",
+  "eventDecorators": [
+    {
+      "signature": "AdminChanged(address,address)",
+      "name": "AdminChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BBroRewardsClaimed(address,uint256)",
+      "name": "BBroRewardsClaimed",
+      "description": "Emitted when staked claimed his $bBRO rewards.",
+      "parameterDecorators": [
+        {
+          "name": "staker",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BeaconUpgraded(address)",
+      "name": "BeaconUpgraded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "beacon",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "BroRewardsClaimed(address,uint256)",
+      "name": "BroRewardsClaimed",
+      "description": "Emitted when staker claimed his $BRO rewards.",
+      "parameterDecorators": [
+        {
+          "name": "staker",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Compounded(address,uint256,uint256)",
+      "name": "Compounded",
+      "description": "Emitted when staker compunded his $BRO rewards.",
+      "parameterDecorators": [
+        {
+          "name": "staker",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "compoundAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "unstakingPeriod",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DistributionHandled(uint256)",
+      "name": "DistributionHandled",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Initialized(uint8)",
+      "name": "Initialized",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "version",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Paused(address)",
+      "name": "Paused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ProtocolMemberStaked(address,uint256,uint256)",
+      "name": "ProtocolMemberStaked",
+      "description": "Emitted when stake was performed via one of the protocol members.",
+      "parameterDecorators": [
+        {
+          "name": "staker",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "unstakingPeriod",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Staked(address,uint256,uint256)",
+      "name": "Staked",
+      "description": "Emitted when staker staked some amount by specified unstaking period.",
+      "parameterDecorators": [
+        {
+          "name": "staker",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "unstakingPeriod",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unpaused(address)",
+      "name": "Unpaused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unstaked(address,uint256,uint256)",
+      "name": "Unstaked",
+      "description": "Emitted when staker unstaked some amount of tokens from selected unstaking period.",
+      "parameterDecorators": [
+        {
+          "name": "staker",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "unstakingPeriod",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Upgraded(address)",
+      "name": "Upgraded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "implementation",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "WithdrawalCanceled(address,uint256,uint256)",
+      "name": "WithdrawalCanceled",
+      "description": "Emitted when staker cancelled withdrawal.",
+      "parameterDecorators": [
+        {
+          "name": "staker",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "compoundAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "unstakingPeriod",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Withdrawn(address,uint256)",
+      "name": "Withdrawn",
+      "description": "Emitted when staker withdrew his token after unstaking period was expired.",
+      "parameterDecorators": [
+        {
+          "name": "staker",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "PRECISION()",
+      "name": "PRECISION",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addProtocolMember(address)",
+      "name": "addProtocolMember",
+      "description": "Adds new protocol member.",
+      "parameterDecorators": [
+        {
+          "name": "_newMember",
+          "description": "new protocol member address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "bBroRewardsBaseIndex()",
+      "name": "bBroRewardsBaseIndex",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "bBroRewardsXtraMultiplier()",
+      "name": "bBroRewardsXtraMultiplier",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "bBroToken()",
+      "name": "bBroToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "broToken()",
+      "name": "broToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "cancelUnstaking(uint256,uint256)",
+      "name": "cancelUnstaking",
+      "description": "Cancels withdrawal. Moves withdrawn funds back to the unstaking period.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "specified amount to find withdrawal.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_unstakingPeriod",
+          "description": "specified unstaking period to find withdrawal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimRewards(bool,bool)",
+      "name": "claimRewards",
+      "description": "Claimes staker rewards and transferes them to the staker wallet.",
+      "parameterDecorators": [
+        {
+          "name": "_claimBro",
+          "description": "defines either to claim $BRO rewards or not.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_claimBBro",
+          "description": "defines either to claim $bBRO rewards or not.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "compound(uint256)",
+      "name": "compound",
+      "description": "Compounds staker pending $BRO rewards and deposits them to specified unstaking period.",
+      "parameterDecorators": [
+        {
+          "name": "_unstakingPeriod",
+          "description": "specified unstaking period.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "distributor()",
+      "name": "distributor",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "epochManager()",
+      "name": "epochManager",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getStakerInfo(address)",
+      "name": "getStakerInfo",
+      "description": "Returns staker info.",
+      "parameterDecorators": [
+        {
+          "name": "_stakerAddress",
+          "description": "staker's address to look for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "globalBroRewardIndex()",
+      "name": "globalBroRewardIndex",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "handleDistribution(uint256)",
+      "name": "handleDistribution",
+      "description": "Perform action that is required when token distribution happened.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "amount of received tokens via distribution.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "increaseUnstakingPeriod(uint256,uint256)",
+      "name": "increaseUnstakingPeriod",
+      "description": "Increases selected unstaking period. If increase version of unstaking period already exists the contract will move all the funds there and remove the old one.",
+      "parameterDecorators": [
+        {
+          "name": "_currentUnstakingPeriod",
+          "description": "unstaking period to increase.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_increasedUnstakingPeriod",
+          "description": "increased unstaking period.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialize(tuple(address,address,address,address,address[],uint256,uint256,uint256,uint8,uint8,uint256,uint256,uint256,uint256,uint16))",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "initParams_",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "distributor_",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "epochManager_",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "broToken_",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "bBroToken_",
+              "description": "",
+              "type": "address"
+            },
+            {
+              "name": "protocolMembers_",
+              "description": "",
+              "type": "address[]"
+            },
+            {
+              "name": "minBroStakeAmount_",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "minUnstakingPeriod_",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "maxUnstakingPeriod_",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "maxUnstakingPeriodsPerStaker_",
+              "description": "",
+              "type": "uint8"
+            },
+            {
+              "name": "maxWithdrawalsPerUnstakingPeriod_",
+              "description": "",
+              "type": "uint8"
+            },
+            {
+              "name": "rewardGeneratingAmountBaseIndex_",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "withdrawalAmountReducePerc_",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "withdrawnBBroRewardReducePerc_",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "bBroRewardsBaseIndex_",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "bBroRewardsXtraMultiplier_",
+              "description": "",
+              "type": "uint16"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "maxUnstakingPeriod()",
+      "name": "maxUnstakingPeriod",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxUnstakingPeriodsPerStaker()",
+      "name": "maxUnstakingPeriodsPerStaker",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxWithdrawalsPerUnstakingPeriod()",
+      "name": "maxWithdrawalsPerUnstakingPeriod",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minBroStakeAmount()",
+      "name": "minBroStakeAmount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minUnstakingPeriod()",
+      "name": "minUnstakingPeriod",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pause()",
+      "name": "pause",
+      "description": "Pauses the contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "paused()",
+      "name": "paused",
+      "description": "Returns true if the contract is paused, and false otherwise.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "protocolMemberStake(address,uint256,uint256)",
+      "name": "protocolMemberStake",
+      "description": "Stake specified amount of $BRO tokens via one of the protocol members.",
+      "parameterDecorators": [
+        {
+          "name": "_stakerAddress",
+          "description": "staker's address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "bonded amount that will be staked.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_unstakingPeriod",
+          "description": "specified unstaking period.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "protocolMemberUnstake(address,uint256,uint256)",
+      "name": "protocolMemberUnstake",
+      "description": "Unstakes specified amount of $BRO tokens via one of the protocol members. Unstaking period starts at this moment of time.",
+      "parameterDecorators": [
+        {
+          "name": "_stakerAddress",
+          "description": "staker's address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "specified amount to unstake.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_unstakingPeriod",
+          "description": "specified unstaking period.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "protocolMembers(uint256)",
+      "name": "protocolMembers",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "proxiableUUID()",
+      "name": "proxiableUUID",
+      "description": "Implementation of the ERC1822 {proxiableUUID} function. This returns the storage slot used by the implementation. It is used to validate that the this implementation remains valid after an upgrade. IMPORTANT: A proxy pointing at a proxiable contract should not be considered proxiable itself, because this risks bricking a proxy that upgrades to it, by delegating to itself until out of gas. Thus it is critical that this function revert if invoked through a proxy. This is guaranteed by the `notDelegated` modifier.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeProtocolMember(address)",
+      "name": "removeProtocolMember",
+      "description": "Removes address from protocol members list.",
+      "parameterDecorators": [
+        {
+          "name": "_member",
+          "description": "member address for removal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rewardGeneratingAmountBaseIndex()",
+      "name": "rewardGeneratingAmountBaseIndex",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setBBroRewardsBaseIndex(uint256)",
+      "name": "setBBroRewardsBaseIndex",
+      "description": "Sets new $bBRO rewards base index.",
+      "parameterDecorators": [
+        {
+          "name": "_newBBroRewardsBaseIndex",
+          "description": "new $bBRO rewards base index.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setBBroRewardsXtraMultiplier(uint16)",
+      "name": "setBBroRewardsXtraMultiplier",
+      "description": "Sets new $bBRO rewards extra multiplier.",
+      "parameterDecorators": [
+        {
+          "name": "_newBBroRewardsXtraMultiplier",
+          "description": "new $bBRO rewards extra multiplier.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDistributor(address)",
+      "name": "setDistributor",
+      "description": "Sets new distributor address.",
+      "parameterDecorators": [
+        {
+          "name": "_newDistributor",
+          "description": "new distributor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMaxUnstakingPeriod(uint256)",
+      "name": "setMaxUnstakingPeriod",
+      "description": "Sets max unstaking period.",
+      "parameterDecorators": [
+        {
+          "name": "_newMaxUnstakingPeriod",
+          "description": "new max unstaking period.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMaxUnstakingPeriodsPerStaker(uint8)",
+      "name": "setMaxUnstakingPeriodsPerStaker",
+      "description": "Sets max amount of unstaking periods per staker.",
+      "parameterDecorators": [
+        {
+          "name": "_newMaxUnstakingPeriodsPerStaker",
+          "description": "new max amount of unstaking periods per staker.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMaxWithdrawalsPerUnstakingPeriod(uint8)",
+      "name": "setMaxWithdrawalsPerUnstakingPeriod",
+      "description": "Sets new max withdrawals per unstaking period per staker.",
+      "parameterDecorators": [
+        {
+          "name": "_newMaxWithdrawalsPerUnstakingPeriod",
+          "description": "new max withdrawals per unstaking period per staker.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMinBroStakeAmount(uint256)",
+      "name": "setMinBroStakeAmount",
+      "description": "Sets new min $BRO stake amount.",
+      "parameterDecorators": [
+        {
+          "name": "_newMinBroStakeAmount",
+          "description": "new min stake amount.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMinUnstakingPeriod(uint256)",
+      "name": "setMinUnstakingPeriod",
+      "description": "Sets min unstaking period.",
+      "parameterDecorators": [
+        {
+          "name": "_newMinUnstakingPeriod",
+          "description": "new min unstaking period.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRewardGeneratingAmountBaseIndex(uint256)",
+      "name": "setRewardGeneratingAmountBaseIndex",
+      "description": "Sets new rewards generating amount base index.",
+      "parameterDecorators": [
+        {
+          "name": "_newRewardGeneratingAmountBaseIndex",
+          "description": "new rewards generating amount base index.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setWithdrawalAmountReducePerc(uint256)",
+      "name": "setWithdrawalAmountReducePerc",
+      "description": "Sets new withdrawal amount redice perc.",
+      "parameterDecorators": [
+        {
+          "name": "_newWithdrawalAmountReducePerc",
+          "description": "new withdrawal amount redice perc.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setWithdrawnBBroRewardReducePerc(uint256)",
+      "name": "setWithdrawnBBroRewardReducePerc",
+      "description": "Sets new withdrawan $bBRO reward rediced percent.",
+      "parameterDecorators": [
+        {
+          "name": "_newWithdrawnBBroRewardReducePerc",
+          "description": "new withdrawan $bBRO reward rediced percent.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stake(uint256,uint256)",
+      "name": "stake",
+      "description": "Stakes specified amount of $BRO tokens.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "amount of $BRO tokens to stake.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_unstakingPeriod",
+          "description": "specified unstaking period.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "supportsDistributions()",
+      "name": "supportsDistributions",
+      "description": "Returns either contract supports distributions or not.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalBroStaked()",
+      "name": "totalBroStaked",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalStakerRewardsGeneratingBro(address)",
+      "name": "totalStakerRewardsGeneratingBro",
+      "description": "Returns total amount of rewards generating $BRO by staker address.",
+      "parameterDecorators": [
+        {
+          "name": "_stakerAddress",
+          "description": "staker's address to look for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unpause()",
+      "name": "unpause",
+      "description": "Unpauses the contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unstake(uint256,uint256)",
+      "name": "unstake",
+      "description": "Unstakes specified amount of $BRO tokens. Unstaking period starts at this moment of time.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "specified amount to unstake.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_unstakingPeriod",
+          "description": "specified unstaking period.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeTo(address)",
+      "name": "upgradeTo",
+      "description": "Upgrade the implementation of the proxy to `newImplementation`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "Upgraded(address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeToAndCall(address,bytes)",
+      "name": "upgradeToAndCall",
+      "description": "Upgrade the implementation of the proxy to `newImplementation`, and subsequently execute the function call encoded in `data`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "Upgraded(address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw()",
+      "name": "withdraw",
+      "description": "Removes all expired withdrawals and transferes unstaked amount to the staker.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawalAmountReducePerc()",
+      "name": "withdrawalAmountReducePerc",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdrawnBBroRewardReducePerc()",
+      "name": "withdrawnBBroRewardReducePerc",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

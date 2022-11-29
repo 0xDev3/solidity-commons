@@ -1,1 +1,434 @@
-{"schema":"../schema.json","tags":["tokens","vesting"],"name":"PkexTokenClaim","description":"TokenVesting. A token holder contract that can release its token balance gradually like a typical vesting scheme, with a cliff and vesting period. Optionally revocable by the owner.","eventDecorators":[{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Event fired when Catalog is created. Logged when the receiver changes.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"TokenVestingAdded(uint256,address,uint256)","name":"TokenVestingAdded","description":"Event fired when Catalog is created. Logged when the receiver changes.","parameterDecorators":[{"name":"vestingId","description":"","recommendedTypes":[],"indexed":true},{"name":"beneficiary","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TokenVestingReleased(uint256,address,uint256)","name":"TokenVestingReleased","description":"Event fired when Catalog is created. Logged when the receiver changes.","parameterDecorators":[{"name":"vestingId","description":"","recommendedTypes":[],"indexed":true},{"name":"beneficiary","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"TokenVestingRemoved(uint256,address,uint256)","name":"TokenVestingRemoved","description":"Event fired when Catalog is created. Logged when the receiver changes.","parameterDecorators":[{"name":"vestingId","description":"","recommendedTypes":[],"indexed":true},{"name":"beneficiary","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"Tokenamount()","name":"Tokenamount","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"addMultiVestingInMultiAddress(address[],uint256[],uint256[])","name":"addMultiVestingInMultiAddress","description":"","parameterDecorators":[{"name":"_beneficiaries","description":"","recommendedTypes":[]},{"name":"_releaseTimes","description":"","recommendedTypes":[]},{"name":"_amounts","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"addMultiVestingInOneAddress(address,uint256[],uint256[])","name":"addMultiVestingInOneAddress","description":"","parameterDecorators":[{"name":"_beneficiary","description":"","recommendedTypes":[]},{"name":"_releaseTimes","description":"","recommendedTypes":[]},{"name":"_amounts","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"addVesting(address,uint256,uint256)","name":"addVesting","description":"","parameterDecorators":[{"name":"_beneficiary","description":"","recommendedTypes":[]},{"name":"_releaseTime","description":"","recommendedTypes":[]},{"name":"_amount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"multiRelease(uint256[])","name":"multiRelease","description":"","parameterDecorators":[{"name":"_vestingIds","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"myNextRelease()","name":"myNextRelease","description":"","parameterDecorators":[],"returnDecorators":[{"name":"vesting","description":"","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"myTokens()","name":"myTokens","description":"","parameterDecorators":[],"returnDecorators":[{"name":"total","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"claimed","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"available","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"unclaimed","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"myVestings()","name":"myVestings","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"tuple[]"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"release(uint256)","name":"release","description":"","parameterDecorators":[{"name":"_vestingId","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"releaseAll()","name":"releaseAll","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"removeVesting(uint256)","name":"removeVesting","description":"","parameterDecorators":[{"name":"_vestingId","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"retrieveExcessTokens(uint256)","name":"retrieveExcessTokens","description":"","parameterDecorators":[{"name":"_amount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"token()","name":"token","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"vestings(address,uint256)","name":"vestings","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"vestingId","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"releaseTime","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"amount","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"released","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "vesting"
+  ],
+  "name": "PkexTokenClaim",
+  "description": "TokenVesting. A token holder contract that can release its token balance gradually like a typical vesting scheme, with a cliff and vesting period. Optionally revocable by the owner.",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Event fired when Catalog is created. Logged when the receiver changes.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TokenVestingAdded(uint256,address,uint256)",
+      "name": "TokenVestingAdded",
+      "description": "Event fired when Catalog is created. Logged when the receiver changes.",
+      "parameterDecorators": [
+        {
+          "name": "vestingId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "beneficiary",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TokenVestingReleased(uint256,address,uint256)",
+      "name": "TokenVestingReleased",
+      "description": "Event fired when Catalog is created. Logged when the receiver changes.",
+      "parameterDecorators": [
+        {
+          "name": "vestingId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "beneficiary",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TokenVestingRemoved(uint256,address,uint256)",
+      "name": "TokenVestingRemoved",
+      "description": "Event fired when Catalog is created. Logged when the receiver changes.",
+      "parameterDecorators": [
+        {
+          "name": "vestingId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "beneficiary",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "Tokenamount()",
+      "name": "Tokenamount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addMultiVestingInMultiAddress(address[],uint256[],uint256[])",
+      "name": "addMultiVestingInMultiAddress",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_beneficiaries",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_releaseTimes",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amounts",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addMultiVestingInOneAddress(address,uint256[],uint256[])",
+      "name": "addMultiVestingInOneAddress",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_beneficiary",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_releaseTimes",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amounts",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addVesting(address,uint256,uint256)",
+      "name": "addVesting",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_beneficiary",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_releaseTime",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "multiRelease(uint256[])",
+      "name": "multiRelease",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_vestingIds",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "myNextRelease()",
+      "name": "myNextRelease",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "vesting",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "myTokens()",
+      "name": "myTokens",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "total",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "claimed",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "available",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "unclaimed",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "myVestings()",
+      "name": "myVestings",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "tuple[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "release(uint256)",
+      "name": "release",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_vestingId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "releaseAll()",
+      "name": "releaseAll",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeVesting(uint256)",
+      "name": "removeVesting",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_vestingId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "retrieveExcessTokens(uint256)",
+      "name": "retrieveExcessTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "vestings(address,uint256)",
+      "name": "vestings",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "vestingId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "releaseTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "released",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

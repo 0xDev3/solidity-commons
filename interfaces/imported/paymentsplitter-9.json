@@ -1,1 +1,365 @@
-{"schema":"../schema.json","tags":["tokens","splitter"],"name":"CloudCityPaymentSplitter","description":"PaymentSplitter.","eventDecorators":[{"signature":"ERC20PaymentReleased(address,address,uint256)","name":"ERC20PaymentReleased","description":"Emitted when the RecoveryManager role is transferred.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[],"indexed":true},{"name":"to","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Emitted when the RecoveryManager role is transferred.","parameterDecorators":[{"name":"newRecoveryManager","description":"the address of the new RecoveryManager.","recommendedTypes":[],"indexed":true},{"name":"previousRecoveryManager","description":"the address of the previous RecoveryManager.","recommendedTypes":[],"indexed":true}]},{"signature":"PayeeAdded(address,uint256)","name":"PayeeAdded","description":"Emitted when the RecoveryManager role is transferred.","parameterDecorators":[{"name":"newRecoveryManager","description":"the address of the new RecoveryManager.","recommendedTypes":[],"indexed":false},{"name":"previousRecoveryManager","description":"the address of the previous RecoveryManager.","recommendedTypes":[],"indexed":false}]},{"signature":"PaymentReceived(address,uint256)","name":"PaymentReceived","description":"Emitted when the RecoveryManager role is transferred.","parameterDecorators":[{"name":"newRecoveryManager","description":"the address of the new RecoveryManager.","recommendedTypes":[],"indexed":false},{"name":"previousRecoveryManager","description":"the address of the previous RecoveryManager.","recommendedTypes":[],"indexed":false}]},{"signature":"PaymentReleased(address,uint256)","name":"PaymentReleased","description":"Emitted when the RecoveryManager role is transferred.","parameterDecorators":[{"name":"newRecoveryManager","description":"the address of the new RecoveryManager.","recommendedTypes":[],"indexed":false},{"name":"previousRecoveryManager","description":"the address of the previous RecoveryManager.","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"AddPayee(address,uint256)","name":"AddPayee","description":"Add a new payee to the contract.","parameterDecorators":[{"name":"account","description":"The address of the payee to add.","recommendedTypes":[]},{"name":"shares_","description":"The number of shares owned by the payee.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"AddShares(address,uint256)","name":"AddShares","description":"","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[]},{"name":"shares_","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"distribute()","name":"distribute","description":"Triggers a transfer to `account` of the amount of Ether they are owed, according to their percentage of the total shares and their previous withdrawals.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"distributeERC20(address)","name":"distributeERC20","description":"Triggers a transfer to `account` of the amount of Ether they are owed, according to their percentage of the total shares and their previous withdrawals.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"payee(uint256)","name":"payee","description":"Getter for the address of the payee number `index`.","parameterDecorators":[{"name":"index","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"released(address,address)","name":"released","description":"Getter for the amount of `token` tokens already released to a payee. `token` should be the address of an IERC20 contract.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[]},{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"released(address)","name":"released","description":"Getter for the amount of Ether already released to a payee.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"shares(address)","name":"shares","description":"Getter for the amount of shares held by an account.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"totalReleased(address)","name":"totalReleased","description":"Getter for the total amount of `token` already released. `token` should be the address of an IERC20 contract.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"totalReleased()","name":"totalReleased","description":"Getter for the total amount of Ether already released.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"totalShares()","name":"totalShares","description":"Getter for the total shares held by payees.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "splitter"
+  ],
+  "name": "CloudCityPaymentSplitter",
+  "description": "PaymentSplitter.",
+  "eventDecorators": [
+    {
+      "signature": "ERC20PaymentReleased(address,address,uint256)",
+      "name": "ERC20PaymentReleased",
+      "description": "Emitted when the RecoveryManager role is transferred.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emitted when the RecoveryManager role is transferred.",
+      "parameterDecorators": [
+        {
+          "name": "newRecoveryManager",
+          "description": "the address of the new RecoveryManager.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "previousRecoveryManager",
+          "description": "the address of the previous RecoveryManager.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "PayeeAdded(address,uint256)",
+      "name": "PayeeAdded",
+      "description": "Emitted when the RecoveryManager role is transferred.",
+      "parameterDecorators": [
+        {
+          "name": "newRecoveryManager",
+          "description": "the address of the new RecoveryManager.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "previousRecoveryManager",
+          "description": "the address of the previous RecoveryManager.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PaymentReceived(address,uint256)",
+      "name": "PaymentReceived",
+      "description": "Emitted when the RecoveryManager role is transferred.",
+      "parameterDecorators": [
+        {
+          "name": "newRecoveryManager",
+          "description": "the address of the new RecoveryManager.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "previousRecoveryManager",
+          "description": "the address of the previous RecoveryManager.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PaymentReleased(address,uint256)",
+      "name": "PaymentReleased",
+      "description": "Emitted when the RecoveryManager role is transferred.",
+      "parameterDecorators": [
+        {
+          "name": "newRecoveryManager",
+          "description": "the address of the new RecoveryManager.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "previousRecoveryManager",
+          "description": "the address of the previous RecoveryManager.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "AddPayee(address,uint256)",
+      "name": "AddPayee",
+      "description": "Add a new payee to the contract.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "The address of the payee to add.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "shares_",
+          "description": "The number of shares owned by the payee.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "AddShares(address,uint256)",
+      "name": "AddShares",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "shares_",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "distribute()",
+      "name": "distribute",
+      "description": "Triggers a transfer to `account` of the amount of Ether they are owed, according to their percentage of the total shares and their previous withdrawals.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "distributeERC20(address)",
+      "name": "distributeERC20",
+      "description": "Triggers a transfer to `account` of the amount of Ether they are owed, according to their percentage of the total shares and their previous withdrawals.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "payee(uint256)",
+      "name": "payee",
+      "description": "Getter for the address of the payee number `index`.",
+      "parameterDecorators": [
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "released(address,address)",
+      "name": "released",
+      "description": "Getter for the amount of `token` tokens already released to a payee. `token` should be the address of an IERC20 contract.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "released(address)",
+      "name": "released",
+      "description": "Getter for the amount of Ether already released to a payee.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "shares(address)",
+      "name": "shares",
+      "description": "Getter for the amount of shares held by an account.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalReleased(address)",
+      "name": "totalReleased",
+      "description": "Getter for the total amount of `token` already released. `token` should be the address of an IERC20 contract.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalReleased()",
+      "name": "totalReleased",
+      "description": "Getter for the total amount of Ether already released.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalShares()",
+      "name": "totalShares",
+      "description": "Getter for the total shares held by payees.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

@@ -1,1 +1,746 @@
-{"schema":"../schema.json","tags":[],"name":"RariFundManager","description":"RariFundManager. This contract is the primary contract powering the Rari Ethereum Pool. Anyone can deposit to the fund with deposit(uint256 amount). Anyone can withdraw their funds (with interest) from the fund with withdraw(uint256 amount).","eventDecorators":[{"signature":"Deposit(address,address,uint256,uint256)","name":"Deposit","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[],"indexed":true},{"name":"payee","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"reptMinted","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"FundControllerSet(address)","name":"FundControllerSet","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"newContract","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"FundDisabled()","name":"FundDisabled","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[]},{"signature":"FundEnabled()","name":"FundEnabled","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[]},{"signature":"FundManagerUpgraded(address)","name":"FundManagerUpgraded","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"newContract","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"FundProxySet(address)","name":"FundProxySet","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"newContract","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"FundRebalancerSet(address)","name":"FundRebalancerSet","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"newAddress","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"FundTokenSet(address)","name":"FundTokenSet","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"newContract","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"InterestFeeDeposit(address,uint256)","name":"InterestFeeDeposit","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"beneficiary","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"InterestFeeWithdrawal(address,uint256)","name":"InterestFeeWithdrawal","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"beneficiary","description":"","recommendedTypes":[],"indexed":false},{"name":"amountEth","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Withdrawal(address,address,uint256,uint256)","name":"Withdrawal","description":"Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[],"indexed":true},{"name":"payee","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"reptBurned","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"authorizeFundManagerDataSource(address)","name":"authorizeFundManagerDataSource","description":"Upgrades RariFundManager. Authorizes the source for fund manager data (i.e., the old fund manager).","parameterDecorators":[{"name":"authorizedFundManagerDataSource","description":"Authorized source for data (i.e., the old fund manager).","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"balanceOf(address)","name":"balanceOf","description":"Returns an account's total balance in ETH. Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.","parameterDecorators":[{"name":"account","description":"The account whose balance we are calculating.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"deposit()","name":"deposit","description":"Deposits ETH to RariFund in exchange for REPT.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"depositFees()","name":"depositFees","description":"Deposits all accrued fees on interest back into the fund on behalf of the master beneficiary.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"depositTo(address)","name":"depositTo","description":"Deposits funds from `msg.sender` (RariFundProxy) to RariFund in exchange for REPT minted to `to`.","parameterDecorators":[{"name":"to","description":"The address that will receieve the minted REPT.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"disableFund()","name":"disableFund","description":"Disables primary functionality of this RariFundManager so contract(s) can be upgraded.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"enableFund()","name":"enableFund","description":"Enables primary functionality of this RariFundManager once contract(s) are upgraded.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getFundBalance()","name":"getFundBalance","description":"Returns the fund's total investor balance (all REPT holders' funds but not unclaimed fees) of all currencies in EETH (scaled by 1e18). Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"getInterestAccrued()","name":"getInterestAccrued","description":"Returns the total amount of interest accrued by past and current REPT holders (excluding the fees paid on interest) in USD (scaled by 1e18). Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":false},{"signature":"getInterestFeeRate()","name":"getInterestFeeRate","description":"Returns the fee rate on interest.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getInterestFeesGenerated()","name":"getInterestFeesGenerated","description":"Returns the amount of interest fees accrued by beneficiaries in USD (scaled by 1e18). Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":false},{"signature":"getInterestFeesUnclaimed()","name":"getInterestFeesUnclaimed","description":"Returns the total unclaimed amount of interest fees. Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"getRawFundBalance()","name":"getRawFundBalance","description":"Returns the fund's raw total balance (all REPT holders' funds + all unclaimed fees). Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `RariFundController.getPoolBalance`) potentially modifies the state.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"getRawInterestAccrued()","name":"getRawInterestAccrued","description":"Returns the raw total amount of interest accrued by the fund as a whole (including the fees paid on interest) in USD (scaled by 1e18). Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"int256"}],"emittableEvents":[],"readOnly":false},{"signature":"initialize()","name":"initialize","description":"Initializer that sets supported ETH pools.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"initialize(address)","name":"initialize","description":"Initializes the contract setting the deployer as the initial owner.","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"isOwner()","name":"isOwner","description":"Returns true if the caller is the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"rariFundController()","name":"rariFundController","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"rariFundToken()","name":"rariFundToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. * > Note: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setFundController(address)","name":"setFundController","description":"Sets or upgrades the RariFundController of the RariFundManager.","parameterDecorators":[{"name":"newContract","description":"The address of the new RariFundController contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setFundManagerData(tuple(int256,int256,int256,uint256))","name":"setFundManagerData","description":"Upgrades RariFundManager. Sets data receieved from the old contract.","parameterDecorators":[{"name":"data","description":"The data from the old contract necessary to initialize the new contract.","recommendedTypes":[],"parameters":[{"name":"netDeposits","description":"","type":"int256"},{"name":"rawInterestAccruedAtLastFeeRateChange","description":"","type":"int256"},{"name":"interestFeesGeneratedAtLastFeeRateChange","description":"","type":"int256"},{"name":"interestFeesClaimed","description":"","type":"uint256"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setFundProxy(address)","name":"setFundProxy","description":"Sets or upgrades the RariFundProxy of the RariFundManager.","parameterDecorators":[{"name":"newContract","description":"The address of the new RariFundProxy contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setFundRebalancer(address)","name":"setFundRebalancer","description":"Sets or upgrades the rebalancer of the RariFundManager.","parameterDecorators":[{"name":"newAddress","description":"The Ethereum address of the new rebalancer server.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setFundToken(address)","name":"setFundToken","description":"Sets or upgrades the RariFundToken of the RariFundManager.","parameterDecorators":[{"name":"newContract","description":"The address of the new RariFundToken contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setInterestFeeMasterBeneficiary(address)","name":"setInterestFeeMasterBeneficiary","description":"Sets the master beneficiary of interest fees.","parameterDecorators":[{"name":"beneficiary","description":"The master beneficiary of fees on interest; i.e., the recipient of all fees on interest.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setInterestFeeRate(uint256)","name":"setInterestFeeRate","description":"Sets the fee rate on interest.","parameterDecorators":[{"name":"rate","description":"The proportion of interest accrued to be taken as a service fee (scaled by 1e18).","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"upgradeFundManager(address)","name":"upgradeFundManager","description":"Upgrades RariFundManager. Sends data to the new contract, sets the new REPT minter, and forwards eth from the old to the new.","parameterDecorators":[{"name":"newContract","description":"The address of the new RariFundManager contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdraw(uint256)","name":"withdraw","description":"Withdraws funds from RariFund in exchange for REPT. You may only withdraw currencies held by the fund (see `getRawFundBalance(string currencyCode)`). Please note that you must approve RariFundManager to burn of the necessary amount of REPY.","parameterDecorators":[{"name":"amount","description":"The amount of tokens to be withdrawn.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"withdrawFees()","name":"withdrawFees","description":"Withdraws all accrued fees on interest to the master beneficiary.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"withdrawFrom(address,uint256)","name":"withdrawFrom","description":"Withdraws funds from RariFund to `msg.sender` (RariFundProxy) in exchange for REPT burned from `from`. Please note that you must approve RariFundManager to burn of the necessary amount of REPT.","parameterDecorators":[{"name":"from","description":"The address from which REPT will be burned.","recommendedTypes":[]},{"name":"amount","description":"The amount of tokens to be withdrawn.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "RariFundManager",
+  "description": "RariFundManager. This contract is the primary contract powering the Rari Ethereum Pool. Anyone can deposit to the fund with deposit(uint256 amount). Anyone can withdraw their funds (with interest) from the fund with withdraw(uint256 amount).",
+  "eventDecorators": [
+    {
+      "signature": "Deposit(address,address,uint256,uint256)",
+      "name": "Deposit",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "payee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "reptMinted",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "FundControllerSet(address)",
+      "name": "FundControllerSet",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "newContract",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "FundDisabled()",
+      "name": "FundDisabled",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "FundEnabled()",
+      "name": "FundEnabled",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "FundManagerUpgraded(address)",
+      "name": "FundManagerUpgraded",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "newContract",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "FundProxySet(address)",
+      "name": "FundProxySet",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "newContract",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "FundRebalancerSet(address)",
+      "name": "FundRebalancerSet",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "newAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "FundTokenSet(address)",
+      "name": "FundTokenSet",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "newContract",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "InterestFeeDeposit(address,uint256)",
+      "name": "InterestFeeDeposit",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "InterestFeeWithdrawal(address,uint256)",
+      "name": "InterestFeeWithdrawal",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amountEth",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Withdrawal(address,address,uint256,uint256)",
+      "name": "Withdrawal",
+      "description": "Emitted when a user sells wTokens to the AMM. triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "payee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "reptBurned",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "authorizeFundManagerDataSource(address)",
+      "name": "authorizeFundManagerDataSource",
+      "description": "Upgrades RariFundManager. Authorizes the source for fund manager data (i.e., the old fund manager).",
+      "parameterDecorators": [
+        {
+          "name": "authorizedFundManagerDataSource",
+          "description": "Authorized source for data (i.e., the old fund manager).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "balanceOf(address)",
+      "name": "balanceOf",
+      "description": "Returns an account's total balance in ETH. Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "The account whose balance we are calculating.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deposit()",
+      "name": "deposit",
+      "description": "Deposits ETH to RariFund in exchange for REPT.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "depositFees()",
+      "name": "depositFees",
+      "description": "Deposits all accrued fees on interest back into the fund on behalf of the master beneficiary.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "depositTo(address)",
+      "name": "depositTo",
+      "description": "Deposits funds from `msg.sender` (RariFundProxy) to RariFund in exchange for REPT minted to `to`.",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "The address that will receieve the minted REPT.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "disableFund()",
+      "name": "disableFund",
+      "description": "Disables primary functionality of this RariFundManager so contract(s) can be upgraded.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "enableFund()",
+      "name": "enableFund",
+      "description": "Enables primary functionality of this RariFundManager once contract(s) are upgraded.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getFundBalance()",
+      "name": "getFundBalance",
+      "description": "Returns the fund's total investor balance (all REPT holders' funds but not unclaimed fees) of all currencies in EETH (scaled by 1e18). Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getInterestAccrued()",
+      "name": "getInterestAccrued",
+      "description": "Returns the total amount of interest accrued by past and current REPT holders (excluding the fees paid on interest) in USD (scaled by 1e18). Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getInterestFeeRate()",
+      "name": "getInterestFeeRate",
+      "description": "Returns the fee rate on interest.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getInterestFeesGenerated()",
+      "name": "getInterestFeesGenerated",
+      "description": "Returns the amount of interest fees accrued by beneficiaries in USD (scaled by 1e18). Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getInterestFeesUnclaimed()",
+      "name": "getInterestFeesUnclaimed",
+      "description": "Returns the total unclaimed amount of interest fees. Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getRawFundBalance()",
+      "name": "getRawFundBalance",
+      "description": "Returns the fund's raw total balance (all REPT holders' funds + all unclaimed fees). Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `RariFundController.getPoolBalance`) potentially modifies the state.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getRawInterestAccrued()",
+      "name": "getRawInterestAccrued",
+      "description": "Returns the raw total amount of interest accrued by the fund as a whole (including the fees paid on interest) in USD (scaled by 1e18). Ideally, we can add the view modifier, but Compound's `getUnderlyingBalance` function (called by `getRawFundBalance`) potentially modifies the state.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialize()",
+      "name": "initialize",
+      "description": "Initializer that sets supported ETH pools.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialize(address)",
+      "name": "initialize",
+      "description": "Initializes the contract setting the deployer as the initial owner.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isOwner()",
+      "name": "isOwner",
+      "description": "Returns true if the caller is the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rariFundController()",
+      "name": "rariFundController",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rariFundToken()",
+      "name": "rariFundToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. * > Note: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setFundController(address)",
+      "name": "setFundController",
+      "description": "Sets or upgrades the RariFundController of the RariFundManager.",
+      "parameterDecorators": [
+        {
+          "name": "newContract",
+          "description": "The address of the new RariFundController contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setFundManagerData(tuple(int256,int256,int256,uint256))",
+      "name": "setFundManagerData",
+      "description": "Upgrades RariFundManager. Sets data receieved from the old contract.",
+      "parameterDecorators": [
+        {
+          "name": "data",
+          "description": "The data from the old contract necessary to initialize the new contract.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "netDeposits",
+              "description": "",
+              "type": "int256"
+            },
+            {
+              "name": "rawInterestAccruedAtLastFeeRateChange",
+              "description": "",
+              "type": "int256"
+            },
+            {
+              "name": "interestFeesGeneratedAtLastFeeRateChange",
+              "description": "",
+              "type": "int256"
+            },
+            {
+              "name": "interestFeesClaimed",
+              "description": "",
+              "type": "uint256"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setFundProxy(address)",
+      "name": "setFundProxy",
+      "description": "Sets or upgrades the RariFundProxy of the RariFundManager.",
+      "parameterDecorators": [
+        {
+          "name": "newContract",
+          "description": "The address of the new RariFundProxy contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setFundRebalancer(address)",
+      "name": "setFundRebalancer",
+      "description": "Sets or upgrades the rebalancer of the RariFundManager.",
+      "parameterDecorators": [
+        {
+          "name": "newAddress",
+          "description": "The Ethereum address of the new rebalancer server.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setFundToken(address)",
+      "name": "setFundToken",
+      "description": "Sets or upgrades the RariFundToken of the RariFundManager.",
+      "parameterDecorators": [
+        {
+          "name": "newContract",
+          "description": "The address of the new RariFundToken contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setInterestFeeMasterBeneficiary(address)",
+      "name": "setInterestFeeMasterBeneficiary",
+      "description": "Sets the master beneficiary of interest fees.",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "The master beneficiary of fees on interest; i.e., the recipient of all fees on interest.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setInterestFeeRate(uint256)",
+      "name": "setInterestFeeRate",
+      "description": "Sets the fee rate on interest.",
+      "parameterDecorators": [
+        {
+          "name": "rate",
+          "description": "The proportion of interest accrued to be taken as a service fee (scaled by 1e18).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeFundManager(address)",
+      "name": "upgradeFundManager",
+      "description": "Upgrades RariFundManager. Sends data to the new contract, sets the new REPT minter, and forwards eth from the old to the new.",
+      "parameterDecorators": [
+        {
+          "name": "newContract",
+          "description": "The address of the new RariFundManager contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(uint256)",
+      "name": "withdraw",
+      "description": "Withdraws funds from RariFund in exchange for REPT. You may only withdraw currencies held by the fund (see `getRawFundBalance(string currencyCode)`). Please note that you must approve RariFundManager to burn of the necessary amount of REPY.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "The amount of tokens to be withdrawn.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawFees()",
+      "name": "withdrawFees",
+      "description": "Withdraws all accrued fees on interest to the master beneficiary.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawFrom(address,uint256)",
+      "name": "withdrawFrom",
+      "description": "Withdraws funds from RariFund to `msg.sender` (RariFundProxy) in exchange for REPT burned from `from`. Please note that you must approve RariFundManager to burn of the necessary amount of REPT.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "The address from which REPT will be burned.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "The amount of tokens to be withdrawn.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

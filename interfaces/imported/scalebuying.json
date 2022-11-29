@@ -1,1 +1,365 @@
-{"schema":"../schema.json","tags":["tokens"],"name":"ScaleBuying","description":"Allow buying of tokens in batches of increasing price.","eventDecorators":[{"signature":"Bought(address,uint256,uint256)","name":"Bought","description":"The event emitted when tokens are bought.","parameterDecorators":[{"name":"buyer","description":"The address that may claim the tokens.","recommendedTypes":[],"indexed":true},{"name":"amount","description":"The amount of token bought.","recommendedTypes":[],"indexed":false},{"name":"pricePerToken","description":"The price per token that the tokens were bought for.","recommendedTypes":[],"indexed":false}]},{"signature":"Claimed(address,uint256)","name":"Claimed","description":"The event emitted when a claim is executed.","parameterDecorators":[{"name":"claimer","description":"The address the claim has been processed for.","recommendedTypes":[],"indexed":true},{"name":"amount","description":"The amount that was claimed.","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"amountAwarded()","name":"amountAwarded","description":"The amount that has been awarded so far.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"amountsClaimable(address)","name":"amountsClaimable","description":"The amounts of tokens claimable by an address.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"boughtAsset()","name":"boughtAsset","description":"The token that is being bought.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"buy(uint256,address)","name":"buy","description":"Buy tokens in the current block.","parameterDecorators":[{"name":"_paymentAmount","description":"The amount to spend. This will be transfered from msg.sender who should approved this amount first.","recommendedTypes":[]},{"name":"_target","description":"The address that the amounts would be bought for. Tokens are distributed after calling the claim method.","recommendedTypes":[]}],"returnDecorators":[{"name":"_paymentLeft","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"claim(address)","name":"claim","description":"Claim ABQ bought for the given address. Claims can only be processed after liquidity has been established.","parameterDecorators":[{"name":"_target","description":"The address to process claims for.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"closingDate()","name":"closingDate","description":"The date in unix timestamp (seconds) when the sale closes.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint64"}],"emittableEvents":[],"readOnly":true},{"signature":"currentBlock()","name":"currentBlock","description":"Get the current block number, starting at 0.","parameterDecorators":[],"returnDecorators":[{"name":"_currentBlock","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"currentPrice()","name":"currentPrice","description":"Get the current price per token.","parameterDecorators":[],"returnDecorators":[{"name":"_currentPrice","description":"The current price per token.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"initialPrice()","name":"initialPrice","description":"The initial price for the sale.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"liquidityEstablisher()","name":"liquidityEstablisher","description":"The location of the ILO, used to know when tokens can be claimed.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"maxBlocks()","name":"maxBlocks","description":"The number of blocks up for sale.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"minter()","name":"minter","description":"The minter for the token being bought.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"paymentAsset()","name":"paymentAsset","description":"The token to use for purchasing.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"priceIncrease()","name":"priceIncrease","description":"The price increase for each token block.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setLiquidityEstablisher(address)","name":"setLiquidityEstablisher","description":"Set the ILO to use to track if liquidity has been astablished and thus claims can be allowed.","parameterDecorators":[{"name":"_liquidityEstablisher","description":"The ILO.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"tokensLeftInBlock(uint256)","name":"tokensLeftInBlock","description":"Get the amount of tokens left in a given block.","parameterDecorators":[{"name":"_block","description":"The block to get the number of tokens left for.","recommendedTypes":[]}],"returnDecorators":[{"name":"_tokensLeft","description":"The number of tokens left in the given _block.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"tokensPerPriceBlock()","name":"tokensPerPriceBlock","description":"The amount of tokens per block.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"treasury()","name":"treasury","description":"The address to which the funds should be sent to.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens"
+  ],
+  "name": "ScaleBuying",
+  "description": "Allow buying of tokens in batches of increasing price.",
+  "eventDecorators": [
+    {
+      "signature": "Bought(address,uint256,uint256)",
+      "name": "Bought",
+      "description": "The event emitted when tokens are bought.",
+      "parameterDecorators": [
+        {
+          "name": "buyer",
+          "description": "The address that may claim the tokens.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "The amount of token bought.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "pricePerToken",
+          "description": "The price per token that the tokens were bought for.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Claimed(address,uint256)",
+      "name": "Claimed",
+      "description": "The event emitted when a claim is executed.",
+      "parameterDecorators": [
+        {
+          "name": "claimer",
+          "description": "The address the claim has been processed for.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "The amount that was claimed.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "amountAwarded()",
+      "name": "amountAwarded",
+      "description": "The amount that has been awarded so far.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "amountsClaimable(address)",
+      "name": "amountsClaimable",
+      "description": "The amounts of tokens claimable by an address.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "boughtAsset()",
+      "name": "boughtAsset",
+      "description": "The token that is being bought.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "buy(uint256,address)",
+      "name": "buy",
+      "description": "Buy tokens in the current block.",
+      "parameterDecorators": [
+        {
+          "name": "_paymentAmount",
+          "description": "The amount to spend. This will be transfered from msg.sender who should approved this amount first.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_target",
+          "description": "The address that the amounts would be bought for. Tokens are distributed after calling the claim method.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_paymentLeft",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claim(address)",
+      "name": "claim",
+      "description": "Claim ABQ bought for the given address. Claims can only be processed after liquidity has been established.",
+      "parameterDecorators": [
+        {
+          "name": "_target",
+          "description": "The address to process claims for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "closingDate()",
+      "name": "closingDate",
+      "description": "The date in unix timestamp (seconds) when the sale closes.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "currentBlock()",
+      "name": "currentBlock",
+      "description": "Get the current block number, starting at 0.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_currentBlock",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "currentPrice()",
+      "name": "currentPrice",
+      "description": "Get the current price per token.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_currentPrice",
+          "description": "The current price per token.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialPrice()",
+      "name": "initialPrice",
+      "description": "The initial price for the sale.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "liquidityEstablisher()",
+      "name": "liquidityEstablisher",
+      "description": "The location of the ILO, used to know when tokens can be claimed.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxBlocks()",
+      "name": "maxBlocks",
+      "description": "The number of blocks up for sale.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minter()",
+      "name": "minter",
+      "description": "The minter for the token being bought.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "paymentAsset()",
+      "name": "paymentAsset",
+      "description": "The token to use for purchasing.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "priceIncrease()",
+      "name": "priceIncrease",
+      "description": "The price increase for each token block.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setLiquidityEstablisher(address)",
+      "name": "setLiquidityEstablisher",
+      "description": "Set the ILO to use to track if liquidity has been astablished and thus claims can be allowed.",
+      "parameterDecorators": [
+        {
+          "name": "_liquidityEstablisher",
+          "description": "The ILO.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tokensLeftInBlock(uint256)",
+      "name": "tokensLeftInBlock",
+      "description": "Get the amount of tokens left in a given block.",
+      "parameterDecorators": [
+        {
+          "name": "_block",
+          "description": "The block to get the number of tokens left for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_tokensLeft",
+          "description": "The number of tokens left in the given _block.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tokensPerPriceBlock()",
+      "name": "tokensPerPriceBlock",
+      "description": "The amount of tokens per block.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "treasury()",
+      "name": "treasury",
+      "description": "The address to which the funds should be sent to.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

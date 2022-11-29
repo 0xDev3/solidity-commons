@@ -1,1 +1,475 @@
-{"schema":"../schema.json","tags":[],"name":"BtrflyAllocator","description":"","eventDecorators":[{"signature":"AllocatorActivated()","name":"AllocatorActivated","description":"Emitted when the Allocator is activated. deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[]},{"signature":"AllocatorDeactivated(bool)","name":"AllocatorDeactivated","description":"Emitted when the Allocator is deactivated. deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"panic","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"AllocatorDeployed(address,address)","name":"AllocatorDeployed","description":"Emitted when the Allocator is deployed. deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"authority","description":"","recommendedTypes":[],"indexed":false},{"name":"extender","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"AuthorityUpdated(address)","name":"AuthorityUpdated","description":"deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"authority","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"EtherReceived(uint256)","name":"EtherReceived","description":"Emitted when Ether is received by the contract. deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LossLimitViolated(uint128,uint128,uint256)","name":"LossLimitViolated","description":"Emitted when the Allocators loss limit is violated. deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"lastLoss","description":"","recommendedTypes":[],"indexed":false},{"name":"dloss","description":"","recommendedTypes":[],"indexed":false},{"name":"estimatedTotalAllocated","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"MigrationExecuted(address)","name":"MigrationExecuted","description":"Emitted when a Migration is executed. deprecated, backward compatibility, use `ConverterAnchorRemoved`.","parameterDecorators":[{"name":"allocator","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"activate()","name":"activate","description":"Activates the Allocator. Only the Guardian can call this. Add any logic you need during activation, say interactions with Extender or something else, in the virtual method `_activate`.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"addId(uint256)","name":"addId","description":"Adds a deposit ID to the Allocator. Only the Extender calls this.","parameterDecorators":[{"name":"id","description":"id to add to the allocator.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"amountAllocated(uint256)","name":"amountAllocated","description":"Should estimate total amount of Allocated tokens. The difference between this and `treasury.getAllocatorAllocated`, is that the latter is a static value recorded during reporting, but no data is available on _new_ amounts after reporting. Thus, this should take into consideration the new amounts. This can be used for say aTokens.","parameterDecorators":[{"name":"id","description":"the id of the deposit in `TreasuryExtender`.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"authority()","name":"authority","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"callRebase()","name":"callRebase","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"deactivate(bool)","name":"deactivate","description":"Deactivates the Allocator. Only the Guardian can call this. Add any logic you need during deactivation, say interactions with Extender or something else, in the virtual method `_deactivate`. Be careful to specifically use the internal or public function depending on what you need.","parameterDecorators":[{"name":"panic","description":"should panic logic be executed.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"deallocate(uint256[])","name":"deallocate","description":"Deallocates tokens, prepares tokens for return to the Treasury. This function should deallocate (withdraw) `amounts` of each token so that they may be withdrawn by the TreasuryExtender. Otherwise, this function may also prepare the withdraw if it is time-bound.","parameterDecorators":[{"name":"amounts","description":"is the amount of each of token from `_tokens` to withdraw.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"extender()","name":"extender","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"ids()","name":"ids","description":"Returns all deposit IDs registered with the Allocator.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"the deposit IDs registered.","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"migrate()","name":"migrate","description":"Migrates the allocated and all utility tokens to the next Allocator. The allocated token and the utility tokens will be migrated by this function, while it is assumed that the reward tokens are either simply kept or already harvested into the underlying essentially being the edge case of this contract. This contract is also going to report to the Extender that a migration happened and as such it is important to follow the proper sequence of migrating. Steps to migrate: - FIRST call `_prepareMigration()` to prepare funds for migration. - THEN deploy the new Allocator and activate it according to the normal procedure. NOTE: This is to be done RIGHT BEFORE migration as to avoid allocating to the wrong allocator. - FINALLY call migrate. This is going to migrate the funds to the LAST allocator registered. - Check if everything went fine. End state should be that allocator amounts have been swapped for allocators, that gain + loss is netted out 0 for original allocator, and that the new allocators gain has been set to the original allocators gain. We don't transfer the loss because we have the information how much was initially invested + gain, and the new allocator didn't cause any loss thus we don't really need to add to it.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"name()","name":"name","description":"Should return the Allocator name.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true},{"signature":"prepareMigration()","name":"prepareMigration","description":"Prepares the Allocator for token migration. This function prepares the Allocator for token migration by calling the to-be-implemented `_prepareMigration`, which should logically withdraw ALL allocated (1) + utility AND reward tokens from the contract. The ALLOCATED token and THE UTILITY TOKEN is going to be migrated, while the REWARD tokens can be withdrawn by the Extender to the Treasury.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"rewardTokens()","name":"rewardTokens","description":"Should return all reward token addresses.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address[]"}],"emittableEvents":[],"readOnly":true},{"signature":"setAuthority(address)","name":"setAuthority","description":"","parameterDecorators":[{"name":"_newAuthority","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"staking()","name":"staking","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"stakingHelper()","name":"stakingHelper","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"status()","name":"status","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"tokenIds(uint256)","name":"tokenIds","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"tokens()","name":"tokens","description":"Returns all tokens registered with the Allocator.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"the tokens.","recommendedTypes":[],"solidityType":"address[]"}],"emittableEvents":[],"readOnly":true},{"signature":"treasury()","name":"treasury","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"update(uint256)","name":"update","description":"Updates an Allocators state and reports to `TreasuryExtender` if necessary. Can only be called by the Guardian. Can only be called while the Allocator is activated. This function should update the Allocators internal state via `_update`, which should in turn return the `gain` and `loss` the Allocator has sustained in underlying allocated `token` from `_tokens` decided by the `id`. Please check the docs on `_update` to see what its function should be. `_lossLimitViolated` checks if the Allocators is above its loss limit and deactivates it in case of serious losses. The loss limit should be set to some value which is unnacceptable to be lost in the case of normal runtime and thus require a panic shutdown, whatever it is defined to be. Lastly, the Allocator reports its state to the Extender, which handles gain, loss, allocated logic. The documentation on this can be found in `TreasuryExtender.sol`.","parameterDecorators":[{"name":"id","description":"the id of the deposit in `TreasuryExtender`.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"utilityTokens()","name":"utilityTokens","description":"Should return all utility token addresses.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address[]"}],"emittableEvents":[],"readOnly":true},{"signature":"version()","name":"version","description":"Getter for Allocator version.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Returns the Allocators version.","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true},{"signature":"xBtrfly()","name":"xBtrfly","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "BtrflyAllocator",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "AllocatorActivated()",
+      "name": "AllocatorActivated",
+      "description": "Emitted when the Allocator is activated. deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "AllocatorDeactivated(bool)",
+      "name": "AllocatorDeactivated",
+      "description": "Emitted when the Allocator is deactivated. deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "panic",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AllocatorDeployed(address,address)",
+      "name": "AllocatorDeployed",
+      "description": "Emitted when the Allocator is deployed. deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "authority",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "extender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AuthorityUpdated(address)",
+      "name": "AuthorityUpdated",
+      "description": "deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "authority",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "EtherReceived(uint256)",
+      "name": "EtherReceived",
+      "description": "Emitted when Ether is received by the contract. deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LossLimitViolated(uint128,uint128,uint256)",
+      "name": "LossLimitViolated",
+      "description": "Emitted when the Allocators loss limit is violated. deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "lastLoss",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "dloss",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "estimatedTotalAllocated",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "MigrationExecuted(address)",
+      "name": "MigrationExecuted",
+      "description": "Emitted when a Migration is executed. deprecated, backward compatibility, use `ConverterAnchorRemoved`.",
+      "parameterDecorators": [
+        {
+          "name": "allocator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "activate()",
+      "name": "activate",
+      "description": "Activates the Allocator. Only the Guardian can call this. Add any logic you need during activation, say interactions with Extender or something else, in the virtual method `_activate`.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addId(uint256)",
+      "name": "addId",
+      "description": "Adds a deposit ID to the Allocator. Only the Extender calls this.",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "id to add to the allocator.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "amountAllocated(uint256)",
+      "name": "amountAllocated",
+      "description": "Should estimate total amount of Allocated tokens. The difference between this and `treasury.getAllocatorAllocated`, is that the latter is a static value recorded during reporting, but no data is available on _new_ amounts after reporting. Thus, this should take into consideration the new amounts. This can be used for say aTokens.",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "the id of the deposit in `TreasuryExtender`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "authority()",
+      "name": "authority",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "callRebase()",
+      "name": "callRebase",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deactivate(bool)",
+      "name": "deactivate",
+      "description": "Deactivates the Allocator. Only the Guardian can call this. Add any logic you need during deactivation, say interactions with Extender or something else, in the virtual method `_deactivate`. Be careful to specifically use the internal or public function depending on what you need.",
+      "parameterDecorators": [
+        {
+          "name": "panic",
+          "description": "should panic logic be executed.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deallocate(uint256[])",
+      "name": "deallocate",
+      "description": "Deallocates tokens, prepares tokens for return to the Treasury. This function should deallocate (withdraw) `amounts` of each token so that they may be withdrawn by the TreasuryExtender. Otherwise, this function may also prepare the withdraw if it is time-bound.",
+      "parameterDecorators": [
+        {
+          "name": "amounts",
+          "description": "is the amount of each of token from `_tokens` to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "extender()",
+      "name": "extender",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ids()",
+      "name": "ids",
+      "description": "Returns all deposit IDs registered with the Allocator.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the deposit IDs registered.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "migrate()",
+      "name": "migrate",
+      "description": "Migrates the allocated and all utility tokens to the next Allocator. The allocated token and the utility tokens will be migrated by this function, while it is assumed that the reward tokens are either simply kept or already harvested into the underlying essentially being the edge case of this contract. This contract is also going to report to the Extender that a migration happened and as such it is important to follow the proper sequence of migrating. Steps to migrate: - FIRST call `_prepareMigration()` to prepare funds for migration. - THEN deploy the new Allocator and activate it according to the normal procedure. NOTE: This is to be done RIGHT BEFORE migration as to avoid allocating to the wrong allocator. - FINALLY call migrate. This is going to migrate the funds to the LAST allocator registered. - Check if everything went fine. End state should be that allocator amounts have been swapped for allocators, that gain + loss is netted out 0 for original allocator, and that the new allocators gain has been set to the original allocators gain. We don't transfer the loss because we have the information how much was initially invested + gain, and the new allocator didn't cause any loss thus we don't really need to add to it.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "name()",
+      "name": "name",
+      "description": "Should return the Allocator name.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "prepareMigration()",
+      "name": "prepareMigration",
+      "description": "Prepares the Allocator for token migration. This function prepares the Allocator for token migration by calling the to-be-implemented `_prepareMigration`, which should logically withdraw ALL allocated (1) + utility AND reward tokens from the contract. The ALLOCATED token and THE UTILITY TOKEN is going to be migrated, while the REWARD tokens can be withdrawn by the Extender to the Treasury.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rewardTokens()",
+      "name": "rewardTokens",
+      "description": "Should return all reward token addresses.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setAuthority(address)",
+      "name": "setAuthority",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_newAuthority",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "staking()",
+      "name": "staking",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "stakingHelper()",
+      "name": "stakingHelper",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "status()",
+      "name": "status",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tokenIds(uint256)",
+      "name": "tokenIds",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tokens()",
+      "name": "tokens",
+      "description": "Returns all tokens registered with the Allocator.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the tokens.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "treasury()",
+      "name": "treasury",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "update(uint256)",
+      "name": "update",
+      "description": "Updates an Allocators state and reports to `TreasuryExtender` if necessary. Can only be called by the Guardian. Can only be called while the Allocator is activated. This function should update the Allocators internal state via `_update`, which should in turn return the `gain` and `loss` the Allocator has sustained in underlying allocated `token` from `_tokens` decided by the `id`. Please check the docs on `_update` to see what its function should be. `_lossLimitViolated` checks if the Allocators is above its loss limit and deactivates it in case of serious losses. The loss limit should be set to some value which is unnacceptable to be lost in the case of normal runtime and thus require a panic shutdown, whatever it is defined to be. Lastly, the Allocator reports its state to the Extender, which handles gain, loss, allocated logic. The documentation on this can be found in `TreasuryExtender.sol`.",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "the id of the deposit in `TreasuryExtender`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "utilityTokens()",
+      "name": "utilityTokens",
+      "description": "Should return all utility token addresses.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "version()",
+      "name": "version",
+      "description": "Getter for Allocator version.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Returns the Allocators version.",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "xBtrfly()",
+      "name": "xBtrfly",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

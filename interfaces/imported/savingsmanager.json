@@ -1,1 +1,593 @@
-{"schema":"../schema.json","tags":[],"name":"SavingsManager","description":"SavingsManager. VERSION: 1.3 DATE: 2020-12-09. Savings Manager collects interest from mAssets and sends them to the corresponding Savings Contract, performing some validation in the process.","eventDecorators":[{"signature":"InterestCollected(address,uint256,uint256,uint256)","name":"InterestCollected","description":"Emitted when a new WPC speed is calculated for a market.","parameterDecorators":[{"name":"mAsset","description":"","recommendedTypes":[],"indexed":true},{"name":"interest","description":"","recommendedTypes":[],"indexed":false},{"name":"newTotalSupply","description":"","recommendedTypes":[],"indexed":false},{"name":"apy","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"InterestDistributed(address,uint256)","name":"InterestDistributed","description":"Emitted when a new WPC speed is calculated for a market.","parameterDecorators":[{"name":"mAsset","description":"","recommendedTypes":[],"indexed":true},{"name":"amountSent","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"LiquidatorDeposited(address,uint256)","name":"LiquidatorDeposited","description":"Emitted when a new WPC speed is calculated for a market.","parameterDecorators":[{"name":"mAsset","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Paused(address)","name":"Paused","description":"Emitted when a new WPC speed is calculated for a market.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RevenueRecipientSet(address,address)","name":"RevenueRecipientSet","description":"Emitted when a new WPC speed is calculated for a market.","parameterDecorators":[{"name":"mAsset","description":"","recommendedTypes":[],"indexed":true},{"name":"recipient","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RevenueRedistributed(address,address,uint256)","name":"RevenueRedistributed","description":"Emitted when a new WPC speed is calculated for a market.","parameterDecorators":[{"name":"mAsset","description":"","recommendedTypes":[],"indexed":true},{"name":"recipient","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SavingsContractAdded(address,address)","name":"SavingsContractAdded","description":"Emitted when a new WPC speed is calculated for a market.","parameterDecorators":[{"name":"mAsset","description":"","recommendedTypes":[],"indexed":true},{"name":"savingsContract","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SavingsContractUpdated(address,address)","name":"SavingsContractUpdated","description":"Emitted when a new WPC speed is calculated for a market.","parameterDecorators":[{"name":"mAsset","description":"","recommendedTypes":[],"indexed":true},{"name":"savingsContract","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SavingsRateChanged(uint256)","name":"SavingsRateChanged","description":"Emitted when a new WPC speed is calculated for a market.","parameterDecorators":[{"name":"newSavingsRate","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"StreamsFrozen()","name":"StreamsFrozen","description":"Emitted when a new WPC speed is calculated for a market.","parameterDecorators":[]},{"signature":"Unpaused(address)","name":"Unpaused","description":"Emitted when a new WPC speed is calculated for a market.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"addSavingsContract(address,address)","name":"addSavingsContract","description":"Adds a new savings contract.","parameterDecorators":[{"name":"_mAsset","description":"Address of underlying mAsset.","recommendedTypes":[]},{"name":"_savingsContract","description":"Address of the savings contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"collectAndDistributeInterest(address)","name":"collectAndDistributeInterest","description":"Collects interest from a target mAsset and distributes to the SavingsContract. Applies constraints such that the max APY since the last fee collection cannot exceed the \"MAX_APY\" variable.","parameterDecorators":[{"name":"_mAsset","description":"mAsset for which the interest should be collected.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"collectAndStreamInterest(address)","name":"collectAndStreamInterest","description":"Collects the platform interest from a given mAsset and then adds capital to the stream. If there is > 24h left in current stream, just top it up, otherwise reset.","parameterDecorators":[{"name":"_mAsset","description":"The mAsset to fetch interest.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"depositLiquidation(address,uint256)","name":"depositLiquidation","description":"Allows the liquidator to deposit proceeds from iquidated gov tokens. Transfers proceeds on a second by second basis to the Savings Contract over 1 week.","parameterDecorators":[{"name":"_mAsset","description":"The mAsset to transfer and distribute.","recommendedTypes":[]},{"name":"_liquidated","description":"Units of mAsset to distribute.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"distributeUnallocatedInterest(address)","name":"distributeUnallocatedInterest","description":"Redistributes the unallocated interest to the saved recipient, allowing the siphoned assets to be used elsewhere in the system.","parameterDecorators":[{"name":"_mAsset","description":"mAsset to collect.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"freezeStreams()","name":"freezeStreams","description":"Freezes streaming of mAssets.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"lastBatchCollected(address)","name":"lastBatchCollected","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"lastCollection(address)","name":"lastCollection","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"lastPeriodStart(address)","name":"lastPeriodStart","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"liqStream(address)","name":"liqStream","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"end","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"rate","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"nexus()","name":"nexus","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"pause()","name":"pause","description":"Called by the Governor to pause, triggers stopped state.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"paused()","name":"paused","description":"Returns true if the contract is paused, and false otherwise.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"periodYield(address)","name":"periodYield","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"revenueRecipients(address)","name":"revenueRecipients","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"savingsContracts(address)","name":"savingsContracts","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"setRevenueRecipient(address,address)","name":"setRevenueRecipient","description":"Sets the revenue recipient address.","parameterDecorators":[{"name":"_mAsset","description":"Address of underlying mAsset.","recommendedTypes":[]},{"name":"_recipient","description":"Address of the recipient.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setSavingsRate(uint256)","name":"setSavingsRate","description":"Sets a new savings rate for interest distribution.","parameterDecorators":[{"name":"_savingsRate","description":"Rate of savings sent to SavingsContract (100% = 1e18).","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unpause()","name":"unpause","description":"Called by Governor to unpause, returns to normal state.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateSavingsContract(address,address)","name":"updateSavingsContract","description":"Updates an existing savings contract.","parameterDecorators":[{"name":"_mAsset","description":"Address of underlying mAsset.","recommendedTypes":[]},{"name":"_savingsContract","description":"Address of the savings contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"yieldStream(address)","name":"yieldStream","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"end","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"rate","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "SavingsManager",
+  "description": "SavingsManager. VERSION: 1.3 DATE: 2020-12-09. Savings Manager collects interest from mAssets and sends them to the corresponding Savings Contract, performing some validation in the process.",
+  "eventDecorators": [
+    {
+      "signature": "InterestCollected(address,uint256,uint256,uint256)",
+      "name": "InterestCollected",
+      "description": "Emitted when a new WPC speed is calculated for a market.",
+      "parameterDecorators": [
+        {
+          "name": "mAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "interest",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newTotalSupply",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "apy",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "InterestDistributed(address,uint256)",
+      "name": "InterestDistributed",
+      "description": "Emitted when a new WPC speed is calculated for a market.",
+      "parameterDecorators": [
+        {
+          "name": "mAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amountSent",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LiquidatorDeposited(address,uint256)",
+      "name": "LiquidatorDeposited",
+      "description": "Emitted when a new WPC speed is calculated for a market.",
+      "parameterDecorators": [
+        {
+          "name": "mAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Paused(address)",
+      "name": "Paused",
+      "description": "Emitted when a new WPC speed is calculated for a market.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RevenueRecipientSet(address,address)",
+      "name": "RevenueRecipientSet",
+      "description": "Emitted when a new WPC speed is calculated for a market.",
+      "parameterDecorators": [
+        {
+          "name": "mAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RevenueRedistributed(address,address,uint256)",
+      "name": "RevenueRedistributed",
+      "description": "Emitted when a new WPC speed is calculated for a market.",
+      "parameterDecorators": [
+        {
+          "name": "mAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SavingsContractAdded(address,address)",
+      "name": "SavingsContractAdded",
+      "description": "Emitted when a new WPC speed is calculated for a market.",
+      "parameterDecorators": [
+        {
+          "name": "mAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "savingsContract",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SavingsContractUpdated(address,address)",
+      "name": "SavingsContractUpdated",
+      "description": "Emitted when a new WPC speed is calculated for a market.",
+      "parameterDecorators": [
+        {
+          "name": "mAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "savingsContract",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SavingsRateChanged(uint256)",
+      "name": "SavingsRateChanged",
+      "description": "Emitted when a new WPC speed is calculated for a market.",
+      "parameterDecorators": [
+        {
+          "name": "newSavingsRate",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "StreamsFrozen()",
+      "name": "StreamsFrozen",
+      "description": "Emitted when a new WPC speed is calculated for a market.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "Unpaused(address)",
+      "name": "Unpaused",
+      "description": "Emitted when a new WPC speed is calculated for a market.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addSavingsContract(address,address)",
+      "name": "addSavingsContract",
+      "description": "Adds a new savings contract.",
+      "parameterDecorators": [
+        {
+          "name": "_mAsset",
+          "description": "Address of underlying mAsset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_savingsContract",
+          "description": "Address of the savings contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "collectAndDistributeInterest(address)",
+      "name": "collectAndDistributeInterest",
+      "description": "Collects interest from a target mAsset and distributes to the SavingsContract. Applies constraints such that the max APY since the last fee collection cannot exceed the \"MAX_APY\" variable.",
+      "parameterDecorators": [
+        {
+          "name": "_mAsset",
+          "description": "mAsset for which the interest should be collected.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "collectAndStreamInterest(address)",
+      "name": "collectAndStreamInterest",
+      "description": "Collects the platform interest from a given mAsset and then adds capital to the stream. If there is > 24h left in current stream, just top it up, otherwise reset.",
+      "parameterDecorators": [
+        {
+          "name": "_mAsset",
+          "description": "The mAsset to fetch interest.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "depositLiquidation(address,uint256)",
+      "name": "depositLiquidation",
+      "description": "Allows the liquidator to deposit proceeds from iquidated gov tokens. Transfers proceeds on a second by second basis to the Savings Contract over 1 week.",
+      "parameterDecorators": [
+        {
+          "name": "_mAsset",
+          "description": "The mAsset to transfer and distribute.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_liquidated",
+          "description": "Units of mAsset to distribute.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "distributeUnallocatedInterest(address)",
+      "name": "distributeUnallocatedInterest",
+      "description": "Redistributes the unallocated interest to the saved recipient, allowing the siphoned assets to be used elsewhere in the system.",
+      "parameterDecorators": [
+        {
+          "name": "_mAsset",
+          "description": "mAsset to collect.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "freezeStreams()",
+      "name": "freezeStreams",
+      "description": "Freezes streaming of mAssets.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lastBatchCollected(address)",
+      "name": "lastBatchCollected",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastCollection(address)",
+      "name": "lastCollection",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastPeriodStart(address)",
+      "name": "lastPeriodStart",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "liqStream(address)",
+      "name": "liqStream",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "end",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "rate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nexus()",
+      "name": "nexus",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pause()",
+      "name": "pause",
+      "description": "Called by the Governor to pause, triggers stopped state.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "paused()",
+      "name": "paused",
+      "description": "Returns true if the contract is paused, and false otherwise.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "periodYield(address)",
+      "name": "periodYield",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "revenueRecipients(address)",
+      "name": "revenueRecipients",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "savingsContracts(address)",
+      "name": "savingsContracts",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setRevenueRecipient(address,address)",
+      "name": "setRevenueRecipient",
+      "description": "Sets the revenue recipient address.",
+      "parameterDecorators": [
+        {
+          "name": "_mAsset",
+          "description": "Address of underlying mAsset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_recipient",
+          "description": "Address of the recipient.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setSavingsRate(uint256)",
+      "name": "setSavingsRate",
+      "description": "Sets a new savings rate for interest distribution.",
+      "parameterDecorators": [
+        {
+          "name": "_savingsRate",
+          "description": "Rate of savings sent to SavingsContract (100% = 1e18).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unpause()",
+      "name": "unpause",
+      "description": "Called by Governor to unpause, returns to normal state.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateSavingsContract(address,address)",
+      "name": "updateSavingsContract",
+      "description": "Updates an existing savings contract.",
+      "parameterDecorators": [
+        {
+          "name": "_mAsset",
+          "description": "Address of underlying mAsset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_savingsContract",
+          "description": "Address of the savings contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "yieldStream(address)",
+      "name": "yieldStream",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "end",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "rate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

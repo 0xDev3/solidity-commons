@@ -1,1 +1,353 @@
-{"schema":"../schema.json","tags":[],"name":"Bank","description":"","eventDecorators":[{"signature":"Borrow(address,address,uint256,uint256)","name":"Borrow","description":"","parameterDecorators":[{"name":"_from","description":"","recommendedTypes":[],"indexed":true},{"name":"token","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"newCollateralRatio","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Deposit(address,address,uint256)","name":"Deposit","description":"","parameterDecorators":[{"name":"_from","description":"","recommendedTypes":[],"indexed":true},{"name":"token","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Liquidate(address,address,address,uint256,uint256)","name":"Liquidate","description":"","parameterDecorators":[{"name":"liquidator","description":"","recommendedTypes":[],"indexed":true},{"name":"accountLiquidated","description":"","recommendedTypes":[],"indexed":true},{"name":"collateralToken","description":"","recommendedTypes":[],"indexed":true},{"name":"amountOfCollateral","description":"","recommendedTypes":[],"indexed":false},{"name":"amountSentBack","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Repay(address,address,uint256)","name":"Repay","description":"","parameterDecorators":[{"name":"_from","description":"","recommendedTypes":[],"indexed":true},{"name":"token","description":"","recommendedTypes":[],"indexed":true},{"name":"remainingDebt","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Withdraw(address,address,uint256)","name":"Withdraw","description":"","parameterDecorators":[{"name":"_from","description":"","recommendedTypes":[],"indexed":true},{"name":"token","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"borrow(address,uint256)","name":"borrow","description":"The purpose of this function is to allow users to borrow funds by using their deposited funds as collateral. The minimum ratio of deposited funds over borrowed funds must not be less than 150%.","parameterDecorators":[{"name":"token","description":"- the address of the token to borrow. This address must be set to 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE, otherwise the transaction must revert.","recommendedTypes":[]},{"name":"amount","description":"- the amount to borrow. If this amount is set to zero (0), then the amount borrowed should be the maximum allowed, while respecting the collateral ratio of 150%.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"- the current collateral ratio.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"deposit(address,uint256)","name":"deposit","description":"The purpose of this function is to allow end-users to deposit a given token amount into their bank account.","parameterDecorators":[{"name":"token","description":"- the address of the token to deposit. If this address is set to 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE then the token to deposit is ETH.","recommendedTypes":[]},{"name":"amount","description":"- the amount of the given token to deposit.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"- true if the deposit was successful, otherwise revert.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"getBalance(address)","name":"getBalance","description":"The purpose of this function is to return the balance that the caller has in their own account for the given token (including interest).","parameterDecorators":[{"name":"token","description":"- the address of the token for which the balance is computed.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"- the value of the caller's balance with interest, excluding debts.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getCollateralRatio(address,address)","name":"getCollateralRatio","description":"The purpose of this function is to return the collateral ratio for any account. The collateral ratio is computed as the value deposited divided by the value borrowed. However, if no value is borrowed then the function should return uint256 MAX_INT = type(uint256).max.","parameterDecorators":[{"name":"token","description":"- the address of the deposited token used a collateral for the loan.","recommendedTypes":[]},{"name":"account","description":"- the account that took out the loan.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"- the value of the collateral ratio with 2 percentage decimals, e.g. 1% = 100. If the account has no deposits for the given token then return zero (0). If the account has deposited token, but has not borrowed anything then return MAX_INT.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"liquidate(address,address)","name":"liquidate","description":"The purpose of this function is to allow so called keepers to collect bad debt, that is in case the collateral ratio goes below 150% for any loan.","parameterDecorators":[{"name":"token","description":"- the address of the token used as collateral for the loan.","recommendedTypes":[]},{"name":"account","description":"- the account that took out the loan that is now undercollateralized.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"- true if the liquidation was successful, otherwise revert.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"repay(address,uint256)","name":"repay","description":"The purpose of this function is to allow users to repay their loans. Loans can be repaid partially or entirely. When replaying a loan, an interest payment is also required. The interest on a loan is equal to 5% of the amount lent per 100 blocks. If the loan is repaid earlier, or later then the interest should be proportional to the number of blocks that the amount was borrowed for.","parameterDecorators":[{"name":"token","description":"- the address of the token to repay. If this address is set to 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE then the token is ETH.","recommendedTypes":[]},{"name":"amount","description":"- the amount to repay including the interest.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"- the amount still left to pay for this loan, excluding interest.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"withdraw(address,uint256)","name":"withdraw","description":"The purpose of this function is to allow end-users to withdraw a given token amount from their bank account. Upon withdrawal, the user must automatically receive a 3% interest rate per 100 blocks on their deposit.","parameterDecorators":[{"name":"token","description":"- the address of the token to withdraw. If this address is set to 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE then the token to withdraw is ETH.","recommendedTypes":[]},{"name":"amount","description":"- the amount of the given token to withdraw. If this param is set to 0, then the maximum amount available in the caller's account should be withdrawn.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"- the amount that was withdrawn plus interest upon success, otherwise revert.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "Bank",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "Borrow(address,address,uint256,uint256)",
+      "name": "Borrow",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newCollateralRatio",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Deposit(address,address,uint256)",
+      "name": "Deposit",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Liquidate(address,address,address,uint256,uint256)",
+      "name": "Liquidate",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "liquidator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "accountLiquidated",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "collateralToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amountOfCollateral",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amountSentBack",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Repay(address,address,uint256)",
+      "name": "Repay",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "remainingDebt",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Withdraw(address,address,uint256)",
+      "name": "Withdraw",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "borrow(address,uint256)",
+      "name": "borrow",
+      "description": "The purpose of this function is to allow users to borrow funds by using their deposited funds as collateral. The minimum ratio of deposited funds over borrowed funds must not be less than 150%.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "- the address of the token to borrow. This address must be set to 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE, otherwise the transaction must revert.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "- the amount to borrow. If this amount is set to zero (0), then the amount borrowed should be the maximum allowed, while respecting the collateral ratio of 150%.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "- the current collateral ratio.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deposit(address,uint256)",
+      "name": "deposit",
+      "description": "The purpose of this function is to allow end-users to deposit a given token amount into their bank account.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "- the address of the token to deposit. If this address is set to 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE then the token to deposit is ETH.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "- the amount of the given token to deposit.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "- true if the deposit was successful, otherwise revert.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getBalance(address)",
+      "name": "getBalance",
+      "description": "The purpose of this function is to return the balance that the caller has in their own account for the given token (including interest).",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "- the address of the token for which the balance is computed.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "- the value of the caller's balance with interest, excluding debts.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCollateralRatio(address,address)",
+      "name": "getCollateralRatio",
+      "description": "The purpose of this function is to return the collateral ratio for any account. The collateral ratio is computed as the value deposited divided by the value borrowed. However, if no value is borrowed then the function should return uint256 MAX_INT = type(uint256).max.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "- the address of the deposited token used a collateral for the loan.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "- the account that took out the loan.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "- the value of the collateral ratio with 2 percentage decimals, e.g. 1% = 100. If the account has no deposits for the given token then return zero (0). If the account has deposited token, but has not borrowed anything then return MAX_INT.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "liquidate(address,address)",
+      "name": "liquidate",
+      "description": "The purpose of this function is to allow so called keepers to collect bad debt, that is in case the collateral ratio goes below 150% for any loan.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "- the address of the token used as collateral for the loan.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "- the account that took out the loan that is now undercollateralized.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "- true if the liquidation was successful, otherwise revert.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "repay(address,uint256)",
+      "name": "repay",
+      "description": "The purpose of this function is to allow users to repay their loans. Loans can be repaid partially or entirely. When replaying a loan, an interest payment is also required. The interest on a loan is equal to 5% of the amount lent per 100 blocks. If the loan is repaid earlier, or later then the interest should be proportional to the number of blocks that the amount was borrowed for.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "- the address of the token to repay. If this address is set to 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE then the token is ETH.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "- the amount to repay including the interest.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "- the amount still left to pay for this loan, excluding interest.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(address,uint256)",
+      "name": "withdraw",
+      "description": "The purpose of this function is to allow end-users to withdraw a given token amount from their bank account. Upon withdrawal, the user must automatically receive a 3% interest rate per 100 blocks on their deposit.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "- the address of the token to withdraw. If this address is set to 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE then the token to withdraw is ETH.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "- the amount of the given token to withdraw. If this param is set to 0, then the maximum amount available in the caller's account should be withdrawn.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "- the amount that was withdrawn plus interest upon success, otherwise revert.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

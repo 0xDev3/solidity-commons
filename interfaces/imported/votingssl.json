@@ -1,1 +1,385 @@
-{"schema":"../schema.json","tags":["escrows","voting"],"name":"VotingSSL","description":"VotingSSL. Base escrow contract, holds funds designated for a payee until they withdraw them. Intended usage: This contract (and derived escrow contracts) should be a standalone contract, that only interacts with the contract that instantiated it. That way, it is guaranteed that all Ether will be handled according to the `Escrow` rules, and there is no need to check for payable functions or transfers in the inheritance tree. The contract that uses the escrow as its payment method should be its owner, and provide public methods redirecting to the escrow's deposit and withdraw.","eventDecorators":[{"signature":"Deposited(address,uint256,uint256)","name":"Deposited","description":"Emitted when a edition is created reserving the corresponding token IDs.","parameterDecorators":[{"name":"payee","description":"","recommendedTypes":[],"indexed":true},{"name":"id","description":"","recommendedTypes":[],"indexed":false},{"name":"weiAmount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnerChanged(address,address)","name":"OwnerChanged","description":"Emitted when a edition is created reserving the corresponding token IDs.","parameterDecorators":[{"name":"oldOwner","description":"","recommendedTypes":[],"indexed":false},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnerNominated(address)","name":"OwnerNominated","description":"Emitted when a edition is created reserving the corresponding token IDs.","parameterDecorators":[{"name":"editionId","description":"ID of newly created edition.","recommendedTypes":[],"indexed":false}]},{"signature":"Withdrawn(address,uint256,uint256)","name":"Withdrawn","description":"Emitted when a edition is created reserving the corresponding token IDs.","parameterDecorators":[{"name":"payee","description":"","recommendedTypes":[],"indexed":true},{"name":"id","description":"","recommendedTypes":[],"indexed":false},{"name":"weiAmount","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"_duration()","name":"_duration","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"acceptOwnership()","name":"acceptOwnership","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"changeDuration(uint256)","name":"changeDuration","description":"","parameterDecorators":[{"name":"duration","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"createCompaign()","name":"createCompaign","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"deposit(uint256,uint256,uint256)","name":"deposit","description":"","parameterDecorators":[{"name":"id","description":"","recommendedTypes":[]},{"name":"amount","description":"","recommendedTypes":[]},{"name":"optionNo","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"depositsOf(address,uint256)","name":"depositsOf","description":"","parameterDecorators":[{"name":"payee","description":"","recommendedTypes":[]},{"name":"id","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"expiryID(uint256)","name":"expiryID","description":"","parameterDecorators":[{"name":"id","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getCurrID()","name":"getCurrID","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getDuration()","name":"getDuration","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"nominateNewOwner(address)","name":"nominateNewOwner","description":"","parameterDecorators":[{"name":"_owner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"nominatedOwner()","name":"nominatedOwner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"setBaseMetadataURI(string)","name":"setBaseMetadataURI","description":"","parameterDecorators":[{"name":"_newBaseMetadataURI","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"uri(uint256)","name":"uri","description":"","parameterDecorators":[{"name":"_id","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true},{"signature":"voteResult(uint256)","name":"voteResult","description":"","parameterDecorators":[{"name":"id","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256[2]"}],"emittableEvents":[],"readOnly":true},{"signature":"withdraw(uint256)","name":"withdraw","description":"","parameterDecorators":[{"name":"id","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "escrows",
+    "voting"
+  ],
+  "name": "VotingSSL",
+  "description": "VotingSSL. Base escrow contract, holds funds designated for a payee until they withdraw them. Intended usage: This contract (and derived escrow contracts) should be a standalone contract, that only interacts with the contract that instantiated it. That way, it is guaranteed that all Ether will be handled according to the `Escrow` rules, and there is no need to check for payable functions or transfers in the inheritance tree. The contract that uses the escrow as its payment method should be its owner, and provide public methods redirecting to the escrow's deposit and withdraw.",
+  "eventDecorators": [
+    {
+      "signature": "Deposited(address,uint256,uint256)",
+      "name": "Deposited",
+      "description": "Emitted when a edition is created reserving the corresponding token IDs.",
+      "parameterDecorators": [
+        {
+          "name": "payee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "weiAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnerChanged(address,address)",
+      "name": "OwnerChanged",
+      "description": "Emitted when a edition is created reserving the corresponding token IDs.",
+      "parameterDecorators": [
+        {
+          "name": "oldOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnerNominated(address)",
+      "name": "OwnerNominated",
+      "description": "Emitted when a edition is created reserving the corresponding token IDs.",
+      "parameterDecorators": [
+        {
+          "name": "editionId",
+          "description": "ID of newly created edition.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Withdrawn(address,uint256,uint256)",
+      "name": "Withdrawn",
+      "description": "Emitted when a edition is created reserving the corresponding token IDs.",
+      "parameterDecorators": [
+        {
+          "name": "payee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "weiAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "_duration()",
+      "name": "_duration",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "acceptOwnership()",
+      "name": "acceptOwnership",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeDuration(uint256)",
+      "name": "changeDuration",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "duration",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createCompaign()",
+      "name": "createCompaign",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deposit(uint256,uint256,uint256)",
+      "name": "deposit",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "optionNo",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "depositsOf(address,uint256)",
+      "name": "depositsOf",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "payee",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "expiryID(uint256)",
+      "name": "expiryID",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrID()",
+      "name": "getCurrID",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getDuration()",
+      "name": "getDuration",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nominateNewOwner(address)",
+      "name": "nominateNewOwner",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_owner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "nominatedOwner()",
+      "name": "nominatedOwner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setBaseMetadataURI(string)",
+      "name": "setBaseMetadataURI",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_newBaseMetadataURI",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "uri(uint256)",
+      "name": "uri",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_id",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "voteResult(uint256)",
+      "name": "voteResult",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[2]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw(uint256)",
+      "name": "withdraw",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

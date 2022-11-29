@@ -1,1 +1,382 @@
-{"schema":"../schema.json","tags":[],"name":"StateCommitmentChain","description":"StateCommitmentChain. The State Commitment Chain (SCC) contract contains a list of proposed state roots which Proposers assert to be a result of each transaction in the Canonical Transaction Chain (CTC). Elements here have a 1:1 correspondence with transactions in the CTC, and should be the unique state root calculated off-chain by applying the canonical transactions one by one. Runtime target: EVM.","eventDecorators":[{"signature":"StateBatchAppended(uint256,bytes32,uint256,uint256,bytes)","name":"StateBatchAppended","description":"A processed deposit event.","parameterDecorators":[{"name":"_batchIndex","description":"","recommendedTypes":[],"indexed":true},{"name":"_batchRoot","description":"","recommendedTypes":[],"indexed":false},{"name":"_batchSize","description":"","recommendedTypes":[],"indexed":false},{"name":"_prevTotalElements","description":"","recommendedTypes":[],"indexed":false},{"name":"_extraData","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"StateBatchDeleted(uint256,bytes32)","name":"StateBatchDeleted","description":"A processed deposit event.","parameterDecorators":[{"name":"_batchIndex","description":"","recommendedTypes":[],"indexed":true},{"name":"_batchRoot","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"FRAUD_PROOF_WINDOW()","name":"FRAUD_PROOF_WINDOW","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"SEQUENCER_PUBLISH_WINDOW()","name":"SEQUENCER_PUBLISH_WINDOW","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"appendStateBatch(bytes32[],uint256)","name":"appendStateBatch","description":"Appends a batch of state roots to the chain.","parameterDecorators":[{"name":"_batch","description":"Batch of state roots.","recommendedTypes":[]},{"name":"_shouldStartAtElement","description":"Index of the element at which this batch should start.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"batches()","name":"batches","description":"Accesses the batch storage container.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"Reference to the batch storage container.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"deleteStateBatch(tuple(uint256,bytes32,uint256,uint256,bytes))","name":"deleteStateBatch","description":"Deletes all state roots after (and including) a given batch.","parameterDecorators":[{"name":"_batchHeader","description":"Header of the batch to start deleting from.","recommendedTypes":[],"parameters":[{"name":"batchIndex","description":"","type":"uint256"},{"name":"batchRoot","description":"","type":"bytes32"},{"name":"batchSize","description":"","type":"uint256"},{"name":"prevTotalElements","description":"","type":"uint256"},{"name":"extraData","description":"","type":"bytes"}]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getLastSequencerTimestamp()","name":"getLastSequencerTimestamp","description":"Retrieves the timestamp of the last batch submitted by the sequencer.","parameterDecorators":[],"returnDecorators":[{"name":"_lastSequencerTimestamp","description":"Last sequencer batch timestamp.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getTotalBatches()","name":"getTotalBatches","description":"Retrieves the total number of batches submitted.","parameterDecorators":[],"returnDecorators":[{"name":"_totalBatches","description":"Total submitted batches.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getTotalElements()","name":"getTotalElements","description":"Retrieves the total number of elements submitted.","parameterDecorators":[],"returnDecorators":[{"name":"_totalElements","description":"Total submitted elements.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"insideFraudProofWindow(tuple(uint256,bytes32,uint256,uint256,bytes))","name":"insideFraudProofWindow","description":"Checks whether a given batch is still inside its fraud proof window.","parameterDecorators":[{"name":"_batchHeader","description":"Header of the batch to check.","recommendedTypes":[],"parameters":[{"name":"batchIndex","description":"","type":"uint256"},{"name":"batchRoot","description":"","type":"bytes32"},{"name":"batchSize","description":"","type":"uint256"},{"name":"prevTotalElements","description":"","type":"uint256"},{"name":"extraData","description":"","type":"bytes"}]}],"returnDecorators":[{"name":"_inside","description":"Whether or not the batch is inside the fraud proof window.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"libAddressManager()","name":"libAddressManager","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"resolve(string)","name":"resolve","description":"Resolves the address associated with a given name.","parameterDecorators":[{"name":"_name","description":"Name to resolve an address for.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Address associated with the given name.","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"verifyStateCommitment(bytes32,tuple(uint256,bytes32,uint256,uint256,bytes),tuple(uint256,bytes32[]))","name":"verifyStateCommitment","description":"Verifies a batch inclusion proof.","parameterDecorators":[{"name":"_element","description":"Hash of the element to verify a proof for.","recommendedTypes":[]},{"name":"_batchHeader","description":"Header of the batch in which the element was included.","recommendedTypes":[],"parameters":[{"name":"batchIndex","description":"","type":"uint256"},{"name":"batchRoot","description":"","type":"bytes32"},{"name":"batchSize","description":"","type":"uint256"},{"name":"prevTotalElements","description":"","type":"uint256"},{"name":"extraData","description":"","type":"bytes"}]},{"name":"_proof","description":"Merkle inclusion proof for the element.","recommendedTypes":[],"parameters":[{"name":"index","description":"","type":"uint256"},{"name":"siblings","description":"","type":"bytes32[]"}]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "StateCommitmentChain",
+  "description": "StateCommitmentChain. The State Commitment Chain (SCC) contract contains a list of proposed state roots which Proposers assert to be a result of each transaction in the Canonical Transaction Chain (CTC). Elements here have a 1:1 correspondence with transactions in the CTC, and should be the unique state root calculated off-chain by applying the canonical transactions one by one. Runtime target: EVM.",
+  "eventDecorators": [
+    {
+      "signature": "StateBatchAppended(uint256,bytes32,uint256,uint256,bytes)",
+      "name": "StateBatchAppended",
+      "description": "A processed deposit event.",
+      "parameterDecorators": [
+        {
+          "name": "_batchIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_batchRoot",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_batchSize",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_prevTotalElements",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_extraData",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "StateBatchDeleted(uint256,bytes32)",
+      "name": "StateBatchDeleted",
+      "description": "A processed deposit event.",
+      "parameterDecorators": [
+        {
+          "name": "_batchIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_batchRoot",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "FRAUD_PROOF_WINDOW()",
+      "name": "FRAUD_PROOF_WINDOW",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "SEQUENCER_PUBLISH_WINDOW()",
+      "name": "SEQUENCER_PUBLISH_WINDOW",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "appendStateBatch(bytes32[],uint256)",
+      "name": "appendStateBatch",
+      "description": "Appends a batch of state roots to the chain.",
+      "parameterDecorators": [
+        {
+          "name": "_batch",
+          "description": "Batch of state roots.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_shouldStartAtElement",
+          "description": "Index of the element at which this batch should start.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "batches()",
+      "name": "batches",
+      "description": "Accesses the batch storage container.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Reference to the batch storage container.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deleteStateBatch(tuple(uint256,bytes32,uint256,uint256,bytes))",
+      "name": "deleteStateBatch",
+      "description": "Deletes all state roots after (and including) a given batch.",
+      "parameterDecorators": [
+        {
+          "name": "_batchHeader",
+          "description": "Header of the batch to start deleting from.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "batchIndex",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "batchRoot",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "batchSize",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "prevTotalElements",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "extraData",
+              "description": "",
+              "type": "bytes"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getLastSequencerTimestamp()",
+      "name": "getLastSequencerTimestamp",
+      "description": "Retrieves the timestamp of the last batch submitted by the sequencer.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_lastSequencerTimestamp",
+          "description": "Last sequencer batch timestamp.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTotalBatches()",
+      "name": "getTotalBatches",
+      "description": "Retrieves the total number of batches submitted.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_totalBatches",
+          "description": "Total submitted batches.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTotalElements()",
+      "name": "getTotalElements",
+      "description": "Retrieves the total number of elements submitted.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_totalElements",
+          "description": "Total submitted elements.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "insideFraudProofWindow(tuple(uint256,bytes32,uint256,uint256,bytes))",
+      "name": "insideFraudProofWindow",
+      "description": "Checks whether a given batch is still inside its fraud proof window.",
+      "parameterDecorators": [
+        {
+          "name": "_batchHeader",
+          "description": "Header of the batch to check.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "batchIndex",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "batchRoot",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "batchSize",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "prevTotalElements",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "extraData",
+              "description": "",
+              "type": "bytes"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_inside",
+          "description": "Whether or not the batch is inside the fraud proof window.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "libAddressManager()",
+      "name": "libAddressManager",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "resolve(string)",
+      "name": "resolve",
+      "description": "Resolves the address associated with a given name.",
+      "parameterDecorators": [
+        {
+          "name": "_name",
+          "description": "Name to resolve an address for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Address associated with the given name.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "verifyStateCommitment(bytes32,tuple(uint256,bytes32,uint256,uint256,bytes),tuple(uint256,bytes32[]))",
+      "name": "verifyStateCommitment",
+      "description": "Verifies a batch inclusion proof.",
+      "parameterDecorators": [
+        {
+          "name": "_element",
+          "description": "Hash of the element to verify a proof for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_batchHeader",
+          "description": "Header of the batch in which the element was included.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "batchIndex",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "batchRoot",
+              "description": "",
+              "type": "bytes32"
+            },
+            {
+              "name": "batchSize",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "prevTotalElements",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "extraData",
+              "description": "",
+              "type": "bytes"
+            }
+          ]
+        },
+        {
+          "name": "_proof",
+          "description": "Merkle inclusion proof for the element.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "index",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "siblings",
+              "description": "",
+              "type": "bytes32[]"
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

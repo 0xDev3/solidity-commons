@@ -1,1 +1,967 @@
-{"schema":"../schema.json","tags":["tokens","nft"],"name":"PizzaAuction","description":"An Auction Contract for bidding and selling single and batched NFTs. This contract can be used for auctioning any NFTs, and accepts any ERC20 token as payment.","eventDecorators":[{"signature":"AuctionPeriodUpdated(address,uint256,uint64)","name":"AuctionPeriodUpdated","description":"Unfarm gets emitted when an account unstakes LP tokens.","parameterDecorators":[{"name":"nftContractAddress","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenId","description":"","recommendedTypes":[],"indexed":false},{"name":"auctionEndPeriod","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"AuctionSettled(address,uint256,address)","name":"AuctionSettled","description":"Unfarm gets emitted when an account unstakes LP tokens.","parameterDecorators":[{"name":"nftContractAddress","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenId","description":"","recommendedTypes":[],"indexed":false},{"name":"auctionSettler","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"AuctionWithdrawn(address,uint256,address)","name":"AuctionWithdrawn","description":"Unfarm gets emitted when an account unstakes LP tokens.","parameterDecorators":[{"name":"nftContractAddress","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenId","description":"","recommendedTypes":[],"indexed":false},{"name":"nftOwner","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"BidMade(address,uint256,address,uint256,address,uint256)","name":"BidMade","description":"Unfarm gets emitted when an account unstakes LP tokens.","parameterDecorators":[{"name":"nftContractAddress","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenId","description":"","recommendedTypes":[],"indexed":false},{"name":"bidder","description":"","recommendedTypes":[],"indexed":false},{"name":"ethAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"erc20Token","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenAmount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"BidWithdrawn(address,uint256,address)","name":"BidWithdrawn","description":"Unfarm gets emitted when an account unstakes LP tokens.","parameterDecorators":[{"name":"nftContractAddress","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenId","description":"","recommendedTypes":[],"indexed":false},{"name":"highestBidder","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"BuyNowPriceUpdated(address,uint256,uint128)","name":"BuyNowPriceUpdated","description":"Unfarm gets emitted when an account unstakes LP tokens.","parameterDecorators":[{"name":"nftContractAddress","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenId","description":"","recommendedTypes":[],"indexed":false},{"name":"newBuyNowPrice","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"HighestBidTaken(address,uint256)","name":"HighestBidTaken","description":"Unfarm gets emitted when an account unstakes LP tokens.","parameterDecorators":[{"name":"nftContractAddress","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenId","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"MinimumPriceUpdated(address,uint256,uint256)","name":"MinimumPriceUpdated","description":"Unfarm gets emitted when an account unstakes LP tokens.","parameterDecorators":[{"name":"nftContractAddress","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenId","description":"","recommendedTypes":[],"indexed":false},{"name":"newMinPrice","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"NFTTransferredAndSellerPaid(address,uint256,address,uint128,address,address)","name":"NFTTransferredAndSellerPaid","description":"Unfarm gets emitted when an account unstakes LP tokens.","parameterDecorators":[{"name":"nftContractAddress","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenId","description":"","recommendedTypes":[],"indexed":false},{"name":"nftSeller","description":"","recommendedTypes":[],"indexed":false},{"name":"nftHighestBid","description":"","recommendedTypes":[],"indexed":false},{"name":"nftHighestBidder","description":"","recommendedTypes":[],"indexed":false},{"name":"nftRecipient","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"NftAuctionCreated(address,uint256,address,address,uint128,uint128,uint32,uint32,address[],uint32[])","name":"NftAuctionCreated","description":"Unfarm gets emitted when an account unstakes LP tokens.","parameterDecorators":[{"name":"nftContractAddress","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenId","description":"","recommendedTypes":[],"indexed":false},{"name":"nftSeller","description":"","recommendedTypes":[],"indexed":false},{"name":"erc20Token","description":"","recommendedTypes":[],"indexed":false},{"name":"minPrice","description":"","recommendedTypes":[],"indexed":false},{"name":"buyNowPrice","description":"","recommendedTypes":[],"indexed":false},{"name":"auctionBidPeriod","description":"","recommendedTypes":[],"indexed":false},{"name":"bidIncreasePercentage","description":"","recommendedTypes":[],"indexed":false},{"name":"feeRecipients","description":"","recommendedTypes":[],"indexed":false},{"name":"feePercentages","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"SaleCreated(address,uint256,address,address,uint128,address,address[],uint32[])","name":"SaleCreated","description":"Unfarm gets emitted when an account unstakes LP tokens.","parameterDecorators":[{"name":"nftContractAddress","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenId","description":"","recommendedTypes":[],"indexed":false},{"name":"nftSeller","description":"","recommendedTypes":[],"indexed":false},{"name":"erc20Token","description":"","recommendedTypes":[],"indexed":false},{"name":"buyNowPrice","description":"","recommendedTypes":[],"indexed":false},{"name":"whitelistedBuyer","description":"","recommendedTypes":[],"indexed":false},{"name":"feeRecipients","description":"","recommendedTypes":[],"indexed":false},{"name":"feePercentages","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"WhitelistedBuyerUpdated(address,uint256,address)","name":"WhitelistedBuyerUpdated","description":"Unfarm gets emitted when an account unstakes LP tokens.","parameterDecorators":[{"name":"nftContractAddress","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenId","description":"","recommendedTypes":[],"indexed":false},{"name":"newWhitelistedBuyer","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"createDefaultNftAuction(address,uint256,address,uint128,uint128,address[],uint32[])","name":"createDefaultNftAuction","description":"Create an auction that uses the default bid increase percentage & the default auction bid period.","parameterDecorators":[{"name":"_nftContractAddress","description":"","recommendedTypes":[]},{"name":"_tokenId","description":"","recommendedTypes":[]},{"name":"_erc20Token","description":"","recommendedTypes":[]},{"name":"_minPrice","description":"","recommendedTypes":[]},{"name":"_buyNowPrice","description":"","recommendedTypes":[]},{"name":"_feeRecipients","description":"","recommendedTypes":[]},{"name":"_feePercentages","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"createNewNftAuction(address,uint256,address,uint128,uint128,uint32,uint32,address[],uint32[])","name":"createNewNftAuction","description":"","parameterDecorators":[{"name":"_nftContractAddress","description":"","recommendedTypes":[]},{"name":"_tokenId","description":"","recommendedTypes":[]},{"name":"_erc20Token","description":"","recommendedTypes":[]},{"name":"_minPrice","description":"","recommendedTypes":[]},{"name":"_buyNowPrice","description":"","recommendedTypes":[]},{"name":"_auctionBidPeriod","description":"","recommendedTypes":[]},{"name":"_bidIncreasePercentage","description":"","recommendedTypes":[]},{"name":"_feeRecipients","description":"","recommendedTypes":[]},{"name":"_feePercentages","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"createSale(address,uint256,address,uint128,address,address[],uint32[])","name":"createSale","description":"","parameterDecorators":[{"name":"_nftContractAddress","description":"","recommendedTypes":[]},{"name":"_tokenId","description":"","recommendedTypes":[]},{"name":"_erc20Token","description":"","recommendedTypes":[]},{"name":"_buyNowPrice","description":"","recommendedTypes":[]},{"name":"_whitelistedBuyer","description":"","recommendedTypes":[]},{"name":"_feeRecipients","description":"","recommendedTypes":[]},{"name":"_feePercentages","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"defaultAuctionBidPeriod()","name":"defaultAuctionBidPeriod","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"defaultBidIncreasePercentage()","name":"defaultBidIncreasePercentage","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"makeBid(address,uint256,address,uint128)","name":"makeBid","description":"","parameterDecorators":[{"name":"_nftContractAddress","description":"","recommendedTypes":[]},{"name":"_tokenId","description":"","recommendedTypes":[]},{"name":"_erc20Token","description":"","recommendedTypes":[]},{"name":"_tokenAmount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"makeCustomBid(address,uint256,address,uint128,address)","name":"makeCustomBid","description":"","parameterDecorators":[{"name":"_nftContractAddress","description":"","recommendedTypes":[]},{"name":"_tokenId","description":"","recommendedTypes":[]},{"name":"_erc20Token","description":"","recommendedTypes":[]},{"name":"_tokenAmount","description":"","recommendedTypes":[]},{"name":"_nftRecipient","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"maximumMinPricePercentage()","name":"maximumMinPricePercentage","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"minimumSettableIncreasePercentage()","name":"minimumSettableIncreasePercentage","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"nftContractAuctions(address,uint256)","name":"nftContractAuctions","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"bidIncreasePercentage","description":"","recommendedTypes":[],"solidityType":"uint32"},{"name":"auctionBidPeriod","description":"","recommendedTypes":[],"solidityType":"uint32"},{"name":"auctionEnd","description":"","recommendedTypes":[],"solidityType":"uint64"},{"name":"minPrice","description":"","recommendedTypes":[],"solidityType":"uint128"},{"name":"buyNowPrice","description":"","recommendedTypes":[],"solidityType":"uint128"},{"name":"nftHighestBid","description":"","recommendedTypes":[],"solidityType":"uint128"},{"name":"nftHighestBidder","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"nftSeller","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"whitelistedBuyer","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"nftRecipient","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"ERC20Token","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"ownerOfNFT(address,uint256)","name":"ownerOfNFT","description":"","parameterDecorators":[{"name":"_nftContractAddress","description":"","recommendedTypes":[]},{"name":"_tokenId","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"settleAuction(address,uint256)","name":"settleAuction","description":"","parameterDecorators":[{"name":"_nftContractAddress","description":"","recommendedTypes":[]},{"name":"_tokenId","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"takeHighestBid(address,uint256)","name":"takeHighestBid","description":"","parameterDecorators":[{"name":"_nftContractAddress","description":"","recommendedTypes":[]},{"name":"_tokenId","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateBuyNowPrice(address,uint256,uint128)","name":"updateBuyNowPrice","description":"","parameterDecorators":[{"name":"_nftContractAddress","description":"","recommendedTypes":[]},{"name":"_tokenId","description":"","recommendedTypes":[]},{"name":"_newBuyNowPrice","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateMinimumPrice(address,uint256,uint128)","name":"updateMinimumPrice","description":"","parameterDecorators":[{"name":"_nftContractAddress","description":"","recommendedTypes":[]},{"name":"_tokenId","description":"","recommendedTypes":[]},{"name":"_newMinPrice","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateWhitelistedBuyer(address,uint256,address)","name":"updateWhitelistedBuyer","description":"","parameterDecorators":[{"name":"_nftContractAddress","description":"","recommendedTypes":[]},{"name":"_tokenId","description":"","recommendedTypes":[]},{"name":"_newWhitelistedBuyer","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdrawAllFailedCredits()","name":"withdrawAllFailedCredits","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdrawAuction(address,uint256)","name":"withdrawAuction","description":"","parameterDecorators":[{"name":"_nftContractAddress","description":"","recommendedTypes":[]},{"name":"_tokenId","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdrawBid(address,uint256)","name":"withdrawBid","description":"","parameterDecorators":[{"name":"_nftContractAddress","description":"","recommendedTypes":[]},{"name":"_tokenId","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "nft"
+  ],
+  "name": "PizzaAuction",
+  "description": "An Auction Contract for bidding and selling single and batched NFTs. This contract can be used for auctioning any NFTs, and accepts any ERC20 token as payment.",
+  "eventDecorators": [
+    {
+      "signature": "AuctionPeriodUpdated(address,uint256,uint64)",
+      "name": "AuctionPeriodUpdated",
+      "description": "Unfarm gets emitted when an account unstakes LP tokens.",
+      "parameterDecorators": [
+        {
+          "name": "nftContractAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "auctionEndPeriod",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AuctionSettled(address,uint256,address)",
+      "name": "AuctionSettled",
+      "description": "Unfarm gets emitted when an account unstakes LP tokens.",
+      "parameterDecorators": [
+        {
+          "name": "nftContractAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "auctionSettler",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AuctionWithdrawn(address,uint256,address)",
+      "name": "AuctionWithdrawn",
+      "description": "Unfarm gets emitted when an account unstakes LP tokens.",
+      "parameterDecorators": [
+        {
+          "name": "nftContractAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "nftOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BidMade(address,uint256,address,uint256,address,uint256)",
+      "name": "BidMade",
+      "description": "Unfarm gets emitted when an account unstakes LP tokens.",
+      "parameterDecorators": [
+        {
+          "name": "nftContractAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "bidder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "ethAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "erc20Token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BidWithdrawn(address,uint256,address)",
+      "name": "BidWithdrawn",
+      "description": "Unfarm gets emitted when an account unstakes LP tokens.",
+      "parameterDecorators": [
+        {
+          "name": "nftContractAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "highestBidder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BuyNowPriceUpdated(address,uint256,uint128)",
+      "name": "BuyNowPriceUpdated",
+      "description": "Unfarm gets emitted when an account unstakes LP tokens.",
+      "parameterDecorators": [
+        {
+          "name": "nftContractAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newBuyNowPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "HighestBidTaken(address,uint256)",
+      "name": "HighestBidTaken",
+      "description": "Unfarm gets emitted when an account unstakes LP tokens.",
+      "parameterDecorators": [
+        {
+          "name": "nftContractAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "MinimumPriceUpdated(address,uint256,uint256)",
+      "name": "MinimumPriceUpdated",
+      "description": "Unfarm gets emitted when an account unstakes LP tokens.",
+      "parameterDecorators": [
+        {
+          "name": "nftContractAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newMinPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NFTTransferredAndSellerPaid(address,uint256,address,uint128,address,address)",
+      "name": "NFTTransferredAndSellerPaid",
+      "description": "Unfarm gets emitted when an account unstakes LP tokens.",
+      "parameterDecorators": [
+        {
+          "name": "nftContractAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "nftSeller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "nftHighestBid",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "nftHighestBidder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "nftRecipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NftAuctionCreated(address,uint256,address,address,uint128,uint128,uint32,uint32,address[],uint32[])",
+      "name": "NftAuctionCreated",
+      "description": "Unfarm gets emitted when an account unstakes LP tokens.",
+      "parameterDecorators": [
+        {
+          "name": "nftContractAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "nftSeller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "erc20Token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "minPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "buyNowPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "auctionBidPeriod",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "bidIncreasePercentage",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "feeRecipients",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "feePercentages",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SaleCreated(address,uint256,address,address,uint128,address,address[],uint32[])",
+      "name": "SaleCreated",
+      "description": "Unfarm gets emitted when an account unstakes LP tokens.",
+      "parameterDecorators": [
+        {
+          "name": "nftContractAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "nftSeller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "erc20Token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "buyNowPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "whitelistedBuyer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "feeRecipients",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "feePercentages",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WhitelistedBuyerUpdated(address,uint256,address)",
+      "name": "WhitelistedBuyerUpdated",
+      "description": "Unfarm gets emitted when an account unstakes LP tokens.",
+      "parameterDecorators": [
+        {
+          "name": "nftContractAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newWhitelistedBuyer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "createDefaultNftAuction(address,uint256,address,uint128,uint128,address[],uint32[])",
+      "name": "createDefaultNftAuction",
+      "description": "Create an auction that uses the default bid increase percentage & the default auction bid period.",
+      "parameterDecorators": [
+        {
+          "name": "_nftContractAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_erc20Token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minPrice",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_buyNowPrice",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_feeRecipients",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_feePercentages",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createNewNftAuction(address,uint256,address,uint128,uint128,uint32,uint32,address[],uint32[])",
+      "name": "createNewNftAuction",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_nftContractAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_erc20Token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minPrice",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_buyNowPrice",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_auctionBidPeriod",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_bidIncreasePercentage",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_feeRecipients",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_feePercentages",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createSale(address,uint256,address,uint128,address,address[],uint32[])",
+      "name": "createSale",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_nftContractAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_erc20Token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_buyNowPrice",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_whitelistedBuyer",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_feeRecipients",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_feePercentages",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "defaultAuctionBidPeriod()",
+      "name": "defaultAuctionBidPeriod",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "defaultBidIncreasePercentage()",
+      "name": "defaultBidIncreasePercentage",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "makeBid(address,uint256,address,uint128)",
+      "name": "makeBid",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_nftContractAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_erc20Token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenAmount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "makeCustomBid(address,uint256,address,uint128,address)",
+      "name": "makeCustomBid",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_nftContractAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_erc20Token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_nftRecipient",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "maximumMinPricePercentage()",
+      "name": "maximumMinPricePercentage",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minimumSettableIncreasePercentage()",
+      "name": "minimumSettableIncreasePercentage",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nftContractAuctions(address,uint256)",
+      "name": "nftContractAuctions",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "bidIncreasePercentage",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        },
+        {
+          "name": "auctionBidPeriod",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        },
+        {
+          "name": "auctionEnd",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "minPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "buyNowPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "nftHighestBid",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "nftHighestBidder",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "nftSeller",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "whitelistedBuyer",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "nftRecipient",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "ERC20Token",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ownerOfNFT(address,uint256)",
+      "name": "ownerOfNFT",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_nftContractAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "settleAuction(address,uint256)",
+      "name": "settleAuction",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_nftContractAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "takeHighestBid(address,uint256)",
+      "name": "takeHighestBid",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_nftContractAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateBuyNowPrice(address,uint256,uint128)",
+      "name": "updateBuyNowPrice",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_nftContractAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newBuyNowPrice",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateMinimumPrice(address,uint256,uint128)",
+      "name": "updateMinimumPrice",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_nftContractAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newMinPrice",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateWhitelistedBuyer(address,uint256,address)",
+      "name": "updateWhitelistedBuyer",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_nftContractAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newWhitelistedBuyer",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawAllFailedCredits()",
+      "name": "withdrawAllFailedCredits",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawAuction(address,uint256)",
+      "name": "withdrawAuction",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_nftContractAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawBid(address,uint256)",
+      "name": "withdrawBid",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_nftContractAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

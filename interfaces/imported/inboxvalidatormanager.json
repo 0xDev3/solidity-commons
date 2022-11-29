@@ -1,1 +1,344 @@
-{"schema":"../schema.json","tags":[],"name":"InboxValidatorManager","description":"InboxValidatorManager. Verifies checkpoints are signed by a quorum of validators and submits them to an Inbox.","eventDecorators":[{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Triggers on new deposit call.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"ThresholdSet(uint256)","name":"ThresholdSet","description":"Emitted when the quorum threshold is set. Triggers on new deposit call.","parameterDecorators":[{"name":"threshold","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ValidatorEnrolled(address,uint256)","name":"ValidatorEnrolled","description":"Emitted when a validator is enrolled in the validator set. Triggers on new deposit call.","parameterDecorators":[{"name":"validator","description":"","recommendedTypes":[],"indexed":true},{"name":"validatorCount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ValidatorUnenrolled(address,uint256)","name":"ValidatorUnenrolled","description":"Emitted when a validator is unenrolled from the validator set. Triggers on new deposit call.","parameterDecorators":[{"name":"validator","description":"","recommendedTypes":[],"indexed":true},{"name":"validatorCount","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"domain()","name":"domain","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"domainHash()","name":"domainHash","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"enrollValidator(address)","name":"enrollValidator","description":"Enrolls a validator into the validator set. Reverts if `_validator` is already in the validator set.","parameterDecorators":[{"name":"_validator","description":"The validator to add to the validator set.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"isQuorum(bytes32,uint256,bytes[])","name":"isQuorum","description":"Returns whether provided signatures over a checkpoint constitute a quorum of validator signatures. Reverts if `_signatures` is not sorted in ascending order by the signer address, which is required for duplicate detection.Does not revert if a signature's signer is not in the validator set.","parameterDecorators":[{"name":"_root","description":"The merkle root of the checkpoint.","recommendedTypes":[]},{"name":"_index","description":"The index of the checkpoint.","recommendedTypes":[]},{"name":"_signatures","description":"Signatures over the checkpoint to be checked for a validator quorum. Must be sorted in ascending order by signer address.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"TRUE iff `_signatures` constitute a quorum of validator signatures over the checkpoint.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isValidator(address)","name":"isValidator","description":"Returns if `_validator` is enrolled in the validator set.","parameterDecorators":[{"name":"_validator","description":"The address of the validator.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"TRUE iff `_validator` is enrolled in the validator set.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"process(address,bytes32,uint256,bytes[],bytes,bytes32[32],uint256)","name":"process","description":"Verifies a signed checkpoint and submits a message for processing. Reverts if `_signatures` is not a quorum of validator signatures.Reverts if `_signatures` is not sorted in ascending order by the signer address, which is required for duplicate detection.","parameterDecorators":[{"name":"_inbox","description":"The inbox to submit the message to.","recommendedTypes":[]},{"name":"_root","description":"The merkle root of the signed checkpoint.","recommendedTypes":[]},{"name":"_index","description":"The index of the signed checkpoint.","recommendedTypes":[]},{"name":"_signatures","description":"Signatures over the checkpoint to be checked for a validator quorum. Must be sorted in ascending order by signer address.","recommendedTypes":[]},{"name":"_message","description":"The message to process.","recommendedTypes":[]},{"name":"_proof","description":"Merkle proof of inclusion for message's leaf.","recommendedTypes":[]},{"name":"_leafIndex","description":"Index of leaf in outbox's merkle tree.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setThreshold(uint256)","name":"setThreshold","description":"Sets the quorum threshold.","parameterDecorators":[{"name":"_threshold","description":"The new quorum threshold.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"threshold()","name":"threshold","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unenrollValidator(address)","name":"unenrollValidator","description":"Unenrolls a validator from the validator set. Reverts if `_validator` is not in the validator set.","parameterDecorators":[{"name":"_validator","description":"The validator to remove from the validator set.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"validatorCount()","name":"validatorCount","description":"Returns the number of validators enrolled in the validator set.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The number of validators enrolled in the validator set.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"validators()","name":"validators","description":"Gets the addresses of the current validator set. There are no ordering guarantees due to the semantics of EnumerableSet.AddressSet.","parameterDecorators":[],"returnDecorators":[{"name":"_0","description":"The addresses of the validator set.","recommendedTypes":[],"solidityType":"address[]"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "InboxValidatorManager",
+  "description": "InboxValidatorManager. Verifies checkpoints are signed by a quorum of validators and submits them to an Inbox.",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ThresholdSet(uint256)",
+      "name": "ThresholdSet",
+      "description": "Emitted when the quorum threshold is set. Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "threshold",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ValidatorEnrolled(address,uint256)",
+      "name": "ValidatorEnrolled",
+      "description": "Emitted when a validator is enrolled in the validator set. Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "validator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "validatorCount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ValidatorUnenrolled(address,uint256)",
+      "name": "ValidatorUnenrolled",
+      "description": "Emitted when a validator is unenrolled from the validator set. Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "validator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "validatorCount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "domain()",
+      "name": "domain",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "domainHash()",
+      "name": "domainHash",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "enrollValidator(address)",
+      "name": "enrollValidator",
+      "description": "Enrolls a validator into the validator set. Reverts if `_validator` is already in the validator set.",
+      "parameterDecorators": [
+        {
+          "name": "_validator",
+          "description": "The validator to add to the validator set.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isQuorum(bytes32,uint256,bytes[])",
+      "name": "isQuorum",
+      "description": "Returns whether provided signatures over a checkpoint constitute a quorum of validator signatures. Reverts if `_signatures` is not sorted in ascending order by the signer address, which is required for duplicate detection.Does not revert if a signature's signer is not in the validator set.",
+      "parameterDecorators": [
+        {
+          "name": "_root",
+          "description": "The merkle root of the checkpoint.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_index",
+          "description": "The index of the checkpoint.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_signatures",
+          "description": "Signatures over the checkpoint to be checked for a validator quorum. Must be sorted in ascending order by signer address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "TRUE iff `_signatures` constitute a quorum of validator signatures over the checkpoint.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isValidator(address)",
+      "name": "isValidator",
+      "description": "Returns if `_validator` is enrolled in the validator set.",
+      "parameterDecorators": [
+        {
+          "name": "_validator",
+          "description": "The address of the validator.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "TRUE iff `_validator` is enrolled in the validator set.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "process(address,bytes32,uint256,bytes[],bytes,bytes32[32],uint256)",
+      "name": "process",
+      "description": "Verifies a signed checkpoint and submits a message for processing. Reverts if `_signatures` is not a quorum of validator signatures.Reverts if `_signatures` is not sorted in ascending order by the signer address, which is required for duplicate detection.",
+      "parameterDecorators": [
+        {
+          "name": "_inbox",
+          "description": "The inbox to submit the message to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_root",
+          "description": "The merkle root of the signed checkpoint.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_index",
+          "description": "The index of the signed checkpoint.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_signatures",
+          "description": "Signatures over the checkpoint to be checked for a validator quorum. Must be sorted in ascending order by signer address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_message",
+          "description": "The message to process.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_proof",
+          "description": "Merkle proof of inclusion for message's leaf.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_leafIndex",
+          "description": "Index of leaf in outbox's merkle tree.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setThreshold(uint256)",
+      "name": "setThreshold",
+      "description": "Sets the quorum threshold.",
+      "parameterDecorators": [
+        {
+          "name": "_threshold",
+          "description": "The new quorum threshold.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "threshold()",
+      "name": "threshold",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unenrollValidator(address)",
+      "name": "unenrollValidator",
+      "description": "Unenrolls a validator from the validator set. Reverts if `_validator` is not in the validator set.",
+      "parameterDecorators": [
+        {
+          "name": "_validator",
+          "description": "The validator to remove from the validator set.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "validatorCount()",
+      "name": "validatorCount",
+      "description": "Returns the number of validators enrolled in the validator set.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The number of validators enrolled in the validator set.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "validators()",
+      "name": "validators",
+      "description": "Gets the addresses of the current validator set. There are no ordering guarantees due to the semantics of EnumerableSet.AddressSet.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The addresses of the validator set.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

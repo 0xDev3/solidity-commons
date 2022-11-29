@@ -1,1 +1,313 @@
-{"schema":"../schema.json","tags":["splitter"],"name":"JkFeeSplitter","description":"","eventDecorators":[{"signature":"ERC20PaymentReleased(address,address,uint256)","name":"ERC20PaymentReleased","description":"Event for token purchase logging.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[],"indexed":true},{"name":"to","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OnDistribute(address,uint256)","name":"OnDistribute","description":"Event for token purchase logging.","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[],"indexed":false},{"name":"amountSent","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PayeeAdded(address,uint256)","name":"PayeeAdded","description":"Event for token purchase logging.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false},{"name":"shares","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PaymentReceived(address,uint256)","name":"PaymentReceived","description":"Event for token purchase logging.","parameterDecorators":[{"name":"from","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PaymentReleased(address,uint256)","name":"PaymentReleased","description":"Event for token purchase logging.","parameterDecorators":[{"name":"to","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"_receiveSwap()","name":"_receiveSwap","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"distribute()","name":"distribute","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"payee(uint256)","name":"payee","description":"Getter for the address of the payee number `index`.","parameterDecorators":[{"name":"index","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"release(address)","name":"release","description":"Triggers a transfer to `account` of the amount of Ether they are owed, according to their percentage of the total shares and their previous withdrawals.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"release(address,address)","name":"release","description":"Triggers a transfer to `account` of the amount of `token` tokens they are owed, according to their percentage of the total shares and their previous withdrawals. `token` must be the address of an IERC20 contract.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[]},{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"released(address,address)","name":"released","description":"Getter for the amount of `token` tokens already released to a payee. `token` should be the address of an IERC20 contract.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[]},{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"released(address)","name":"released","description":"Getter for the amount of Ether already released to a payee.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"shares(address)","name":"shares","description":"Getter for the amount of shares held by an account.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"totalReleased(address)","name":"totalReleased","description":"Getter for the total amount of `token` already released. `token` should be the address of an IERC20 contract.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"totalReleased()","name":"totalReleased","description":"Getter for the total amount of Ether already released.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"totalShares()","name":"totalShares","description":"Getter for the total shares held by payees.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "splitter"
+  ],
+  "name": "JkFeeSplitter",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "ERC20PaymentReleased(address,address,uint256)",
+      "name": "ERC20PaymentReleased",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OnDistribute(address,uint256)",
+      "name": "OnDistribute",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amountSent",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PayeeAdded(address,uint256)",
+      "name": "PayeeAdded",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "shares",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PaymentReceived(address,uint256)",
+      "name": "PaymentReceived",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PaymentReleased(address,uint256)",
+      "name": "PaymentReleased",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "_receiveSwap()",
+      "name": "_receiveSwap",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "distribute()",
+      "name": "distribute",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "payee(uint256)",
+      "name": "payee",
+      "description": "Getter for the address of the payee number `index`.",
+      "parameterDecorators": [
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "release(address)",
+      "name": "release",
+      "description": "Triggers a transfer to `account` of the amount of Ether they are owed, according to their percentage of the total shares and their previous withdrawals.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "release(address,address)",
+      "name": "release",
+      "description": "Triggers a transfer to `account` of the amount of `token` tokens they are owed, according to their percentage of the total shares and their previous withdrawals. `token` must be the address of an IERC20 contract.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "released(address,address)",
+      "name": "released",
+      "description": "Getter for the amount of `token` tokens already released to a payee. `token` should be the address of an IERC20 contract.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "released(address)",
+      "name": "released",
+      "description": "Getter for the amount of Ether already released to a payee.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "shares(address)",
+      "name": "shares",
+      "description": "Getter for the amount of shares held by an account.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalReleased(address)",
+      "name": "totalReleased",
+      "description": "Getter for the total amount of `token` already released. `token` should be the address of an IERC20 contract.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalReleased()",
+      "name": "totalReleased",
+      "description": "Getter for the total amount of Ether already released.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalShares()",
+      "name": "totalShares",
+      "description": "Getter for the total shares held by payees.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

@@ -1,1 +1,910 @@
-{"schema":"../schema.json","tags":[],"name":"SinglePlayerCommit","description":"CommitPool single-player mode contract. Enables staking and validating performance. No social/pool functionality.","eventDecorators":[{"signature":"ActivityUpdated(string,bytes32,address,bool,bool)","name":"ActivityUpdated","description":"","parameterDecorators":[{"name":"name","description":"","recommendedTypes":[],"indexed":false},{"name":"activityKey","description":"","recommendedTypes":[],"indexed":false},{"name":"oracle","description":"","recommendedTypes":[],"indexed":false},{"name":"allowed","description":"","recommendedTypes":[],"indexed":false},{"name":"exists","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ChainlinkCancelled(bytes32)","name":"ChainlinkCancelled","description":"","parameterDecorators":[{"name":"id","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"ChainlinkFulfilled(bytes32)","name":"ChainlinkFulfilled","description":"","parameterDecorators":[{"name":"id","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"ChainlinkRequested(bytes32)","name":"ChainlinkRequested","description":"","parameterDecorators":[{"name":"id","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"CommitmentEnded(address,bool,uint256)","name":"CommitmentEnded","description":"","parameterDecorators":[{"name":"committer","description":"","recommendedTypes":[],"indexed":false},{"name":"met","description":"","recommendedTypes":[],"indexed":false},{"name":"amountPenalized","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Deposit(address,uint256)","name":"Deposit","description":"","parameterDecorators":[{"name":"committer","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"NewCommitment(address,string,uint256,uint256,uint256,uint256)","name":"NewCommitment","description":"","parameterDecorators":[{"name":"committer","description":"","recommendedTypes":[],"indexed":false},{"name":"activityName","description":"","recommendedTypes":[],"indexed":false},{"name":"goalValue","description":"","recommendedTypes":[],"indexed":false},{"name":"startTime","description":"","recommendedTypes":[],"indexed":false},{"name":"endTime","description":"","recommendedTypes":[],"indexed":false},{"name":"stake","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"RequestActivityDistanceFulfilled(bytes32,uint256)","name":"RequestActivityDistanceFulfilled","description":"","parameterDecorators":[{"name":"requestId","description":"","recommendedTypes":[],"indexed":true},{"name":"distance","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Withdrawal(address,uint256)","name":"Withdrawal","description":"","parameterDecorators":[{"name":"committer","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"activities(bytes32)","name":"activities","description":"**************** INTERNAL ACCOUNTING*****************.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"name","description":"","recommendedTypes":[],"solidityType":"string"},{"name":"oracle","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"allowed","description":"","recommendedTypes":[],"solidityType":"bool"},{"name":"exists","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"activityKeyList(uint256)","name":"activityKeyList","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"addDays(uint256,uint256)","name":"addDays","description":"","parameterDecorators":[{"name":"date","description":"","recommendedTypes":[]},{"name":"daysAfter","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"updatedDate","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"cancelRequest(bytes32,uint256,bytes4,uint256)","name":"cancelRequest","description":"","parameterDecorators":[{"name":"_requestId","description":"","recommendedTypes":[]},{"name":"_payment","description":"","recommendedTypes":[]},{"name":"_callbackFunctionId","description":"","recommendedTypes":[]},{"name":"_expiration","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"commitments(address)","name":"commitments","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"committer","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"activityKey","description":"","recommendedTypes":[],"solidityType":"bytes32"},{"name":"goalValue","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"startTime","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"endTime","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"stake","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"reportedValue","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"lastActivityUpdate","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"met","description":"","recommendedTypes":[],"solidityType":"bool"},{"name":"userId","description":"","recommendedTypes":[],"solidityType":"string"},{"name":"exists","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"committerBalances(address)","name":"committerBalances","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"deposit(uint256)","name":"deposit","description":"Deposit amount of <token> into contract. Transfer amount to <token> contract, update balance, emit event.","parameterDecorators":[{"name":"amount","description":"Size of deposit.","recommendedTypes":[]}],"returnDecorators":[{"name":"success","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"depositAndCommit(bytes32,uint256,uint256,uint256,uint256,string)","name":"depositAndCommit","description":"Wrapper function to deposit <token> and create commitment in one call. Call deposit and makeCommitment method.","parameterDecorators":[{"name":"_activityKey","description":"Keccak256 hashed, encoded name of activity.","recommendedTypes":[]},{"name":"_goalValue","description":"Distance of activity as goal.","recommendedTypes":[]},{"name":"_startTime","description":"Starttime of commitment, also used for endTime.","recommendedTypes":[]},{"name":"_stake","description":"Amount of <token> to stake againt achieving goale.","recommendedTypes":[]},{"name":"_depositAmount","description":"Size of deposit.","recommendedTypes":[]},{"name":"_userId","description":"???.","recommendedTypes":[]}],"returnDecorators":[{"name":"success","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"disableActivity(bytes32)","name":"disableActivity","description":"Function to 'delete' an existing activity. One way function, cannot be reversed. Check activity exists, update state, emit event.","parameterDecorators":[{"name":"_activityKey","description":"Keccak256 hashed, encoded name of activity.","recommendedTypes":[]}],"returnDecorators":[{"name":"success","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"fulfillActivityDistance(bytes32,uint256)","name":"fulfillActivityDistance","description":"Register distance reported by ChainLink node. Follow-up function to requestActivityDistance.","parameterDecorators":[{"name":"_requestId","description":"ID or request triggering the method call.","recommendedTypes":[]},{"name":"_distance","description":"Distance to register.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getActivityName(bytes32)","name":"getActivityName","description":"Get name string of activity based on key. Lookup in mapping and get name field.","parameterDecorators":[{"name":"_activityKey","description":"Keccak256 hashed, encoded name of activity.","recommendedTypes":[]}],"returnDecorators":[{"name":"activityName","description":"","recommendedTypes":[],"solidityType":"string"}],"emittableEvents":[],"readOnly":true},{"signature":"getChainlinkToken()","name":"getChainlinkToken","description":"Get address for ChainLink token contract. ChainLink contract method.","parameterDecorators":[],"returnDecorators":[{"name":"tokenAddress","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"jobAddresses(bytes32)","name":"jobAddresses","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"makeCommitment(bytes32,uint256,uint256,uint256,string)","name":"makeCommitment","description":"Create commitment, store on-chain and emit event. Check parameters, create commitment, store on-chain and emit event.","parameterDecorators":[{"name":"_activityKey","description":"Keccak256 hashed, encoded name of activity.","recommendedTypes":[]},{"name":"_goalValue","description":"Distance of activity as goal.","recommendedTypes":[]},{"name":"_startTime","description":"Starttime of commitment, also used for endTime.","recommendedTypes":[]},{"name":"_stake","description":"Amount of <token> to stake againt achieving goal.","recommendedTypes":[]},{"name":"_userId","description":"???.","recommendedTypes":[]}],"returnDecorators":[{"name":"success","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"ownerWithdraw(uint256)","name":"ownerWithdraw","description":"Contract owner can withdraw funds not owned by committers. E.g. slashed from failed commitments. Check amount against slashedBalance, transfer amount and update slashedBalance.","parameterDecorators":[{"name":"amount","description":"Amount of <token> to withdraw.","recommendedTypes":[]}],"returnDecorators":[{"name":"success","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"processCommitment(address)","name":"processCommitment","description":"Enables processing of open commitments after endDate that have not been processed by creator. Process commitment by lookup based on address, checking metrics, state and updating balances.","parameterDecorators":[{"name":"committer","description":"address of the creator of the committer to process.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"processCommitmentUser()","name":"processCommitmentUser","description":"Enables control of processing own commitment. For instance when completed. Process commitment by lookup msg.sender, checking metrics, state and updating balances.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"requestActivityDistance(address,address,string)","name":"requestActivityDistance","description":"Call ChainLink node to report distance measured based on Strava data. Async function sending request to ChainLink node.","parameterDecorators":[{"name":"_committer","description":"Address of creator of commitment.","recommendedTypes":[]},{"name":"_oracle","description":"ChainLink oracle address.","recommendedTypes":[]},{"name":"_jobId","description":"???.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"slashedBalance()","name":"slashedBalance","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"token()","name":"token","description":"**************** GLOBAL CONSTANTS*****************.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"totalCommitterBalance()","name":"totalCommitterBalance","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateActivityAllowed(bytes32,bool)","name":"updateActivityAllowed","description":"Function to update availability of activity of existing activity. Check activity exists, update state, emit event.","parameterDecorators":[{"name":"_activityKey","description":"Keccak256 hashed, encoded name of activity.","recommendedTypes":[]},{"name":"_allowed","description":"Toggle for allowing new commitments with activity.","recommendedTypes":[]}],"returnDecorators":[{"name":"success","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"updateActivityOracle(bytes32,address)","name":"updateActivityOracle","description":"Function to update oracle address of existing activity. Check activity exists, update state, emit event.","parameterDecorators":[{"name":"_activityKey","description":"Keccak256 hashed, encoded name of activity.","recommendedTypes":[]},{"name":"_oracleAddress","description":"Address of oracle for activity data.","recommendedTypes":[]}],"returnDecorators":[{"name":"success","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"withdraw(uint256)","name":"withdraw","description":"Public function to withdraw unstaked balance of user. Check balances and active stake, withdraw from balances, emit event.","parameterDecorators":[{"name":"amount","description":"Amount of <token> to withdraw.","recommendedTypes":[]}],"returnDecorators":[{"name":"success","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"withdrawLink()","name":"withdrawLink","description":"Withdraw ChainLink token from contract to contract owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "SinglePlayerCommit",
+  "description": "CommitPool single-player mode contract. Enables staking and validating performance. No social/pool functionality.",
+  "eventDecorators": [
+    {
+      "signature": "ActivityUpdated(string,bytes32,address,bool,bool)",
+      "name": "ActivityUpdated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "name",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "activityKey",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "oracle",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "allowed",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "exists",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ChainlinkCancelled(bytes32)",
+      "name": "ChainlinkCancelled",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ChainlinkFulfilled(bytes32)",
+      "name": "ChainlinkFulfilled",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ChainlinkRequested(bytes32)",
+      "name": "ChainlinkRequested",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "CommitmentEnded(address,bool,uint256)",
+      "name": "CommitmentEnded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "committer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "met",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amountPenalized",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Deposit(address,uint256)",
+      "name": "Deposit",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "committer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewCommitment(address,string,uint256,uint256,uint256,uint256)",
+      "name": "NewCommitment",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "committer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "activityName",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "goalValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "startTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "endTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "stake",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RequestActivityDistanceFulfilled(bytes32,uint256)",
+      "name": "RequestActivityDistanceFulfilled",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "requestId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "distance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Withdrawal(address,uint256)",
+      "name": "Withdrawal",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "committer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "activities(bytes32)",
+      "name": "activities",
+      "description": "**************** INTERNAL ACCOUNTING*****************.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "name",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        },
+        {
+          "name": "oracle",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "allowed",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "exists",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "activityKeyList(uint256)",
+      "name": "activityKeyList",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addDays(uint256,uint256)",
+      "name": "addDays",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "date",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "daysAfter",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "updatedDate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "cancelRequest(bytes32,uint256,bytes4,uint256)",
+      "name": "cancelRequest",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_requestId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_payment",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_callbackFunctionId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_expiration",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "commitments(address)",
+      "name": "commitments",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "committer",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "activityKey",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        },
+        {
+          "name": "goalValue",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "startTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "endTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "stake",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "reportedValue",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "lastActivityUpdate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "met",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "userId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        },
+        {
+          "name": "exists",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "committerBalances(address)",
+      "name": "committerBalances",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deposit(uint256)",
+      "name": "deposit",
+      "description": "Deposit amount of <token> into contract. Transfer amount to <token> contract, update balance, emit event.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "Size of deposit.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "depositAndCommit(bytes32,uint256,uint256,uint256,uint256,string)",
+      "name": "depositAndCommit",
+      "description": "Wrapper function to deposit <token> and create commitment in one call. Call deposit and makeCommitment method.",
+      "parameterDecorators": [
+        {
+          "name": "_activityKey",
+          "description": "Keccak256 hashed, encoded name of activity.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_goalValue",
+          "description": "Distance of activity as goal.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_startTime",
+          "description": "Starttime of commitment, also used for endTime.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_stake",
+          "description": "Amount of <token> to stake againt achieving goale.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_depositAmount",
+          "description": "Size of deposit.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_userId",
+          "description": "???.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "disableActivity(bytes32)",
+      "name": "disableActivity",
+      "description": "Function to 'delete' an existing activity. One way function, cannot be reversed. Check activity exists, update state, emit event.",
+      "parameterDecorators": [
+        {
+          "name": "_activityKey",
+          "description": "Keccak256 hashed, encoded name of activity.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "fulfillActivityDistance(bytes32,uint256)",
+      "name": "fulfillActivityDistance",
+      "description": "Register distance reported by ChainLink node. Follow-up function to requestActivityDistance.",
+      "parameterDecorators": [
+        {
+          "name": "_requestId",
+          "description": "ID or request triggering the method call.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_distance",
+          "description": "Distance to register.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getActivityName(bytes32)",
+      "name": "getActivityName",
+      "description": "Get name string of activity based on key. Lookup in mapping and get name field.",
+      "parameterDecorators": [
+        {
+          "name": "_activityKey",
+          "description": "Keccak256 hashed, encoded name of activity.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "activityName",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getChainlinkToken()",
+      "name": "getChainlinkToken",
+      "description": "Get address for ChainLink token contract. ChainLink contract method.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "tokenAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "jobAddresses(bytes32)",
+      "name": "jobAddresses",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "makeCommitment(bytes32,uint256,uint256,uint256,string)",
+      "name": "makeCommitment",
+      "description": "Create commitment, store on-chain and emit event. Check parameters, create commitment, store on-chain and emit event.",
+      "parameterDecorators": [
+        {
+          "name": "_activityKey",
+          "description": "Keccak256 hashed, encoded name of activity.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_goalValue",
+          "description": "Distance of activity as goal.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_startTime",
+          "description": "Starttime of commitment, also used for endTime.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_stake",
+          "description": "Amount of <token> to stake againt achieving goal.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_userId",
+          "description": "???.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ownerWithdraw(uint256)",
+      "name": "ownerWithdraw",
+      "description": "Contract owner can withdraw funds not owned by committers. E.g. slashed from failed commitments. Check amount against slashedBalance, transfer amount and update slashedBalance.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "Amount of <token> to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "processCommitment(address)",
+      "name": "processCommitment",
+      "description": "Enables processing of open commitments after endDate that have not been processed by creator. Process commitment by lookup based on address, checking metrics, state and updating balances.",
+      "parameterDecorators": [
+        {
+          "name": "committer",
+          "description": "address of the creator of the committer to process.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "processCommitmentUser()",
+      "name": "processCommitmentUser",
+      "description": "Enables control of processing own commitment. For instance when completed. Process commitment by lookup msg.sender, checking metrics, state and updating balances.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "requestActivityDistance(address,address,string)",
+      "name": "requestActivityDistance",
+      "description": "Call ChainLink node to report distance measured based on Strava data. Async function sending request to ChainLink node.",
+      "parameterDecorators": [
+        {
+          "name": "_committer",
+          "description": "Address of creator of commitment.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_oracle",
+          "description": "ChainLink oracle address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_jobId",
+          "description": "???.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "slashedBalance()",
+      "name": "slashedBalance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "**************** GLOBAL CONSTANTS*****************.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalCommitterBalance()",
+      "name": "totalCommitterBalance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateActivityAllowed(bytes32,bool)",
+      "name": "updateActivityAllowed",
+      "description": "Function to update availability of activity of existing activity. Check activity exists, update state, emit event.",
+      "parameterDecorators": [
+        {
+          "name": "_activityKey",
+          "description": "Keccak256 hashed, encoded name of activity.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_allowed",
+          "description": "Toggle for allowing new commitments with activity.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateActivityOracle(bytes32,address)",
+      "name": "updateActivityOracle",
+      "description": "Function to update oracle address of existing activity. Check activity exists, update state, emit event.",
+      "parameterDecorators": [
+        {
+          "name": "_activityKey",
+          "description": "Keccak256 hashed, encoded name of activity.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_oracleAddress",
+          "description": "Address of oracle for activity data.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(uint256)",
+      "name": "withdraw",
+      "description": "Public function to withdraw unstaked balance of user. Check balances and active stake, withdraw from balances, emit event.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "Amount of <token> to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawLink()",
+      "name": "withdrawLink",
+      "description": "Withdraw ChainLink token from contract to contract owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

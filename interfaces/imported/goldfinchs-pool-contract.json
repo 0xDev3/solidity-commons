@@ -1,1 +1,719 @@
-{"schema":"../schema.json","tags":[],"name":"Pool","description":"Goldfinch's Pool contract. Main entry point for LP's (a.k.a. capital providers) Handles key logic for depositing and withdrawing funds from the Pool.","eventDecorators":[{"signature":"DepositMade(address,uint256,uint256)","name":"DepositMade","description":"","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":true},{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":false},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":false}]},{"signature":"InterestCollected(address,uint256,uint256)","name":"InterestCollected","description":"","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":true},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":false},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":false}]},{"signature":"Paused(address)","name":"Paused","description":"","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PrincipalCollected(address,uint256)","name":"PrincipalCollected","description":"","parameterDecorators":[{"name":"payer","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":false}]},{"signature":"PrincipalWrittendown(address,int256)","name":"PrincipalWrittendown","description":"","parameterDecorators":[{"name":"creditline","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":false}]},{"signature":"ReserveFundsCollected(address,uint256)","name":"ReserveFundsCollected","description":"","parameterDecorators":[{"name":"user","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":false}]},{"signature":"RoleGranted(bytes32,address,address)","name":"RoleGranted","description":"","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":true},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":true},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":true}]},{"signature":"RoleRevoked(bytes32,address,address)","name":"RoleRevoked","description":"","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":true},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":true},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":true}]},{"signature":"TransferMade(address,address,uint256)","name":"TransferMade","description":"","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":true},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":true},{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":false}]},{"signature":"Unpaused(address)","name":"Unpaused","description":"","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"WithdrawalMade(address,uint256,uint256)","name":"WithdrawalMade","description":"","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":true},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":false},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"DEFAULT_ADMIN_ROLE()","name":"DEFAULT_ADMIN_ROLE","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"OWNER_ROLE()","name":"OWNER_ROLE","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"PAUSER_ROLE()","name":"PAUSER_ROLE","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"__BaseUpgradeablePausable__init(address)","name":"__BaseUpgradeablePausable__init","description":"","parameterDecorators":[{"name":"owner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"__PauserPausable__init()","name":"__PauserPausable__init","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"assets()","name":"assets","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"collectInterestRepayment(address,uint256)","name":"collectInterestRepayment","description":"Collects `amount` USDC in interest from `from` and sends it to the Pool. This also increases the share price accordingly. A portion is sent to the Goldfinch Reserve address.","parameterDecorators":[{"name":"from","description":"The address to take the USDC from. Implicitly, the Pool must be authorized to move USDC on behalf of `from`.","recommendedTypes":[]},{"name":"amount","description":"the amount of USDC to move to the Pool Requirements: - The caller must be the Credit Desk. Not even the owner can call this function.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"collectPrincipalRepayment(address,uint256)","name":"collectPrincipalRepayment","description":"Collects `amount` USDC in principal from `from` and sends it to the Pool. The key difference from `collectInterestPayment` is that this does not change the sharePrice. The reason it does not is because the principal is already baked in. ie. we implicitly assume all principal will be returned to the Pool. But if borrowers are late with payments, we have a writedown schedule that adjusts the sharePrice downwards to reflect the lowered confidence in that borrower.","parameterDecorators":[{"name":"from","description":"The address to take the USDC from. Implicitly, the Pool must be authorized to move USDC on behalf of `from`.","recommendedTypes":[]},{"name":"amount","description":"the amount of USDC to move to the Pool Requirements: - The caller must be the Credit Desk. Not even the owner can call this function.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"config()","name":"config","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"deposit(uint256)","name":"deposit","description":"Deposits `amount` USDC from msg.sender into the Pool, and returns you the equivalent value of FIDU tokens.","parameterDecorators":[{"name":"amount","description":"The amount of USDC to deposit.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"distributeLosses(address,int256)","name":"distributeLosses","description":"","parameterDecorators":[{"name":"creditlineAddress","description":"","recommendedTypes":[]},{"name":"writedownDelta","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getRoleAdmin(bytes32)","name":"getRoleAdmin","description":"Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"getRoleMember(bytes32,uint256)","name":"getRoleMember","description":"Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]},{"name":"index","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getRoleMemberCount(bytes32)","name":"getRoleMemberCount","description":"Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"grantRole(bytes32,address)","name":"grantRole","description":"Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted} event. Requirements: - the caller must have ``role``'s admin role.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]},{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":["RoleGranted(bytes32,address,address)"],"readOnly":false},{"signature":"hasRole(bytes32,address)","name":"hasRole","description":"Returns `true` if `account` has been granted `role`.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]},{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"initialize(address,address)","name":"initialize","description":"Run only once, on initialization.","parameterDecorators":[{"name":"owner","description":"The address of who should have the \"OWNER_ROLE\" of this contract.","recommendedTypes":[]},{"name":"_config","description":"The address of the GoldfinchConfig contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"isAdmin()","name":"isAdmin","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"pause()","name":"pause","description":"Pauses all functions guarded by Pause See {Pausable-_pause}. Requirements: - the caller must have the PAUSER_ROLE.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"paused()","name":"paused","description":"Returns true if the contract is paused, and false otherwise.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"renounceRole(bytes32,address)","name":"renounceRole","description":"Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]},{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":["RoleRevoked(bytes32,address,address)"],"readOnly":false},{"signature":"revokeRole(bytes32,address)","name":"revokeRole","description":"Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role.","parameterDecorators":[{"name":"role","description":"","recommendedTypes":[]},{"name":"account","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":["RoleRevoked(bytes32,address,address)"],"readOnly":false},{"signature":"sharePrice()","name":"sharePrice","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferFrom(address,address,uint256)","name":"transferFrom","description":"Moves `amount` USDC from `from`, to `to`.","parameterDecorators":[{"name":"from","description":"The address to take the USDC from. Implicitly, the Pool must be authorized to move USDC on behalf of `from`.","recommendedTypes":[]},{"name":"to","description":"The address that the USDC should be moved to.","recommendedTypes":[]},{"name":"amount","description":"the amount of USDC to move to the Pool Requirements: - The caller must be the Credit Desk. Not even the owner can call this function.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":false},{"signature":"unpause()","name":"unpause","description":"Unpauses the contract See {Pausable-_unpause}. Requirements: - the caller must have the Pauser role.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdraw(uint256)","name":"withdraw","description":"Withdraws `amount` USDC from the Pool to msg.sender, and burns the equivalent value of FIDU tokens.","parameterDecorators":[{"name":"amount","description":"The amount of USDC to withdraw.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "Pool",
+  "description": "Goldfinch's Pool contract. Main entry point for LP's (a.k.a. capital providers) Handles key logic for depositing and withdrawing funds from the Pool.",
+  "eventDecorators": [
+    {
+      "signature": "DepositMade(address,uint256,uint256)",
+      "name": "DepositMade",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "InterestCollected(address,uint256,uint256)",
+      "name": "InterestCollected",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Paused(address)",
+      "name": "Paused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PrincipalCollected(address,uint256)",
+      "name": "PrincipalCollected",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "payer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PrincipalWrittendown(address,int256)",
+      "name": "PrincipalWrittendown",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "creditline",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ReserveFundsCollected(address,uint256)",
+      "name": "ReserveFundsCollected",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RoleGranted(bytes32,address,address)",
+      "name": "RoleGranted",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RoleRevoked(bytes32,address,address)",
+      "name": "RoleRevoked",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TransferMade(address,address,uint256)",
+      "name": "TransferMade",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unpaused(address)",
+      "name": "Unpaused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WithdrawalMade(address,uint256,uint256)",
+      "name": "WithdrawalMade",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "DEFAULT_ADMIN_ROLE()",
+      "name": "DEFAULT_ADMIN_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "OWNER_ROLE()",
+      "name": "OWNER_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "PAUSER_ROLE()",
+      "name": "PAUSER_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "__BaseUpgradeablePausable__init(address)",
+      "name": "__BaseUpgradeablePausable__init",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "__PauserPausable__init()",
+      "name": "__PauserPausable__init",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "assets()",
+      "name": "assets",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "collectInterestRepayment(address,uint256)",
+      "name": "collectInterestRepayment",
+      "description": "Collects `amount` USDC in interest from `from` and sends it to the Pool. This also increases the share price accordingly. A portion is sent to the Goldfinch Reserve address.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "The address to take the USDC from. Implicitly, the Pool must be authorized to move USDC on behalf of `from`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "the amount of USDC to move to the Pool Requirements: - The caller must be the Credit Desk. Not even the owner can call this function.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "collectPrincipalRepayment(address,uint256)",
+      "name": "collectPrincipalRepayment",
+      "description": "Collects `amount` USDC in principal from `from` and sends it to the Pool. The key difference from `collectInterestPayment` is that this does not change the sharePrice. The reason it does not is because the principal is already baked in. ie. we implicitly assume all principal will be returned to the Pool. But if borrowers are late with payments, we have a writedown schedule that adjusts the sharePrice downwards to reflect the lowered confidence in that borrower.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "The address to take the USDC from. Implicitly, the Pool must be authorized to move USDC on behalf of `from`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "the amount of USDC to move to the Pool Requirements: - The caller must be the Credit Desk. Not even the owner can call this function.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "config()",
+      "name": "config",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deposit(uint256)",
+      "name": "deposit",
+      "description": "Deposits `amount` USDC from msg.sender into the Pool, and returns you the equivalent value of FIDU tokens.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "The amount of USDC to deposit.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "distributeLosses(address,int256)",
+      "name": "distributeLosses",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "creditlineAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "writedownDelta",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getRoleAdmin(bytes32)",
+      "name": "getRoleAdmin",
+      "description": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoleMember(bytes32,uint256)",
+      "name": "getRoleMember",
+      "description": "Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoleMemberCount(bytes32)",
+      "name": "getRoleMemberCount",
+      "description": "Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "grantRole(bytes32,address)",
+      "name": "grantRole",
+      "description": "Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted} event. Requirements: - the caller must have ``role``'s admin role.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "RoleGranted(bytes32,address,address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "hasRole(bytes32,address)",
+      "name": "hasRole",
+      "description": "Returns `true` if `account` has been granted `role`.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,address)",
+      "name": "initialize",
+      "description": "Run only once, on initialization.",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "The address of who should have the \"OWNER_ROLE\" of this contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_config",
+          "description": "The address of the GoldfinchConfig contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isAdmin()",
+      "name": "isAdmin",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pause()",
+      "name": "pause",
+      "description": "Pauses all functions guarded by Pause See {Pausable-_pause}. Requirements: - the caller must have the PAUSER_ROLE.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "paused()",
+      "name": "paused",
+      "description": "Returns true if the contract is paused, and false otherwise.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceRole(bytes32,address)",
+      "name": "renounceRole",
+      "description": "Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "RoleRevoked(bytes32,address,address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "revokeRole(bytes32,address)",
+      "name": "revokeRole",
+      "description": "Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "RoleRevoked(bytes32,address,address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "sharePrice()",
+      "name": "sharePrice",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferFrom(address,address,uint256)",
+      "name": "transferFrom",
+      "description": "Moves `amount` USDC from `from`, to `to`.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "The address to take the USDC from. Implicitly, the Pool must be authorized to move USDC on behalf of `from`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address that the USDC should be moved to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "the amount of USDC to move to the Pool Requirements: - The caller must be the Credit Desk. Not even the owner can call this function.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unpause()",
+      "name": "unpause",
+      "description": "Unpauses the contract See {Pausable-_unpause}. Requirements: - the caller must have the Pauser role.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(uint256)",
+      "name": "withdraw",
+      "description": "Withdraws `amount` USDC from the Pool to msg.sender, and burns the equivalent value of FIDU tokens.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "The amount of USDC to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

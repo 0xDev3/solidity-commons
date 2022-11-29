@@ -1,1 +1,955 @@
-{"schema":"../schema.json","tags":["liquidity"],"name":"L2LiquidityPool","description":"An L2 LiquidityPool implementation.","eventDecorators":[{"signature":"AddLiquidity(address,uint256,address)","name":"AddLiquidity","description":"The event emitted when the uniswap window changes.","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenAddress","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ClientDepositL2(address,uint256,address)","name":"ClientDepositL2","description":"The event emitted when the uniswap window changes.","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[],"indexed":false},{"name":"receivedAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenAddress","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ClientPayL2(address,uint256,uint256,uint256,uint256,address)","name":"ClientPayL2","description":"The event emitted when the uniswap window changes.","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"userRewardFee","description":"","recommendedTypes":[],"indexed":false},{"name":"ownerRewardFee","description":"","recommendedTypes":[],"indexed":false},{"name":"totalFee","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenAddress","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ClientPayL2Settlement(address,uint256,uint256,uint256,uint256,address)","name":"ClientPayL2Settlement","description":"The event emitted when the uniswap window changes.","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"userRewardFee","description":"","recommendedTypes":[],"indexed":false},{"name":"ownerRewardFee","description":"","recommendedTypes":[],"indexed":false},{"name":"totalFee","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenAddress","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnerRecoverFee(address,address,uint256,address)","name":"OwnerRecoverFee","description":"The event emitted when the uniswap window changes.","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[],"indexed":false},{"name":"receiver","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenAddress","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Paused(address)","name":"Paused","description":"The event emitted when the uniswap window changes.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"RebalanceLP(uint256,address)","name":"RebalanceLP","description":"The event emitted when the uniswap window changes.","parameterDecorators":[{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenAddress","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Unpaused(address)","name":"Unpaused","description":"The event emitted when the uniswap window changes.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"WithdrawLiquidity(address,address,uint256,address)","name":"WithdrawLiquidity","description":"The event emitted when the uniswap window changes.","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[],"indexed":false},{"name":"receiver","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenAddress","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"WithdrawReward(address,address,uint256,address)","name":"WithdrawReward","description":"The event emitted when the uniswap window changes.","parameterDecorators":[{"name":"sender","description":"","recommendedTypes":[],"indexed":false},{"name":"receiver","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"tokenAddress","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"DAO()","name":"DAO","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"DEFAULT_FINALIZE_WITHDRAWAL_L1_GAS()","name":"DEFAULT_FINALIZE_WITHDRAWAL_L1_GAS","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"L1LiquidityPoolAddress()","name":"L1LiquidityPoolAddress","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"addLiquidity(uint256,address)","name":"addLiquidity","description":"Liquididity providers add liquidity.","parameterDecorators":[{"name":"_amount","description":"liquidity amount that users want to deposit.","recommendedTypes":[]},{"name":"_tokenAddress","description":"address of the liquidity token.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"clientDepositL2(uint256,address)","name":"clientDepositL2","description":"Client deposit ERC20 from their account to this contract, which then releases funds on the L1 side.","parameterDecorators":[{"name":"_amount","description":"amount that client wants to transfer.","recommendedTypes":[]},{"name":"_tokenAddress","description":"L2 token address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"clientPayL2(address,uint256,address)","name":"clientPayL2","description":"Move funds from L1 to L2, and pay out from the right liquidity pool.","parameterDecorators":[{"name":"_to","description":"receiver to get the funds.","recommendedTypes":[]},{"name":"_amount","description":"amount to to be transferred.","recommendedTypes":[]},{"name":"_tokenAddress","description":"L2 token address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"clientPayL2Settlement(address,uint256,address)","name":"clientPayL2Settlement","description":"Settlement pay when there's not enough funds on other side.","parameterDecorators":[{"name":"_to","description":"receiver to get the funds.","recommendedTypes":[]},{"name":"_amount","description":"amount to to be transferred.","recommendedTypes":[]},{"name":"_tokenAddress","description":"L2 token address.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"configureExtraGasRelay(uint256)","name":"configureExtraGasRelay","description":"","parameterDecorators":[{"name":"_extraGas","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"configureFee(uint256,uint256,uint256)","name":"configureFee","description":"Configure fee of this contract.","parameterDecorators":[{"name":"_userRewardMinFeeRate","description":"minimum fee rate that users get.","recommendedTypes":[]},{"name":"_userRewardMaxFeeRate","description":"maximum fee rate that users get.","recommendedTypes":[]},{"name":"_ownerRewardFeeRate","description":"fee rate that contract owner gets.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"configureFeeExits(uint256,uint256,uint256)","name":"configureFeeExits","description":"Configure fee of the L1LP contract.","parameterDecorators":[{"name":"_userRewardMinFeeRate","description":"minimum fee rate that users get.","recommendedTypes":[]},{"name":"_userRewardMaxFeeRate","description":"maximum fee rate that users get.","recommendedTypes":[]},{"name":"_ownerRewardFeeRate","description":"fee rate that contract owner gets.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"configureGas(uint32)","name":"configureGas","description":"Configure gas.","parameterDecorators":[{"name":"_l1GasFee","description":"default finalized withdraw L1 Gas.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"extraGasRelay()","name":"extraGasRelay","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getFinalizeDepositL1Gas()","name":"getFinalizeDepositL1Gas","description":"Overridable getter for the L1 gas limit of settling the deposit, in the case it may be dynamic, and the above public constant does not suffice.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint32"}],"emittableEvents":[],"readOnly":true},{"signature":"getUserRewardFeeRate(address)","name":"getUserRewardFeeRate","description":"Return user reward fee rate.","parameterDecorators":[{"name":"_l2TokenAddress","description":"L2 token address.","recommendedTypes":[]}],"returnDecorators":[{"name":"userRewardFeeRate","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"initialize(address,address)","name":"initialize","description":"Initialize this contract.","parameterDecorators":[{"name":"_l2CrossDomainMessenger","description":"L2 Messenger address being used for sending the cross-chain message.","recommendedTypes":[]},{"name":"_L1LiquidityPoolAddress","description":"Address of the corresponding L1 LP deployed to the main chain.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"messenger()","name":"messenger","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"ownerRecoverFee(uint256,address,address)","name":"ownerRecoverFee","description":"owner recovers fee from ERC20.","parameterDecorators":[{"name":"_amount","description":"amount to transfer to the other account.","recommendedTypes":[]},{"name":"_tokenAddress","description":"L2 token address.","recommendedTypes":[]},{"name":"_to","description":"receiver to get the fee.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"ownerRewardFeeRate()","name":"ownerRewardFeeRate","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"pause()","name":"pause","description":"Pause contract.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"paused()","name":"paused","description":"Returns true if the contract is paused, and false otherwise.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"poolInfo(address)","name":"poolInfo","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"l1TokenAddress","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"l2TokenAddress","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"userDepositAmount","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"lastAccUserReward","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"accUserReward","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"accUserRewardPerShare","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"accOwnerReward","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"startTime","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"rebalanceLP(uint256,address)","name":"rebalanceLP","description":"","parameterDecorators":[{"name":"_amount","description":"","recommendedTypes":[]},{"name":"_tokenAddress","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"registerPool(address,address)","name":"registerPool","description":"","parameterDecorators":[{"name":"_l1TokenAddress","description":"","recommendedTypes":[]},{"name":"_l2TokenAddress","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferDAORole(address)","name":"transferDAORole","description":"transfer priviledges to DAO.","parameterDecorators":[{"name":"_newDAO","description":"new fee setter.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"transfer ownership.","parameterDecorators":[{"name":"_newOwner","description":"new owner of this contract.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unpause()","name":"unpause","description":"UnPause contract.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateUserRewardPerShare(address)","name":"updateUserRewardPerShare","description":"Update the user reward per share.","parameterDecorators":[{"name":"_tokenAddress","description":"Address of the target token.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"userInfo(address,address)","name":"userInfo","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]},{"name":"param1","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"amount","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"rewardDebt","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"pendingReward","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"userRewardMaxFeeRate()","name":"userRewardMaxFeeRate","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"userRewardMinFeeRate()","name":"userRewardMinFeeRate","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"withdrawLiquidity(uint256,address,address)","name":"withdrawLiquidity","description":"Users withdraw token from LP.","parameterDecorators":[{"name":"_amount","description":"amount to withdraw.","recommendedTypes":[]},{"name":"_tokenAddress","description":"L2 token address.","recommendedTypes":[]},{"name":"_to","description":"receiver to get the funds.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdrawReward(uint256,address,address)","name":"withdrawReward","description":"withdraw reward from ERC20.","parameterDecorators":[{"name":"_amount","description":"reward amount that liquidity providers want to withdraw.","recommendedTypes":[]},{"name":"_tokenAddress","description":"L2 token address.","recommendedTypes":[]},{"name":"_to","description":"receiver to get the reward.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "liquidity"
+  ],
+  "name": "L2LiquidityPool",
+  "description": "An L2 LiquidityPool implementation.",
+  "eventDecorators": [
+    {
+      "signature": "AddLiquidity(address,uint256,address)",
+      "name": "AddLiquidity",
+      "description": "The event emitted when the uniswap window changes.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ClientDepositL2(address,uint256,address)",
+      "name": "ClientDepositL2",
+      "description": "The event emitted when the uniswap window changes.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "receivedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ClientPayL2(address,uint256,uint256,uint256,uint256,address)",
+      "name": "ClientPayL2",
+      "description": "The event emitted when the uniswap window changes.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "userRewardFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "ownerRewardFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ClientPayL2Settlement(address,uint256,uint256,uint256,uint256,address)",
+      "name": "ClientPayL2Settlement",
+      "description": "The event emitted when the uniswap window changes.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "userRewardFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "ownerRewardFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnerRecoverFee(address,address,uint256,address)",
+      "name": "OwnerRecoverFee",
+      "description": "The event emitted when the uniswap window changes.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "receiver",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Paused(address)",
+      "name": "Paused",
+      "description": "The event emitted when the uniswap window changes.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RebalanceLP(uint256,address)",
+      "name": "RebalanceLP",
+      "description": "The event emitted when the uniswap window changes.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unpaused(address)",
+      "name": "Unpaused",
+      "description": "The event emitted when the uniswap window changes.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WithdrawLiquidity(address,address,uint256,address)",
+      "name": "WithdrawLiquidity",
+      "description": "The event emitted when the uniswap window changes.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "receiver",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WithdrawReward(address,address,uint256,address)",
+      "name": "WithdrawReward",
+      "description": "The event emitted when the uniswap window changes.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "receiver",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "DAO()",
+      "name": "DAO",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "DEFAULT_FINALIZE_WITHDRAWAL_L1_GAS()",
+      "name": "DEFAULT_FINALIZE_WITHDRAWAL_L1_GAS",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "L1LiquidityPoolAddress()",
+      "name": "L1LiquidityPoolAddress",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addLiquidity(uint256,address)",
+      "name": "addLiquidity",
+      "description": "Liquididity providers add liquidity.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "liquidity amount that users want to deposit.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenAddress",
+          "description": "address of the liquidity token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "clientDepositL2(uint256,address)",
+      "name": "clientDepositL2",
+      "description": "Client deposit ERC20 from their account to this contract, which then releases funds on the L1 side.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "amount that client wants to transfer.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenAddress",
+          "description": "L2 token address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "clientPayL2(address,uint256,address)",
+      "name": "clientPayL2",
+      "description": "Move funds from L1 to L2, and pay out from the right liquidity pool.",
+      "parameterDecorators": [
+        {
+          "name": "_to",
+          "description": "receiver to get the funds.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "amount to to be transferred.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenAddress",
+          "description": "L2 token address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "clientPayL2Settlement(address,uint256,address)",
+      "name": "clientPayL2Settlement",
+      "description": "Settlement pay when there's not enough funds on other side.",
+      "parameterDecorators": [
+        {
+          "name": "_to",
+          "description": "receiver to get the funds.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "amount to to be transferred.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenAddress",
+          "description": "L2 token address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "configureExtraGasRelay(uint256)",
+      "name": "configureExtraGasRelay",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_extraGas",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "configureFee(uint256,uint256,uint256)",
+      "name": "configureFee",
+      "description": "Configure fee of this contract.",
+      "parameterDecorators": [
+        {
+          "name": "_userRewardMinFeeRate",
+          "description": "minimum fee rate that users get.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_userRewardMaxFeeRate",
+          "description": "maximum fee rate that users get.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_ownerRewardFeeRate",
+          "description": "fee rate that contract owner gets.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "configureFeeExits(uint256,uint256,uint256)",
+      "name": "configureFeeExits",
+      "description": "Configure fee of the L1LP contract.",
+      "parameterDecorators": [
+        {
+          "name": "_userRewardMinFeeRate",
+          "description": "minimum fee rate that users get.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_userRewardMaxFeeRate",
+          "description": "maximum fee rate that users get.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_ownerRewardFeeRate",
+          "description": "fee rate that contract owner gets.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "configureGas(uint32)",
+      "name": "configureGas",
+      "description": "Configure gas.",
+      "parameterDecorators": [
+        {
+          "name": "_l1GasFee",
+          "description": "default finalized withdraw L1 Gas.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "extraGasRelay()",
+      "name": "extraGasRelay",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getFinalizeDepositL1Gas()",
+      "name": "getFinalizeDepositL1Gas",
+      "description": "Overridable getter for the L1 gas limit of settling the deposit, in the case it may be dynamic, and the above public constant does not suffice.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUserRewardFeeRate(address)",
+      "name": "getUserRewardFeeRate",
+      "description": "Return user reward fee rate.",
+      "parameterDecorators": [
+        {
+          "name": "_l2TokenAddress",
+          "description": "L2 token address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "userRewardFeeRate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,address)",
+      "name": "initialize",
+      "description": "Initialize this contract.",
+      "parameterDecorators": [
+        {
+          "name": "_l2CrossDomainMessenger",
+          "description": "L2 Messenger address being used for sending the cross-chain message.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_L1LiquidityPoolAddress",
+          "description": "Address of the corresponding L1 LP deployed to the main chain.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "messenger()",
+      "name": "messenger",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ownerRecoverFee(uint256,address,address)",
+      "name": "ownerRecoverFee",
+      "description": "owner recovers fee from ERC20.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "amount to transfer to the other account.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenAddress",
+          "description": "L2 token address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "receiver to get the fee.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "ownerRewardFeeRate()",
+      "name": "ownerRewardFeeRate",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pause()",
+      "name": "pause",
+      "description": "Pause contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "paused()",
+      "name": "paused",
+      "description": "Returns true if the contract is paused, and false otherwise.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "poolInfo(address)",
+      "name": "poolInfo",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "l1TokenAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "l2TokenAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "userDepositAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "lastAccUserReward",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "accUserReward",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "accUserRewardPerShare",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "accOwnerReward",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "startTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rebalanceLP(uint256,address)",
+      "name": "rebalanceLP",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenAddress",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "registerPool(address,address)",
+      "name": "registerPool",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_l1TokenAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_l2TokenAddress",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferDAORole(address)",
+      "name": "transferDAORole",
+      "description": "transfer priviledges to DAO.",
+      "parameterDecorators": [
+        {
+          "name": "_newDAO",
+          "description": "new fee setter.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "transfer ownership.",
+      "parameterDecorators": [
+        {
+          "name": "_newOwner",
+          "description": "new owner of this contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unpause()",
+      "name": "unpause",
+      "description": "UnPause contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateUserRewardPerShare(address)",
+      "name": "updateUserRewardPerShare",
+      "description": "Update the user reward per share.",
+      "parameterDecorators": [
+        {
+          "name": "_tokenAddress",
+          "description": "Address of the target token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "userInfo(address,address)",
+      "name": "userInfo",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "rewardDebt",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "pendingReward",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "userRewardMaxFeeRate()",
+      "name": "userRewardMaxFeeRate",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "userRewardMinFeeRate()",
+      "name": "userRewardMinFeeRate",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdrawLiquidity(uint256,address,address)",
+      "name": "withdrawLiquidity",
+      "description": "Users withdraw token from LP.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "amount to withdraw.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenAddress",
+          "description": "L2 token address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "receiver to get the funds.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawReward(uint256,address,address)",
+      "name": "withdrawReward",
+      "description": "withdraw reward from ERC20.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "reward amount that liquidity providers want to withdraw.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenAddress",
+          "description": "L2 token address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "receiver to get the reward.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

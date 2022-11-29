@@ -1,1 +1,898 @@
-{"schema":"../schema.json","tags":["makerdao"],"name":"OptionMarket","description":"Automated market maker that lets users buy and sell options from it.","eventDecorators":[{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Emitted when a new `addr` is whitelisted.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"Redeemed(address,bool,uint256,uint256)","name":"Redeemed","description":"Emitted when a new `addr` is whitelisted.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":true},{"name":"isLongToken","description":"","recommendedTypes":[],"indexed":false},{"name":"strikeIndex","description":"","recommendedTypes":[],"indexed":false},{"name":"amount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Settled(uint256)","name":"Settled","description":"Emitted when a new `addr` is whitelisted.","parameterDecorators":[{"name":"expiryPrice","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Trade(address,bool,bool,uint256,uint256,uint256,uint256)","name":"Trade","description":"Emitted when a new `addr` is whitelisted.","parameterDecorators":[{"name":"account","description":"","recommendedTypes":[],"indexed":true},{"name":"isBuy","description":"","recommendedTypes":[],"indexed":false},{"name":"isLongToken","description":"","recommendedTypes":[],"indexed":false},{"name":"strikeIndex","description":"","recommendedTypes":[],"indexed":false},{"name":"size","description":"","recommendedTypes":[],"indexed":false},{"name":"cost","description":"","recommendedTypes":[],"indexed":false},{"name":"newSupply","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"SCALE()","name":"SCALE","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"SCALE_SCALE()","name":"SCALE_SCALE","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"b()","name":"b","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"balanceCap()","name":"balanceCap","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"baseToken()","name":"baseToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"buy(bool,uint256,uint256,uint256)","name":"buy","description":"Buy `optionsOut` quantity of options Revert if the resulting cost would be greater than `maxAmountIn` This method cannot be called after expiration.","parameterDecorators":[{"name":"isLongToken","description":"","recommendedTypes":[]},{"name":"strikeIndex","description":"","recommendedTypes":[]},{"name":"optionsOut","description":"","recommendedTypes":[]},{"name":"maxAmountIn","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"amountIn","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"calcCost()","name":"calcCost","description":"Calculates the LMSR cost function C(q_1, ..., q_n) = b * log(exp(q_1 / b) + ... + exp(q_n / b)) where q_i = total supply of ith spread b = liquidity parameter An equivalent expression for C is used to avoid overflow when calculating exponentials C(q_1, ..., q_n) = m + b * log(exp((q_1 - m) / b) + ... + exp((q_n - m) / b)) where m = max(q_1, ..., q_n) Answer is multiplied by strike price for puts.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"calcPayoff()","name":"calcPayoff","description":"Calculates amount of `baseToken` that needs to be paid out to all users.","parameterDecorators":[],"returnDecorators":[{"name":"payoff","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"calcSkimAmount()","name":"calcSkimAmount","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"disputeExpiryPrice(uint256)","name":"disputeExpiryPrice","description":"","parameterDecorators":[{"name":"_expiryPrice","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"disputePeriod()","name":"disputePeriod","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"expiryPrice()","name":"expiryPrice","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"expiryTime()","name":"expiryTime","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"increaseBAndBuy(uint256,uint256[],uint256[],uint256)","name":"increaseBAndBuy","description":"","parameterDecorators":[{"name":"_b","description":"","recommendedTypes":[]},{"name":"longOptionsOut","description":"","recommendedTypes":[]},{"name":"shortOptionsOut","description":"","recommendedTypes":[]},{"name":"maxAmountIn","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"amountIn","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"initialize(address,address,address[],address[],uint256[],uint256,bool,uint256,uint256,uint256)","name":"initialize","description":"","parameterDecorators":[{"name":"_baseToken","description":"Underlying ERC20 token. Represents ETH if equal to 0x0.","recommendedTypes":[]},{"name":"_oracle","description":"Oracle from which the settlement price is obtained.","recommendedTypes":[]},{"name":"_longTokens","description":"Options tokens representing long calls/puts.","recommendedTypes":[]},{"name":"_shortTokens","description":"Options tokens representing short calls/puts.","recommendedTypes":[]},{"name":"_strikePrices","description":"Strike prices expressed in wei.","recommendedTypes":[]},{"name":"_expiryTime","description":"Expiration time as a unix timestamp.","recommendedTypes":[]},{"name":"_isPut","description":"Whether options are calls or puts.","recommendedTypes":[]},{"name":"_tradingFee","description":"Trading fee expressed in wei.","recommendedTypes":[]},{"name":"_balanceCap","description":"Limit on balance in contract. Used for guarded launch. Set to 0 means no limit.","recommendedTypes":[]},{"name":"_disputePeriod","description":"How long after expiry the oracle price can be disputed by deployer.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"isDisputePeriod()","name":"isDisputePeriod","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isExpired()","name":"isExpired","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isPaused()","name":"isPaused","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isPut()","name":"isPut","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"isSettled()","name":"isSettled","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"lastCost()","name":"lastCost","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"lastPayoff()","name":"lastPayoff","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"longTokens(uint256)","name":"longTokens","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"maxStrikePrice()","name":"maxStrikePrice","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"numStrikes()","name":"numStrikes","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"oracle()","name":"oracle","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"pause()","name":"pause","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"redeem(bool,uint256)","name":"redeem","description":"Called by a user to redeem all their options and receive payout This method can only be called after `settle` has been called and the settlement price has been set.","parameterDecorators":[{"name":"isLongToken","description":"","recommendedTypes":[]},{"name":"strikeIndex","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"amount","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"sell(bool,uint256,uint256,uint256)","name":"sell","description":"Sell `optionsIn` quantity of options Revert if the resulting cost would be greater than `minAmountOut` This method cannot be called after expiration.","parameterDecorators":[{"name":"isLongToken","description":"","recommendedTypes":[]},{"name":"strikeIndex","description":"","recommendedTypes":[]},{"name":"optionsIn","description":"","recommendedTypes":[]},{"name":"minAmountOut","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"amountOut","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"setBalanceCap(uint256)","name":"setBalanceCap","description":"","parameterDecorators":[{"name":"_balanceCap","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setDisputePeriod(uint256)","name":"setDisputePeriod","description":"","parameterDecorators":[{"name":"_disputePeriod","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setExpiryTime(uint256)","name":"setExpiryTime","description":"","parameterDecorators":[{"name":"_expiryTime","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setOracle(address)","name":"setOracle","description":"","parameterDecorators":[{"name":"_oracle","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"settle()","name":"settle","description":"Retrieves and stores the unerlying price from the oracle This method can be called by anyone after expiration and cannot be called more than once. After this method has been called, `redeem` can be called by users to trade in their options and receive their payouts.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"shortTokens(uint256)","name":"shortTokens","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"skim()","name":"skim","description":"","parameterDecorators":[],"returnDecorators":[{"name":"amount","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"strikePrices(uint256)","name":"strikePrices","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"tradingFee()","name":"tradingFee","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"unpause()","name":"unpause","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "makerdao"
+  ],
+  "name": "OptionMarket",
+  "description": "Automated market maker that lets users buy and sell options from it.",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Redeemed(address,bool,uint256,uint256)",
+      "name": "Redeemed",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "isLongToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "strikeIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Settled(uint256)",
+      "name": "Settled",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "expiryPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Trade(address,bool,bool,uint256,uint256,uint256,uint256)",
+      "name": "Trade",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "isBuy",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "isLongToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "strikeIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "size",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "cost",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newSupply",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "SCALE()",
+      "name": "SCALE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "SCALE_SCALE()",
+      "name": "SCALE_SCALE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "b()",
+      "name": "b",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "balanceCap()",
+      "name": "balanceCap",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "baseToken()",
+      "name": "baseToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "buy(bool,uint256,uint256,uint256)",
+      "name": "buy",
+      "description": "Buy `optionsOut` quantity of options Revert if the resulting cost would be greater than `maxAmountIn` This method cannot be called after expiration.",
+      "parameterDecorators": [
+        {
+          "name": "isLongToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "strikeIndex",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "optionsOut",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxAmountIn",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountIn",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "calcCost()",
+      "name": "calcCost",
+      "description": "Calculates the LMSR cost function C(q_1, ..., q_n) = b * log(exp(q_1 / b) + ... + exp(q_n / b)) where q_i = total supply of ith spread b = liquidity parameter An equivalent expression for C is used to avoid overflow when calculating exponentials C(q_1, ..., q_n) = m + b * log(exp((q_1 - m) / b) + ... + exp((q_n - m) / b)) where m = max(q_1, ..., q_n) Answer is multiplied by strike price for puts.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calcPayoff()",
+      "name": "calcPayoff",
+      "description": "Calculates amount of `baseToken` that needs to be paid out to all users.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "payoff",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calcSkimAmount()",
+      "name": "calcSkimAmount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "disputeExpiryPrice(uint256)",
+      "name": "disputeExpiryPrice",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_expiryPrice",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "disputePeriod()",
+      "name": "disputePeriod",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "expiryPrice()",
+      "name": "expiryPrice",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "expiryTime()",
+      "name": "expiryTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "increaseBAndBuy(uint256,uint256[],uint256[],uint256)",
+      "name": "increaseBAndBuy",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_b",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "longOptionsOut",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "shortOptionsOut",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxAmountIn",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountIn",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialize(address,address,address[],address[],uint256[],uint256,bool,uint256,uint256,uint256)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_baseToken",
+          "description": "Underlying ERC20 token. Represents ETH if equal to 0x0.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_oracle",
+          "description": "Oracle from which the settlement price is obtained.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_longTokens",
+          "description": "Options tokens representing long calls/puts.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_shortTokens",
+          "description": "Options tokens representing short calls/puts.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_strikePrices",
+          "description": "Strike prices expressed in wei.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_expiryTime",
+          "description": "Expiration time as a unix timestamp.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isPut",
+          "description": "Whether options are calls or puts.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tradingFee",
+          "description": "Trading fee expressed in wei.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_balanceCap",
+          "description": "Limit on balance in contract. Used for guarded launch. Set to 0 means no limit.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_disputePeriod",
+          "description": "How long after expiry the oracle price can be disputed by deployer.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isDisputePeriod()",
+      "name": "isDisputePeriod",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isExpired()",
+      "name": "isExpired",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isPaused()",
+      "name": "isPaused",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isPut()",
+      "name": "isPut",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isSettled()",
+      "name": "isSettled",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastCost()",
+      "name": "lastCost",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastPayoff()",
+      "name": "lastPayoff",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "longTokens(uint256)",
+      "name": "longTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxStrikePrice()",
+      "name": "maxStrikePrice",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "numStrikes()",
+      "name": "numStrikes",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "oracle()",
+      "name": "oracle",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pause()",
+      "name": "pause",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "redeem(bool,uint256)",
+      "name": "redeem",
+      "description": "Called by a user to redeem all their options and receive payout This method can only be called after `settle` has been called and the settlement price has been set.",
+      "parameterDecorators": [
+        {
+          "name": "isLongToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "strikeIndex",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "sell(bool,uint256,uint256,uint256)",
+      "name": "sell",
+      "description": "Sell `optionsIn` quantity of options Revert if the resulting cost would be greater than `minAmountOut` This method cannot be called after expiration.",
+      "parameterDecorators": [
+        {
+          "name": "isLongToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "strikeIndex",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "optionsIn",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minAmountOut",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountOut",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setBalanceCap(uint256)",
+      "name": "setBalanceCap",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_balanceCap",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDisputePeriod(uint256)",
+      "name": "setDisputePeriod",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_disputePeriod",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setExpiryTime(uint256)",
+      "name": "setExpiryTime",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_expiryTime",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setOracle(address)",
+      "name": "setOracle",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_oracle",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "settle()",
+      "name": "settle",
+      "description": "Retrieves and stores the unerlying price from the oracle This method can be called by anyone after expiration and cannot be called more than once. After this method has been called, `redeem` can be called by users to trade in their options and receive their payouts.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "shortTokens(uint256)",
+      "name": "shortTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "skim()",
+      "name": "skim",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "strikePrices(uint256)",
+      "name": "strikePrices",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tradingFee()",
+      "name": "tradingFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unpause()",
+      "name": "unpause",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

@@ -1,1 +1,408 @@
-{"schema":"../schema.json","tags":[],"name":"FundingCycles","description":"Manage funding cycle configurations, accounting, and scheduling.","eventDecorators":[{"signature":"Configure(uint256,uint256,uint256,tuple,uint256,address)","name":"Configure","description":"","parameterDecorators":[{"name":"fundingCycleId","description":"","recommendedTypes":[],"indexed":true},{"name":"projectId","description":"","recommendedTypes":[],"indexed":true},{"name":"reconfigured","description":"","recommendedTypes":[],"indexed":false},{"name":"_properties","description":"","recommendedTypes":[],"indexed":false},{"name":"metadata","description":"","recommendedTypes":[],"indexed":false},{"name":"caller","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Init(uint256,uint256,uint256,uint256,uint256,uint256)","name":"Init","description":"","parameterDecorators":[{"name":"fundingCycleId","description":"","recommendedTypes":[],"indexed":true},{"name":"projectId","description":"","recommendedTypes":[],"indexed":true},{"name":"number","description":"","recommendedTypes":[],"indexed":false},{"name":"previous","description":"","recommendedTypes":[],"indexed":false},{"name":"weight","description":"","recommendedTypes":[],"indexed":false},{"name":"start","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Tap(uint256,uint256,uint256,uint256,address)","name":"Tap","description":"","parameterDecorators":[{"name":"fundingCycleId","description":"","recommendedTypes":[],"indexed":true},{"name":"projectId","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"","recommendedTypes":[],"indexed":false},{"name":"newTappedAmount","description":"","recommendedTypes":[],"indexed":false},{"name":"caller","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"BASE_WEIGHT()","name":"BASE_WEIGHT","description":"The weight used for each project's first funding cycle.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"MAX_CYCLE_LIMIT()","name":"MAX_CYCLE_LIMIT","description":"The maximum value that a cycle limit can be set to.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"configure(uint256,tuple(uint256,uint256,uint256,uint256,uint256,address),uint256,uint256,bool)","name":"configure","description":"Configures the next eligible funding cycle for the specified project. Only a project's current terminal can configure its funding cycles._properties.target The amount that the project wants to receive in each funding cycle. 18 decimals._properties.currency The currency of the `_target`. Send 0 for ETH or 1 for USD._properties.duration The duration of the funding cycle for which the `_target` amount is needed. Measured in days. Set to 0 for no expiry and to be able to reconfigure anytime._cycleLimit The number of cycles that this configuration should last for before going back to the last permanent. This does nothing for a project's first funding cycle._properties.discountRate A number from 0-200 indicating how valuable a contribution to this funding cycle is compared to previous funding cycles. If it's 0, each funding cycle will have equal weight. If the number is 100, a contribution to the next funding cycle will only give you 90% of tickets given to a contribution of the same amount during the current funding cycle. If the number is 200, a contribution to the next funding cycle will only give you 80% of tickets given to a contribution of the same amoutn during the current funding cycle. If the number is 201, an non-recurring funding cycle will get made._ballot The new ballot that will be used to approve subsequent reconfigurations.","parameterDecorators":[{"name":"_projectId","description":"The ID of the project being reconfigured.","recommendedTypes":[]},{"name":"_properties","description":"The funding cycle configuration.","recommendedTypes":[],"parameters":[{"name":"target","description":"","type":"uint256"},{"name":"currency","description":"","type":"uint256"},{"name":"duration","description":"","type":"uint256"},{"name":"cycleLimit","description":"","type":"uint256"},{"name":"discountRate","description":"","type":"uint256"},{"name":"ballot","description":"","type":"address"}]},{"name":"_metadata","description":"Data to associate with this funding cycle configuration.","recommendedTypes":[]},{"name":"_fee","description":"The fee that this configuration will incure when tapping.","recommendedTypes":[]},{"name":"_configureActiveFundingCycle","description":"If a funding cycle that has already started should be configurable.","recommendedTypes":[]}],"returnDecorators":[{"name":"fundingCycle","description":"The funding cycle that the configuration will take effect during.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":false},{"signature":"count()","name":"count","description":"The total number of funding cycles created, which is used for issuing funding cycle IDs.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"currentBallotStateOf(uint256)","name":"currentBallotStateOf","description":"The currency ballot state of the project.","parameterDecorators":[{"name":"_projectId","description":"The ID of the project to check for a pending reconfiguration.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"The current ballot's state.","recommendedTypes":[],"solidityType":"uint8"}],"emittableEvents":[],"readOnly":true},{"signature":"currentOf(uint256)","name":"currentOf","description":"The funding cycle that is currently active for the specified project. This runs very similar logic to `_tappable`.","parameterDecorators":[{"name":"_projectId","description":"The ID of the project being looked through.","recommendedTypes":[]}],"returnDecorators":[{"name":"fundingCycle","description":"The current funding cycle.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"get(uint256)","name":"get","description":"Get the funding cycle with the given ID.","parameterDecorators":[{"name":"_fundingCycleId","description":"The ID of the funding cycle to get.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"_fundingCycle The funding cycle.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"latestIdOf(uint256)","name":"latestIdOf","description":"The ID of the latest funding cycle for each project.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"queuedOf(uint256)","name":"queuedOf","description":"The funding cycle that's next up for a project, and therefor not currently accepting payments. This runs roughly similar logic to `_configurable`.","parameterDecorators":[{"name":"_projectId","description":"The ID of the project being looked through.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"_fundingCycle The queued funding cycle.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":true},{"signature":"tap(uint256,uint256)","name":"tap","description":"Tap funds from a project's currently tappable funding cycle. Only a project's current terminal can tap funds for its funding cycles.","parameterDecorators":[{"name":"_projectId","description":"The ID of the project being tapped.","recommendedTypes":[]},{"name":"_amount","description":"The amount being tapped.","recommendedTypes":[]}],"returnDecorators":[{"name":"fundingCycle","description":"The tapped funding cycle.","recommendedTypes":[],"solidityType":"tuple"}],"emittableEvents":[],"readOnly":false},{"signature":"terminalDirectory()","name":"terminalDirectory","description":"The direct deposit terminals.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "FundingCycles",
+  "description": "Manage funding cycle configurations, accounting, and scheduling.",
+  "eventDecorators": [
+    {
+      "signature": "Configure(uint256,uint256,uint256,tuple,uint256,address)",
+      "name": "Configure",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "fundingCycleId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "reconfigured",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_properties",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "metadata",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Init(uint256,uint256,uint256,uint256,uint256,uint256)",
+      "name": "Init",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "fundingCycleId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "number",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "previous",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "weight",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "start",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Tap(uint256,uint256,uint256,uint256,address)",
+      "name": "Tap",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "fundingCycleId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newTappedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "BASE_WEIGHT()",
+      "name": "BASE_WEIGHT",
+      "description": "The weight used for each project's first funding cycle.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MAX_CYCLE_LIMIT()",
+      "name": "MAX_CYCLE_LIMIT",
+      "description": "The maximum value that a cycle limit can be set to.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "configure(uint256,tuple(uint256,uint256,uint256,uint256,uint256,address),uint256,uint256,bool)",
+      "name": "configure",
+      "description": "Configures the next eligible funding cycle for the specified project. Only a project's current terminal can configure its funding cycles._properties.target The amount that the project wants to receive in each funding cycle. 18 decimals._properties.currency The currency of the `_target`. Send 0 for ETH or 1 for USD._properties.duration The duration of the funding cycle for which the `_target` amount is needed. Measured in days. Set to 0 for no expiry and to be able to reconfigure anytime._cycleLimit The number of cycles that this configuration should last for before going back to the last permanent. This does nothing for a project's first funding cycle._properties.discountRate A number from 0-200 indicating how valuable a contribution to this funding cycle is compared to previous funding cycles. If it's 0, each funding cycle will have equal weight. If the number is 100, a contribution to the next funding cycle will only give you 90% of tickets given to a contribution of the same amount during the current funding cycle. If the number is 200, a contribution to the next funding cycle will only give you 80% of tickets given to a contribution of the same amoutn during the current funding cycle. If the number is 201, an non-recurring funding cycle will get made._ballot The new ballot that will be used to approve subsequent reconfigurations.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project being reconfigured.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_properties",
+          "description": "The funding cycle configuration.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "target",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "currency",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "duration",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "cycleLimit",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "discountRate",
+              "description": "",
+              "type": "uint256"
+            },
+            {
+              "name": "ballot",
+              "description": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "name": "_metadata",
+          "description": "Data to associate with this funding cycle configuration.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_fee",
+          "description": "The fee that this configuration will incure when tapping.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_configureActiveFundingCycle",
+          "description": "If a funding cycle that has already started should be configurable.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "fundingCycle",
+          "description": "The funding cycle that the configuration will take effect during.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "count()",
+      "name": "count",
+      "description": "The total number of funding cycles created, which is used for issuing funding cycle IDs.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "currentBallotStateOf(uint256)",
+      "name": "currentBallotStateOf",
+      "description": "The currency ballot state of the project.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project to check for a pending reconfiguration.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The current ballot's state.",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "currentOf(uint256)",
+      "name": "currentOf",
+      "description": "The funding cycle that is currently active for the specified project. This runs very similar logic to `_tappable`.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project being looked through.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "fundingCycle",
+          "description": "The current funding cycle.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "get(uint256)",
+      "name": "get",
+      "description": "Get the funding cycle with the given ID.",
+      "parameterDecorators": [
+        {
+          "name": "_fundingCycleId",
+          "description": "The ID of the funding cycle to get.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "_fundingCycle The funding cycle.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "latestIdOf(uint256)",
+      "name": "latestIdOf",
+      "description": "The ID of the latest funding cycle for each project.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "queuedOf(uint256)",
+      "name": "queuedOf",
+      "description": "The funding cycle that's next up for a project, and therefor not currently accepting payments. This runs roughly similar logic to `_configurable`.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project being looked through.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "_fundingCycle The queued funding cycle.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tap(uint256,uint256)",
+      "name": "tap",
+      "description": "Tap funds from a project's currently tappable funding cycle. Only a project's current terminal can tap funds for its funding cycles.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project being tapped.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The amount being tapped.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "fundingCycle",
+          "description": "The tapped funding cycle.",
+          "recommendedTypes": [],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "terminalDirectory()",
+      "name": "terminalDirectory",
+      "description": "The direct deposit terminals.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

@@ -1,1 +1,519 @@
-{"schema":"../schema.json","tags":[],"name":"AuctionHouseLogicV1","description":"Auction House Logic Code. The main contract used by collectors to Bid on and Trade cyptographs. Abstract this smart contract on the proxy address for interaction.","eventDecorators":[{"signature":"Deposit(uint256,address,address,address)","name":"Deposit","description":"","parameterDecorators":[{"name":"amount","description":"","recommendedTypes":[],"indexed":true},{"name":"beneficiary","description":"","recommendedTypes":[],"indexed":true},{"name":"contributor","description":"","recommendedTypes":[],"indexed":true},{"name":"origin","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"UserBid(address,uint256,address)","name":"UserBid","description":"","parameterDecorators":[{"name":"auction","description":"","recommendedTypes":[],"indexed":true},{"name":"bidValue","description":"","recommendedTypes":[],"indexed":true},{"name":"bidder","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"UserCancelledBid(address,address)","name":"UserCancelledBid","description":"","parameterDecorators":[{"name":"auction","description":"","recommendedTypes":[],"indexed":true},{"name":"bidder","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"UserSell(address)","name":"UserSell","description":"","parameterDecorators":[{"name":"auction","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"UserSellingPriceAdjust(address,uint256)","name":"UserSellingPriceAdjust","description":"","parameterDecorators":[{"name":"auction","description":"","recommendedTypes":[],"indexed":true},{"name":"value","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"UserWin(address,uint256,address)","name":"UserWin","description":"","parameterDecorators":[{"name":"auction","description":"","recommendedTypes":[],"indexed":true},{"name":"bidValue","description":"","recommendedTypes":[],"indexed":true},{"name":"bidder","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"UserWithdrawal(uint256,address)","name":"UserWithdrawal","description":"","parameterDecorators":[{"name":"amount","description":"","recommendedTypes":[],"indexed":true},{"name":"account","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"ERC2665Lieutenant()","name":"ERC2665Lieutenant","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"addFundsFor(address,address)","name":"addFundsFor","description":"Send eth and add it to a withdrawal account. This is how single auctions smart contracts deposit money.","parameterDecorators":[{"name":"_account","description":"The address of the account to credit with the payable amount.","recommendedTypes":[]},{"name":"_contributor","description":"The address of the user wallet from which the money is from.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"approveERC2665(address,address,address)","name":"approveERC2665","description":"Call an ERC2665 Approve on a cryptograph. Only callable by the ERC2665 contract.","parameterDecorators":[{"name":"_cryptograph","description":"The address of the cryptograph getting transferred.","recommendedTypes":[]},{"name":"_contributor","description":"The address of the transfer fee payer.","recommendedTypes":[]},{"name":"_approvedAddress","description":"The address of the potential owner.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"bid(uint256,bool,uint256,uint256,uint256)","name":"bid","description":"Place a bid to own a cryptograph. Calling this function is the only way to eventually gain ownership of a cryptograph.","parameterDecorators":[{"name":"_cryptographIssue","description":"The serial of the Cryptograph you want to bid on.","recommendedTypes":[]},{"name":"_isOfficial","description":"True if bidding on an official cryptograph, false if bidding on a community cryptograph.","recommendedTypes":[]},{"name":"_editionSerial","description":"If you are bidding on an edition, specify it's specific edition issue # here.","recommendedTypes":[]},{"name":"_newBidAmount","description":"The amount of money you want to bid.","recommendedTypes":[]},{"name":"_previousStandingBidAmount","description":"Protection against ordonancement attacks. Please indicate what value is currently visible for yourCryptographAuction.highestBidder().","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"cancelBid(uint256,bool,uint256)","name":"cancelBid","description":"Cancel your bid on a Cryptograph. WARNING : if highest bidder, you might only get a fraction of your money back. During the initial auction or once a sale has been accepted, a highest bidder can't cancel his bid.","parameterDecorators":[{"name":"_cryptographIssue","description":"The serial of the Cryptograph you want to cancel bid on.","recommendedTypes":[]},{"name":"_isOfficial","description":"True if cancelling bid on an official cryptograph, false if cancelling bid on a community cryptograph.","recommendedTypes":[]},{"name":"_editionSerial","description":"If cancelling bid on an edition, specify it's specific edition issue # here.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"factory()","name":"factory","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getHighestBid(uint256,bool,uint256)","name":"getHighestBid","description":"Return the highest bid placed on a cryptograph. Easy way to optain the highest current bid for a cryptograph you want to bid on. Can be nested within bid() for unsafe bids that will always go through.","parameterDecorators":[{"name":"_cryptographIssue","description":"The serial of the Cryptograph you want to peek highest bid on.","recommendedTypes":[]},{"name":"_isOfficial","description":"True if peeking on an official cryptograph, false if peeking on a community cryptograph.","recommendedTypes":[]},{"name":"_editionSerial","description":"If you are peeking on an edition, specify it's specific edition issue # here.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"index()","name":"index","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"init(address,address,address,address)","name":"init","description":"Init function of the auction house. Callable only once after deployment.","parameterDecorators":[{"name":"_factory","description":"The address of the CryptographFactory Instance.","recommendedTypes":[]},{"name":"_index","description":"The address of the CryptographIndex Instance.","recommendedTypes":[]},{"name":"_ERC2665Lieutenant","description":"The address of the ERC2665 Instance.","recommendedTypes":[]},{"name":"_kycContract","description":"The address of the KYC contract Instance.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"initialized()","name":"initialized","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"kycContract()","name":"kycContract","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"pendingWithdrawals(address)","name":"pendingWithdrawals","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setSellingPrice(uint256,bool,uint256,uint256)","name":"setSellingPrice","description":"Set a selling price for a cryptograph if you are the owner. Set to 0 if not for sale, a sale is triggered if the selling price is leq than current highest bid. Only callable by the Cryptograph owner.","parameterDecorators":[{"name":"_cryptographIssue","description":"The issue of the Cryptograph you want to sell.","recommendedTypes":[]},{"name":"_isOfficial","description":"True if selling an official cryptograph, false if selling a community cryptograph.","recommendedTypes":[]},{"name":"_editionSerial","description":"If selling an edition, specify its specific edition issue # here.","recommendedTypes":[]},{"name":"_newSellingPrice","description":"the new selling price you want to set.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferERC2665(address,address,address)","name":"transferERC2665","description":"Call an ERC2665 transfer on a cryptograph. Only callable by the ERC2665 contract.","parameterDecorators":[{"name":"_cryptograph","description":"The address of the cryptograph getting transferred.","recommendedTypes":[]},{"name":"_contributor","description":"The address of the transfer fee payer.","recommendedTypes":[]},{"name":"_to","description":"The address of the new cryptograph owner.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"win(uint256,bool,uint256)","name":"win","description":"Win a cryptograph for the highest bidder. Callable by anyone, but should be called by PA for automatisation.","parameterDecorators":[{"name":"_cryptographIssue","description":"The issue # of the Cryptograph you want to claim.","recommendedTypes":[]},{"name":"_isOfficial","description":"True if claiming an official cryptograph, false if claiming a community cryptograph.","recommendedTypes":[]},{"name":"_editionSerial","description":"If claiming an edition, specify it's specific edition issue # here.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdraw()","name":"withdraw","description":"Withdraw all the eth from msg.sender account. Only way an external account can take away money from the cryptograph ecosystem.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "AuctionHouseLogicV1",
+  "description": "Auction House Logic Code. The main contract used by collectors to Bid on and Trade cyptographs. Abstract this smart contract on the proxy address for interaction.",
+  "eventDecorators": [
+    {
+      "signature": "Deposit(uint256,address,address,address)",
+      "name": "Deposit",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "beneficiary",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "contributor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "origin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UserBid(address,uint256,address)",
+      "name": "UserBid",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "auction",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "bidValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "bidder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "UserCancelledBid(address,address)",
+      "name": "UserCancelledBid",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "auction",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "bidder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "UserSell(address)",
+      "name": "UserSell",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "auction",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "UserSellingPriceAdjust(address,uint256)",
+      "name": "UserSellingPriceAdjust",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "auction",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "UserWin(address,uint256,address)",
+      "name": "UserWin",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "auction",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "bidValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "bidder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "UserWithdrawal(uint256,address)",
+      "name": "UserWithdrawal",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "ERC2665Lieutenant()",
+      "name": "ERC2665Lieutenant",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addFundsFor(address,address)",
+      "name": "addFundsFor",
+      "description": "Send eth and add it to a withdrawal account. This is how single auctions smart contracts deposit money.",
+      "parameterDecorators": [
+        {
+          "name": "_account",
+          "description": "The address of the account to credit with the payable amount.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_contributor",
+          "description": "The address of the user wallet from which the money is from.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "approveERC2665(address,address,address)",
+      "name": "approveERC2665",
+      "description": "Call an ERC2665 Approve on a cryptograph. Only callable by the ERC2665 contract.",
+      "parameterDecorators": [
+        {
+          "name": "_cryptograph",
+          "description": "The address of the cryptograph getting transferred.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_contributor",
+          "description": "The address of the transfer fee payer.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_approvedAddress",
+          "description": "The address of the potential owner.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "bid(uint256,bool,uint256,uint256,uint256)",
+      "name": "bid",
+      "description": "Place a bid to own a cryptograph. Calling this function is the only way to eventually gain ownership of a cryptograph.",
+      "parameterDecorators": [
+        {
+          "name": "_cryptographIssue",
+          "description": "The serial of the Cryptograph you want to bid on.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isOfficial",
+          "description": "True if bidding on an official cryptograph, false if bidding on a community cryptograph.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_editionSerial",
+          "description": "If you are bidding on an edition, specify it's specific edition issue # here.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newBidAmount",
+          "description": "The amount of money you want to bid.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_previousStandingBidAmount",
+          "description": "Protection against ordonancement attacks. Please indicate what value is currently visible for yourCryptographAuction.highestBidder().",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cancelBid(uint256,bool,uint256)",
+      "name": "cancelBid",
+      "description": "Cancel your bid on a Cryptograph. WARNING : if highest bidder, you might only get a fraction of your money back. During the initial auction or once a sale has been accepted, a highest bidder can't cancel his bid.",
+      "parameterDecorators": [
+        {
+          "name": "_cryptographIssue",
+          "description": "The serial of the Cryptograph you want to cancel bid on.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isOfficial",
+          "description": "True if cancelling bid on an official cryptograph, false if cancelling bid on a community cryptograph.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_editionSerial",
+          "description": "If cancelling bid on an edition, specify it's specific edition issue # here.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "factory()",
+      "name": "factory",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getHighestBid(uint256,bool,uint256)",
+      "name": "getHighestBid",
+      "description": "Return the highest bid placed on a cryptograph. Easy way to optain the highest current bid for a cryptograph you want to bid on. Can be nested within bid() for unsafe bids that will always go through.",
+      "parameterDecorators": [
+        {
+          "name": "_cryptographIssue",
+          "description": "The serial of the Cryptograph you want to peek highest bid on.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isOfficial",
+          "description": "True if peeking on an official cryptograph, false if peeking on a community cryptograph.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_editionSerial",
+          "description": "If you are peeking on an edition, specify it's specific edition issue # here.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "index()",
+      "name": "index",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "init(address,address,address,address)",
+      "name": "init",
+      "description": "Init function of the auction house. Callable only once after deployment.",
+      "parameterDecorators": [
+        {
+          "name": "_factory",
+          "description": "The address of the CryptographFactory Instance.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_index",
+          "description": "The address of the CryptographIndex Instance.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_ERC2665Lieutenant",
+          "description": "The address of the ERC2665 Instance.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_kycContract",
+          "description": "The address of the KYC contract Instance.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialized()",
+      "name": "initialized",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "kycContract()",
+      "name": "kycContract",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pendingWithdrawals(address)",
+      "name": "pendingWithdrawals",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setSellingPrice(uint256,bool,uint256,uint256)",
+      "name": "setSellingPrice",
+      "description": "Set a selling price for a cryptograph if you are the owner. Set to 0 if not for sale, a sale is triggered if the selling price is leq than current highest bid. Only callable by the Cryptograph owner.",
+      "parameterDecorators": [
+        {
+          "name": "_cryptographIssue",
+          "description": "The issue of the Cryptograph you want to sell.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isOfficial",
+          "description": "True if selling an official cryptograph, false if selling a community cryptograph.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_editionSerial",
+          "description": "If selling an edition, specify its specific edition issue # here.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newSellingPrice",
+          "description": "the new selling price you want to set.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferERC2665(address,address,address)",
+      "name": "transferERC2665",
+      "description": "Call an ERC2665 transfer on a cryptograph. Only callable by the ERC2665 contract.",
+      "parameterDecorators": [
+        {
+          "name": "_cryptograph",
+          "description": "The address of the cryptograph getting transferred.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_contributor",
+          "description": "The address of the transfer fee payer.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "The address of the new cryptograph owner.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "win(uint256,bool,uint256)",
+      "name": "win",
+      "description": "Win a cryptograph for the highest bidder. Callable by anyone, but should be called by PA for automatisation.",
+      "parameterDecorators": [
+        {
+          "name": "_cryptographIssue",
+          "description": "The issue # of the Cryptograph you want to claim.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isOfficial",
+          "description": "True if claiming an official cryptograph, false if claiming a community cryptograph.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_editionSerial",
+          "description": "If claiming an edition, specify it's specific edition issue # here.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw()",
+      "name": "withdraw",
+      "description": "Withdraw all the eth from msg.sender account. Only way an external account can take away money from the cryptograph ecosystem.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

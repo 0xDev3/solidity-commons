@@ -1,1 +1,1071 @@
-{"schema":"../schema.json","tags":["oracles","dao"],"name":"LidoOracle","description":"Implementation of an ETH 2.0 -> ETH oracle * The goal of the oracle is to inform other parts of the system about balances controlled by the DAO on the ETH 2.0 side. The balances can go up because of reward accumulation and can go down because of slashing. * The timeline is divided into consecutive frames. Every oracle member may push its report once per frame. When the equal reports reach the configurable 'quorum' value, this frame is considered finalized and the resulting report is pushed to Lido. * Not all frames may come to a quorum. Oracles may report only to the first epoch of the frame and only if no quorum is reached for this epoch yet.","eventDecorators":[{"signature":"ScriptResult(address,bytes,bytes,bytes)","name":"ScriptResult","description":"event for token purchase logging.","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":true},{"name":"beneficiary","description":"who got the tokens.","recommendedTypes":[],"indexed":false},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":false},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":false}]},{"signature":"RecoverToVault(address,address,uint256)","name":"RecoverToVault","description":"event for token purchase logging.","parameterDecorators":[{"name":"vault","description":"","recommendedTypes":[],"indexed":true},{"name":"token","description":"","recommendedTypes":[],"indexed":true},{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":false}]},{"signature":"AllowedBeaconBalanceAnnualRelativeIncreaseSet(uint256)","name":"AllowedBeaconBalanceAnnualRelativeIncreaseSet","description":"event for token purchase logging.","parameterDecorators":[{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":false}]},{"signature":"AllowedBeaconBalanceRelativeDecreaseSet(uint256)","name":"AllowedBeaconBalanceRelativeDecreaseSet","description":"event for token purchase logging.","parameterDecorators":[{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":false}]},{"signature":"BeaconReportReceiverSet(address)","name":"BeaconReportReceiverSet","description":"event for token purchase logging.","parameterDecorators":[{"name":"callback","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"MemberAdded(address)","name":"MemberAdded","description":"event for token purchase logging.","parameterDecorators":[{"name":"member","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"MemberRemoved(address)","name":"MemberRemoved","description":"event for token purchase logging.","parameterDecorators":[{"name":"member","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"QuorumChanged(uint256)","name":"QuorumChanged","description":"event for token purchase logging.","parameterDecorators":[{"name":"quorum","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ExpectedEpochIdUpdated(uint256)","name":"ExpectedEpochIdUpdated","description":"event for token purchase logging.","parameterDecorators":[{"name":"epochId","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"BeaconSpecSet(uint64,uint64,uint64,uint64)","name":"BeaconSpecSet","description":"event for token purchase logging.","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":false},{"name":"beneficiary","description":"who got the tokens.","recommendedTypes":[],"indexed":false},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":false},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":false}]},{"signature":"BeaconReported(uint256,uint128,uint128,address)","name":"BeaconReported","description":"event for token purchase logging.","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":false},{"name":"beneficiary","description":"who got the tokens.","recommendedTypes":[],"indexed":false},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":false},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":false}]},{"signature":"Completed(uint256,uint128,uint128)","name":"Completed","description":"event for token purchase logging.","parameterDecorators":[{"name":"epochId","description":"","recommendedTypes":[],"indexed":false},{"name":"beaconBalance","description":"","recommendedTypes":[],"indexed":false},{"name":"beaconValidators","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"PostTotalShares(uint256,uint256,uint256,uint256)","name":"PostTotalShares","description":"event for token purchase logging.","parameterDecorators":[{"name":"amount","description":"amount of tokens purchased.","recommendedTypes":[],"indexed":false},{"name":"beneficiary","description":"who got the tokens.","recommendedTypes":[],"indexed":false},{"name":"purchaser","description":"who paid for the tokens.","recommendedTypes":[],"indexed":false},{"name":"value","description":"weis paid for purchase.","recommendedTypes":[],"indexed":false}]},{"signature":"ContractVersionSet(uint256)","name":"ContractVersionSet","description":"event for token purchase logging.","parameterDecorators":[{"name":"version","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"getCurrentOraclesReportStatus()","name":"getCurrentOraclesReportStatus","description":"Return the current reporting bitmap, representing oracles who have already pushed their version of report during the expected epoch. Every oracle bit corresponds to the index of the oracle in the current members list.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setAllowedBeaconBalanceAnnualRelativeIncrease(uint256)","name":"setAllowedBeaconBalanceAnnualRelativeIncrease","description":"Set the upper bound of the reported balance possible increase in APR to `_value`.","parameterDecorators":[{"name":"_value","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"hasInitialized()","name":"hasInitialized","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"getVersion()","name":"getVersion","description":"Return the initialized version of this contract starting from 0.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getEVMScriptExecutor(bytes)","name":"getEVMScriptExecutor","description":"","parameterDecorators":[{"name":"_script","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"MANAGE_QUORUM()","name":"MANAGE_QUORUM","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"reportBeacon(uint256,uint64,uint32)","name":"reportBeacon","description":"Accept oracle committee member reports from the ETH 2.0 side.","parameterDecorators":[{"name":"_epochId","description":"Beacon chain epoch.","recommendedTypes":[]},{"name":"_beaconBalance","description":"Balance in gwei on the ETH 2.0 side (9-digit denomination).","recommendedTypes":[]},{"name":"_beaconValidators","description":"Number of validators visible in this epoch.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getRecoveryVault()","name":"getRecoveryVault","description":"Get the recovery vault for the app.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getAllowedBeaconBalanceAnnualRelativeIncrease()","name":"getAllowedBeaconBalanceAnnualRelativeIncrease","description":"Return the upper bound of the reported balance possible increase in APR.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getAllowedBeaconBalanceRelativeDecrease()","name":"getAllowedBeaconBalanceRelativeDecrease","description":"Return the lower bound of the reported balance possible decrease.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getExpectedEpochId()","name":"getExpectedEpochId","description":"Returns epoch that can be reported by oracles.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getLastCompletedReportDelta()","name":"getLastCompletedReportDelta","description":"Report beacon balance and its change during the last frame.","parameterDecorators":[],"returnDecorators":[{"name":"postTotalPooledEther","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"preTotalPooledEther","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"timeElapsed","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getLido()","name":"getLido","description":"Return the Lido contract address.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"SET_BEACON_REPORT_RECEIVER()","name":"SET_BEACON_REPORT_RECEIVER","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"MANAGE_MEMBERS()","name":"MANAGE_MEMBERS","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"getCurrentFrame()","name":"getCurrentFrame","description":"Return currently reportable epoch (the first epoch of the current frame) as well as its start and end times in seconds.","parameterDecorators":[],"returnDecorators":[{"name":"frameEpochId","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"frameStartTime","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"frameEndTime","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"allowRecoverability(address)","name":"allowRecoverability","description":"By default deriving from AragonApp makes it recoverable.","parameterDecorators":[{"name":"token","description":"Token address that would be recovered.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"getCurrentReportVariant(uint256)","name":"getCurrentReportVariant","description":"Return the current reporting array element with index `_index`.","parameterDecorators":[{"name":"_index","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"beaconBalance","description":"","recommendedTypes":[],"solidityType":"uint64"},{"name":"beaconValidators","description":"","recommendedTypes":[],"solidityType":"uint32"},{"name":"count","description":"","recommendedTypes":[],"solidityType":"uint16"}],"emittableEvents":[],"readOnly":true},{"signature":"appId()","name":"appId","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"getLastCompletedEpochId()","name":"getLastCompletedEpochId","description":"Return last completed epoch.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getInitializationBlock()","name":"getInitializationBlock","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"initialize_v2(uint256,uint256)","name":"initialize_v2","description":"Initialize the contract v2 data, with sanity check bounds (`_allowedBeaconBalanceAnnualRelativeIncrease`, `_allowedBeaconBalanceRelativeDecrease`). Original initialize function removed from v2 because it is invoked only once.","parameterDecorators":[{"name":"_allowedBeaconBalanceAnnualRelativeIncrease","description":"","recommendedTypes":[]},{"name":"_allowedBeaconBalanceRelativeDecrease","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"setBeaconReportReceiver(address)","name":"setBeaconReportReceiver","description":"Set the receiver contract address to `_addr` to be called when the report is pushed. Specify 0 to disable this functionality.","parameterDecorators":[{"name":"_addr","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"transferToVault(address)","name":"transferToVault","description":"Send funds to recovery Vault. This contract should never receive funds, but in case it does, this function allows one to recover them.","parameterDecorators":[{"name":"_token","description":"Token balance to be sent to recovery vault.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"SET_BEACON_SPEC()","name":"SET_BEACON_SPEC","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"canPerform(address,bytes32,uint256[])","name":"canPerform","description":"Check whether an action can be performed by a sender for a particular role on this app.","parameterDecorators":[{"name":"_sender","description":"Sender of the call.","recommendedTypes":[]},{"name":"_role","description":"Role on this app.","recommendedTypes":[]},{"name":"_params","description":"Permission params for the role.","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"getCurrentEpochId()","name":"getCurrentEpochId","description":"Return the epoch calculated from current timestamp.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getEVMScriptRegistry()","name":"getEVMScriptRegistry","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"addOracleMember(address)","name":"addOracleMember","description":"Add `_member` to the oracle member committee list.","parameterDecorators":[{"name":"_member","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getBeaconReportReceiver()","name":"getBeaconReportReceiver","description":"Return the receiver contract address to be called when the report is pushed to Lido.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"SET_REPORT_BOUNDARIES()","name":"SET_REPORT_BOUNDARIES","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bytes32"}],"emittableEvents":[],"readOnly":true},{"signature":"setQuorum(uint256)","name":"setQuorum","description":"Set the number of exactly the same reports needed to finalize the epoch to `_quorum`.","parameterDecorators":[{"name":"_quorum","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getQuorum()","name":"getQuorum","description":"Return the number of exactly the same reports needed to finalize the epoch.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"kernel()","name":"kernel","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getOracleMembers()","name":"getOracleMembers","description":"Return the current oracle member committee list.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address[]"}],"emittableEvents":[],"readOnly":true},{"signature":"isPetrified()","name":"isPetrified","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"setAllowedBeaconBalanceRelativeDecrease(uint256)","name":"setAllowedBeaconBalanceRelativeDecrease","description":"Set the lower bound of the reported balance possible decrease to `_value`.","parameterDecorators":[{"name":"_value","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getBeaconSpec()","name":"getBeaconSpec","description":"Return beacon specification data.","parameterDecorators":[],"returnDecorators":[{"name":"epochsPerFrame","description":"","recommendedTypes":[],"solidityType":"uint64"},{"name":"slotsPerEpoch","description":"","recommendedTypes":[],"solidityType":"uint64"},{"name":"secondsPerSlot","description":"","recommendedTypes":[],"solidityType":"uint64"},{"name":"genesisTime","description":"","recommendedTypes":[],"solidityType":"uint64"}],"emittableEvents":[],"readOnly":true},{"signature":"setBeaconSpec(uint64,uint64,uint64,uint64)","name":"setBeaconSpec","description":"Update beacon specification data.","parameterDecorators":[{"name":"_epochsPerFrame","description":"","recommendedTypes":[]},{"name":"_slotsPerEpoch","description":"","recommendedTypes":[]},{"name":"_secondsPerSlot","description":"","recommendedTypes":[]},{"name":"_genesisTime","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"MAX_MEMBERS()","name":"MAX_MEMBERS","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"getCurrentReportVariantsSize()","name":"getCurrentReportVariantsSize","description":"Return the current reporting variants array size.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"removeOracleMember(address)","name":"removeOracleMember","description":"Remove '_member` from the oracle member committee list.","parameterDecorators":[{"name":"_member","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "oracles",
+    "dao"
+  ],
+  "name": "LidoOracle",
+  "description": "Implementation of an ETH 2.0 -> ETH oracle * The goal of the oracle is to inform other parts of the system about balances controlled by the DAO on the ETH 2.0 side. The balances can go up because of reward accumulation and can go down because of slashing. * The timeline is divided into consecutive frames. Every oracle member may push its report once per frame. When the equal reports reach the configurable 'quorum' value, this frame is considered finalized and the resulting report is pushed to Lido. * Not all frames may come to a quorum. Oracles may report only to the first epoch of the frame and only if no quorum is reached for this epoch yet.",
+  "eventDecorators": [
+    {
+      "signature": "ScriptResult(address,bytes,bytes,bytes)",
+      "name": "ScriptResult",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "beneficiary",
+          "description": "who got the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RecoverToVault(address,address,uint256)",
+      "name": "RecoverToVault",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "vault",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AllowedBeaconBalanceAnnualRelativeIncreaseSet(uint256)",
+      "name": "AllowedBeaconBalanceAnnualRelativeIncreaseSet",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AllowedBeaconBalanceRelativeDecreaseSet(uint256)",
+      "name": "AllowedBeaconBalanceRelativeDecreaseSet",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BeaconReportReceiverSet(address)",
+      "name": "BeaconReportReceiverSet",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "callback",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "MemberAdded(address)",
+      "name": "MemberAdded",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "member",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "MemberRemoved(address)",
+      "name": "MemberRemoved",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "member",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "QuorumChanged(uint256)",
+      "name": "QuorumChanged",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "quorum",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ExpectedEpochIdUpdated(uint256)",
+      "name": "ExpectedEpochIdUpdated",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "epochId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BeaconSpecSet(uint64,uint64,uint64,uint64)",
+      "name": "BeaconSpecSet",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "beneficiary",
+          "description": "who got the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BeaconReported(uint256,uint128,uint128,address)",
+      "name": "BeaconReported",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "beneficiary",
+          "description": "who got the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Completed(uint256,uint128,uint128)",
+      "name": "Completed",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "epochId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "beaconBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "beaconValidators",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PostTotalShares(uint256,uint256,uint256,uint256)",
+      "name": "PostTotalShares",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "beneficiary",
+          "description": "who got the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ContractVersionSet(uint256)",
+      "name": "ContractVersionSet",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "version",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "getCurrentOraclesReportStatus()",
+      "name": "getCurrentOraclesReportStatus",
+      "description": "Return the current reporting bitmap, representing oracles who have already pushed their version of report during the expected epoch. Every oracle bit corresponds to the index of the oracle in the current members list.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setAllowedBeaconBalanceAnnualRelativeIncrease(uint256)",
+      "name": "setAllowedBeaconBalanceAnnualRelativeIncrease",
+      "description": "Set the upper bound of the reported balance possible increase in APR to `_value`.",
+      "parameterDecorators": [
+        {
+          "name": "_value",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "hasInitialized()",
+      "name": "hasInitialized",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVersion()",
+      "name": "getVersion",
+      "description": "Return the initialized version of this contract starting from 0.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getEVMScriptExecutor(bytes)",
+      "name": "getEVMScriptExecutor",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_script",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MANAGE_QUORUM()",
+      "name": "MANAGE_QUORUM",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "reportBeacon(uint256,uint64,uint32)",
+      "name": "reportBeacon",
+      "description": "Accept oracle committee member reports from the ETH 2.0 side.",
+      "parameterDecorators": [
+        {
+          "name": "_epochId",
+          "description": "Beacon chain epoch.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_beaconBalance",
+          "description": "Balance in gwei on the ETH 2.0 side (9-digit denomination).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_beaconValidators",
+          "description": "Number of validators visible in this epoch.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getRecoveryVault()",
+      "name": "getRecoveryVault",
+      "description": "Get the recovery vault for the app.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAllowedBeaconBalanceAnnualRelativeIncrease()",
+      "name": "getAllowedBeaconBalanceAnnualRelativeIncrease",
+      "description": "Return the upper bound of the reported balance possible increase in APR.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAllowedBeaconBalanceRelativeDecrease()",
+      "name": "getAllowedBeaconBalanceRelativeDecrease",
+      "description": "Return the lower bound of the reported balance possible decrease.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getExpectedEpochId()",
+      "name": "getExpectedEpochId",
+      "description": "Returns epoch that can be reported by oracles.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getLastCompletedReportDelta()",
+      "name": "getLastCompletedReportDelta",
+      "description": "Report beacon balance and its change during the last frame.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "postTotalPooledEther",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "preTotalPooledEther",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "timeElapsed",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getLido()",
+      "name": "getLido",
+      "description": "Return the Lido contract address.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "SET_BEACON_REPORT_RECEIVER()",
+      "name": "SET_BEACON_REPORT_RECEIVER",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MANAGE_MEMBERS()",
+      "name": "MANAGE_MEMBERS",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentFrame()",
+      "name": "getCurrentFrame",
+      "description": "Return currently reportable epoch (the first epoch of the current frame) as well as its start and end times in seconds.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "frameEpochId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "frameStartTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "frameEndTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "allowRecoverability(address)",
+      "name": "allowRecoverability",
+      "description": "By default deriving from AragonApp makes it recoverable.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "Token address that would be recovered.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentReportVariant(uint256)",
+      "name": "getCurrentReportVariant",
+      "description": "Return the current reporting array element with index `_index`.",
+      "parameterDecorators": [
+        {
+          "name": "_index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "beaconBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "beaconValidators",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        },
+        {
+          "name": "count",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "appId()",
+      "name": "appId",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getLastCompletedEpochId()",
+      "name": "getLastCompletedEpochId",
+      "description": "Return last completed epoch.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getInitializationBlock()",
+      "name": "getInitializationBlock",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize_v2(uint256,uint256)",
+      "name": "initialize_v2",
+      "description": "Initialize the contract v2 data, with sanity check bounds (`_allowedBeaconBalanceAnnualRelativeIncrease`, `_allowedBeaconBalanceRelativeDecrease`). Original initialize function removed from v2 because it is invoked only once.",
+      "parameterDecorators": [
+        {
+          "name": "_allowedBeaconBalanceAnnualRelativeIncrease",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_allowedBeaconBalanceRelativeDecrease",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setBeaconReportReceiver(address)",
+      "name": "setBeaconReportReceiver",
+      "description": "Set the receiver contract address to `_addr` to be called when the report is pushed. Specify 0 to disable this functionality.",
+      "parameterDecorators": [
+        {
+          "name": "_addr",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferToVault(address)",
+      "name": "transferToVault",
+      "description": "Send funds to recovery Vault. This contract should never receive funds, but in case it does, this function allows one to recover them.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "Token balance to be sent to recovery vault.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "SET_BEACON_SPEC()",
+      "name": "SET_BEACON_SPEC",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "canPerform(address,bytes32,uint256[])",
+      "name": "canPerform",
+      "description": "Check whether an action can be performed by a sender for a particular role on this app.",
+      "parameterDecorators": [
+        {
+          "name": "_sender",
+          "description": "Sender of the call.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_role",
+          "description": "Role on this app.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_params",
+          "description": "Permission params for the role.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentEpochId()",
+      "name": "getCurrentEpochId",
+      "description": "Return the epoch calculated from current timestamp.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getEVMScriptRegistry()",
+      "name": "getEVMScriptRegistry",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addOracleMember(address)",
+      "name": "addOracleMember",
+      "description": "Add `_member` to the oracle member committee list.",
+      "parameterDecorators": [
+        {
+          "name": "_member",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getBeaconReportReceiver()",
+      "name": "getBeaconReportReceiver",
+      "description": "Return the receiver contract address to be called when the report is pushed to Lido.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "SET_REPORT_BOUNDARIES()",
+      "name": "SET_REPORT_BOUNDARIES",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setQuorum(uint256)",
+      "name": "setQuorum",
+      "description": "Set the number of exactly the same reports needed to finalize the epoch to `_quorum`.",
+      "parameterDecorators": [
+        {
+          "name": "_quorum",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getQuorum()",
+      "name": "getQuorum",
+      "description": "Return the number of exactly the same reports needed to finalize the epoch.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "kernel()",
+      "name": "kernel",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getOracleMembers()",
+      "name": "getOracleMembers",
+      "description": "Return the current oracle member committee list.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isPetrified()",
+      "name": "isPetrified",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setAllowedBeaconBalanceRelativeDecrease(uint256)",
+      "name": "setAllowedBeaconBalanceRelativeDecrease",
+      "description": "Set the lower bound of the reported balance possible decrease to `_value`.",
+      "parameterDecorators": [
+        {
+          "name": "_value",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getBeaconSpec()",
+      "name": "getBeaconSpec",
+      "description": "Return beacon specification data.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "epochsPerFrame",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "slotsPerEpoch",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "secondsPerSlot",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "genesisTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setBeaconSpec(uint64,uint64,uint64,uint64)",
+      "name": "setBeaconSpec",
+      "description": "Update beacon specification data.",
+      "parameterDecorators": [
+        {
+          "name": "_epochsPerFrame",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_slotsPerEpoch",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_secondsPerSlot",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_genesisTime",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "MAX_MEMBERS()",
+      "name": "MAX_MEMBERS",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentReportVariantsSize()",
+      "name": "getCurrentReportVariantsSize",
+      "description": "Return the current reporting variants array size.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeOracleMember(address)",
+      "name": "removeOracleMember",
+      "description": "Remove '_member` from the oracle member committee list.",
+      "parameterDecorators": [
+        {
+          "name": "_member",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

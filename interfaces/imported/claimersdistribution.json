@@ -1,1 +1,399 @@
-{"schema":"../schema.json","tags":["dao"],"name":"ClaimersDistribution","description":"ClaimersDistribution providers callbacks that can be used by UBIScheme to update when a citizen has claimed. It will distribute GDAO each month pro rata based on number of claims.","eventDecorators":[{"signature":"AdminChanged(address,address)","name":"AdminChanged","description":"emitted after each successful withdrawal. Emitted when someone's membership role is being updated.","parameterDecorators":[{"name":"previousAdmin","description":"","recommendedTypes":[],"indexed":false},{"name":"newAdmin","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"BeaconUpgraded(address)","name":"BeaconUpgraded","description":"emitted after each successful withdrawal. Emitted when someone's membership role is being updated.","parameterDecorators":[{"name":"beacon","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"MonthlyDistributionSet(uint256)","name":"MonthlyDistributionSet","description":"emitted after each successful withdrawal. Emitted when someone's membership role is being updated.","parameterDecorators":[{"name":"reputationAmount","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"ReputationEarned(address,uint256,uint256,uint256)","name":"ReputationEarned","description":"emitted after each successful withdrawal. Emitted when someone's membership role is being updated.","parameterDecorators":[{"name":"claimer","description":"","recommendedTypes":[],"indexed":false},{"name":"month","description":"","recommendedTypes":[],"indexed":false},{"name":"claims","description":"","recommendedTypes":[],"indexed":false},{"name":"reputation","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"Upgraded(address)","name":"Upgraded","description":"emitted after each successful withdrawal. Emitted when someone's membership role is being updated.","parameterDecorators":[{"name":"implementation","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"avatar()","name":"avatar","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"claimReputation(address)","name":"claimReputation","description":"mints reputation to user according to his share in last month claims.","parameterDecorators":[{"name":"_claimer","description":"the user to distribute reputation to.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"currentMonth()","name":"currentMonth","description":"month number since epoch.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"dao()","name":"dao","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"getMonthClaims(address)","name":"getMonthClaims","description":"helper func.","parameterDecorators":[{"name":"_claimer","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"number of UBI claims user performed this month.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"initialize(address)","name":"initialize","description":"","parameterDecorators":[{"name":"_ns","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"lastMonthClaimed(address)","name":"lastMonthClaimed","description":"marks last month user claimed reputation for.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"lastUpdated(address)","name":"lastUpdated","description":"tracks timestamp of last time user claimed UBI.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"monthlyReputationDistribution()","name":"monthlyReputationDistribution","description":"reputation to distribute each month, will effect next month when set.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"months(uint256)","name":"months","description":"keep track of each month distribution data.","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"totalClaims","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"monthlyDistribution","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"nameService()","name":"nameService","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"nativeToken()","name":"nativeToken","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"setMonthlyReputationDistribution(uint256)","name":"setMonthlyReputationDistribution","description":"update the monthly reputation distribution. only avatar can do that.","parameterDecorators":[{"name":"newMonthlyReputationDistribution","description":"the new reputation amount to distribute.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateAvatar()","name":"updateAvatar","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"updateClaim(address)","name":"updateClaim","description":"increase user count of claims if he claimed today. (called automatically by latest version of UBIScheme).","parameterDecorators":[{"name":"_claimer","description":"the user to update.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"upgradeTo(address)","name":"upgradeTo","description":"Upgrade the implementation of the proxy to `newImplementation`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.","parameterDecorators":[{"name":"newImplementation","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":["Upgraded(address)"],"readOnly":false},{"signature":"upgradeToAndCall(address,bytes)","name":"upgradeToAndCall","description":"Upgrade the implementation of the proxy to `newImplementation`, and subsequently execute the function call encoded in `data`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.","parameterDecorators":[{"name":"newImplementation","description":"","recommendedTypes":[]},{"name":"data","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":["Upgraded(address)"],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "dao"
+  ],
+  "name": "ClaimersDistribution",
+  "description": "ClaimersDistribution providers callbacks that can be used by UBIScheme to update when a citizen has claimed. It will distribute GDAO each month pro rata based on number of claims.",
+  "eventDecorators": [
+    {
+      "signature": "AdminChanged(address,address)",
+      "name": "AdminChanged",
+      "description": "emitted after each successful withdrawal. Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "previousAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BeaconUpgraded(address)",
+      "name": "BeaconUpgraded",
+      "description": "emitted after each successful withdrawal. Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "beacon",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "MonthlyDistributionSet(uint256)",
+      "name": "MonthlyDistributionSet",
+      "description": "emitted after each successful withdrawal. Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "reputationAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ReputationEarned(address,uint256,uint256,uint256)",
+      "name": "ReputationEarned",
+      "description": "emitted after each successful withdrawal. Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "claimer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "month",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "claims",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "reputation",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Upgraded(address)",
+      "name": "Upgraded",
+      "description": "emitted after each successful withdrawal. Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "implementation",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "avatar()",
+      "name": "avatar",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claimReputation(address)",
+      "name": "claimReputation",
+      "description": "mints reputation to user according to his share in last month claims.",
+      "parameterDecorators": [
+        {
+          "name": "_claimer",
+          "description": "the user to distribute reputation to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "currentMonth()",
+      "name": "currentMonth",
+      "description": "month number since epoch.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "dao()",
+      "name": "dao",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getMonthClaims(address)",
+      "name": "getMonthClaims",
+      "description": "helper func.",
+      "parameterDecorators": [
+        {
+          "name": "_claimer",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "number of UBI claims user performed this month.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_ns",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lastMonthClaimed(address)",
+      "name": "lastMonthClaimed",
+      "description": "marks last month user claimed reputation for.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastUpdated(address)",
+      "name": "lastUpdated",
+      "description": "tracks timestamp of last time user claimed UBI.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "monthlyReputationDistribution()",
+      "name": "monthlyReputationDistribution",
+      "description": "reputation to distribute each month, will effect next month when set.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "months(uint256)",
+      "name": "months",
+      "description": "keep track of each month distribution data.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalClaims",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "monthlyDistribution",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nameService()",
+      "name": "nameService",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nativeToken()",
+      "name": "nativeToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setMonthlyReputationDistribution(uint256)",
+      "name": "setMonthlyReputationDistribution",
+      "description": "update the monthly reputation distribution. only avatar can do that.",
+      "parameterDecorators": [
+        {
+          "name": "newMonthlyReputationDistribution",
+          "description": "the new reputation amount to distribute.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateAvatar()",
+      "name": "updateAvatar",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateClaim(address)",
+      "name": "updateClaim",
+      "description": "increase user count of claims if he claimed today. (called automatically by latest version of UBIScheme).",
+      "parameterDecorators": [
+        {
+          "name": "_claimer",
+          "description": "the user to update.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeTo(address)",
+      "name": "upgradeTo",
+      "description": "Upgrade the implementation of the proxy to `newImplementation`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "Upgraded(address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeToAndCall(address,bytes)",
+      "name": "upgradeToAndCall",
+      "description": "Upgrade the implementation of the proxy to `newImplementation`, and subsequently execute the function call encoded in `data`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "Upgraded(address)"
+      ],
+      "readOnly": false
+    }
+  ]
+}

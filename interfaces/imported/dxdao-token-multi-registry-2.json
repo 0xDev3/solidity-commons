@@ -1,1 +1,383 @@
-{"schema":"../schema.json","tags":["tokens","dao"],"name":"DXTokenRegistry","description":"dxDAO Token Multi-Registry. Maintains multiple token lists, curated by the DAO.","eventDecorators":[{"signature":"AddList(uint256,string)","name":"AddList","description":"Emitted when an account withdraws funds from RelayHub.","parameterDecorators":[{"name":"listId","description":"","recommendedTypes":[],"indexed":false},{"name":"listName","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"AddToken(uint256,address)","name":"AddToken","description":"Emitted when an account withdraws funds from RelayHub.","parameterDecorators":[{"name":"listId","description":"","recommendedTypes":[],"indexed":false},{"name":"token","description":"","recommendedTypes":[],"indexed":false}]},{"signature":"OwnershipTransferred(address,address)","name":"OwnershipTransferred","description":"Emitted when an account withdraws funds from RelayHub.","parameterDecorators":[{"name":"previousOwner","description":"","recommendedTypes":[],"indexed":true},{"name":"newOwner","description":"","recommendedTypes":[],"indexed":true}]},{"signature":"RemoveToken(uint256,address)","name":"RemoveToken","description":"Emitted when an account withdraws funds from RelayHub.","parameterDecorators":[{"name":"listId","description":"","recommendedTypes":[],"indexed":false},{"name":"token","description":"","recommendedTypes":[],"indexed":false}]}],"functionDecorators":[{"signature":"addList(string)","name":"addList","description":"Add new token list.","parameterDecorators":[{"name":"_listName","description":"Name of new list.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"New list ID.","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":false},{"signature":"addTokens(uint256,address[])","name":"addTokens","description":"The owner can add new token(s) to existing list, by address. Attempting to add token addresses which are already in the list will cause revert.","parameterDecorators":[{"name":"_listId","description":"ID of list to add new tokens.","recommendedTypes":[]},{"name":"_tokens","description":"Array of token addresses to add.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"getExternalBalances(address,address[])","name":"getExternalBalances","description":"Convenience method to get account balances for given tokens.","parameterDecorators":[{"name":"_trader","description":"Account to check balances for.","recommendedTypes":[]},{"name":"_assetAddresses","description":"Array of token addresses.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Account balances for each token.","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getTokens(uint256)","name":"getTokens","description":"Get all tokens tracked by a token list.","parameterDecorators":[{"name":"_listId","description":"ID of list to get tokens from.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Array of token addresses tracked by list.","recommendedTypes":[],"solidityType":"address[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getTokensData(address[])","name":"getTokensData","description":"Convenience method to get ERC20 metadata for given tokens.","parameterDecorators":[{"name":"_tokens","description":"Array of token addresses.","recommendedTypes":[]}],"returnDecorators":[{"name":"names","description":"for each token.","recommendedTypes":[],"solidityType":"string[]"},{"name":"symbols","description":"for each token.","recommendedTypes":[],"solidityType":"string[]"},{"name":"decimals","description":"for each token.","recommendedTypes":[],"solidityType":"uint256[]"}],"emittableEvents":[],"readOnly":true},{"signature":"getTokensRange(uint256,uint256,uint256)","name":"getTokensRange","description":"Get active tokens from a list, within a specified index range.","parameterDecorators":[{"name":"_listId","description":"ID of list to get tokens from.","recommendedTypes":[]},{"name":"_start","description":"Start index.","recommendedTypes":[]},{"name":"_end","description":"End index.","recommendedTypes":[]}],"returnDecorators":[{"name":"tokensRange","description":"Array of active token addresses in index range.","recommendedTypes":[],"solidityType":"address[]"}],"emittableEvents":[],"readOnly":true},{"signature":"isTokenActive(uint256,address)","name":"isTokenActive","description":"Check if list has a given token address active.","parameterDecorators":[{"name":"_listId","description":"ID of list to get tokens from.","recommendedTypes":[]},{"name":"_token","description":"Token address to check.","recommendedTypes":[]}],"returnDecorators":[{"name":"_0","description":"Active status of given token address in list.","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"listCount()","name":"listCount","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"owner()","name":"owner","description":"Returns the address of the current owner.","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"removeTokens(uint256,address[])","name":"removeTokens","description":"The owner can remove token(s) on existing list, by address. Attempting to remove token addresses which are not active, or not present in the list, will cause revert.","parameterDecorators":[{"name":"_listId","description":"ID of list to remove tokens from.","recommendedTypes":[]},{"name":"_tokens","description":"Array of token addresses to remove.","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"renounceOwnership()","name":"renounceOwnership","description":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"tcrs(uint256)","name":"tcrs","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"listId","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"listName","description":"","recommendedTypes":[],"solidityType":"string"},{"name":"activeTokenCount","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"transferOwnership(address)","name":"transferOwnership","description":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.","parameterDecorators":[{"name":"newOwner","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "dao"
+  ],
+  "name": "DXTokenRegistry",
+  "description": "dxDAO Token Multi-Registry. Maintains multiple token lists, curated by the DAO.",
+  "eventDecorators": [
+    {
+      "signature": "AddList(uint256,string)",
+      "name": "AddList",
+      "description": "Emitted when an account withdraws funds from RelayHub.",
+      "parameterDecorators": [
+        {
+          "name": "listId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "listName",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AddToken(uint256,address)",
+      "name": "AddToken",
+      "description": "Emitted when an account withdraws funds from RelayHub.",
+      "parameterDecorators": [
+        {
+          "name": "listId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emitted when an account withdraws funds from RelayHub.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RemoveToken(uint256,address)",
+      "name": "RemoveToken",
+      "description": "Emitted when an account withdraws funds from RelayHub.",
+      "parameterDecorators": [
+        {
+          "name": "listId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addList(string)",
+      "name": "addList",
+      "description": "Add new token list.",
+      "parameterDecorators": [
+        {
+          "name": "_listName",
+          "description": "Name of new list.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "New list ID.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addTokens(uint256,address[])",
+      "name": "addTokens",
+      "description": "The owner can add new token(s) to existing list, by address. Attempting to add token addresses which are already in the list will cause revert.",
+      "parameterDecorators": [
+        {
+          "name": "_listId",
+          "description": "ID of list to add new tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokens",
+          "description": "Array of token addresses to add.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getExternalBalances(address,address[])",
+      "name": "getExternalBalances",
+      "description": "Convenience method to get account balances for given tokens.",
+      "parameterDecorators": [
+        {
+          "name": "_trader",
+          "description": "Account to check balances for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_assetAddresses",
+          "description": "Array of token addresses.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Account balances for each token.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokens(uint256)",
+      "name": "getTokens",
+      "description": "Get all tokens tracked by a token list.",
+      "parameterDecorators": [
+        {
+          "name": "_listId",
+          "description": "ID of list to get tokens from.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Array of token addresses tracked by list.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokensData(address[])",
+      "name": "getTokensData",
+      "description": "Convenience method to get ERC20 metadata for given tokens.",
+      "parameterDecorators": [
+        {
+          "name": "_tokens",
+          "description": "Array of token addresses.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "names",
+          "description": "for each token.",
+          "recommendedTypes": [],
+          "solidityType": "string[]"
+        },
+        {
+          "name": "symbols",
+          "description": "for each token.",
+          "recommendedTypes": [],
+          "solidityType": "string[]"
+        },
+        {
+          "name": "decimals",
+          "description": "for each token.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokensRange(uint256,uint256,uint256)",
+      "name": "getTokensRange",
+      "description": "Get active tokens from a list, within a specified index range.",
+      "parameterDecorators": [
+        {
+          "name": "_listId",
+          "description": "ID of list to get tokens from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_start",
+          "description": "Start index.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_end",
+          "description": "End index.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "tokensRange",
+          "description": "Array of active token addresses in index range.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isTokenActive(uint256,address)",
+      "name": "isTokenActive",
+      "description": "Check if list has a given token address active.",
+      "parameterDecorators": [
+        {
+          "name": "_listId",
+          "description": "ID of list to get tokens from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_token",
+          "description": "Token address to check.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Active status of given token address in list.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "listCount()",
+      "name": "listCount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeTokens(uint256,address[])",
+      "name": "removeTokens",
+      "description": "The owner can remove token(s) on existing list, by address. Attempting to remove token addresses which are not active, or not present in the list, will cause revert.",
+      "parameterDecorators": [
+        {
+          "name": "_listId",
+          "description": "ID of list to remove tokens from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokens",
+          "description": "Array of token addresses to remove.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tcrs(uint256)",
+      "name": "tcrs",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "listId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "listName",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        },
+        {
+          "name": "activeTokenCount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

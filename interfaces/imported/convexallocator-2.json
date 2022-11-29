@@ -1,1 +1,428 @@
-{"schema":"../schema.json","tags":["lending","convex"],"name":"ConvexAllocator","description":"Contract deploys reserves from treasury into the Convex lending pool, earning interest and $CVX.","eventDecorators":[{"signature":"AuthorityUpdated(address)","name":"AuthorityUpdated","description":"Event for token purchase logging.","parameterDecorators":[{"name":"authority","description":"","recommendedTypes":[],"indexed":true}]}],"functionDecorators":[{"signature":"addRewardTokens(address,address[])","name":"addRewardTokens","description":"add new reward token to be harvested.","parameterDecorators":[{"name":"baseToken","description":"","recommendedTypes":[]},{"name":"rewardTokens","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"addToken(address,address,address,address[],int128,uint256,uint256)","name":"addToken","description":"adds asset and corresponding crvToken to mapping.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[]},{"name":"curveToken","description":"","recommendedTypes":[]},{"name":"rewardPool","description":"","recommendedTypes":[]},{"name":"rewardTokens","description":"","recommendedTypes":[]},{"name":"index","description":"","recommendedTypes":[]},{"name":"max","description":"","recommendedTypes":[]},{"name":"pid","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"authority()","name":"authority","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"address"}],"emittableEvents":[],"readOnly":true},{"signature":"deposit(address,uint256,uint256[4],uint256)","name":"deposit","description":"withdraws asset from treasury, deposits asset into lending pool, then deposits crvToken into convex.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[]},{"name":"amount","description":"","recommendedTypes":[]},{"name":"amounts","description":"","recommendedTypes":[]},{"name":"minAmount","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"exceedsLimit(address,uint256)","name":"exceedsLimit","description":"checks to ensure deposit does not exceed max allocation for asset.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[]},{"name":"amount","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"bool"}],"emittableEvents":[],"readOnly":true},{"signature":"harvest(address[])","name":"harvest","description":"claims accrued CVX rewards for all tracked crvTokens.","parameterDecorators":[{"name":"tokens","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"lowerLimit(address,uint256)","name":"lowerLimit","description":"lowers max can be deployed for asset (no timelock).","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[]},{"name":"newMax","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"pidForReserve(address)","name":"pidForReserve","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"queueRaiseLimit(address,uint256)","name":"queueRaiseLimit","description":"starts timelock to raise max allocation for asset.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[]},{"name":"newMax","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"raiseLimit(address)","name":"raiseLimit","description":"changes max allocation for asset when timelock elapsed.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"rewardsPending(address)","name":"rewardsPending","description":"query all pending rewards for a specific base token.","parameterDecorators":[{"name":"baseToken","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"setAuthority(address)","name":"setAuthority","description":"","parameterDecorators":[{"name":"_newAuthority","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"timelockInBlocks()","name":"timelockInBlocks","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"tokenInfo(address)","name":"tokenInfo","description":"","parameterDecorators":[{"name":"param0","description":"","recommendedTypes":[]}],"returnDecorators":[{"name":"underlying","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"curveToken","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"rewardPool","description":"","recommendedTypes":[],"solidityType":"address"},{"name":"index","description":"","recommendedTypes":[],"solidityType":"int128"},{"name":"deployed","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"limit","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"newLimit","description":"","recommendedTypes":[],"solidityType":"uint256"},{"name":"limitChangeTimelockEnd","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"totalValueDeployed()","name":"totalValueDeployed","description":"","parameterDecorators":[],"returnDecorators":[{"name":"param0","description":"","recommendedTypes":[],"solidityType":"uint256"}],"emittableEvents":[],"readOnly":true},{"signature":"updateTreasury()","name":"updateTreasury","description":"","parameterDecorators":[],"returnDecorators":[],"emittableEvents":[],"readOnly":false},{"signature":"withdraw(address,uint256,uint256,bool)","name":"withdraw","description":"withdraws crvToken from convex, withdraws from lending pool, then deposits asset into treasury.","parameterDecorators":[{"name":"token","description":"","recommendedTypes":[]},{"name":"amount","description":"","recommendedTypes":[]},{"name":"minAmount","description":"","recommendedTypes":[]},{"name":"reserve","description":"","recommendedTypes":[]}],"returnDecorators":[],"emittableEvents":[],"readOnly":false}]}
+{
+  "schema": "../schema.json",
+  "tags": [
+    "lending",
+    "convex"
+  ],
+  "name": "ConvexAllocator",
+  "description": "Contract deploys reserves from treasury into the Convex lending pool, earning interest and $CVX.",
+  "eventDecorators": [
+    {
+      "signature": "AuthorityUpdated(address)",
+      "name": "AuthorityUpdated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "authority",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addRewardTokens(address,address[])",
+      "name": "addRewardTokens",
+      "description": "add new reward token to be harvested.",
+      "parameterDecorators": [
+        {
+          "name": "baseToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "rewardTokens",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addToken(address,address,address,address[],int128,uint256,uint256)",
+      "name": "addToken",
+      "description": "adds asset and corresponding crvToken to mapping.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "curveToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "rewardPool",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "rewardTokens",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "max",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "pid",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "authority()",
+      "name": "authority",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deposit(address,uint256,uint256[4],uint256)",
+      "name": "deposit",
+      "description": "withdraws asset from treasury, deposits asset into lending pool, then deposits crvToken into convex.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amounts",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minAmount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "exceedsLimit(address,uint256)",
+      "name": "exceedsLimit",
+      "description": "checks to ensure deposit does not exceed max allocation for asset.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "harvest(address[])",
+      "name": "harvest",
+      "description": "claims accrued CVX rewards for all tracked crvTokens.",
+      "parameterDecorators": [
+        {
+          "name": "tokens",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lowerLimit(address,uint256)",
+      "name": "lowerLimit",
+      "description": "lowers max can be deployed for asset (no timelock).",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newMax",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "pidForReserve(address)",
+      "name": "pidForReserve",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "queueRaiseLimit(address,uint256)",
+      "name": "queueRaiseLimit",
+      "description": "starts timelock to raise max allocation for asset.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newMax",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "raiseLimit(address)",
+      "name": "raiseLimit",
+      "description": "changes max allocation for asset when timelock elapsed.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rewardsPending(address)",
+      "name": "rewardsPending",
+      "description": "query all pending rewards for a specific base token.",
+      "parameterDecorators": [
+        {
+          "name": "baseToken",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setAuthority(address)",
+      "name": "setAuthority",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_newAuthority",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "timelockInBlocks()",
+      "name": "timelockInBlocks",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tokenInfo(address)",
+      "name": "tokenInfo",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "underlying",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "curveToken",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "rewardPool",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int128"
+        },
+        {
+          "name": "deployed",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "limit",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "newLimit",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "limitChangeTimelockEnd",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalValueDeployed()",
+      "name": "totalValueDeployed",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "updateTreasury()",
+      "name": "updateTreasury",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(address,uint256,uint256,bool)",
+      "name": "withdraw",
+      "description": "withdraws crvToken from convex, withdraws from lending pool, then deposits asset into treasury.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "reserve",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}
