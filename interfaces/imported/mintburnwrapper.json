@@ -1,0 +1,1219 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "bridges"
+  ],
+  "name": "MintBurnWrapper",
+  "description": "MintBurnWrapper has the following aims: 1. wrap token which does not support interface `IBridge` or `IRouter` 2. wrap token which want to support multiple minters 3. add security enhancement (mint cap, pausable, etc.).",
+  "eventDecorators": [
+    {
+      "signature": "AdminChanged(address,address)",
+      "name": "AdminChanged",
+      "description": "An event emitted when the voting period is set.",
+      "parameterDecorators": [
+        {
+          "name": "previousAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BeaconUpgraded(address)",
+      "name": "BeaconUpgraded",
+      "description": "An event emitted when the voting period is set.",
+      "parameterDecorators": [
+        {
+          "name": "beacon",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "LogSwapin(bytes32,address,uint256)",
+      "name": "LogSwapin",
+      "description": "An event emitted when the voting period is set.",
+      "parameterDecorators": [
+        {
+          "name": "txhash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogSwapout(address,address,uint256)",
+      "name": "LogSwapout",
+      "description": "An event emitted when the voting period is set.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "bindaddr",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Paused(bytes32)",
+      "name": "Paused",
+      "description": "An event emitted when the voting period is set.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RoleAdminChanged(bytes32,bytes32,bytes32)",
+      "name": "RoleAdminChanged",
+      "description": "An event emitted when the voting period is set.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "previousAdminRole",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newAdminRole",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RoleGranted(bytes32,address,address)",
+      "name": "RoleGranted",
+      "description": "An event emitted when the voting period is set.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RoleRevoked(bytes32,address,address)",
+      "name": "RoleRevoked",
+      "description": "An event emitted when the voting period is set.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Unpaused(bytes32)",
+      "name": "Unpaused",
+      "description": "An event emitted when the voting period is set.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Upgraded(address)",
+      "name": "Upgraded",
+      "description": "An event emitted when the voting period is set.",
+      "parameterDecorators": [
+        {
+          "name": "implementation",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "BRIDGE_ROLE()",
+      "name": "BRIDGE_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "DEFAULT_ADMIN_ROLE()",
+      "name": "DEFAULT_ADMIN_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MINTER_ROLE()",
+      "name": "MINTER_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "PAUSE_ALL_ROLE()",
+      "name": "PAUSE_ALL_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "PAUSE_BRIDGE_ROLE()",
+      "name": "PAUSE_BRIDGE_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "PAUSE_BURN_ROLE()",
+      "name": "PAUSE_BURN_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "PAUSE_DEPOSIT_ROLE()",
+      "name": "PAUSE_DEPOSIT_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "PAUSE_MINT_ROLE()",
+      "name": "PAUSE_MINT_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "PAUSE_ROUTER_ROLE()",
+      "name": "PAUSE_ROUTER_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "PAUSE_WITHDRAW_ROLE()",
+      "name": "PAUSE_WITHDRAW_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ROUTER_ROLE()",
+      "name": "ROUTER_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "Swapin(bytes32,address,uint256)",
+      "name": "Swapin",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "txhash",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "Swapout(uint256,address)",
+      "name": "Swapout",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "bindaddr",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addMinter(address,uint256,uint256)",
+      "name": "addMinter",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "minter",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "cap",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "max",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "avatar()",
+      "name": "avatar",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "burn(address,uint256)",
+      "name": "burn",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "dao()",
+      "name": "dao",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deposit(uint256,address)",
+      "name": "deposit",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "depositBalance(address)",
+      "name": "depositBalance",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoleAdmin(bytes32)",
+      "name": "getRoleAdmin",
+      "description": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoleMember(bytes32,uint256)",
+      "name": "getRoleMember",
+      "description": "Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoleMemberCount(bytes32)",
+      "name": "getRoleMemberCount",
+      "description": "Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "grantRole(bytes32,address)",
+      "name": "grantRole",
+      "description": "Overload {grantRole} to track enumerable memberships.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "hasRole(bytes32,address)",
+      "name": "hasRole",
+      "description": "Returns `true` if `account` has been granted `role`.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,uint8,uint256,address,address)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenType",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_totalMintCap",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_admin",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_nameService",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "mint(address,uint256)",
+      "name": "mint",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "minterSupply(address)",
+      "name": "minterSupply",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "max",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "cap",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "total",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nameService()",
+      "name": "nameService",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nativeToken()",
+      "name": "nativeToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "onTokenTransfer(address,uint256,bytes)",
+      "name": "onTokenTransfer",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pause(bytes32)",
+      "name": "pause",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "paused(bytes32)",
+      "name": "paused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeMinter(address)",
+      "name": "removeMinter",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "minter",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceRole(bytes32,address)",
+      "name": "renounceRole",
+      "description": "Overload {renounceRole} to track enumerable memberships.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "revokeRole(bytes32,address)",
+      "name": "revokeRole",
+      "description": "Overload {revokeRole} to track enumerable memberships.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMinterCap(address,uint256)",
+      "name": "setMinterCap",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "minter",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "cap",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMinterMax(address,uint256)",
+      "name": "setMinterMax",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "minter",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "max",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMinterTotal(address,uint256,bool)",
+      "name": "setMinterTotal",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "minter",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "total",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "force",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setTotalMintCap(uint256)",
+      "name": "setTotalMintCap",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "cap",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "supportsInterface(bytes4)",
+      "name": "supportsInterface",
+      "description": "See {IERC165-supportsInterface}.",
+      "parameterDecorators": [
+        {
+          "name": "interfaceId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tokenType()",
+      "name": "tokenType",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalMintCap()",
+      "name": "totalMintCap",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalMinted()",
+      "name": "totalMinted",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unpause(bytes32)",
+      "name": "unpause",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateAvatar()",
+      "name": "updateAvatar",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeTo(address)",
+      "name": "upgradeTo",
+      "description": "Upgrade the implementation of the proxy to `newImplementation`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "Upgraded(address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeToAndCall(address,bytes)",
+      "name": "upgradeToAndCall",
+      "description": "Upgrade the implementation of the proxy to `newImplementation`, and subsequently execute the function call encoded in `data`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "Upgraded(address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(uint256,address)",
+      "name": "withdraw",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

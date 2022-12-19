@@ -1,0 +1,496 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "FeePoolState",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "IssuanceDebtRatioEntry(address,uint256,uint256)",
+      "name": "IssuanceDebtRatioEntry",
+      "description": "The standard EIP-20 transfer event. Fired in remove().",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "debtRatio",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "feePeriodCloseIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnerChanged(address,address)",
+      "name": "OwnerChanged",
+      "description": "The standard EIP-20 transfer event. Fired in remove().",
+      "parameterDecorators": [
+        {
+          "name": "oldOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnerNominated(address)",
+      "name": "OwnerNominated",
+      "description": "The standard EIP-20 transfer event. Fired in remove().",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "Token address removed.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SelfDestructBeneficiaryUpdated(address)",
+      "name": "SelfDestructBeneficiaryUpdated",
+      "description": "The standard EIP-20 transfer event. Fired in remove().",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "Token address removed.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SelfDestructInitiated(uint256)",
+      "name": "SelfDestructInitiated",
+      "description": "The standard EIP-20 transfer event. Fired in remove().",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "Token address removed.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SelfDestructTerminated()",
+      "name": "SelfDestructTerminated",
+      "description": "The standard EIP-20 transfer event. Fired in remove().",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "SelfDestructed(address)",
+      "name": "SelfDestructed",
+      "description": "The standard EIP-20 transfer event. Fired in remove().",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "Token address removed.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "FEE_PERIOD_LENGTH()",
+      "name": "FEE_PERIOD_LENGTH",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "SELFDESTRUCT_DELAY()",
+      "name": "SELFDESTRUCT_DELAY",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "acceptOwnership()",
+      "name": "acceptOwnership",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "accountIssuanceLedger(address,uint256)",
+      "name": "accountIssuanceLedger",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "debtPercentage",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "debtEntryIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "appendAccountIssuanceRecord(address,uint256,uint256,uint256)",
+      "name": "appendAccountIssuanceRecord",
+      "description": "Logs an accounts issuance data in the current fee period which is then stored historically. onlyFeePool to call me on dtrade.issue() & dtrade.burn() calls to store the locked DET per fee period so we know to allocate the correct proportions of fees and rewards per period accountIssuanceLedger[account][0] has the latest locked amount for the current period. This can be update as many time accountIssuanceLedger[account][1-2] has the last locked amount for a previous period they minted or burned.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "Message.Senders account address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "debtRatio",
+          "description": "Debt of this account as a percentage of the global debt.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "debtEntryIndex",
+          "description": "The index in the global debt ledger. dtrade.dtradeState().issuanceData(account).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "currentPeriodStartDebtIndex",
+          "description": "The startingDebtIndex of the current fee period.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "applicableIssuanceData(address,uint256)",
+      "name": "applicableIssuanceData",
+      "description": "Find the oldest debtEntryIndex for the corresponding closingDebtIndex.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "users account.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "closingDebtIndex",
+          "description": "the last periods debt index on close.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "feePool()",
+      "name": "feePool",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAccountsDebtEntry(address,uint256)",
+      "name": "getAccountsDebtEntry",
+      "description": "Get an accounts issuanceData for.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "users account.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "Index in the array to retrieve. Upto FEE_PERIOD_LENGTH.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "debtPercentage",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "debtEntryIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "importIssuerData(address[],uint256[],uint256,uint256)",
+      "name": "importIssuerData",
+      "description": "Import issuer data from dtradeState.issuerData on FeePeriodClose() block #. Only callable by the contract owner, and only for 6 weeks after deployment.",
+      "parameterDecorators": [
+        {
+          "name": "accounts",
+          "description": "Array of issuing addresses.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ratios",
+          "description": "Array of debt ratios.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "periodToInsert",
+          "description": "The Fee Period to insert the historical records into.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "feePeriodCloseIndex",
+          "description": "An accounts debtEntryIndex is valid when within the fee peroid, since the input ratio will be an average of the pervious periods it just needs to be > recentFeePeriods[periodToInsert].startingDebtIndex < recentFeePeriods[periodToInsert - 1].startingDebtIndex.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initiateSelfDestruct()",
+      "name": "initiateSelfDestruct",
+      "description": "Begin the self-destruction counter of this contract. Once the delay has elapsed, the contract may be self-destructed. Only the contract owner may call this.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initiationTime()",
+      "name": "initiationTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nominateNewOwner(address)",
+      "name": "nominateNewOwner",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_owner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "nominatedOwner()",
+      "name": "nominatedOwner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "selfDestruct()",
+      "name": "selfDestruct",
+      "description": "If the self-destruction delay has elapsed, destroy this contract and remit any ether it owns to the beneficiary address. Only the contract owner may call this.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "selfDestructBeneficiary()",
+      "name": "selfDestructBeneficiary",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "selfDestructInitiated()",
+      "name": "selfDestructInitiated",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setFeePool(address)",
+      "name": "setFeePool",
+      "description": "set the FeePool contract as it is the only authority to be able to call appendAccountIssuanceRecord with the onlyFeePool modifer. Must be set by owner when FeePool logic is upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "_feePool",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setSelfDestructBeneficiary(address)",
+      "name": "setSelfDestructBeneficiary",
+      "description": "Set the beneficiary address of this contract. Only the contract owner may call this. The provided beneficiary must be non-null.",
+      "parameterDecorators": [
+        {
+          "name": "_beneficiary",
+          "description": "The address to pay any eth contained in this contract to upon self-destruction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setupExpiryTime()",
+      "name": "setupExpiryTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "terminateSelfDestruct()",
+      "name": "terminateSelfDestruct",
+      "description": "Terminate and reset the self-destruction timer. Only the contract owner may call this.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

@@ -1,0 +1,924 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "strategies",
+    "compound"
+  ],
+  "name": "RadiantMatrixSingleAutoCompound",
+  "description": "Radiant Single Staking autocompounder strategy.",
+  "eventDecorators": [
+    {
+      "signature": "CallFeeUpdated(uint256,uint256)",
+      "name": "CallFeeUpdated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "caller",
+          "description": "- The account that called the function.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "relayer",
+          "description": "- The relayer address to be added or removed.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Harvested(address,uint256,uint256,uint256)",
+      "name": "Harvested",
+      "description": "{Harvested} Event that is fired each time someone harvests the strat. {TotalFeeUpdated} Event that is fired each time the total fee is updated. {CallFeeUpdated} Event that is fired each time the call fee is updated. {TreasuryUpdated} Event that is fired each time treasury address is updated.",
+      "parameterDecorators": [
+        {
+          "name": "harvester",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_wantHarvested",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_totalValueBefore",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_totalValueAfter",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "caller",
+          "description": "- The account that called the function.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "relayer",
+          "description": "- The relayer address to be added or removed.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "PartnerFeeUpdated(uint256,uint256)",
+      "name": "PartnerFeeUpdated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "caller",
+          "description": "- The account that called the function.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "relayer",
+          "description": "- The relayer address to be added or removed.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Paused(address)",
+      "name": "Paused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SecurityFeeUpdated(uint256)",
+      "name": "SecurityFeeUpdated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "newSecurityFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TotalFeeUpdated(uint256)",
+      "name": "TotalFeeUpdated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "newFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TreasuryUpdated(address,address)",
+      "name": "TreasuryUpdated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "caller",
+          "description": "- The account that called the function.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "relayer",
+          "description": "- The relayer address to be added or removed.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Unpaused(address)",
+      "name": "Unpaused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "MAX_FEE()",
+      "name": "MAX_FEE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "PERCENT_DIVISOR()",
+      "name": "PERCENT_DIVISOR",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "USDC()",
+      "name": "USDC",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "balanceOf()",
+      "name": "balanceOf",
+      "description": "For vault interface retro-compatibility.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "beforeDeposit()",
+      "name": "beforeDeposit",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "callFee()",
+      "name": "callFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deposit()",
+      "name": "deposit",
+      "description": "Only vault can call this when not paused. Puts funds in strategy at work.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getSwapPath(address,address)",
+      "name": "getSwapPath",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_fromToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_toToken",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_swapPath",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "unirouter",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "path",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address[]"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getWhitelistedAddresses()",
+      "name": "getWhitelistedAddresses",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "harvest()",
+      "name": "harvest",
+      "description": "compounds earnings and charges performance fee.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lastHarvestTime()",
+      "name": "lastHarvestTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastTotalValue()",
+      "name": "lastTotalValue",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "masterchef()",
+      "name": "masterchef",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "output()",
+      "name": "output",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "panic()",
+      "name": "panic",
+      "description": "pauses deposits and withdraws all funds from third party systems.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "partner()",
+      "name": "partner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "partnerFee()",
+      "name": "partnerFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pause()",
+      "name": "pause",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "paused()",
+      "name": "paused",
+      "description": "Returns true if the contract is paused, and false otherwise.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "poolId()",
+      "name": "poolId",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "retireStrat()",
+      "name": "retireStrat",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rewardApr()",
+      "name": "rewardApr",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardsLength()",
+      "name": "rewardsLength",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "securityFee()",
+      "name": "securityFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setRewardsLength(uint256)",
+      "name": "setRewardsLength",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_rewardsLength",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setSwapPath(address,address,address,address[])",
+      "name": "setSwapPath",
+      "description": "Allows strategy governor to setup custom path and dexes for token swaps.",
+      "parameterDecorators": [
+        {
+          "name": "_fromToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_toToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_unirouter",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_path",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "totalFee()",
+      "name": "totalFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalValue()",
+      "name": "totalValue",
+      "description": "total value managed by strategy is want + want staked in MasterChef.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "treasury()",
+      "name": "treasury",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "treasuryFee()",
+      "name": "treasuryFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unirouter()",
+      "name": "unirouter",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unpause()",
+      "name": "unpause",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateCallFee(uint256)",
+      "name": "updateCallFee",
+      "description": "updates the call fee and adjusts the treasury fee to cover the difference.",
+      "parameterDecorators": [
+        {
+          "name": "_callFee",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updatePartner(address)",
+      "name": "updatePartner",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_newPartner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updatePartnerFee(uint256)",
+      "name": "updatePartnerFee",
+      "description": "updates the partner fee and adjusts the treasury fee to cover the difference.",
+      "parameterDecorators": [
+        {
+          "name": "_partnerFee",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateSecurityFee(uint256)",
+      "name": "updateSecurityFee",
+      "description": "updates security fee, capped at 5%.",
+      "parameterDecorators": [
+        {
+          "name": "_securityFee",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateTotalFee(uint256)",
+      "name": "updateTotalFee",
+      "description": "updates the total fee, capped at 5%.",
+      "parameterDecorators": [
+        {
+          "name": "_totalFee",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateTreasury(address)",
+      "name": "updateTreasury",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_newTreasury",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "vault()",
+      "name": "vault",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "want()",
+      "name": "want",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw(uint256)",
+      "name": "withdraw",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawable()",
+      "name": "withdrawable",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_unlocked",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "wrapped()",
+      "name": "wrapped",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

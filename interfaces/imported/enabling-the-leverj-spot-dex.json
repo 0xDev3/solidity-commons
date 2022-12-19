@@ -1,0 +1,1082 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "staking",
+    "locking",
+    "merkle proofs"
+  ],
+  "name": "SpotLogic",
+  "description": "enabling the Leverj Spot DEX. the Spot app consists of the SpotLogic & SpotData contracts Gblocks related data and withdrawals tracking data are held within SpotData for an easier upgrade path. the Stake app enables: - account/asset based bookkeeping via an side-chain ledger - periodic submission of merkle-tree roots of the side-chain ledger - fraud-proofs based security of account/asset withdrawals - account based AML in-depth details and reasoning are detailed in: https://leverj.io/GluonPlasma.pdf.",
+  "eventDecorators": [
+    {
+      "signature": "DepositReclaimed(address,address,uint256,uint32)",
+      "name": "DepositReclaimed",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "asset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "quantity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "nonce",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Deposited(address,address,uint256,uint32,uint32)",
+      "name": "Deposited",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "asset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "quantity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "nonce",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "designatedGblock",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ExitClaimed(bytes32,address,address,uint256)",
+      "name": "ExitClaimed",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "hash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "asset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "confirmationThreshold",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Exited(address,address,uint256)",
+      "name": "Exited",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "asset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "quantity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ExtensionAdded(address)",
+      "name": "ExtensionAdded",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "extension",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ExtensionRemoved(address)",
+      "name": "ExtensionRemoved",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "extension",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Off()",
+      "name": "Off",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "Retired()",
+      "name": "Retired",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "Submitted(uint32,bytes32,bytes32,bytes32)",
+      "name": "Submitted",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "gblockNumber",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "withdrawalsRoot",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "depositsRoot",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "balancesRoot",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Withdrawn(bytes32,address,address,uint256)",
+      "name": "Withdrawn",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "hash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "asset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "quantity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "abandon()",
+      "name": "abandon",
+      "description": "if the app is abandoned, anyone can halt the app, thus allowing everyone to transfer funds back to the main chain.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "abandonPoint()",
+      "name": "abandonPoint",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addExtension(address)",
+      "name": "addExtension",
+      "description": "add a extension.",
+      "parameterDecorators": [
+        {
+          "name": "extension",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "canExit(bytes32,uint32)",
+      "name": "canExit",
+      "description": "can the entry represented by hash be used to exit?.",
+      "parameterDecorators": [
+        {
+          "name": "hash",
+          "description": "the hash of the entry to be used to exit? (account/asset pair is implicitly represented within hash).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "gblock",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "canSubmit()",
+      "name": "canSubmit",
+      "description": "can we submit a new gblock?.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "checkProof(bytes,bytes32,bytes32)",
+      "name": "checkProof",
+      "description": "Verifies the inclusion of a leaf in a Merkle tree using a Merkle proof. Based on https://github.com/ameensol/merkle-tree-solidity/src/MerkleProof.sol.",
+      "parameterDecorators": [
+        {
+          "name": "proof",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "root",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "leaf",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "checkProofOrdered(bytes,bytes32,bytes32,uint256)",
+      "name": "checkProofOrdered",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "proof",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "root",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "leaf",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "confirmationDelay()",
+      "name": "confirmationDelay",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "credit(address,address,uint256)",
+      "name": "credit",
+      "description": "once an asset has been deposited into the app's safe within Gluon, the app is given the chance to do it's own per account/asset bookkeeping.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "any Ethereum address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "asset",
+          "description": "any ERC20 token or ETH (represented by address 0x0).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quantity",
+          "description": "quantity of asset.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "currentGblockNumber()",
+      "name": "currentGblockNumber",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "currentLogic()",
+      "name": "currentLogic",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "address the address of currently active (latest) version of me (the app contract).",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "data()",
+      "name": "data",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "debit(address,bytes)",
+      "name": "debit",
+      "description": "before an asset can be withdrawn from the app's safe within Gluon, the quantity and asset to withdraw must be derived from `parameters`. if the app is account/asset based, it should take this opportunity to: - also derive the owning account from `parameters` - prove that the owning account indeed has the derived quantity of the derived asset - do it's own per account/asset bookkeeping notice that the derived account is not necessarily the same as the provided account; a classic usage example is an account transfers assets across app (in which case the provided account would be the target app).",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "any Ethereum address to which `quantity` of `asset` would be transferred to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "parameters",
+          "description": "a bytes-marshalled record containing all data needed for the app-specific logic.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "asset",
+          "description": "any ERC20 token or ETH (represented by address 0x0).",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "quantity",
+          "description": "quantity of asset.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "encodePackedDeposit(uint32,address,address,uint256,uint32,uint32)",
+      "name": "encodePackedDeposit",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "ledgerId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "asset",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quantity",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "nonce",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "designatedGblock",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "encodedDepositOnHaltParameters(address,address,uint256,uint32,uint32)",
+      "name": "encodedDepositOnHaltParameters",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "asset",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quantity",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "nonce",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "designatedGblock",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "exitCounts()",
+      "name": "exitCounts",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "extensions(uint256)",
+      "name": "extensions",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getExtensions()",
+      "name": "getExtensions",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "gluon()",
+      "name": "gluon",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "hasBeenAbandoned()",
+      "name": "hasBeenAbandoned",
+      "description": "if the operator stops creating blocks for a very long time, the app is said to be abandoned.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "hasExited(address,address)",
+      "name": "hasExited",
+      "description": "has the account/asset pair already claimed and exited?.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "the account in question.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "asset",
+          "description": "the asset in question.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "id()",
+      "name": "id",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isExtension(address)",
+      "name": "isExtension",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isOn()",
+      "name": "isOn",
+      "description": "app state is active, i.e: current & active.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "name()",
+      "name": "name",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "operator()",
+      "name": "operator",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "proveInConfirmedBalances(bytes,bytes32)",
+      "name": "proveInConfirmedBalances",
+      "description": "prove an entry is included in the latest confirmed balances root.",
+      "parameterDecorators": [
+        {
+          "name": "proof",
+          "description": "proof-of-inclusion for entryHash.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "entryHash",
+          "description": "hash of entry asserted to be included.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "proveInConfirmedWithdrawals(bytes,uint32,bytes32)",
+      "name": "proveInConfirmedWithdrawals",
+      "description": "prove a withdrawal entry is included in a confirmed withdrawals root.",
+      "parameterDecorators": [
+        {
+          "name": "proof",
+          "description": "proof-of-inclusion for entryHash.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "gblockNumber",
+          "description": "index of including gblock.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "entryHash",
+          "description": "hash of entry asserted to be included.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "recover(bytes32,bytes)",
+      "name": "recover",
+      "description": "Recover signer address from a message by using their signature.",
+      "parameterDecorators": [
+        {
+          "name": "hash",
+          "description": "message, the hash is the signed message. What is recovered is the signer address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "signature",
+          "description": "generated using web3.eth.account.direction().signature Based on https://gist.github.com/axic/5b33912c6f61ae6fd96d6c4a47afde6d TODO: Remove this library once solidity supports passing a signature to ecrecover. See https://github.com/ethereum/solidity/issues/864.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setUpgradeOperator(address)",
+      "name": "setUpgradeOperator",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "upgradeOperator_",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "state()",
+      "name": "state",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "submissionInterval()",
+      "name": "submissionInterval",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "submit(uint32,bytes32,bytes32,bytes32)",
+      "name": "submit",
+      "description": "submit a new gblock.",
+      "parameterDecorators": [
+        {
+          "name": "gblockNumber",
+          "description": "index of new gblockNumber.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "withdrawalsRoot",
+          "description": "the gblock's withdrawals root.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "depositsRoot",
+          "description": "the gblock's deposits root.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "balancesRoot",
+          "description": "the gblock's balances root.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "switchOff()",
+      "name": "switchOff",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upgrade()",
+      "name": "upgrade",
+      "description": "when an app proposal has been activated, Gluon will call this method on the previously active app version. each app must implement, providing a future upgrade path, and call retire_() at the very end. this is the chance for the previously active app version to migrate to the new version i.e.: migrating data, deprecate prior behavior, releasing resources, etc.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeOperator()",
+      "name": "upgradeOperator",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "verifyIncluded(bytes,bytes32,bytes32)",
+      "name": "verifyIncluded",
+      "description": "Verifies the inclusion of a leaf in a Merkle tree using a Merkle proof.",
+      "parameterDecorators": [
+        {
+          "name": "proof",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "root",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "leaf",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "verifyIncludedAtIndex(bytes,bytes32,bytes32,uint256)",
+      "name": "verifyIncludedAtIndex",
+      "description": "Verifies the inclusion of a leaf is at a specific place in an ordered Merkle tree using a Merkle proof.",
+      "parameterDecorators": [
+        {
+          "name": "proof",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "root",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "leaf",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "visibilityDelay()",
+      "name": "visibilityDelay",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

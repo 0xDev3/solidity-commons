@@ -1,0 +1,1303 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "staking",
+    "vaults"
+  ],
+  "name": "Geyser",
+  "description": "Geyser. Reward distribution contract with time multiplier.",
+  "eventDecorators": [
+    {
+      "signature": "BonusTokenRegistered(address)",
+      "name": "BonusTokenRegistered",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "newERC20Address",
+          "description": "is an address of the newly created ERC20 token MinimalProxy.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "GeyserCreated(address,address)",
+      "name": "GeyserCreated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "rewardPool",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "powerSwitch",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "GeyserFunded(uint256,uint256)",
+      "name": "GeyserFunded",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "duration",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RewardClaimed(address,address,uint256)",
+      "name": "RewardClaimed",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "vault",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Staked(address,uint256)",
+      "name": "Staked",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "vault",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unstaked(address,uint256)",
+      "name": "Unstaked",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "vault",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "VaultFactoryRegistered(address)",
+      "name": "VaultFactoryRegistered",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "newERC20Address",
+          "description": "is an address of the newly created ERC20 token MinimalProxy.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "VaultFactoryRemoved(address)",
+      "name": "VaultFactoryRemoved",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "newERC20Address",
+          "description": "is an address of the newly created ERC20 token MinimalProxy.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "BASE_SHARES_PER_WEI()",
+      "name": "BASE_SHARES_PER_WEI",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MAX_REWARD_TOKENS()",
+      "name": "MAX_REWARD_TOKENS",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MAX_STAKES_PER_VAULT()",
+      "name": "MAX_STAKES_PER_VAULT",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateReward(uint256,uint256,uint256,uint256,tuple(uint256,uint256,uint256))",
+      "name": "calculateReward",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "unlockedRewards",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "stakeAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "stakeDuration",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "totalStakeUnits",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "rewardScaling",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "floor",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "ceiling",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "time",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "reward",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateRewardFromStakes(tuple(uint256,uint256)[],uint256,uint256,uint256,uint256,tuple(uint256,uint256,uint256))",
+      "name": "calculateRewardFromStakes",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "stakes",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "timestamp",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "unstakeAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "unlockedRewards",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "totalStakeUnits",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "timestamp",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "rewardScaling",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "floor",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "ceiling",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "time",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "out",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "lastStakeAmount",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "newStakesCount",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "reward",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "newTotalStakeUnits",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateStakeUnits(uint256,uint256,uint256)",
+      "name": "calculateStakeUnits",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "start",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "end",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "stakeUnits",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateTotalStakeUnits(tuple(uint256,uint256)[],uint256)",
+      "name": "calculateTotalStakeUnits",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "stakes",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "timestamp",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "timestamp",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalStakeUnits",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateUnlockedRewards(tuple(uint256,uint256,uint256)[],uint256,uint256,uint256)",
+      "name": "calculateUnlockedRewards",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "rewardSchedules",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "duration",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "start",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "shares",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "rewardBalance",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "sharesOutstanding",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "timestamp",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "unlockedRewards",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "fundGeyser(uint256,uint256)",
+      "name": "fundGeyser",
+      "description": "Add funds to the geyser access control: only admin state machine: - can be called multiple times - only online state scope: - increase _geyser.rewardSharesOutstanding - append to _geyser.rewardSchedules token transfer: transfer staking tokens from msg.sender to reward pool.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "uint256 Amount of reward tokens to deposit.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "duration",
+          "description": "uint256 Duration over which to linearly unlock rewards.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getBonusTokenAtIndex(uint256)",
+      "name": "getBonusTokenAtIndex",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "bonusToken",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getBonusTokenSetLength()",
+      "name": "getBonusTokenSetLength",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "length",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentStakeReward(address,uint256)",
+      "name": "getCurrentStakeReward",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "vault",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "stakeAmount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "reward",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentTotalStakeUnits()",
+      "name": "getCurrentTotalStakeUnits",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "totalStakeUnits",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentUnlockedRewards()",
+      "name": "getCurrentUnlockedRewards",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "unlockedRewards",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentVaultReward(address)",
+      "name": "getCurrentVaultReward",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "vault",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "reward",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentVaultStakeUnits(address)",
+      "name": "getCurrentVaultStakeUnits",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "vault",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "stakeUnits",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getFutureStakeReward(address,uint256,uint256)",
+      "name": "getFutureStakeReward",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "vault",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "stakeAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "timestamp",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "reward",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getFutureTotalStakeUnits(uint256)",
+      "name": "getFutureTotalStakeUnits",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "timestamp",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalStakeUnits",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getFutureUnlockedRewards(uint256)",
+      "name": "getFutureUnlockedRewards",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "timestamp",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "unlockedRewards",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getFutureVaultReward(address,uint256)",
+      "name": "getFutureVaultReward",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "vault",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "timestamp",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "reward",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getFutureVaultStakeUnits(address,uint256)",
+      "name": "getFutureVaultStakeUnits",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "vault",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "timestamp",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "stakeUnits",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getGeyserData()",
+      "name": "getGeyserData",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "geyser",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "stakingToken",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "rewardToken",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "rewardPool",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "rewardScaling",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "tuple"
+            },
+            {
+              "name": "rewardSharesOutstanding",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "totalStake",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "totalStakeUnits",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "lastUpdate",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "rewardSchedules",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "tuple[]"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPowerController()",
+      "name": "getPowerController",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "controller",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPowerSwitch()",
+      "name": "getPowerSwitch",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "powerSwitch",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVaultData(address)",
+      "name": "getVaultData",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "vault",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "vaultData",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "totalStake",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "stakes",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "tuple[]"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVaultFactoryAtIndex(uint256)",
+      "name": "getVaultFactoryAtIndex",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "factory",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVaultFactorySetLength()",
+      "name": "getVaultFactorySetLength",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "length",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,address,address,address,address,tuple(uint256,uint256,uint256))",
+      "name": "initialize",
+      "description": "Initizalize geyser access control: only proxy constructor state machine: can only be called once state scope: set initialization variables token transfer: none.",
+      "parameterDecorators": [
+        {
+          "name": "ownerAddress",
+          "description": "address The admin address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "rewardPoolFactory",
+          "description": "address The factory to use for deploying the RewardPool.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "powerSwitchFactory",
+          "description": "address The factory to use for deploying the PowerSwitch.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "stakingToken",
+          "description": "address The address of the staking token for this geyser.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "rewardToken",
+          "description": "address The address of the reward token for this geyser.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "rewardScaling",
+          "description": "RewardScaling The config for reward scaling floor, ceiling, and time.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "floor",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "ceiling",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "time",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initializeLock()",
+      "name": "initializeLock",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isOffline()",
+      "name": "isOffline",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "status",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isOnline()",
+      "name": "isOnline",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "status",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isShutdown()",
+      "name": "isShutdown",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "status",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isValidAddress(address)",
+      "name": "isValidAddress",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "target",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "validity",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isValidVault(address)",
+      "name": "isValidVault",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "target",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "validity",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rageQuit()",
+      "name": "rageQuit",
+      "description": "Exit geyser without claiming reward. This function should never revert when correctly called by the vault. A max number of stakes per vault is set with MAX_STAKES_PER_VAULT to place an upper bound on the for loop in calculateTotalStakeUnits(). access control: only callable by the vault directly state machine: - when vault exists on this geyser - when active stake from this vault - any power state state scope: - decrease _geyser.totalStake - increase _geyser.lastUpdate - modify _geyser.totalStakeUnits - delete _vaults[vault] token transfer: none.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "registerBonusToken(address)",
+      "name": "registerBonusToken",
+      "description": "Register bonus token for distribution. use this function to enable distribution of any ERC20 held by the RewardPool contract access control: only admin state machine: - can be called multiple times - only online state scope: - append to _bonusTokenSet token transfer: none.",
+      "parameterDecorators": [
+        {
+          "name": "bonusToken",
+          "description": "address The address of the bonus token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "registerVaultFactory(address)",
+      "name": "registerVaultFactory",
+      "description": "Add vault factory to whitelist. use this function to enable stakes to vaults coming from the specified factory contract access control: only admin state machine: - can be called multiple times - not shutdown state scope: - append to _vaultFactorySet token transfer: none.",
+      "parameterDecorators": [
+        {
+          "name": "factory",
+          "description": "address The address of the vault factory.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeVaultFactory(address)",
+      "name": "removeVaultFactory",
+      "description": "Remove vault factory from whitelist. use this function to disable new stakes to vaults coming from the specified factory contract. note: vaults with existing stakes from this factory are sill able to unstake access control: only admin state machine: - can be called multiple times - not shutdown state scope: - remove from _vaultFactorySet token transfer: none.",
+      "parameterDecorators": [
+        {
+          "name": "factory",
+          "description": "address The address of the vault factory.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rescueTokensFromRewardPool(address,address,uint256)",
+      "name": "rescueTokensFromRewardPool",
+      "description": "Rescue tokens from RewardPool. use this function to rescue tokens from RewardPool contract without distributing to stakers or triggering emergency shutdown access control: only admin state machine: - can be called multiple times - only online state scope: none token transfer: transfer requested token from RewardPool to recipient.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "address The address of the token to rescue.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "recipient",
+          "description": "address The address of the recipient.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "uint256 The amount of tokens to rescue.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stake(address,uint256,bytes)",
+      "name": "stake",
+      "description": "Stake tokens access control: anyone with a valid permission state machine: - can be called multiple times - only online - when vault exists on this geyser state scope: - append to _vaults[vault].stakes - increase _vaults[vault].totalStake - increase _geyser.totalStake - increase _geyser.totalStakeUnits - increase _geyser.lastUpdate token transfer: transfer staking tokens from msg.sender to vault.",
+      "parameterDecorators": [
+        {
+          "name": "vault",
+          "description": "address The address of the vault to stake from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "uint256 The amount of staking tokens to stake.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "permission",
+          "description": "bytes The signed lock permission for the universal vault.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unstakeAndClaim(address,uint256,bytes)",
+      "name": "unstakeAndClaim",
+      "description": "Unstake staking tokens and claim reward. rewards can only be claimed when unstaking, thus reseting the reward multiplier access control: anyone with a valid permission state machine: - when vault exists on this geyser - after stake from vault - can be called multiple times while sufficient stake remains - only online state scope: - decrease _geyser.rewardSharesOutstanding - decrease _geyser.totalStake - increase _geyser.lastUpdate - modify _geyser.totalStakeUnits - modify _vaults[vault].stakes - decrease _vaults[vault].totalStake token transfer: - transfer reward tokens from reward pool to recipient - transfer bonus tokens from reward pool to recipient.",
+      "parameterDecorators": [
+        {
+          "name": "vault",
+          "description": "address The vault to unstake from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "uint256 The amount of staking tokens to unstake.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "permission",
+          "description": "bytes The signed unlock permission for the universal vault.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

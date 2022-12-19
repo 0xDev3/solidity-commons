@@ -1,0 +1,582 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "Forwarder",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emitted that client terminates the service if the hash(s1) is wrong. Or cloud terminates the service if client does not confirms hash(s1) in time.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "ERC1155_BATCH_RECEIVED()",
+      "name": "ERC1155_BATCH_RECEIVED",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes4"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ERC1155_RECEIVED()",
+      "name": "ERC1155_RECEIVED",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes4"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "EXCHANGE_V2_ORDER_ID()",
+      "name": "EXCHANGE_V2_ORDER_ID",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes4"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "approveMakerAssetProxy(bytes)",
+      "name": "approveMakerAssetProxy",
+      "description": "Approves the respective proxy for a given asset to transfer tokens on the Forwarder contract's behalf. This is necessary because an order fee denominated in the maker asset (i.e. a percentage fee) is sent by the Forwarder contract to the fee recipient. This method needs to be called before forwarding orders of a maker asset that hasn't previously been approved.",
+      "parameterDecorators": [
+        {
+          "name": "assetData",
+          "description": "Byte array encoded for the respective asset proxy.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "marketBuyOrdersWithEth(tuple(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[],uint256,bytes[],uint256[],address[])",
+      "name": "marketBuyOrdersWithEth",
+      "description": "Attempt to buy makerAssetBuyAmount of makerAsset by selling ETH provided with transaction. The Forwarder may *fill* more than makerAssetBuyAmount of the makerAsset so that it can pay takerFees where takerFeeAssetData == makerAssetData (i.e. percentage fees). Any ETH not spent will be refunded to sender.",
+      "parameterDecorators": [
+        {
+          "name": "orders",
+          "description": "Array of order specifications used containing desired makerAsset and WETH as takerAsset.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "makerAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "takerAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "feeRecipientAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "senderAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "makerAssetAmount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "takerAssetAmount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "makerFee",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "takerFee",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "expirationTimeSeconds",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "salt",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "makerAssetData",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "takerAssetData",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "makerFeeAssetData",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "takerFeeAssetData",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "makerAssetBuyAmount",
+          "description": "Desired amount of makerAsset to purchase.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "signatures",
+          "description": "Proofs that orders have been created by makers.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ethFeeAmounts",
+          "description": "Amounts of ETH, denominated in Wei, that are paid to corresponding feeRecipients.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "feeRecipients",
+          "description": "Addresses that will receive ETH when orders are filled.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "wethSpentAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "makerAssetAcquiredAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "marketSellAmountWithEth(tuple(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[],uint256,bytes[],uint256[],address[])",
+      "name": "marketSellAmountWithEth",
+      "description": "Purchases as much of orders' makerAssets as possible by selling the specified amount of ETH accounting for order and forwarder fees. This functions throws if ethSellAmount was not reached.",
+      "parameterDecorators": [
+        {
+          "name": "orders",
+          "description": "Array of order specifications used containing desired makerAsset and WETH as takerAsset.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "makerAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "takerAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "feeRecipientAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "senderAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "makerAssetAmount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "takerAssetAmount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "makerFee",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "takerFee",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "expirationTimeSeconds",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "salt",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "makerAssetData",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "takerAssetData",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "makerFeeAssetData",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "takerFeeAssetData",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "ethSellAmount",
+          "description": "Desired amount of ETH to sell.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "signatures",
+          "description": "Proofs that orders have been created by makers.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ethFeeAmounts",
+          "description": "Amounts of ETH, denominated in Wei, that are paid to corresponding feeRecipients.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "feeRecipients",
+          "description": "Addresses that will receive ETH when orders are filled.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "wethSpentAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "makerAssetAcquiredAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "marketSellOrdersWithEth(tuple(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[],bytes[],uint256[],address[])",
+      "name": "marketSellOrdersWithEth",
+      "description": "Purchases as much of orders' makerAssets as possible by selling as much of the ETH value sent as possible, accounting for order and forwarder fees.",
+      "parameterDecorators": [
+        {
+          "name": "orders",
+          "description": "Array of order specifications used containing desired makerAsset and WETH as takerAsset.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "makerAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "takerAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "feeRecipientAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "senderAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "makerAssetAmount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "takerAssetAmount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "makerFee",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "takerFee",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "expirationTimeSeconds",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "salt",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "makerAssetData",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "takerAssetData",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "makerFeeAssetData",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "takerFeeAssetData",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "signatures",
+          "description": "Proofs that orders have been created by makers.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ethFeeAmounts",
+          "description": "Amounts of ETH, denominated in Wei, that are paid to corresponding feeRecipients.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "feeRecipients",
+          "description": "Addresses that will receive ETH when orders are filled.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "wethSpentAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "makerAssetAcquiredAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)",
+      "name": "onERC1155BatchReceived",
+      "description": "Handle the receipt of multiple ERC1155 token types. The smart contract calls this function on the recipient after a `safeTransferFrom`. This function MAY throw to revert and reject the transfer. Return of other than the magic value MUST result in the transaction being reverted Note: the contract address is always the message sender.",
+      "parameterDecorators": [
+        {
+          "name": "operator",
+          "description": "The address which called `safeTransferFrom` function.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "from",
+          "description": "The address which previously owned the token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ids",
+          "description": "An array containing ids of each token being transferred.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "values",
+          "description": "An array containing amounts of each token being transferred.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "Additional data with no specified format.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes4"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "onERC1155Received(address,address,uint256,uint256,bytes)",
+      "name": "onERC1155Received",
+      "description": "Handle the receipt of a single ERC1155 token type. The smart contract calls this function on the recipient after a `safeTransferFrom`. This function MAY throw to revert and reject the transfer. Return of other than the magic value MUST result in the transaction being reverted Note: the contract address is always the message sender.",
+      "parameterDecorators": [
+        {
+          "name": "operator",
+          "description": "The address which called `safeTransferFrom` function.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "from",
+          "description": "The address which previously owned the token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "id",
+          "description": "An array containing the ids of the token being transferred.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "An array containing the amount of tokens being transferred.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "Additional data with no specified format.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes4"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Change the owner of this contract.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "New owner address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawAsset(bytes,uint256)",
+      "name": "withdrawAsset",
+      "description": "Withdraws assets from this contract. It may be used by the owner to withdraw assets that were accidentally sent to this contract.",
+      "parameterDecorators": [
+        {
+          "name": "assetData",
+          "description": "Byte array encoded for the respective asset proxy.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "Amount of the asset to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

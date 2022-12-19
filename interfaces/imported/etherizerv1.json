@@ -1,0 +1,389 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens"
+  ],
+  "name": "EtherizerV1",
+  "description": "EtherizerV1. Etherizer is a contract for enabling \"approvals\" for performing Ether transfers from compliant accounts via either standard ERC20 methods or meta-transactions. A \"compliant\" account must be a smart contract that implements a `triggerCall` function that is only callable by this contract as well as the `isValidSignature` function specified by ERC-1271 for enabling meta-transaction functionality. Be warned that any approved spender can initiate arbitrary calls from the owner's account, including ERC20 token transfers, so be extremely cautious when granting approval to spenders.",
+  "eventDecorators": [
+    {
+      "signature": "Approval(address,address,uint256)",
+      "name": "Approval",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "spender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TriggeredCall(address,address,uint256,bytes,bytes)",
+      "name": "TriggeredCall",
+      "description": "event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "returnData",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "allowance(address,address)",
+      "name": "allowance",
+      "description": "View function to get the total allowance that `spender` has to transfer Ether from the `owner` account using `triggerCallFrom`.",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "address The account that is granting the allowance.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "spender",
+          "description": "address The account that has been granted the allowance.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "etherAllowance",
+          "description": "The allowance of the given spender for the given owner.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "approve(address,uint256)",
+      "name": "approve",
+      "description": "Approve `spender` to transfer up to `value` Ether on behalf of `msg.sender`.",
+      "parameterDecorators": [
+        {
+          "name": "spender",
+          "description": "address The account to grant the allowance.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "uint256 The size of the allowance to grant.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "A boolean indicating whether the approval was successful.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "balanceOf(address)",
+      "name": "balanceOf",
+      "description": "View function to get the total Ether balance of an account.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "address The account to check the Ether balance for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amount",
+          "description": "The Ether balance of the given account.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "cancelAllowanceModificationMetaTransaction(address,address,uint256,bool,uint256,bytes32)",
+      "name": "cancelAllowanceModificationMetaTransaction",
+      "description": "Cancel a specific meta-transaction for modifying an allowance. The designated owner or spender can both cancel the given meta-transaction.",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "address The account granting the modified allowance.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "spender",
+          "description": "address The account to modify the allowance for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "uint256 The amount to modify the allowance by.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "increase",
+          "description": "bool A flag that indicates whether the allowance will be increased by the specified value (if true) or decreased by it (if false).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "expiration",
+          "description": "uint256 A timestamp indicating how long the modification meta-transaction is valid for - a value of zero will signify no expiration.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "salt",
+          "description": "bytes32 An arbitrary salt to be provided as an additional input to the hash digest used to validate the signatures.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "A boolean indicating whether the cancellation was successful.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "decreaseAllowance(address,uint256)",
+      "name": "decreaseAllowance",
+      "description": "Decrease the current allowance of `spender` by `value` Ether.",
+      "parameterDecorators": [
+        {
+          "name": "spender",
+          "description": "address The account to decrease the allowance for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "subtractedValue",
+          "description": "uint256 The amount to subtract from the allowance.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "A boolean indicating whether the modification was successful.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getMetaTransactionMessageHash(bytes4,bytes,uint256,bytes32)",
+      "name": "getMetaTransactionMessageHash",
+      "description": "View function to determine a meta-transaction message hash, and to determine if it is still valid (i.e. it has not yet been used and is not expired). The returned message hash will need to be prefixed using EIP-191 0x45 and hashed again in order to generate a final digest for the required signature - in other words, the same procedure utilized by `eth_Sign`.",
+      "parameterDecorators": [
+        {
+          "name": "functionSelector",
+          "description": "bytes4 The function selector for the given meta-transaction. There is only one function selector available for V1: `0x2d657fa5` (the selector for `modifyAllowanceViaMetaTransaction`).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "arguments",
+          "description": "bytes The abi-encoded function arguments (aside from the `expiration`, `salt`, and `signatures` arguments) that should be supplied to the given function.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "expiration",
+          "description": "uint256 A timestamp indicating how long the given meta-transaction is valid for - a value of zero will signify no expiration.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "salt",
+          "description": "bytes32 An arbitrary salt to be provided as an additional input to the hash digest used to validate the signatures.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "messageHash",
+          "description": "The message hash corresponding to the meta-transaction.",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        },
+        {
+          "name": "valid",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "increaseAllowance(address,uint256)",
+      "name": "increaseAllowance",
+      "description": "Increase the current allowance of `spender` by `value` Ether.",
+      "parameterDecorators": [
+        {
+          "name": "spender",
+          "description": "address The account to grant the additional allowance.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "addedValue",
+          "description": "uint256 The amount to increase the allowance by.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "A boolean indicating whether the modification was successful.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "modifyAllowanceViaMetaTransaction(address,address,uint256,bool,uint256,bytes32,bytes)",
+      "name": "modifyAllowanceViaMetaTransaction",
+      "description": "Modify the current allowance of `spender` for `owner` by `value` Ether, increasing it if `increase` is true, otherwise decreasing it, via a meta-transaction that expires at `expiration` (or does not expire if the value is zero) and uses `salt` as an additional input, validated using `signatures`.",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "address The account granting the modified allowance.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "spender",
+          "description": "address The account to modify the allowance for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "uint256 The amount to modify the allowance by.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "increase",
+          "description": "bool A flag that indicates whether the allowance will be increased by the specified value (if true) or decreased by it (if false).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "expiration",
+          "description": "uint256 A timestamp indicating how long the modification meta-transaction is valid for - a value of zero will signify no expiration.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "salt",
+          "description": "bytes32 An arbitrary salt to be provided as an additional input to the hash digest used to validate the signatures.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "signatures",
+          "description": "bytes A signature, or collection of signatures, that the owner must provide in order to authorize the meta-transaction. If the account of the owner does not have any runtime code deployed to it, the signature will be verified using ecrecover; otherwise, it will be supplied to the owner along with the message digest and context via ERC-1271 for validation.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "A boolean indicating whether the modification was successful.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "triggerCallFrom(address,address,uint256,bytes)",
+      "name": "triggerCallFrom",
+      "description": "Trigger a call from `owner` to `recipient` with `amount` Ether and `data` calldata as long as `msg.sender` has sufficient allowance.",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "address The account to perform the call from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "recipient",
+          "description": "address The account to call.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "uint256 The amount of Ether to transfer.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "bytes The data to include with the call.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "A boolean indicating whether the call was successful.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "returnData",
+          "description": "The data returned from the call, if any.",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

@@ -1,0 +1,249 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "locking"
+  ],
+  "name": "HashedTimelockERC20",
+  "description": "Hashed Timelock Contracts (HTLCs) on Ethereum ERC20 tokens. This contract provides a way to create and keep HTLCs for ERC20 tokens. See HashedTimelock.sol for a contract that provides the same functions for the native ETH token. Protocol: 1) newContract(receiver, hashlock, timelock, tokenContract, amount) - a sender calls this to create a new HTLC on a given token (tokenContract) for a given amount. A 32 byte contract id is returned 2) withdraw(contractId, preimage) - once the receiver knows the preimage of the hashlock hash they can claim the tokens with this function 3) refund() - after timelock has expired and if the receiver did not withdraw the tokens the sender / creator of the HTLC can get their tokens back with this function.",
+  "eventDecorators": [
+    {
+      "signature": "HTLCERC20New(bytes32,address,address,address,uint256,bytes32,uint256)",
+      "name": "HTLCERC20New",
+      "description": "triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "contractId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "receiver",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenContract",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "hashlock",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "timelock",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "HTLCERC20Refund(bytes32)",
+      "name": "HTLCERC20Refund",
+      "description": "triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "contractId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "HTLCERC20Withdraw(bytes32)",
+      "name": "HTLCERC20Withdraw",
+      "description": "triggered when the system balance for a given token is updated.",
+      "parameterDecorators": [
+        {
+          "name": "contractId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "getContract(bytes32)",
+      "name": "getContract",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_contractId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "receiver",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "tokenContract",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "hashlock",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        },
+        {
+          "name": "timelock",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "withdrawn",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "refunded",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "preimage",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "newContract(address,bytes32,uint256,address,uint256)",
+      "name": "newContract",
+      "description": "Sender / Payer sets up a new hash time lock contract depositing the funds and providing the reciever and terms. NOTE: _receiver must first call approve() on the token contract. See allowance check in tokensTransferable modifier.",
+      "parameterDecorators": [
+        {
+          "name": "_receiver",
+          "description": "Receiver of the tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_hashlock",
+          "description": "A sha-2 sha256 hash hashlock.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_timelock",
+          "description": "UNIX epoch seconds time that the lock expires at. Refunds can be made after this time.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenContract",
+          "description": "ERC20 Token contract address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "Amount of the token to lock up.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "contractId",
+          "description": "Id of the new HTLC. This is needed for subsequent calls.",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "refund(bytes32)",
+      "name": "refund",
+      "description": "Called by the sender if there was no withdraw AND the time lock has expired. This will restore ownership of the tokens to the sender.",
+      "parameterDecorators": [
+        {
+          "name": "_contractId",
+          "description": "Id of HTLC to refund from.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "bool true on success.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(bytes32,bytes32)",
+      "name": "withdraw",
+      "description": "Called by the receiver once they know the preimage of the hashlock. This will transfer ownership of the locked tokens to their address.",
+      "parameterDecorators": [
+        {
+          "name": "_contractId",
+          "description": "Id of the HTLC.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_preimage",
+          "description": "sha256(_preimage) should equal the contract hashlock.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "bool true on success.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

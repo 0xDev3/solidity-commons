@@ -1,0 +1,1030 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "KlerosGovernor",
+  "description": "KlerosGovernor Note that this contract trusts that the Arbitrator is honest and will not re-enter or modify its costs during a call. Also note that tx.origin should not matter in contracts called by the governor.",
+  "eventDecorators": [
+    {
+      "signature": "ListSubmitted(uint256,address,uint256,string)",
+      "name": "ListSubmitted",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "_listID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_submitter",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_session",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_description",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "MetaEvidence(uint256,string)",
+      "name": "MetaEvidence",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "_metaEvidenceID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_evidence",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Dispute(address,uint256,uint256,uint256)",
+      "name": "Dispute",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "_arbitrator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_disputeID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_metaEvidenceID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_evidenceGroupID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Evidence(address,uint256,address,string)",
+      "name": "Evidence",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "_arbitrator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_evidenceGroupID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_party",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_evidence",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Ruling(address,uint256,uint256)",
+      "name": "Ruling",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "_arbitrator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_disputeID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_ruling",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "setMetaEvidence(string)",
+      "name": "setMetaEvidence",
+      "description": "Sets the meta evidence. Can only be called once. Convenience function that removes the need to precompute the deployed contract address for the metaevidence data.",
+      "parameterDecorators": [
+        {
+          "name": "_metaEvidence",
+          "description": "The URI of the meta evidence file.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeLoserMultiplier(uint256)",
+      "name": "changeLoserMultiplier",
+      "description": "Changes the proportion of appeal fees that must be added to appeal cost for the losing party.",
+      "parameterDecorators": [
+        {
+          "name": "_loserMultiplier",
+          "description": "The new loser multiplier value in basis points.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "arbitratorExtraData()",
+      "name": "arbitratorExtraData",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSubmittedLists(uint256)",
+      "name": "getSubmittedLists",
+      "description": "Gets the array of submitted lists in the session. Note that this function is O(n), where n is the number of submissions in the session. This could exceed the gas limit, therefore this function should only be used for interface display and not by other contracts.",
+      "parameterDecorators": [
+        {
+          "name": "_session",
+          "description": "The ID of the session.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "submittedLists",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "executionTimeout()",
+      "name": "executionTimeout",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "changeWithdrawTimeout(uint256)",
+      "name": "changeWithdrawTimeout",
+      "description": "Changes list withdrawal timeout. Note that withdrawals are only possible in the first half of the submission period.",
+      "parameterDecorators": [
+        {
+          "name": "_withdrawTimeout",
+          "description": "The new duration of withdraw period, in seconds.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeSubmissionDeposit(uint256)",
+      "name": "changeSubmissionDeposit",
+      "description": "Changes the value of the base deposit required for submitting a list.",
+      "parameterDecorators": [
+        {
+          "name": "_submissionBaseDeposit",
+          "description": "The new value of the base deposit, in wei.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rule(uint256,uint256)",
+      "name": "rule",
+      "description": "Gives a ruling for a dispute. Must be called by the arbitrator. The purpose of this function is to ensure that the address calling it has the right to rule on the contract.",
+      "parameterDecorators": [
+        {
+          "name": "_disputeID",
+          "description": "ID of the dispute in the Arbitrator contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_ruling",
+          "description": "Ruling given by the arbitrator. Note that 0 is reserved for \"Refuse to arbitrate\".",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeWinnerMultiplier(uint256)",
+      "name": "changeWinnerMultiplier",
+      "description": "Changes the proportion of appeal fees that must be added to appeal cost for the winning party.",
+      "parameterDecorators": [
+        {
+          "name": "_winnerMultiplier",
+          "description": "The new winner multiplier value in basis points.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "submitList(address[],uint256[],bytes,uint256[],string)",
+      "name": "submitList",
+      "description": "Creates transaction list based on input parameters and submits it for potential approval and execution. Transactions must be ordered by their hash.",
+      "parameterDecorators": [
+        {
+          "name": "_target",
+          "description": "List of addresses to call.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_value",
+          "description": "List of values required for respective addresses.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "Concatenated calldata of all transactions of this list.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_dataSize",
+          "description": "List of lengths in bytes required to split calldata for its respective targets.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_description",
+          "description": "String in CSV format that describes list's transactions.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawFeesAndRewards(address,uint256,uint256,uint256)",
+      "name": "withdrawFeesAndRewards",
+      "description": "Sends the fee stake rewards and reimbursements proportional to the contributions made to the winner of a dispute. Reimburses contributions if there is no winner.",
+      "parameterDecorators": [
+        {
+          "name": "_beneficiary",
+          "description": "The address that made contributions to a request.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_session",
+          "description": "The session from which to withdraw.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_round",
+          "description": "The round from which to withdraw.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_submissionID",
+          "description": "Submission's index in the array of submitted lists of the session which the beneficiary contributed to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getContributions(uint256,uint256,address)",
+      "name": "getContributions",
+      "description": "Gets the contributions made by a party for a given round of a session. Note that this function is O(n), where n is the number of submissions in the session. This could exceed the gas limit, therefore this function should only be used for interface display and not by other contracts.",
+      "parameterDecorators": [
+        {
+          "name": "_session",
+          "description": "The ID of the session.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_round",
+          "description": "The position of the round.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_contributor",
+          "description": "The address of the contributor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "contributions",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentSessionNumber()",
+      "name": "getCurrentSessionNumber",
+      "description": "Gets the number of the ongoing session.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "arbitrator()",
+      "name": "arbitrator",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "metaEvidenceUpdates()",
+      "name": "metaEvidenceUpdates",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "executeTransactionList(uint256,uint256,uint256)",
+      "name": "executeTransactionList",
+      "description": "Executes selected transactions of the list. UNTRUSTED.",
+      "parameterDecorators": [
+        {
+          "name": "_listID",
+          "description": "The index of the transaction list in the array of lists.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_cursor",
+          "description": "Index of the transaction from which to start executing.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_count",
+          "description": "Number of transactions to execute. Executes until the end if set to \"0\" or number higher than number of transactions in the list.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "reservedETH()",
+      "name": "reservedETH",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "sessions(uint256)",
+      "name": "sessions",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "ruling",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "disputeID",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "sumDeposit",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "status",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        },
+        {
+          "name": "durationOffset",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "shadowWinner()",
+      "name": "shadowWinner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoundInfo(uint256,uint256)",
+      "name": "getRoundInfo",
+      "description": "Gets the information on a round of a session. Note that this function is O(n), where n is the number of submissions in the session. This could exceed the gas limit, therefore this function should only be used for interface display and not by other contracts.",
+      "parameterDecorators": [
+        {
+          "name": "_session",
+          "description": "The ID of the session.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_round",
+          "description": "The round to be queried.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "paidFees",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "hasPaid",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool[]"
+        },
+        {
+          "name": "feeRewards",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "successfullyPaid",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "changeMetaEvidence(string)",
+      "name": "changeMetaEvidence",
+      "description": "Update the meta evidence used for disputes.",
+      "parameterDecorators": [
+        {
+          "name": "_metaEvidence",
+          "description": "URI to the new meta evidence file.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "executeSubmissions()",
+      "name": "executeSubmissions",
+      "description": "Approves a transaction list or creates a dispute if more than one list was submitted. TRUSTED. If nothing was submitted changes session.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeSubmissionTimeout(uint256)",
+      "name": "changeSubmissionTimeout",
+      "description": "Changes the time allocated for submission.",
+      "parameterDecorators": [
+        {
+          "name": "_submissionTimeout",
+          "description": "The new duration of the submission period, in seconds.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeSharedMultiplier(uint256)",
+      "name": "changeSharedMultiplier",
+      "description": "Changes the proportion of appeal fees that must be added to appeal cost when there is no winner or loser.",
+      "parameterDecorators": [
+        {
+          "name": "_sharedMultiplier",
+          "description": "The new shared multiplier value in basis points.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "loserMultiplier()",
+      "name": "loserMultiplier",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "winnerMultiplier()",
+      "name": "winnerMultiplier",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdrawTimeout()",
+      "name": "withdrawTimeout",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTransactionInfo(uint256,uint256)",
+      "name": "getTransactionInfo",
+      "description": "Gets the info of the specified transaction in the specified list.",
+      "parameterDecorators": [
+        {
+          "name": "_listID",
+          "description": "The index of the transaction list in the array of lists.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_transactionIndex",
+          "description": "The index of the transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "target",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        },
+        {
+          "name": "executed",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "fundAppeal(uint256)",
+      "name": "fundAppeal",
+      "description": "Takes up to the total amount required to fund a side of an appeal. Reimburses the rest. Creates an appeal if at least two lists are funded. TRUSTED.",
+      "parameterDecorators": [
+        {
+          "name": "_submissionID",
+          "description": "Submission's index in the array of submitted lists of the current sesssion. Note that submissionID can be swapped with an ID of a withdrawn list in submission period.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "submissions(uint256)",
+      "name": "submissions",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "submitter",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "deposit",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "listHash",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        },
+        {
+          "name": "submissionTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "approved",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "approvalTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getExpendableFunds()",
+      "name": "getExpendableFunds",
+      "description": "Gets the sum of contract funds that are used for the execution of transactions.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdrawTransactionList(uint256,bytes32)",
+      "name": "withdrawTransactionList",
+      "description": "Withdraws submitted transaction list. Reimburses submission deposit. Withdrawal is only possible during the first half of the submission period and during withdrawTimeout seconds after the submission is made.",
+      "parameterDecorators": [
+        {
+          "name": "_submissionID",
+          "description": "Submission's index in the array of submitted lists of the current sesssion.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_listHash",
+          "description": "Hash of a withdrawing list.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getNumberOfCreatedLists()",
+      "name": "getNumberOfCreatedLists",
+      "description": "Gets the number of lists created in contract's lifetime.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "changeArbitrator(address,bytes)",
+      "name": "changeArbitrator",
+      "description": "Changes the arbitrator of the contract.",
+      "parameterDecorators": [
+        {
+          "name": "_arbitrator",
+          "description": "The new trusted arbitrator.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_arbitratorExtraData",
+          "description": "The extra data used by the new arbitrator.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "submissionBaseDeposit()",
+      "name": "submissionBaseDeposit",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "submissionTimeout()",
+      "name": "submissionTimeout",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "changeExecutionTimeout(uint256)",
+      "name": "changeExecutionTimeout",
+      "description": "Changes the time allocated for list's execution.",
+      "parameterDecorators": [
+        {
+          "name": "_executionTimeout",
+          "description": "The new duration of the execution timeout, in seconds.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "sharedMultiplier()",
+      "name": "sharedMultiplier",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deployer()",
+      "name": "deployer",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MULTIPLIER_DIVISOR()",
+      "name": "MULTIPLIER_DIVISOR",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getNumberOfTransactions(uint256)",
+      "name": "getNumberOfTransactions",
+      "description": "Gets the number of transactions in the list.",
+      "parameterDecorators": [
+        {
+          "name": "_listID",
+          "description": "The index of the transaction list in the array of lists.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "txCount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastApprovalTime()",
+      "name": "lastApprovalTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSessionRoundsNumber(uint256)",
+      "name": "getSessionRoundsNumber",
+      "description": "Gets the number rounds in ongoing session.",
+      "parameterDecorators": [
+        {
+          "name": "_session",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

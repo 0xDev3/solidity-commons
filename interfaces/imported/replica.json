@@ -1,0 +1,489 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "celo network"
+  ],
+  "name": "Replica",
+  "description": "Replica. Track root updates on Home, prove and dispatch messages to end recipients.",
+  "eventDecorators": [
+    {
+      "signature": "DoubleUpdate(bytes32,bytes32[2],bytes,bytes)",
+      "name": "DoubleUpdate",
+      "description": "Emitted when proof of a double update is submitted, which sets the contract to FAILED state.",
+      "parameterDecorators": [
+        {
+          "name": "oldRoot",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newRoot",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "signature",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "signature2",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Process(bytes32,bool,bytes)",
+      "name": "Process",
+      "description": "Emitted when message is processed.",
+      "parameterDecorators": [
+        {
+          "name": "messageHash",
+          "description": "Hash of message that failed to process.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "success",
+          "description": "TRUE if the call was executed successfully, FALSE if the call reverted.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "returnData",
+          "description": "the return data from the external call.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Update(uint32,bytes32,bytes32,bytes)",
+      "name": "Update",
+      "description": "Emitted when update is made on Home or unconfirmed update root is submitted on Replica.",
+      "parameterDecorators": [
+        {
+          "name": "homeDomain",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "oldRoot",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newRoot",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "signature",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "PROCESS_GAS()",
+      "name": "PROCESS_GAS",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "RESERVE_GAS()",
+      "name": "RESERVE_GAS",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "VERSION()",
+      "name": "VERSION",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "acceptableRoot(bytes32)",
+      "name": "acceptableRoot",
+      "description": "Check that the root has been submitted and that the optimistic timeout period has expired, meaning the root can be processed.",
+      "parameterDecorators": [
+        {
+          "name": "_root",
+          "description": "the Merkle root, submitted in an update, to check.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "TRUE iff root has been submitted & timeout has expired.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "committedRoot()",
+      "name": "committedRoot",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "confirmAt(bytes32)",
+      "name": "confirmAt",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "doubleUpdate(bytes32,bytes32[2],bytes,bytes)",
+      "name": "doubleUpdate",
+      "description": "Called by external agent. Checks that signatures on two sets of roots are valid and that the new roots conflict with each other. If both cases hold true, the contract is failed and a `DoubleUpdate` event is emitted. When `fail()` is called on Home, updater is slashed.",
+      "parameterDecorators": [
+        {
+          "name": "_oldRoot",
+          "description": "Old root shared between two conflicting updates.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newRoot",
+          "description": "Array containing two conflicting new roots.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_signature",
+          "description": "Signature on `_oldRoot` and `_newRoot`[0].",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_signature2",
+          "description": "Signature on `_oldRoot` and `_newRoot`[1].",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "homeDomainHash()",
+      "name": "homeDomainHash",
+      "description": "Hash of Home domain concatenated with \"OPTICS\".",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(uint32,address,bytes32,uint256)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_remoteDomain",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_updater",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_committedRoot",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_optimisticSeconds",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "localDomain()",
+      "name": "localDomain",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "messages(bytes32)",
+      "name": "messages",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "optimisticSeconds()",
+      "name": "optimisticSeconds",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "process(bytes)",
+      "name": "process",
+      "description": "Given formatted message, attempts to dispatch message payload to end recipient. Recipient must implement a `handle` method (refer to IMessageRecipient.sol) Reverts if formatted message's destination domain is not the Replica's domain, if message has not been proven, or if not enough gas is provided for the dispatch transaction.",
+      "parameterDecorators": [
+        {
+          "name": "_message",
+          "description": "Formatted message.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_success",
+          "description": "TRUE iff dispatch transaction succeeded.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "prove(bytes32,bytes32[32],uint256)",
+      "name": "prove",
+      "description": "Attempts to prove the validity of message given its leaf, the merkle proof of inclusion for the leaf, and the index of the leaf. Reverts if message's MessageStatus != None (i.e. if message was already proven or processed)For convenience, we allow proving against any previous root. This means that witnesses never need to be updated for the new root.",
+      "parameterDecorators": [
+        {
+          "name": "_leaf",
+          "description": "Leaf of message to prove.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_proof",
+          "description": "Merkle proof of inclusion for leaf.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_index",
+          "description": "Index of leaf in home's merkle tree.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Returns true if proof was valid and `prove` call succeeded*.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "proveAndProcess(bytes,bytes32[32],uint256)",
+      "name": "proveAndProcess",
+      "description": "First attempts to prove the validity of provided formatted `message`. If the message is successfully proven, then tries to process message. Reverts if `prove` call returns false.",
+      "parameterDecorators": [
+        {
+          "name": "_message",
+          "description": "Formatted message (refer to Common.sol Message library).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_proof",
+          "description": "Merkle proof of inclusion for message's leaf.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_index",
+          "description": "Index of leaf in home's merkle tree.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "remoteDomain()",
+      "name": "remoteDomain",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "state()",
+      "name": "state",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "update(bytes32,bytes32,bytes)",
+      "name": "update",
+      "description": "Called by external agent. Submits the signed update's new root, marks root's allowable confirmation time, and emits an `Update` event. Reverts if update doesn't build off latest committedRoot or if signature is invalid.",
+      "parameterDecorators": [
+        {
+          "name": "_oldRoot",
+          "description": "Old merkle root.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newRoot",
+          "description": "New merkle root.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_signature",
+          "description": "Updater's signature on `_oldRoot` and `_newRoot`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updater()",
+      "name": "updater",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

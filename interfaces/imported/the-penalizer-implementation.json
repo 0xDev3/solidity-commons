@@ -1,0 +1,266 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "Penalizer",
+  "description": "The Penalizer Implementation. This Penalizer supports parsing Legacy, Type 1 and Type 2 raw RLP Encoded transactions.",
+  "eventDecorators": [
+    {
+      "signature": "CommitAdded(address,bytes32,uint256)",
+      "name": "CommitAdded",
+      "description": "Emitted once the reporter submits the first step in the commit-reveal process. Emitted when the implementation of a variable debt token is upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "asset",
+          "description": "The address of the underlying asset of the reserve.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "implementation",
+          "description": "The new subToken implementation*.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "proxy",
+          "description": "The variable debt token proxy address.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "commit(bytes32)",
+      "name": "commit",
+      "description": "Called by the reporter as the first step in the commit-reveal process. Any sender can call it to make sure no-one can front-run it to claim this penalization.",
+      "parameterDecorators": [
+        {
+          "name": "commitHash",
+          "description": "The hash of the report of a penalizable behaviour the reporter wants to reveal. Calculated as `commit(keccak(encodedPenalizeFunction))`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "commits(bytes32)",
+      "name": "commits",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "decodeTransaction(bytes)",
+      "name": "decodeTransaction",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "rawTransaction",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "transaction",
+          "description": "The details that the `Penalizer` needs to decide if the transaction is penalizable.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "nonce",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "gasLimit",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "to",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "data",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bytes"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPenalizeBlockDelay()",
+      "name": "getPenalizeBlockDelay",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The minimum delay between commit and reveal steps.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPenalizeBlockExpiration()",
+      "name": "getPenalizeBlockExpiration",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The maximum delay between commit and reveal steps.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isTransactionTypeValid(bytes)",
+      "name": "isTransactionTypeValid",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "rawTransaction",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "`true` if raw transaction is of types Legacy, 1 or 2. `false` otherwise.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "penalizeIllegalTransaction(bytes,bytes,address,uint256)",
+      "name": "penalizeIllegalTransaction",
+      "description": "Called by the reporter as the second step in the commit-reveal process. The Relay Workers are not allowed to make calls other than to the `relayCall` method.",
+      "parameterDecorators": [
+        {
+          "name": "unsignedTx",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "signature",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "hub",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "randomValue",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "penalizeRepeatedNonce(bytes,bytes,bytes,bytes,address,uint256)",
+      "name": "penalizeRepeatedNonce",
+      "description": "Called by the reporter as the second step in the commit-reveal process. If a Relay Worker attacked the system by signing multiple transactions with same nonce so only one is accepted, anyone can grab both transactions from the blockchain and submit them here. Check whether `unsignedTx1` != `unsignedTx2`, that both are signed by the same address, and that `unsignedTx1.nonce` == `unsignedTx2.nonce`. If all conditions are met, relay is considered an \"offending relay\". The offending relay will be unregistered immediately, its stake will be forfeited and given to the address who reported it (the `msg.sender`), thus incentivizing anyone to report offending relays.",
+      "parameterDecorators": [
+        {
+          "name": "unsignedTx1",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "signature1",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "unsignedTx2",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "signature2",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "hub",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "randomValue",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "versionPenalizer()",
+      "name": "versionPenalizer",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

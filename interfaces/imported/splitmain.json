@@ -1,0 +1,668 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "splitter"
+  ],
+  "name": "SplitMain",
+  "description": "SplitMain. Split recipients, ownerships, and keeper fees are stored onchain as calldata & re-passed as args / validated via hashing when needed. Each split gets its own address & proxy for maximum composability with other contracts onchain. For these proxies, we extended EIP-1167 Minimal Proxy Contract to avoid `DELEGATECALL` inside `receive()` to accept hard gas-capped `sends` & `transfers`. A composable and gas-efficient protocol for deploying splitter contracts.",
+  "eventDecorators": [
+    {
+      "signature": "CancelControlTransfer(address)",
+      "name": "CancelControlTransfer",
+      "description": "emitted after each canceled split control transfer. Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "split",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ControlTransfer(address,address,address)",
+      "name": "ControlTransfer",
+      "description": "emitted after each successful split control transfer. Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "split",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "previousController",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newController",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "CreateSplit(address)",
+      "name": "CreateSplit",
+      "description": "emitted after each successful split creation. Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "split",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "DistributeERC20(address,address,uint256,address)",
+      "name": "DistributeERC20",
+      "description": "emitted after each successful ERC20 balance split. Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "split",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "distributorAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "DistributeETH(address,uint256,address)",
+      "name": "DistributeETH",
+      "description": "emitted after each successful ETH balance split. Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "split",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "distributorAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "InitiateControlTransfer(address,address)",
+      "name": "InitiateControlTransfer",
+      "description": "emitted after each initiated split control transfer. Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "split",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newPotentialController",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "UpdateSplit(address)",
+      "name": "UpdateSplit",
+      "description": "emitted after each successful split update. Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "split",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Withdrawal(address,uint256,address[],uint256[])",
+      "name": "Withdrawal",
+      "description": "emitted after each successful withdrawal. Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "ethAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokens",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenAmounts",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "PERCENTAGE_SCALE()",
+      "name": "PERCENTAGE_SCALE",
+      "description": "constant to scale uints into percentages (1e6 == 100%).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "acceptControl(address)",
+      "name": "acceptControl",
+      "description": "Accepts transfer of the controlling address of mutable split `split`.",
+      "parameterDecorators": [
+        {
+          "name": "split",
+          "description": "Address of mutable split to accept control transfer for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cancelControlTransfer(address)",
+      "name": "cancelControlTransfer",
+      "description": "Cancels transfer of the controlling address of mutable split `split`.",
+      "parameterDecorators": [
+        {
+          "name": "split",
+          "description": "Address of mutable split to cancel control transfer for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createSplit(address[],uint32[],uint32,address)",
+      "name": "createSplit",
+      "description": "Creates a new split with recipients `accounts` with ownerships `percentAllocations`, a keeper fee for splitting of `distributorFee` and the controlling address `controller`.",
+      "parameterDecorators": [
+        {
+          "name": "accounts",
+          "description": "Ordered, unique list of addresses with ownership in the split.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "percentAllocations",
+          "description": "Percent allocations associated with each address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "distributorFee",
+          "description": "Keeper fee paid by split to cover gas costs of distribution.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "controller",
+          "description": "Controlling address (0x0 if immutable).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "split",
+          "description": "Address of newly created split.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "distributeERC20(address,address,address[],uint32[],uint32,address)",
+      "name": "distributeERC20",
+      "description": "Distributes the ERC20 `token` balance for split `split`. `accounts`, `percentAllocations`, and `distributorFee` are verified by hashing & comparing to the hash in storage associated with split `split`pernicious ERC20s may cause overflow in this function inside _scaleAmountByPercentage, but results do not affect ETH & other ERC20 balances.",
+      "parameterDecorators": [
+        {
+          "name": "split",
+          "description": "Address of split to distribute balance for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "token",
+          "description": "Address of ERC20 to distribute balance for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "accounts",
+          "description": "Ordered, unique list of addresses with ownership in the split.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "percentAllocations",
+          "description": "Percent allocations associated with each address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "distributorFee",
+          "description": "Keeper fee paid by split to cover gas costs of distribution.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "distributorAddress",
+          "description": "Address to pay `distributorFee` to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "distributeETH(address,address[],uint32[],uint32,address)",
+      "name": "distributeETH",
+      "description": "Distributes the ETH balance for split `split`. `accounts`, `percentAllocations`, and `distributorFee` are verified by hashing & comparing to the hash in storage associated with split `split`.",
+      "parameterDecorators": [
+        {
+          "name": "split",
+          "description": "Address of split to distribute balance for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "accounts",
+          "description": "Ordered, unique list of addresses with ownership in the split.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "percentAllocations",
+          "description": "Percent allocations associated with each address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "distributorFee",
+          "description": "Keeper fee paid by split to cover gas costs of distribution.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "distributorAddress",
+          "description": "Address to pay `distributorFee` to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getController(address)",
+      "name": "getController",
+      "description": "Returns the current controller of split `split`.",
+      "parameterDecorators": [
+        {
+          "name": "split",
+          "description": "Split to return controller for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Split's controller.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getERC20Balance(address,address)",
+      "name": "getERC20Balance",
+      "description": "Returns the ERC20 balance of token `token` for account `account`.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "Account to return ERC20 `token` balance for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "token",
+          "description": "Token to return balance for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Account's balance of `token`.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getETHBalance(address)",
+      "name": "getETHBalance",
+      "description": "Returns the current ETH balance of account `account`.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "Account to return ETH balance for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Account's balance of ETH.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getHash(address)",
+      "name": "getHash",
+      "description": "Returns the current hash of split `split`.",
+      "parameterDecorators": [
+        {
+          "name": "split",
+          "description": "Split to return hash for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Split's hash.",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getNewPotentialController(address)",
+      "name": "getNewPotentialController",
+      "description": "Returns the current newPotentialController of split `split`.",
+      "parameterDecorators": [
+        {
+          "name": "split",
+          "description": "Split to return newPotentialController for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Split's newPotentialController.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "makeSplitImmutable(address)",
+      "name": "makeSplitImmutable",
+      "description": "Turns mutable split `split` immutable.",
+      "parameterDecorators": [
+        {
+          "name": "split",
+          "description": "Address of mutable split to turn immutable.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "predictImmutableSplitAddress(address[],uint32[],uint32)",
+      "name": "predictImmutableSplitAddress",
+      "description": "Predicts the address for an immutable split created with recipients `accounts` with ownerships `percentAllocations` and a keeper fee for splitting of `distributorFee`.",
+      "parameterDecorators": [
+        {
+          "name": "accounts",
+          "description": "Ordered, unique list of addresses with ownership in the split.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "percentAllocations",
+          "description": "Percent allocations associated with each address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "distributorFee",
+          "description": "Keeper fee paid by split to cover gas costs of distribution.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "split",
+          "description": "Predicted address of such an immutable split.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferControl(address,address)",
+      "name": "transferControl",
+      "description": "Begins transfer of the controlling address of mutable split `split` to `newController`. Two-step control transfer inspired by [dharma](https://github.com/dharma-eng/dharma-smart-wallet/blob/master/contracts/helpers/TwoStepOwnable.sol).",
+      "parameterDecorators": [
+        {
+          "name": "split",
+          "description": "Address of mutable split to transfer control for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newController",
+          "description": "Address to begin transferring control to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateAndDistributeERC20(address,address,address[],uint32[],uint32,address)",
+      "name": "updateAndDistributeERC20",
+      "description": "Updates & distributes the ERC20 `token` balance for split `split`. only callable by SplitControllerpernicious ERC20s may cause overflow in this function inside _scaleAmountByPercentage, but results do not affect ETH & other ERC20 balances.",
+      "parameterDecorators": [
+        {
+          "name": "split",
+          "description": "Address of split to distribute balance for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "token",
+          "description": "Address of ERC20 to distribute balance for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "accounts",
+          "description": "Ordered, unique list of addresses with ownership in the split.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "percentAllocations",
+          "description": "Percent allocations associated with each address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "distributorFee",
+          "description": "Keeper fee paid by split to cover gas costs of distribution.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "distributorAddress",
+          "description": "Address to pay `distributorFee` to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateAndDistributeETH(address,address[],uint32[],uint32,address)",
+      "name": "updateAndDistributeETH",
+      "description": "Updates & distributes the ETH balance for split `split`. only callable by SplitController.",
+      "parameterDecorators": [
+        {
+          "name": "split",
+          "description": "Address of split to distribute balance for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "accounts",
+          "description": "Ordered, unique list of addresses with ownership in the split.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "percentAllocations",
+          "description": "Percent allocations associated with each address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "distributorFee",
+          "description": "Keeper fee paid by split to cover gas costs of distribution.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "distributorAddress",
+          "description": "Address to pay `distributorFee` to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateSplit(address,address[],uint32[],uint32)",
+      "name": "updateSplit",
+      "description": "Updates an existing split with recipients `accounts` with ownerships `percentAllocations` and a keeper fee for splitting of `distributorFee`.",
+      "parameterDecorators": [
+        {
+          "name": "split",
+          "description": "Address of mutable split to update.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "accounts",
+          "description": "Ordered, unique list of addresses with ownership in the split.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "percentAllocations",
+          "description": "Percent allocations associated with each address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "distributorFee",
+          "description": "Keeper fee paid by split to cover gas costs of distribution.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "walletImplementation()",
+      "name": "walletImplementation",
+      "description": "address of wallet implementation for split proxies.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw(address,uint256,address[])",
+      "name": "withdraw",
+      "description": "Withdraw ETH &/ ERC20 balances for account `account`.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "Address to withdraw on behalf of.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "withdrawETH",
+          "description": "Withdraw all ETH if nonzero.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokens",
+          "description": "Addresses of ERC20s to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

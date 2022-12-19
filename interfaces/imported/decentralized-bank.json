@@ -1,0 +1,1336 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "Bank",
+  "description": "Decentralized Bank. The main Bank contract for banking operations. You use this contract for banking operations.",
+  "eventDecorators": [
+    {
+      "signature": "ApproveOrRejectLoan(uint256,address,bool)",
+      "name": "ApproveOrRejectLoan",
+      "description": "Emitted when implementation is changed. Emitted when Manager approve or reject loan.",
+      "parameterDecorators": [
+        {
+          "name": "loanId",
+          "description": "Loan Id.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "userAddr",
+          "description": "User address.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "status",
+          "description": "Loan status, if `true` then loan approved else if `false` then loan rejected.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CancelLoanRequest(uint256,address)",
+      "name": "CancelLoanRequest",
+      "description": "Emitted when implementation is changed. Emitted when User cancel Loan request.",
+      "parameterDecorators": [
+        {
+          "name": "loanId",
+          "description": "Loan id.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "userAddr",
+          "description": "User address.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CreateAccount(address)",
+      "name": "CreateAccount",
+      "description": "Emitted when implementation is changed. Emitted when a new user is added.",
+      "parameterDecorators": [
+        {
+          "name": "userAddress",
+          "description": "User's address.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Deposit(address,uint256)",
+      "name": "Deposit",
+      "description": "Emitted when implementation is changed. Emitted when User deposits to his/her account.",
+      "parameterDecorators": [
+        {
+          "name": "userAddr",
+          "description": "User address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "Amount deposited.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DepositEthToBank(uint256)",
+      "name": "DepositEthToBank",
+      "description": "Emitted when implementation is changed. Emitted when Owner deposits Eth to the Bank.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "Deposit amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "FixedDeposit(uint256,address,uint256,uint256)",
+      "name": "FixedDeposit",
+      "description": "Emitted when implementation is changed. Emitted when User deposits an amount for a fixed duration.",
+      "parameterDecorators": [
+        {
+          "name": "fdId",
+          "description": "Fixed deposit Id.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "userAddr",
+          "description": "User address.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "Deposit amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tariffId",
+          "description": "Tariff Id for fixed deposit.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "IncreaseReserveBalance(uint256)",
+      "name": "IncreaseReserveBalance",
+      "description": "Emitted when implementation is changed. Emitted when Owner increases reserve balance.",
+      "parameterDecorators": [
+        {
+          "name": "reserveBalance",
+          "description": "New reserve balance amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LoanClosed(uint256,address)",
+      "name": "LoanClosed",
+      "description": "Emitted when implementation is changed. Emitted when Loan is closed.",
+      "parameterDecorators": [
+        {
+          "name": "loanId",
+          "description": "Loan Id.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "userAddr",
+          "description": "User address.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LoanDeadLineCrosssed(uint256,address)",
+      "name": "LoanDeadLineCrosssed",
+      "description": "Emitted when implementation is changed. Emitted when User failed to repay loan.",
+      "parameterDecorators": [
+        {
+          "name": "loanId",
+          "description": "Loan id.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "userAddr",
+          "description": "User address.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnerWithdraw(uint256)",
+      "name": "OwnerWithdraw",
+      "description": "Emitted when implementation is changed. Emitted when Owner withdraws profit.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "Withdraw amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emitted when implementation is changed.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "PausedNewDeposits()",
+      "name": "PausedNewDeposits",
+      "description": "Emitted when implementation is changed. Emitted when new deposits are freezed.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "PausedNewLoans()",
+      "name": "PausedNewLoans",
+      "description": "Emitted when implementation is changed. Emitted when new loans are freezed.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "RemoveFDDurationAndInterest(uint256)",
+      "name": "RemoveFDDurationAndInterest",
+      "description": "Emitted when implementation is changed. Emitted when Manager remove a fixed deposit duration and its interest rate.",
+      "parameterDecorators": [
+        {
+          "name": "tariffId",
+          "description": "Fixed deposit tariff Id.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RemoveLoanDurationAndInterest(uint256)",
+      "name": "RemoveLoanDurationAndInterest",
+      "description": "Emitted when implementation is changed. Emitted when Manager remove a loan duration and its interest rate.",
+      "parameterDecorators": [
+        {
+          "name": "tariffId",
+          "description": "Loan tariff Id.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RepayLoan(uint256,address,uint256)",
+      "name": "RepayLoan",
+      "description": "Emitted when implementation is changed. Emitted when User repays the loan.",
+      "parameterDecorators": [
+        {
+          "name": "loanId",
+          "description": "Loan id.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "userAddr",
+          "description": "User address.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "Repay amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RequestLoan(uint256,address,uint256,uint256)",
+      "name": "RequestLoan",
+      "description": "Emitted when implementation is changed. Emitted when User requests for a loan.",
+      "parameterDecorators": [
+        {
+          "name": "loanId",
+          "description": "Loan id.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "userAddr",
+          "description": "User address.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "Loan amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tariffId",
+          "description": "Tariff Id for Loan.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ResumedNewDeposits()",
+      "name": "ResumedNewDeposits",
+      "description": "Emitted when implementation is changed. Emitted when allows new deposits.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "ResumedNewLoans()",
+      "name": "ResumedNewLoans",
+      "description": "Emitted when implementation is changed. Emitted when new loans are available.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "SetFDDurationAndInterest(uint256,uint256,uint256)",
+      "name": "SetFDDurationAndInterest",
+      "description": "Emitted when implementation is changed. Emitted when Manager sets a Fixed deposit duration and its interest rate.",
+      "parameterDecorators": [
+        {
+          "name": "tariffId",
+          "description": "Fixed deposit tarrif Id.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "duration",
+          "description": "of Fixed deposit.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "interest",
+          "description": "Fixed deposit interest.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SetLoanDurationAndInterest(uint256,uint256,uint256)",
+      "name": "SetLoanDurationAndInterest",
+      "description": "Emitted when implementation is changed. Emitted when Manager sets a loan duration and its interest rate.",
+      "parameterDecorators": [
+        {
+          "name": "tariffId",
+          "description": "Loan tarrif Id.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "duration",
+          "description": "Loan duration.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "interest",
+          "description": "Loan interest.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SetManager(address)",
+      "name": "SetManager",
+      "description": "Emitted when implementation is changed. Emitted when Owner changes the manager.",
+      "parameterDecorators": [
+        {
+          "name": "managerAddrs",
+          "description": "Manager's address.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Withdraw(address,uint256)",
+      "name": "Withdraw",
+      "description": "Emitted when implementation is changed. Emitted when User withdraws from his/her account.",
+      "parameterDecorators": [
+        {
+          "name": "userAddr",
+          "description": "User address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "Amount withdrawn.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WithdrawFD(uint256,address,uint256)",
+      "name": "WithdrawFD",
+      "description": "Emitted when implementation is changed. Emitted when User withdraws his/her fixed deposit.",
+      "parameterDecorators": [
+        {
+          "name": "fdId",
+          "description": "Fixed deposit Id.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "userAddr",
+          "description": "User address.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "Amount withdrawn.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WithdrawFDBeforeMaturity(uint256,address,uint256)",
+      "name": "WithdrawFDBeforeMaturity",
+      "description": "Emitted when implementation is changed. Emitted when User withdraws his/her fixed deposit before maturity period.",
+      "parameterDecorators": [
+        {
+          "name": "fdId",
+          "description": "Fixed deposit Id.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "userAddr",
+          "description": "User address.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "Amount withdrawn.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "acceptDeposit()",
+      "name": "acceptDeposit",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "approveOrRejectLoan(uint256,bool)",
+      "name": "approveOrRejectLoan",
+      "description": "Approve or reject loan. Manager approve or reject loan.",
+      "parameterDecorators": [
+        {
+          "name": "_loanId",
+          "description": "Loan Id.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_approve",
+          "description": "`true` value indicates the approval and `false` indicates rejection.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cancelLoanRequest(uint256)",
+      "name": "cancelLoanRequest",
+      "description": "Cancel Loan Request. User cancels requested loan.",
+      "parameterDecorators": [
+        {
+          "name": "_cancelLoanId",
+          "description": "id of the loan to be cancelled.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "contractBalance()",
+      "name": "contractBalance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deadLineCrossed(uint256)",
+      "name": "deadLineCrossed",
+      "description": "Change Loan status to deadline crossed. Change Loan status to deadline crossed.",
+      "parameterDecorators": [
+        {
+          "name": "_loanId",
+          "description": "Loan Id of the loan.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deposit()",
+      "name": "deposit",
+      "description": "Send eth to deposit it in the account. User deposits to his/her account.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "depositEthToBank()",
+      "name": "depositEthToBank",
+      "description": "Deposits Eth to the Bank. Owner deposits Eth to the Bank.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "fdTariffIdToFdTfIdIndex(uint256)",
+      "name": "fdTariffIdToFdTfIdIndex",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "fdTariffIdToInfo(uint256)",
+      "name": "fdTariffIdToInfo",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "duration",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "interest",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "fdTfId(uint256)",
+      "name": "fdTfId",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "fixedDeposit(uint256)",
+      "name": "fixedDeposit",
+      "description": "Send fixed deposit amount in Eth and choose a tariff. User deposits an amount for a fixed duration.",
+      "parameterDecorators": [
+        {
+          "name": "_tariffId",
+          "description": "Tariff id for fixed deposit.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getAllUsers()",
+      "name": "getAllUsers",
+      "description": "Manager can get addresses of all Users. Manager can get addresses of all Users.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_userAddrs",
+          "description": "Addresses of all Users.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getFDDurationAndInterest(uint256,uint256)",
+      "name": "getFDDurationAndInterest",
+      "description": "Get all fixed deposit durations and their interest rates. Get all fixed deposit durations and their interest rates.",
+      "parameterDecorators": [
+        {
+          "name": "_cursor",
+          "description": "Starting value of the index that is to be fetched from fdTariffToInfo array.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_count",
+          "description": "Number of tariff that is to be fetched from fdTariffToInfo array. In order to fetch entire array, set count to zero or a number higher than the last index of the array.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_duration",
+          "description": "Fixed deposit duration.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_interest",
+          "description": "Interest rate for fixed deposit.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getLoanDurationAndInterest(uint256,uint256)",
+      "name": "getLoanDurationAndInterest",
+      "description": "Get all loan durations and their interest rates. Get all loan durations and their interest rates.",
+      "parameterDecorators": [
+        {
+          "name": "_cursor",
+          "description": "Starting value of the index that is to be fetched from lnTariffToInfo array.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_count",
+          "description": "Number of tariff that is to be fetched from lnTariffToInfo array. In order to fetch entire array, set count to zero or a number higher than the last index of the array.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_duration",
+          "description": "Loan duration.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_interest",
+          "description": "Loan interest.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUserDepositDetails()",
+      "name": "getUserDepositDetails",
+      "description": "Get the deposit details of an user. Get the deposit details of an user.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_balance",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_totalFdAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUserFdDetails(uint256,uint256)",
+      "name": "getUserFdDetails",
+      "description": "Get the fixed deposit details of an user. Get the fixed deposit details of an user.",
+      "parameterDecorators": [
+        {
+          "name": "_cursor",
+          "description": "Starting value of the index that is to be fetched from user's fdInfo array.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_count",
+          "description": "Number of fd status that is to be fetched from user's fdInfo array. In order to fetch entire array, set count to zero or a number higher than the last index of the array.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_fdIndexes",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_fdIds",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_amounts",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_durations",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_interests",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_endTimes",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUserLoanDetails(uint256,uint256)",
+      "name": "getUserLoanDetails",
+      "description": "Get the loan details of an user. Get the loan details of an user.",
+      "parameterDecorators": [
+        {
+          "name": "_cursor",
+          "description": "Starting value of the index that is to be fetched from user's loanInfo array.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_count",
+          "description": "Number of loan status that is to be fetched from user's loanInfo array. In order to fetch entire array, set count to zero or a number higher than the last index of the array.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_loanIndexes",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_loanIds",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_amounts",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_durations",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_interests",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_endTimes",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_loanStatus",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "increaseReserveBalance(uint256)",
+      "name": "increaseReserveBalance",
+      "description": "Owner can increase the reserve balance that is to be maintained in the contract. Owner increase the reserveBalance.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "Amount that is to be increased.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isOwner()",
+      "name": "isOwner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "true if `msg.sender` is the owner of the contract.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lnTariffIdToInfo(uint256)",
+      "name": "lnTariffIdToInfo",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "duration",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "interest",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lnTariffIdToLnTfIdIndex(uint256)",
+      "name": "lnTariffIdToLnTfIdIndex",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lnTfId(uint256)",
+      "name": "lnTfId",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "loanAvailable()",
+      "name": "loanAvailable",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "loanInterestAmountShare()",
+      "name": "loanInterestAmountShare",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "managerAddress()",
+      "name": "managerAddress",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the address of the owner.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ownerWithdraw(uint256)",
+      "name": "ownerWithdraw",
+      "description": "Owner can withdraws profit. Owner withdraws profit.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "Withdraw amount.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "pauseNewDeposits()",
+      "name": "pauseNewDeposits",
+      "description": "Prevent new deposits. Prevent new deposits.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "pauseNewLoans()",
+      "name": "pauseNewLoans",
+      "description": "Prevent new loans. Prevent new loans.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeFDDurationAndInterest(uint256)",
+      "name": "removeFDDurationAndInterest",
+      "description": "Owner can remove a fixed deposit duration and its interest rate. Owner remove a fixed deposit duration and its interest rate.",
+      "parameterDecorators": [
+        {
+          "name": "_tariffId",
+          "description": "Fixed deposit tariff.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeLoanDurationAndInterest(uint256)",
+      "name": "removeLoanDurationAndInterest",
+      "description": "Owner can remove a loan duration and its interest rate. Owner remove a loan duration and its interest rate.",
+      "parameterDecorators": [
+        {
+          "name": "_tariffId",
+          "description": "Loan tariff Id..",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Renouncing to ownership will leave the contract without an owner. It will not be possible to call the functions with the `onlyOwner` modifier anymore. Allows the current owner to relinquish control of the contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "repayLoan(uint256)",
+      "name": "repayLoan",
+      "description": "Repay loan partially or completely. User repays the loan.",
+      "parameterDecorators": [
+        {
+          "name": "_loanIndex",
+          "description": "Index of this Loan.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "requestLoan(uint256,uint256)",
+      "name": "requestLoan",
+      "description": "Request for a loan. User requests for a loan.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "Loan amount.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tariffId",
+          "description": "Tariff id for Loan.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "resumeNewDeposits()",
+      "name": "resumeNewDeposits",
+      "description": "Allow new deposits. Allow new deposits.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "resumeNewLoans()",
+      "name": "resumeNewLoans",
+      "description": "Allow new loans. Allow new loans.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setFDDurationAndInterest(uint256,uint256)",
+      "name": "setFDDurationAndInterest",
+      "description": "Owner sets fixed deposit duration and its interest rate. Owner sets fixed deposit duration and its interest rate.",
+      "parameterDecorators": [
+        {
+          "name": "_duration",
+          "description": "Fixed deposit duration.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_interest",
+          "description": "Interest rate for fixed deposit.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setLoanDurationAndInterest(uint256,uint256)",
+      "name": "setLoanDurationAndInterest",
+      "description": "Set a loan duration and its interest rate. Owner sets a loan duration and its interest rate.",
+      "parameterDecorators": [
+        {
+          "name": "_duration",
+          "description": "Loan duration.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_interest",
+          "description": "Loan interest.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setManager(address)",
+      "name": "setManager",
+      "description": "Owner can change the manager. Owner changes the manager.",
+      "parameterDecorators": [
+        {
+          "name": "_managerAddrs",
+          "description": "Manager's address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "totalFixedDeposit()",
+      "name": "totalFixedDeposit",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Allows the current owner to transfer control of the contract to a newOwner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "The address to transfer ownership to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "viewLoanRequests(uint256,uint256)",
+      "name": "viewLoanRequests",
+      "description": "View loan requests. Manager can view all loan requests waiting for approval.",
+      "parameterDecorators": [
+        {
+          "name": "_cursor",
+          "description": "Starting value of the index that is to be fetched from loanIdsOfPendingRequests array.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_count",
+          "description": "Number of loan requests that is to be fetched from the array. In order to fetch entire array, set count to zero or a number higher than the last index of the array.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_loanIds",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_userAddrs",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "_amounts",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_durations",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "_interests",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw(uint256)",
+      "name": "withdraw",
+      "description": "Withdraw an amount from account. User withdraw from his/her account.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "Withdrawal amount.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawFD(uint256)",
+      "name": "withdrawFD",
+      "description": "Withdraw fixed deposit. User withdraws his/her fixed deposit with interest.",
+      "parameterDecorators": [
+        {
+          "name": "_fdIndex",
+          "description": "Index of the Fixed deposit to be withdrawn.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawFDBeforeMaturity(uint256)",
+      "name": "withdrawFDBeforeMaturity",
+      "description": "Withdraw fixed deposit before maturity period. User withdraws his/her fixed deposit before maturity period with penality of 5 percent of the FD Interest.",
+      "parameterDecorators": [
+        {
+          "name": "_fdIndex",
+          "description": "Index of the Fixed deposit to be withdrawn.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

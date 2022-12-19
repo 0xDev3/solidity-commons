@@ -1,0 +1,932 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "PostageStamp",
+  "description": "PostageStamp contract. The postage stamp contracts allows users to create and manage postage stamp batches.",
+  "eventDecorators": [
+    {
+      "signature": "BatchCreated(bytes32,uint256,uint256,address,uint8,uint8,bool)",
+      "name": "BatchCreated",
+      "description": "Emitted when a new batch is created.",
+      "parameterDecorators": [
+        {
+          "name": "batchId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "totalAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "normalisedBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "depth",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "bucketDepth",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "immutableFlag",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BatchDepthIncrease(bytes32,uint8,uint256)",
+      "name": "BatchDepthIncrease",
+      "description": "Emitted when the depth of an existing batch increases.",
+      "parameterDecorators": [
+        {
+          "name": "batchId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newDepth",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "normalisedBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BatchTopUp(bytes32,uint256,uint256)",
+      "name": "BatchTopUp",
+      "description": "Emitted when an existing batch is topped up.",
+      "parameterDecorators": [
+        {
+          "name": "batchId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "topupAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "normalisedBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Paused(address)",
+      "name": "Paused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PriceUpdate(uint256)",
+      "name": "PriceUpdate",
+      "description": "Emitted on every price update.",
+      "parameterDecorators": [
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RoleAdminChanged(bytes32,bytes32,bytes32)",
+      "name": "RoleAdminChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "previousAdminRole",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newAdminRole",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RoleGranted(bytes32,address,address)",
+      "name": "RoleGranted",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RoleRevoked(bytes32,address,address)",
+      "name": "RoleRevoked",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Unpaused(address)",
+      "name": "Unpaused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "DEFAULT_ADMIN_ROLE()",
+      "name": "DEFAULT_ADMIN_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "DEPTH_ORACLE_ROLE()",
+      "name": "DEPTH_ORACLE_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "PAUSER_ROLE()",
+      "name": "PAUSER_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "PRICE_ORACLE_ROLE()",
+      "name": "PRICE_ORACLE_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "REDISTRIBUTOR_ROLE()",
+      "name": "REDISTRIBUTOR_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "batches(bytes32)",
+      "name": "batches",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "depth",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        },
+        {
+          "name": "immutableFlag",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "normalisedBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "bzzToken()",
+      "name": "bzzToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "copyBatch(address,uint256,uint8,uint8,bytes32,bool)",
+      "name": "copyBatch",
+      "description": "Create a new batch. At least `_initialBalancePerChunk*2^depth` number of tokens need to be preapproved for this contract.",
+      "parameterDecorators": [
+        {
+          "name": "_owner",
+          "description": "The owner of the new batch.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_initialBalancePerChunk",
+          "description": "The initial balance per chunk of the batch.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_depth",
+          "description": "The initial depth of the new batch.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_bucketDepth",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_batchId",
+          "description": "The batchId being copied (from previous version contract data).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_immutable",
+          "description": "Whether the batch is mutable.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createBatch(address,uint256,uint8,uint8,bytes32,bool)",
+      "name": "createBatch",
+      "description": "Create a new batch. At least `_initialBalancePerChunk*2^depth` number of tokens need to be preapproved for this contract.",
+      "parameterDecorators": [
+        {
+          "name": "_owner",
+          "description": "The owner of the new batch.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_initialBalancePerChunk",
+          "description": "The initial balance per chunk of the batch.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_depth",
+          "description": "The initial depth of the new batch.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_bucketDepth",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_nonce",
+          "description": "A random value used in the batch id derivation to allow multiple batches per owner.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_immutable",
+          "description": "Whether the batch is mutable.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "currentTotalOutPayment()",
+      "name": "currentTotalOutPayment",
+      "description": "Returns the current total outpayment.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "empty()",
+      "name": "empty",
+      "description": "Returns true if no batches.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "expire()",
+      "name": "expire",
+      "description": "Reclaims expired batches and adds their value to pot.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "expireLimited(uint256)",
+      "name": "expireLimited",
+      "description": "Reclaims a limited number of expired batches. Might be needed if reclaiming all expired batches would exceed the block gas limit.",
+      "parameterDecorators": [
+        {
+          "name": "limit",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "firstBatchId()",
+      "name": "firstBatchId",
+      "description": "Gets the first batch id. if more than one batch id, returns index at 0, if no batches, reverts.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoleAdmin(bytes32)",
+      "name": "getRoleAdmin",
+      "description": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "grantRole(bytes32,address)",
+      "name": "grantRole",
+      "description": "Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted} event. Requirements: - the caller must have ``role``'s admin role.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "RoleGranted(bytes32,address,address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "hasRole(bytes32,address)",
+      "name": "hasRole",
+      "description": "Returns `true` if `account` has been granted `role`.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "increaseDepth(bytes32,uint8)",
+      "name": "increaseDepth",
+      "description": "Increase the depth of an existing batch. Can only be called by the owner of the batch.",
+      "parameterDecorators": [
+        {
+          "name": "_batchId",
+          "description": "the id of the existing batch.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newDepth",
+          "description": "the new (larger than the previous one) depth for this batch.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lastExpiryBalance()",
+      "name": "lastExpiryBalance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastPrice()",
+      "name": "lastPrice",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastUpdatedBlock()",
+      "name": "lastUpdatedBlock",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minimumBatchDepth()",
+      "name": "minimumBatchDepth",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pause()",
+      "name": "pause",
+      "description": "Pause the contract. The contract is provably stopped by renouncing the pauser role and the admin role after pausing. can only be called by the pauser when not paused.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "paused()",
+      "name": "paused",
+      "description": "Returns true if the contract is paused, and false otherwise.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pot()",
+      "name": "pot",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "remainingBalance(bytes32)",
+      "name": "remainingBalance",
+      "description": "Returns the per chunk balance not used up yet.",
+      "parameterDecorators": [
+        {
+          "name": "_batchId",
+          "description": "the id of the existing batch.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceRole(bytes32,address)",
+      "name": "renounceRole",
+      "description": "Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "RoleRevoked(bytes32,address,address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "revokeRole(bytes32,address)",
+      "name": "revokeRole",
+      "description": "Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "RoleRevoked(bytes32,address,address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "setMinimumBatchDepth(uint8)",
+      "name": "setMinimumBatchDepth",
+      "description": "Set minimum batch depth.",
+      "parameterDecorators": [
+        {
+          "name": "min",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setPrice(uint256)",
+      "name": "setPrice",
+      "description": "set a new price. can only be called by the price oracle.",
+      "parameterDecorators": [
+        {
+          "name": "_price",
+          "description": "the new price.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "supportsInterface(bytes4)",
+      "name": "supportsInterface",
+      "description": "See {IERC165-supportsInterface}.",
+      "parameterDecorators": [
+        {
+          "name": "interfaceId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "topUp(bytes32,uint256)",
+      "name": "topUp",
+      "description": "Top up an existing batch. At least `topupAmount*2^depth` number of tokens need to be preapproved for this contract.",
+      "parameterDecorators": [
+        {
+          "name": "_batchId",
+          "description": "The id of the existing batch.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_topupAmountPerChunk",
+          "description": "The amount of additional tokens to add per chunk.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "topupPot(uint256)",
+      "name": "topupPot",
+      "description": "Topup the pot.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "totalOutPayment()",
+      "name": "totalOutPayment",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalPot()",
+      "name": "totalPot",
+      "description": "Returns the total lottery pot so far.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unPause()",
+      "name": "unPause",
+      "description": "Unpause the contract. can only be called by the pauser when paused.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "validChunkCount()",
+      "name": "validChunkCount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw(address)",
+      "name": "withdraw",
+      "description": "Withdraw the pot, authorised callers only.",
+      "parameterDecorators": [
+        {
+          "name": "beneficiary",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

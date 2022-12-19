@@ -1,0 +1,1039 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "locking"
+  ],
+  "name": "DelegationController",
+  "description": "Delegation Controller.",
+  "eventDecorators": [
+    {
+      "signature": "DelegationAccepted(uint256)",
+      "name": "DelegationAccepted",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "delegationId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DelegationProposed(uint256)",
+      "name": "DelegationProposed",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "delegationId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DelegationRequestCanceledByUser(uint256)",
+      "name": "DelegationRequestCanceledByUser",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "delegationId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RoleGranted(bytes32,address,address)",
+      "name": "RoleGranted",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RoleRevoked(bytes32,address,address)",
+      "name": "RoleRevoked",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "UndelegationRequested(uint256)",
+      "name": "UndelegationRequested",
+      "description": "Triggers on new deposit call.",
+      "parameterDecorators": [
+        {
+          "name": "delegationId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "DEFAULT_ADMIN_ROLE()",
+      "name": "DEFAULT_ADMIN_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "acceptPendingDelegation(uint256)",
+      "name": "acceptPendingDelegation",
+      "description": "Allows a validator to accept a proposed delegation. Successful acceptance of delegations transition the tokens from a PROPOSED state to ACCEPTED, and tokens are locked for the remainder of the delegation period. Emits a {DelegationAccepted} event. Requirements: - Validator must be recipient of proposal. - Delegation state must be PROPOSED.",
+      "parameterDecorators": [
+        {
+          "name": "delegationId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "DelegationAccepted(uint256)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "cancelPendingDelegation(uint256)",
+      "name": "cancelPendingDelegation",
+      "description": "Allows token holder to cancel a delegation proposal. Emits a {DelegationRequestCanceledByUser} event. Requirements: - `msg.sender` must be the token holder of the delegation proposal. - Delegation state must be PROPOSED.",
+      "parameterDecorators": [
+        {
+          "name": "delegationId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "DelegationRequestCanceledByUser(uint256)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "confiscate(uint256,uint256)",
+      "name": "confiscate",
+      "description": "Allows Punisher contract to slash an `amount` of stake from a validator. This slashes an amount of delegations of the validator, which reduces the amount that the validator has staked. This consequence may force the SKALE Manager to reduce the number of nodes a validator is operating so the validator can meet the Minimum Staking Requirement. Emits a {SlashingEvent}. See {Punisher}.",
+      "parameterDecorators": [
+        {
+          "name": "validatorId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "contractManager()",
+      "name": "contractManager",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "delegate(uint256,uint256,uint256,string)",
+      "name": "delegate",
+      "description": "Allows a token holder to create a delegation proposal of an `amount` and `delegationPeriod` to a `validatorId`. Delegation must be accepted by the validator before the UTC start of the month, otherwise the delegation will be rejected. The token holder may add additional information in each proposal. Emits a {DelegationProposed} event. Requirements: - Holder must have sufficient delegatable tokens. - Delegation must be above the validator's minimum delegation amount. - Delegation period must be allowed. - Validator must be authorized if trusted list is enabled. - Validator must be accepting new delegation requests.",
+      "parameterDecorators": [
+        {
+          "name": "validatorId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "delegationPeriod",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "info",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "DelegationProposed(uint256)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "delegations(uint256)",
+      "name": "delegations",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "validatorId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "delegationPeriod",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "created",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "started",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "finished",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "info",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "delegationsByHolder(address,uint256)",
+      "name": "delegationsByHolder",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "delegationsByValidator(uint256,uint256)",
+      "name": "delegationsByValidator",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAndUpdateDelegatedAmount(address)",
+      "name": "getAndUpdateDelegatedAmount",
+      "description": "Update and return the amount delegated.",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getAndUpdateDelegatedByHolderToValidatorNow(address,uint256)",
+      "name": "getAndUpdateDelegatedByHolderToValidatorNow",
+      "description": "Return and update the amount delegated to a validator for the current month.",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "validatorId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getAndUpdateDelegatedToValidatorNow(uint256)",
+      "name": "getAndUpdateDelegatedToValidatorNow",
+      "description": "Update and return a validator's delegations.",
+      "parameterDecorators": [
+        {
+          "name": "validatorId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getAndUpdateEffectiveDelegatedByHolderToValidator(address,uint256,uint256)",
+      "name": "getAndUpdateEffectiveDelegatedByHolderToValidator",
+      "description": "Update and return the effective amount delegated (minus slash) for the given month.",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "validatorId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "month",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "effectiveDelegated",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getAndUpdateEffectiveDelegatedToValidator(uint256,uint256)",
+      "name": "getAndUpdateEffectiveDelegatedToValidator",
+      "description": "Allows Distributor contract to return and update the effective amount delegated (minus slash) to a validator for a given month.",
+      "parameterDecorators": [
+        {
+          "name": "validatorId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "month",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getAndUpdateForbiddenForDelegationAmount(address)",
+      "name": "getAndUpdateForbiddenForDelegationAmount",
+      "description": "See {ILocker-getAndUpdateForbiddenForDelegationAmount}.",
+      "parameterDecorators": [
+        {
+          "name": "wallet",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getAndUpdateLockedAmount(address)",
+      "name": "getAndUpdateLockedAmount",
+      "description": "See {ILocker-getAndUpdateLockedAmount}.",
+      "parameterDecorators": [
+        {
+          "name": "wallet",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getDelegatedToValidator(uint256,uint256)",
+      "name": "getDelegatedToValidator",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "validatorId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "month",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getDelegation(uint256)",
+      "name": "getDelegation",
+      "description": "Return Delegation struct.",
+      "parameterDecorators": [
+        {
+          "name": "delegationId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "holder",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "validatorId",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "delegationPeriod",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "created",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "started",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "finished",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "info",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "string"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getDelegationsByHolderLength(address)",
+      "name": "getDelegationsByHolderLength",
+      "description": "Returns a holder's total number of delegations.",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getDelegationsByValidatorLength(uint256)",
+      "name": "getDelegationsByValidatorLength",
+      "description": "Returns a validator's total number of delegations.",
+      "parameterDecorators": [
+        {
+          "name": "validatorId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getEffectiveDelegatedToValidator(uint256,uint256)",
+      "name": "getEffectiveDelegatedToValidator",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "validatorId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "month",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getEffectiveDelegatedValuesByValidator(uint256)",
+      "name": "getEffectiveDelegatedValuesByValidator",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "validatorId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getFirstDelegationMonth(address,uint256)",
+      "name": "getFirstDelegationMonth",
+      "description": "Returns the first delegation month.",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "validatorId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getLockedInPendingDelegations(address)",
+      "name": "getLockedInPendingDelegations",
+      "description": "Returns the amount of tokens in PENDING delegation state.",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoleAdmin(bytes32)",
+      "name": "getRoleAdmin",
+      "description": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoleMember(bytes32,uint256)",
+      "name": "getRoleMember",
+      "description": "Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoleMemberCount(bytes32)",
+      "name": "getRoleMemberCount",
+      "description": "Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getState(uint256)",
+      "name": "getState",
+      "description": "Returns the token state of a given delegation.",
+      "parameterDecorators": [
+        {
+          "name": "delegationId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "state",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "grantRole(bytes32,address)",
+      "name": "grantRole",
+      "description": "Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted} event. Requirements: - the caller must have ``role``'s admin role.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "RoleGranted(bytes32,address,address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "hasRole(bytes32,address)",
+      "name": "hasRole",
+      "description": "Returns `true` if `account` has been granted `role`.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "hasUnprocessedSlashes(address)",
+      "name": "hasUnprocessedSlashes",
+      "description": "Checks whether there are any unprocessed slashes.",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "contractsAddress",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "processAllSlashes(address)",
+      "name": "processAllSlashes",
+      "description": "Process all slashes.",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "processSlashes(address,uint256)",
+      "name": "processSlashes",
+      "description": "Process slashes up to the given limit.",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "limit",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceRole(bytes32,address)",
+      "name": "renounceRole",
+      "description": "Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "RoleRevoked(bytes32,address,address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "requestUndelegation(uint256)",
+      "name": "requestUndelegation",
+      "description": "Allows delegator to undelegate a specific delegation. Emits UndelegationRequested event. Requirements: - `msg.sender` must be the delegator. - Delegation state must be DELEGATED.",
+      "parameterDecorators": [
+        {
+          "name": "delegationId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "revokeRole(bytes32,address)",
+      "name": "revokeRole",
+      "description": "Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "RoleRevoked(bytes32,address,address)"
+      ],
+      "readOnly": false
+    }
+  ]
+}

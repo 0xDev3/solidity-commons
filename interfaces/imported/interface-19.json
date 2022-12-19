@@ -1,0 +1,86 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens"
+  ],
+  "name": "SuccessTokenLongShortPairFinancialProductLibrary",
+  "description": "Success Token Long Short Pair Financial Product Library. Adds settlement logic to create success token LSPs. A success token pays out a fixed amount of collateral as a floor, with the remaining amount functioning like an embedded option. The embedded option in this case uses payout logic that resembles a covered call. I.e., the token expires to be worth basePercentage + (1 - basePercentage) * (expiryPrice - strikePrice).",
+  "eventDecorators": [],
+  "functionDecorators": [
+    {
+      "signature": "longShortPairParameters(address)",
+      "name": "longShortPairParameters",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "strikePrice",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "basePercentage",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "percentageLongCollateralAtExpiry(int256)",
+      "name": "percentageLongCollateralAtExpiry",
+      "description": "Returns a number between 0 and 1e18 to indicate how much collateral each long and short token are entitled to per collateralPerPair.",
+      "parameterDecorators": [
+        {
+          "name": "expiryPrice",
+          "description": "price from the optimistic oracle for the LSP price identifier.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "expiryPercentLong to indicate how much collateral should be sent between long and short tokens.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setLongShortPairParameters(address,uint256,uint256)",
+      "name": "setLongShortPairParameters",
+      "description": "Enables any address to set the strike price for an associated LSP. Note: a) Any address can set the initial strike price b) A strike price cannot be 0. c) A strike price can only be set once to prevent the deployer from changing the strike after the fact. d) For safety, a strike price should be set before depositing any synthetic tokens in a liquidity pool. e) longShortPair must expose an expirationTimestamp method to validate it is correctly deployed.",
+      "parameterDecorators": [
+        {
+          "name": "longShortPair",
+          "description": "address of the LSP.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "strikePrice",
+          "description": "the strike price for the covered call for the associated LSP.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "basePercentage",
+          "description": "the base percentage of collateral per pair paid out to long tokens, expressed with 1e18 decimals. E.g., a 50% base percentage should be expressed 500000000000000000, or 0.5 with 1e18 decimals. The base percentage cannot be set to 0.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

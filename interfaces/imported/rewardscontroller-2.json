@@ -1,0 +1,953 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "aave"
+  ],
+  "name": "RewardsController",
+  "description": "RewardsController. Abstract contract template to build Distributors contracts for ERC20 rewards to protocol participants.",
+  "eventDecorators": [
+    {
+      "signature": "AssetConfigUpdated(address,address,uint256,uint256)",
+      "name": "AssetConfigUpdated",
+      "description": "An event emitted when a vote has been cast on a proposal. This event will be emitted every time the implementation gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "asset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "reward",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "emission",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "distributionEnd",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AssetIndexUpdated(address,address,uint256)",
+      "name": "AssetIndexUpdated",
+      "description": "An event emitted when a vote has been cast on a proposal. This event will be emitted every time the implementation gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "asset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "reward",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ClaimerSet(address,address)",
+      "name": "ClaimerSet",
+      "description": "An event emitted when a vote has been cast on a proposal. This event will be emitted every time the implementation gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "claimer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RewardOracleUpdated(address,address)",
+      "name": "RewardOracleUpdated",
+      "description": "An event emitted when a vote has been cast on a proposal. This event will be emitted every time the implementation gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "reward",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "rewardOracle",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RewardsAccrued(address,address,uint256)",
+      "name": "RewardsAccrued",
+      "description": "An event emitted when a vote has been cast on a proposal. This event will be emitted every time the implementation gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "reward",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RewardsClaimed(address,address,address,address,uint256)",
+      "name": "RewardsClaimed",
+      "description": "An event emitted when a vote has been cast on a proposal. This event will be emitted every time the implementation gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "reward",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "claimer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TransferStrategyInstalled(address,address)",
+      "name": "TransferStrategyInstalled",
+      "description": "An event emitted when a vote has been cast on a proposal. This event will be emitted every time the implementation gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "reward",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "transferStrategy",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "UserIndexUpdated(address,address,address,uint256)",
+      "name": "UserIndexUpdated",
+      "description": "An event emitted when a vote has been cast on a proposal. This event will be emitted every time the implementation gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "asset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "reward",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "EMISSION_MANAGER()",
+      "name": "EMISSION_MANAGER",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "REVISION()",
+      "name": "REVISION",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claimAllRewards(address[],address)",
+      "name": "claimAllRewards",
+      "description": "Claims all rewards for an user to the desired address, on all the assets of the lending pool, accumulating the pending rewards.",
+      "parameterDecorators": [
+        {
+          "name": "assets",
+          "description": "List of assets to check eligible distributions before claiming rewards.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "Address that will be receiving the rewards.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "rewardsList",
+          "description": "List of addresses of the reward tokens and claimedAmounts, the list that contains the claimed amount per reward, following same order as \"rewardList\".",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "claimedAmounts",
+          "description": "List that contains the claimed amount per reward, following same order as \"rewardList\"*.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimAllRewardsOnBehalf(address[],address,address)",
+      "name": "claimAllRewardsOnBehalf",
+      "description": "Claims all rewards for an user on behalf, on all the assets of the lending pool, accumulating the pending rewards. The caller must be whitelisted via \"allowClaimOnBehalf\" function by the RewardsAdmin role manager.",
+      "parameterDecorators": [
+        {
+          "name": "assets",
+          "description": "List of assets to check eligible distributions before claiming rewards.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "user",
+          "description": "Address to check and claim rewards.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "Address that will be receiving the rewards.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "rewardsList",
+          "description": "List of addresses of the reward tokens and claimedAmounts, the list that contains the claimed amount per reward, following same order as \"rewardList\".",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "claimedAmounts",
+          "description": "List that contains the claimed amount per reward, following same order as \"rewardsList\"*.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimAllRewardsToSelf(address[])",
+      "name": "claimAllRewardsToSelf",
+      "description": "Claims all reward for msg.sender, on all the assets of the lending pool, accumulating the pending rewards.",
+      "parameterDecorators": [
+        {
+          "name": "assets",
+          "description": "List of assets to check eligible distributions before claiming rewards.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "rewardsList",
+          "description": "List of addresses of the reward tokens and claimedAmounts, the list that contains the claimed amount per reward, following same order as \"rewardList\".",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "claimedAmounts",
+          "description": "List that contains the claimed amount per reward, following same order as \"rewardsList\"*.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimRewards(address[],uint256,address,address)",
+      "name": "claimRewards",
+      "description": "Claims reward for an user to the desired address, on all the assets of the lending pool, accumulating the pending rewards.",
+      "parameterDecorators": [
+        {
+          "name": "assets",
+          "description": "List of assets to check eligible distributions before claiming rewards.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "Amount of rewards to claim.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "Address that will be receiving the rewards.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "reward",
+          "description": "Address of the reward token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Rewards claimed*.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimRewardsOnBehalf(address[],uint256,address,address,address)",
+      "name": "claimRewardsOnBehalf",
+      "description": "Claims reward for an user on behalf, on all the assets of the lending pool, accumulating the pending rewards. The caller must be whitelisted via \"allowClaimOnBehalf\" function by the RewardsAdmin role manager.",
+      "parameterDecorators": [
+        {
+          "name": "assets",
+          "description": "List of assets to check eligible distributions before claiming rewards.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "Amount of rewards to claim.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "user",
+          "description": "Address to check and claim rewards.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "Address that will be receiving the rewards.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "reward",
+          "description": "Address of the reward token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Rewards claimed*.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimRewardsToSelf(address[],uint256,address)",
+      "name": "claimRewardsToSelf",
+      "description": "Claims reward for msg.sender, on all the assets of the lending pool, accumulating the pending rewards.",
+      "parameterDecorators": [
+        {
+          "name": "assets",
+          "description": "List of assets to check eligible distributions before claiming rewards.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "Amount of rewards to claim.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "reward",
+          "description": "Address of the reward token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Rewards claimed*.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "configureAssets(tuple(uint88,uint256,uint32,address,address,address,address)[])",
+      "name": "configureAssets",
+      "description": "Configure assets to incentivize with an emission of rewards per second until the end of distribution.",
+      "parameterDecorators": [
+        {
+          "name": "config",
+          "description": "The assets configuration input, the list of structs contains the following fields: uint104 emissionPerSecond: The emission per second following rewards unit decimals. uint256 totalSupply: The total supply of the asset to incentivize uint40 distributionEnd: The end of the distribution of the incentives for an asset address asset: The asset address to incentivize address reward: The reward token address ITransferStrategy transferStrategy: The TransferStrategy address with the install hook and claim logic. IEACAggregatorProxy rewardOracle: The Price Oracle of a reward to visualize the incentives at the UI Frontend. Must follow Chainlink Aggregator IEACAggregatorProxy interface to be compatible.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "emissionPerSecond",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "totalSupply",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "distributionEnd",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "asset",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "reward",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "transferStrategy",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "rewardOracle",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getAllUserRewardsBalance(address[],address)",
+      "name": "getAllUserRewardsBalance",
+      "description": "Returns a list all rewards of an user, including already accrued and unrealized claimable rewards.",
+      "parameterDecorators": [
+        {
+          "name": "assets",
+          "description": "List of incentivized assets to check eligible distributions.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "user",
+          "description": "The address of the user.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "rewardsList",
+          "description": "The function returns a Tuple of rewards list and the unclaimed rewards list*.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "unclaimedAmounts",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAssetDecimals(address)",
+      "name": "getAssetDecimals",
+      "description": "Returns the decimals of an asset to calculate the distribution delta.",
+      "parameterDecorators": [
+        {
+          "name": "asset",
+          "description": "The address to retrieve decimals saved at storage.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The decimals of an underlying asset.",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getClaimer(address)",
+      "name": "getClaimer",
+      "description": "Returns the whitelisted claimer for a certain address (0x0 if not set).",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "The address of the user.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The claimer address.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getDistributionEnd(address,address)",
+      "name": "getDistributionEnd",
+      "description": "Gets the end date for the distribution.",
+      "parameterDecorators": [
+        {
+          "name": "asset",
+          "description": "The incentivized asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "reward",
+          "description": "The reward token of the incentivized asset.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The timestamp with the end of the distribution, in unix time format*.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRewardOracle(address)",
+      "name": "getRewardOracle",
+      "description": "Get the price aggregator oracle address.",
+      "parameterDecorators": [
+        {
+          "name": "reward",
+          "description": "The address of the reward.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The price oracle of the reward.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRewardsByAsset(address)",
+      "name": "getRewardsByAsset",
+      "description": "Returns the list of available reward token addresses of an incentivized asset.",
+      "parameterDecorators": [
+        {
+          "name": "asset",
+          "description": "The incentivized asset.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "List of rewards addresses of the input asset*.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRewardsData(address,address)",
+      "name": "getRewardsData",
+      "description": "Returns the configuration of the distribution for a certain asset.",
+      "parameterDecorators": [
+        {
+          "name": "asset",
+          "description": "The incentivized asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "reward",
+          "description": "The reward token of the incentivized asset.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param3",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRewardsList()",
+      "name": "getRewardsList",
+      "description": "Returns the list of available reward addresses.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "List of rewards supported in this contract*.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTransferStrategy(address)",
+      "name": "getTransferStrategy",
+      "description": "Returns the Transfer Strategy implementation contract address being used for a reward address.",
+      "parameterDecorators": [
+        {
+          "name": "reward",
+          "description": "The address of the reward.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The address of the TransferStrategy contract.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUserAssetData(address,address,address)",
+      "name": "getUserAssetData",
+      "description": "Returns the index of an user on a reward distribution.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "Address of the user.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "asset",
+          "description": "The incentivized asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "reward",
+          "description": "The reward token of the incentivized asset.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The current user asset index in storage, not including new distributions*.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUserRewardsBalance(address[],address,address)",
+      "name": "getUserRewardsBalance",
+      "description": "Returns a single rewards balance of an user, including virtually accrued and unrealized claimable rewards.",
+      "parameterDecorators": [
+        {
+          "name": "assets",
+          "description": "List of incentivized assets to check eligible distributions.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "user",
+          "description": "The address of the user.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "reward",
+          "description": "The address of the reward token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The rewards amount*.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUserUnclaimedRewardsFromStorage(address,address)",
+      "name": "getUserUnclaimedRewardsFromStorage",
+      "description": "Returns a single rewards balance of an user from contract storage state, not including virtually accrued rewards since last distribution.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "The address of the user.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "reward",
+          "description": "The address of the reward token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Unclaimed rewards, from storage*.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "handleAction(address,uint256,uint256)",
+      "name": "handleAction",
+      "description": "Called by the corresponding asset on any update that affects the rewards distribution.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "The address of the user.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "totalSupply",
+          "description": "The total supply of the asset*.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "userBalance",
+          "description": "The user balance of the asset.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialize()",
+      "name": "initialize",
+      "description": "Empty initialize for RewardsController*.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setClaimer(address,address)",
+      "name": "setClaimer",
+      "description": "Whitelists an address to claim the rewards on behalf of another address.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "The address of the user.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "user",
+          "description": "The address of the user.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDistributionEnd(address,address,uint32)",
+      "name": "setDistributionEnd",
+      "description": "Sets the end date for the distribution.",
+      "parameterDecorators": [
+        {
+          "name": "asset",
+          "description": "The asset to incentivize.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "reward",
+          "description": "The reward token that incentives the asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "distributionEnd",
+          "description": "The end date of the incentivization, in unix time format*.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRewardOracle(address,address)",
+      "name": "setRewardOracle",
+      "description": "At the moment of reward configuration, the Incentives Controller performs a check to see if the reward asset oracle is compatible with IEACAggregator proxy. This check is enforced for integrators to be able to show incentives at the current Aave UI without the need to setup an external price registry. Sets an Aave Oracle contract to enforce rewards with a source of value.",
+      "parameterDecorators": [
+        {
+          "name": "reward",
+          "description": "The address of the reward to set the price aggregator.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "rewardOracle",
+          "description": "The address of price aggregator that follows IEACAggregatorProxy interface.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setTransferStrategy(address,address)",
+      "name": "setTransferStrategy",
+      "description": "Sets a TransferStrategy logic contract that determines the logic of the rewards transfer.",
+      "parameterDecorators": [
+        {
+          "name": "reward",
+          "description": "The address of the reward token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "transferStrategy",
+          "description": "The address of the TransferStrategy logic contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

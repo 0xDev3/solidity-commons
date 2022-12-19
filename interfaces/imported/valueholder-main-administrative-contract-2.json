@@ -1,0 +1,1229 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens"
+  ],
+  "name": "ValueHolder",
+  "description": "ValueHolder main administrative contract. Main contract controlling the Mint/Burn/Rebase operations of a token. Retrieves values from a multiple external/internal (Uni) pools in denominated [DAI] tokens.",
+  "eventDecorators": [
+    {
+      "signature": "LogBurnGiven(uint256)",
+      "name": "LogBurnGiven",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "toTokenAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogChiToppedUpdated(uint256)",
+      "name": "LogChiToppedUpdated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "spendAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogFeeTaken(uint256)",
+      "name": "LogFeeTaken",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "feeAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogFeeUpdated(uint256)",
+      "name": "LogFeeUpdated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "newFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogMintTaken(uint256)",
+      "name": "LogMintTaken",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "fromTokenAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogPerformanceFeeUpdated(uint256)",
+      "name": "LogPerformanceFeeUpdated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "newFee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogSFTokenUpdated(address)",
+      "name": "LogSFTokenUpdated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "_NewSFToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogValueManagerUpdated(address)",
+      "name": "LogValueManagerUpdated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "Manager",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogVotedExtPoolUpdated(address,uint8)",
+      "name": "LogVotedExtPoolUpdated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "pool",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "poolType",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogVotedUniPoolUpdated(address)",
+      "name": "LogVotedUniPoolUpdated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "pool",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogVoterUpdated(address)",
+      "name": "LogVoterUpdated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "Voter",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogXChangerUpdated(address)",
+      "name": "LogXChangerUpdated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "_NewXChanger",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "SFToken()",
+      "name": "SFToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ValueManager()",
+      "name": "ValueManager",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "Voter()",
+      "name": "Voter",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addExt(address)",
+      "name": "addExt",
+      "description": "add new External pool - only by Voter.",
+      "parameterDecorators": [
+        {
+          "name": "pool",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addUni(address)",
+      "name": "addUni",
+      "description": "add new Uni pool - only by Voter.",
+      "parameterDecorators": [
+        {
+          "name": "pool",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "burn(address,uint256)",
+      "name": "burn",
+      "description": "Main method to burn S/F tokens and get back the requested amount from denominated token [DAI] to user NB: flashloan attacks shold be discouraged NB: considering to split it into 2 separate transactions, to disregard the flashloan use.",
+      "parameterDecorators": [
+        {
+          "name": "toToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "toBurn",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "delExt(uint256)",
+      "name": "delExt",
+      "description": "remove External pool - only by Voter.",
+      "parameterDecorators": [
+        {
+          "name": "i",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "delUni(uint256)",
+      "name": "delUni",
+      "description": "remove a Uni pool - only by Voter.",
+      "parameterDecorators": [
+        {
+          "name": "i",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "denominateTo()",
+      "name": "denominateTo",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "extLen()",
+      "name": "extLen",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "externalPools(uint256)",
+      "name": "externalPools",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getDenominatedValue(address)",
+      "name": "getDenominatedValue",
+      "description": "method to return the denominated [DAI] uni pool value owned by the user.",
+      "parameterDecorators": [
+        {
+          "name": "uniPool",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "myreserve0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "myreserve1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getExternalValue()",
+      "name": "getExternalValue",
+      "description": "method to return the external pool total value.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "totalReserve",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTotalValue()",
+      "name": "getTotalValue",
+      "description": "method to return total value of the fund from all the external and internal (uni) pools plus the own balance if there is one.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "totalReserve",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUniReserve(address)",
+      "name": "getUniReserve",
+      "description": "method to return the amount of tokens in the uni LP pool owned by the holder.",
+      "parameterDecorators": [
+        {
+          "name": "uniPool",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "myreserve0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "myreserve1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "harvest()",
+      "name": "harvest",
+      "description": "method for Value Manager to claim vaue from external (CompMiner) pool by collecting COMP, converting to [DAI] and then adding back to the same pool ().",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "harvestAddValueAt(address)",
+      "name": "harvestAddValueAt",
+      "description": "method for Value Manager to add harvested value back to the pool for compounding.",
+      "parameterDecorators": [
+        {
+          "name": "pool",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "harvestAt(address)",
+      "name": "harvestAt",
+      "description": "method for Value Manager to claim vaue from selected external (CompMiner) pool by collecting COMP, converting to [DAI].",
+      "parameterDecorators": [
+        {
+          "name": "pool",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "init(address,uint8,address,address)",
+      "name": "init",
+      "description": "initializer method instead of a constructor - to be used behind a proxy.",
+      "parameterDecorators": [
+        {
+          "name": "_votePool",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_votePoolType",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_sfToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_Xchanger",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isOwner()",
+      "name": "isOwner",
+      "description": "Returns true if the caller is the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastblock(address)",
+      "name": "lastblock",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "mint(address,uint256)",
+      "name": "mint",
+      "description": "Generic Mint to the Voted Pool.",
+      "parameterDecorators": [
+        {
+          "name": "fromToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "toMint",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "mint(address,uint8,address,uint256)",
+      "name": "mint",
+      "description": "Main mint S/F token method takes any token, converts it as required and puts it into a default (Voted) pool resulting additional value is minted as S/F tokens (denominated in [DAI]) some Chi may be taken from the input value to make the transaction cheaper and leave some Chi for future transactions.",
+      "parameterDecorators": [
+        {
+          "name": "_pool",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_poolType",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fromToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "toMint",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "mintQuote(address,uint256)",
+      "name": "mintQuote",
+      "description": "Method to tell us roughly how much resulting S/F token will be minted from the token given TODO: implement UNI pools.",
+      "parameterDecorators": [
+        {
+          "name": "fromToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "returnAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pickPoolToExtract(uint256)",
+      "name": "pickPoolToExtract",
+      "description": "Method to pick a suitable Uni/External pool to extract the required value for burning.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "pool",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "poolType",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "quote(address,address,uint256)",
+      "name": "quote",
+      "description": "get a price of one token amount in another.",
+      "parameterDecorators": [
+        {
+          "name": "fromToken",
+          "description": "- token we want to change/spend.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "toToken",
+          "description": "- token we want to receive/spend to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "- of the fromToken.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "returnAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "reInit(address,uint8,address,address)",
+      "name": "reInit",
+      "description": "re-initializer might be helpful for the cases where proxy's storage is corrupted by an old contact, but we cannot run init as we have the owner address already. This method might help fixing the storage state.",
+      "parameterDecorators": [
+        {
+          "name": "_extPool",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_votePoolType",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_sfToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_Xchanger",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rebase()",
+      "name": "rebase",
+      "description": "ValueManager can run onchain rebase any time as required.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rebase(uint256)",
+      "name": "rebase",
+      "description": "ValueManager can run an arbitrary rebase too - to save on gas as this TX is much cheaper This is really a workaround that should be disregarded by the community.",
+      "parameterDecorators": [
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "retrieveToken(address)",
+      "name": "retrieveToken",
+      "description": "Value Manager can only access the tokens at this contract. Normally it is not used in the workflow.",
+      "parameterDecorators": [
+        {
+          "name": "TokenAddress",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "reverseQuote(address,address,uint256)",
+      "name": "reverseQuote",
+      "description": "get a reverse price of one token amount in another the opposite of above 'quote' method when we need to understand how much we need to spend actually.",
+      "parameterDecorators": [
+        {
+          "name": "fromToken",
+          "description": "- token we want to change/spend.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "toToken",
+          "description": "- token we want to receive/spend to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "returnAmount",
+          "description": "- of the toToken.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "inputAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setExtLen(uint256)",
+      "name": "setExtLen",
+      "description": "to fix the length on the Ext pool array might be not needed but good for testing/fixing storage state.",
+      "parameterDecorators": [
+        {
+          "name": "i",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setSFToken(address)",
+      "name": "setSFToken",
+      "description": "set a new S/F ERC20 token address - only if we need to.",
+      "parameterDecorators": [
+        {
+          "name": "_NewSFToken",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setUniLen(uint256)",
+      "name": "setUniLen",
+      "description": "to fix the length on the Uni pool array might be not needed but good for testing/fixing storage state.",
+      "parameterDecorators": [
+        {
+          "name": "i",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setValueManager(address)",
+      "name": "setValueManager",
+      "description": "set new Value Manager address.",
+      "parameterDecorators": [
+        {
+          "name": "_ValueManager",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setVotedChi(uint256)",
+      "name": "setVotedChi",
+      "description": "set new Chi amount to hold in the contract to save gas for mint/burn TXs.",
+      "parameterDecorators": [
+        {
+          "name": "_votedChi",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setVotedFee(uint256)",
+      "name": "setVotedFee",
+      "description": "set new fee amount - used upon exit. value 200 = 2% fee.",
+      "parameterDecorators": [
+        {
+          "name": "_votedFee",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setVotedPool(address,uint8)",
+      "name": "setVotedPool",
+      "description": "set new Voted (default) pool for adding value.",
+      "parameterDecorators": [
+        {
+          "name": "pool",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "poolType",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setVoter(address)",
+      "name": "setVoter",
+      "description": "set new Voter address.",
+      "parameterDecorators": [
+        {
+          "name": "_Voter",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setVvotedPerformanceFee(uint256)",
+      "name": "setVvotedPerformanceFee",
+      "description": "set new fee amount - used upon exit. value 200 = 2% fee.",
+      "parameterDecorators": [
+        {
+          "name": "_votedPerformanceFee",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setXChangerImpl(address)",
+      "name": "setXChangerImpl",
+      "description": "set new XChanger/XTrinity address.",
+      "parameterDecorators": [
+        {
+          "name": "_Xchanger",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swap(address,address,uint256,bool)",
+      "name": "swap",
+      "description": "swap one token to another given the amount we want to spend.",
+      "parameterDecorators": [
+        {
+          "name": "fromToken",
+          "description": "- token we want to change/spend.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "toToken",
+          "description": "- token we want to receive/spend to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "- of the fromToken we are spending.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "slipProtect",
+          "description": "- flag to ensure the transaction will be performed if the received amount is not less than expected within the given slip %% range (like 1%).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "returnAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "topUpChi(address,uint256)",
+      "name": "topUpChi",
+      "description": "Check if we have enough CHi token in the contract and obtain some by minting or using exchanges TODO: check if msg.sender can give us some too.",
+      "parameterDecorators": [
+        {
+          "name": "Token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountAvailable",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "spendAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "uniLen()",
+      "name": "uniLen",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "uniPools(uint256)",
+      "name": "uniPools",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "votedChi()",
+      "name": "votedChi",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "votedFee()",
+      "name": "votedFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "votedPerformanceFee()",
+      "name": "votedPerformanceFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "votedPool()",
+      "name": "votedPool",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "votedPoolType()",
+      "name": "votedPoolType",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "xchanger()",
+      "name": "xchanger",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

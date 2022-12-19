@@ -1,0 +1,1055 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "swaps",
+    "uniswap"
+  ],
+  "name": "UniswapAnchoredView",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "AnchorPriceUpdated(bytes32,uint256,uint256,uint256)",
+      "name": "AnchorPriceUpdated",
+      "description": "The event emitted when anchor price is updated.",
+      "parameterDecorators": [
+        {
+          "name": "symbolHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "anchorPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "oldTimestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newTimestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "FailoverActivated(bytes32)",
+      "name": "FailoverActivated",
+      "description": "The event emitted when failover is activated.",
+      "parameterDecorators": [
+        {
+          "name": "symbolHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "FailoverDeactivated(bytes32)",
+      "name": "FailoverDeactivated",
+      "description": "The event emitted when failover is deactivated.",
+      "parameterDecorators": [
+        {
+          "name": "symbolHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferRequested(address,address)",
+      "name": "OwnershipTransferRequested",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "PriceGuarded(bytes32,uint256,uint256)",
+      "name": "PriceGuarded",
+      "description": "The event emitted when new prices are posted but the stored price is not updated due to the anchor.",
+      "parameterDecorators": [
+        {
+          "name": "symbolHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "reporter",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "anchor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PriceUpdated(bytes32,uint256)",
+      "name": "PriceUpdated",
+      "description": "The event emitted when the stored price is updated.",
+      "parameterDecorators": [
+        {
+          "name": "symbolHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UniswapWindowUpdated(bytes32,uint256,uint256,uint256,uint256)",
+      "name": "UniswapWindowUpdated",
+      "description": "The event emitted when the uniswap window changes.",
+      "parameterDecorators": [
+        {
+          "name": "symbolHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "oldTimestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newTimestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "oldPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "acceptOwnership()",
+      "name": "acceptOwnership",
+      "description": "Allows an ownership transfer to be completed by the recipient.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "activateFailover(bytes32)",
+      "name": "activateFailover",
+      "description": "Activate failover, and fall back to using failover directly. Only the owner can call this function.",
+      "parameterDecorators": [
+        {
+          "name": "symbolHash",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "anchorPeriod()",
+      "name": "anchorPeriod",
+      "description": "The minimum amount of time in seconds required for the old uniswap price accumulator to be replaced.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deactivateFailover(bytes32)",
+      "name": "deactivateFailover",
+      "description": "Deactivate a previously activated failover. Only the owner can call this function.",
+      "parameterDecorators": [
+        {
+          "name": "symbolHash",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "ethBaseUnit()",
+      "name": "ethBaseUnit",
+      "description": "The number of wei in 1 ETH.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "expScale()",
+      "name": "expScale",
+      "description": "A common scaling factor to maintain precision.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokenConfig(uint256)",
+      "name": "getTokenConfig",
+      "description": "Get the i-th config, according to the order they were passed in originally.",
+      "parameterDecorators": [
+        {
+          "name": "i",
+          "description": "The index of the config to get.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The config object.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "cToken",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "underlying",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "symbolHash",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bytes32"
+            },
+            {
+              "name": "baseUnit",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "priceSource",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8"
+            },
+            {
+              "name": "fixedPrice",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "uniswapMarket",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "reporter",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "reporterMultiplier",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "isUniswapReversed",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bool"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokenConfigByCToken(address)",
+      "name": "getTokenConfigByCToken",
+      "description": "Get the config for the cToken. If a config for the cToken is not found, falls back to searching for the underlying.",
+      "parameterDecorators": [
+        {
+          "name": "cToken",
+          "description": "The address of the cToken of the config to get.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The config object.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "cToken",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "underlying",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "symbolHash",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bytes32"
+            },
+            {
+              "name": "baseUnit",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "priceSource",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8"
+            },
+            {
+              "name": "fixedPrice",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "uniswapMarket",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "reporter",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "reporterMultiplier",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "isUniswapReversed",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bool"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokenConfigByReporter(address)",
+      "name": "getTokenConfigByReporter",
+      "description": "Get the config for the reporter.",
+      "parameterDecorators": [
+        {
+          "name": "reporter",
+          "description": "The address of the reporter of the config to get.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The config object.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "cToken",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "underlying",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "symbolHash",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bytes32"
+            },
+            {
+              "name": "baseUnit",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "priceSource",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8"
+            },
+            {
+              "name": "fixedPrice",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "uniswapMarket",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "reporter",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "reporterMultiplier",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "isUniswapReversed",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bool"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokenConfigBySymbol(string)",
+      "name": "getTokenConfigBySymbol",
+      "description": "Get the config for symbol.",
+      "parameterDecorators": [
+        {
+          "name": "symbol",
+          "description": "The symbol of the config to get.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The config object.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "cToken",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "underlying",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "symbolHash",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bytes32"
+            },
+            {
+              "name": "baseUnit",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "priceSource",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8"
+            },
+            {
+              "name": "fixedPrice",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "uniswapMarket",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "reporter",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "reporterMultiplier",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "isUniswapReversed",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bool"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokenConfigBySymbolHash(bytes32)",
+      "name": "getTokenConfigBySymbolHash",
+      "description": "Get the config for the symbolHash.",
+      "parameterDecorators": [
+        {
+          "name": "symbolHash",
+          "description": "The keccack256 of the symbol of the config to get.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The config object.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "cToken",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "underlying",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "symbolHash",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bytes32"
+            },
+            {
+              "name": "baseUnit",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "priceSource",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8"
+            },
+            {
+              "name": "fixedPrice",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "uniswapMarket",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "reporter",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "reporterMultiplier",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "isUniswapReversed",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bool"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokenConfigByUnderlying(address)",
+      "name": "getTokenConfigByUnderlying",
+      "description": "Get the config for an underlying asset.",
+      "parameterDecorators": [
+        {
+          "name": "underlying",
+          "description": "The address of the underlying asset of the config to get.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The config object.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "cToken",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "underlying",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "symbolHash",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bytes32"
+            },
+            {
+              "name": "baseUnit",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "priceSource",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8"
+            },
+            {
+              "name": "fixedPrice",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "uniswapMarket",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "reporter",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "reporterMultiplier",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "isUniswapReversed",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bool"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUnderlyingPrice(address)",
+      "name": "getUnderlyingPrice",
+      "description": "Get the underlying price of a cToken. Implements the PriceOracle interface for Compound v2.",
+      "parameterDecorators": [
+        {
+          "name": "cToken",
+          "description": "The cToken address for price retrieval.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Price denominated in USD, with 18 decimals, for the given cToken address.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lowerBoundAnchorRatio()",
+      "name": "lowerBoundAnchorRatio",
+      "description": "The lowest ratio of the new price to the anchor price that will still trigger the price to be updated.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxTokens()",
+      "name": "maxTokens",
+      "description": "The max number of tokens this contract is hardcoded to support.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "newObservations(bytes32)",
+      "name": "newObservations",
+      "description": "The new observation for each symbolHash.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "timestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "acc",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "numTokens()",
+      "name": "numTokens",
+      "description": "The number of tokens this contract actually supports.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "oldObservations(bytes32)",
+      "name": "oldObservations",
+      "description": "The old observation for each symbolHash.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "timestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "acc",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Get the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pokeFailedOverPrice(bytes32)",
+      "name": "pokeFailedOverPrice",
+      "description": "In the event that a feed is failed over to Uniswap TWAP, this function can be called by anyone to update the TWAP price. This only works if the feed represented by the symbolHash is failed over, and will revert otherwise.",
+      "parameterDecorators": [
+        {
+          "name": "symbolHash",
+          "description": "bytes32.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "price(string)",
+      "name": "price",
+      "description": "Get the official price for a symbol.",
+      "parameterDecorators": [
+        {
+          "name": "symbol",
+          "description": "The symbol to fetch the price of.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Price denominated in USD, with 6 decimals.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "prices(bytes32)",
+      "name": "prices",
+      "description": "Official prices by symbol hash.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint248"
+        },
+        {
+          "name": "failoverActive",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Allows an owner to begin transferring ownership to a new address, pending.",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upperBoundAnchorRatio()",
+      "name": "upperBoundAnchorRatio",
+      "description": "The highest ratio of the new price to the anchor price that will still trigger the price to be updated.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "validate(uint256,int256,uint256,int256)",
+      "name": "validate",
+      "description": "This is called by the reporter whenever a new price is posted on-chain. called by AccessControlledOffChainAggregator.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "currentAnswer",
+          "description": "the price.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "valid",
+          "description": "bool.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

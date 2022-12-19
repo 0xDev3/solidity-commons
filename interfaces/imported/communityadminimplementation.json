@@ -1,0 +1,911 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "CommunityAdminImplementation",
+  "description": "Welcome to CommunityAdmin, the main contract. This is an administrative (for now) contract where the admins have control over the list of communities. Being only able to add and remove communities.",
+  "eventDecorators": [
+    {
+      "signature": "AmbassadorsUpdated(address,address)",
+      "name": "AmbassadorsUpdated",
+      "description": "Triggered when the ambassadors has been updated.",
+      "parameterDecorators": [
+        {
+          "name": "oldAmbassadors",
+          "description": "Old Ambassador address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newAmbassadors",
+          "description": "New Ambassador address.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "CommunityAdded(address,address[],uint256,uint256,uint256,uint256,uint256,uint256,uint256)",
+      "name": "CommunityAdded",
+      "description": "Triggered when a community has been added.",
+      "parameterDecorators": [
+        {
+          "name": "communityAddress",
+          "description": "Address of the community that has been added.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "managers",
+          "description": "Addresses of the initial managers.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "claimAmount",
+          "description": "Value of the claimAmount.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "maxClaim",
+          "description": "Value of the maxClaim.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "decreaseStep",
+          "description": "Value of the decreaseStep.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "baseInterval",
+          "description": "Value of the baseInterval.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "incrementInterval",
+          "description": "Value of the incrementInterval.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "minTranche",
+          "description": "Value of the minTranche.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "maxTranche",
+          "description": "Value of the maxTranche For further information regarding each parameter, see *Community* smart contract initialize method.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CommunityFunded(address,uint256)",
+      "name": "CommunityFunded",
+      "description": "Triggered when a community has been funded.",
+      "parameterDecorators": [
+        {
+          "name": "community",
+          "description": "Address of the community.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "Amount of the funding.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CommunityImplementationUpdated(address,address)",
+      "name": "CommunityImplementationUpdated",
+      "description": "Triggered when the communityImplementation address has been updated.",
+      "parameterDecorators": [
+        {
+          "name": "oldCommunityImplementation",
+          "description": "Old communityImplementation address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newCommunityImplementation",
+          "description": "New communityImplementation address.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "CommunityMiddleProxyUpdated(address,address)",
+      "name": "CommunityMiddleProxyUpdated",
+      "description": "Triggered when the communityMiddleProxy address has been updated.",
+      "parameterDecorators": [
+        {
+          "name": "oldCommunityMiddleProxy",
+          "description": "Old communityMiddleProxy address.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newCommunityMiddleProxy",
+          "description": "New communityMiddleProxy address.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CommunityMigrated(address[],address,address)",
+      "name": "CommunityMigrated",
+      "description": "Triggered when a community has been migrated.",
+      "parameterDecorators": [
+        {
+          "name": "managers",
+          "description": "Addresses of the new community's initial managers.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "communityAddress",
+          "description": "New community address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "previousCommunityAddress",
+          "description": "Old community address.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "CommunityRemoved(address)",
+      "name": "CommunityRemoved",
+      "description": "Triggered when a community has been removed.",
+      "parameterDecorators": [
+        {
+          "name": "communityAddress",
+          "description": "Address of the community that has been removed.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ImpactMarketCouncilUpdated(address,address)",
+      "name": "ImpactMarketCouncilUpdated",
+      "description": "Triggered when the impactMarket Council has been updated.",
+      "parameterDecorators": [
+        {
+          "name": "oldImpactMarketCouncil",
+          "description": "Old impactMarket Council address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newImpactMarketCouncil",
+          "description": "New impactMarket Council address.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TransferERC20(address,address,uint256)",
+      "name": "TransferERC20",
+      "description": "Triggered when an amount of an ERC20 has been transferred from this contract to an address.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "ERC20 token address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "Address of the receiver.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "Amount of the transaction.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TreasuryUpdated(address,address)",
+      "name": "TreasuryUpdated",
+      "description": "Triggered when the treasury address has been updated.",
+      "parameterDecorators": [
+        {
+          "name": "oldTreasury",
+          "description": "Old treasury address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newTreasury",
+          "description": "New treasury address.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addCommunity(address[],address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)",
+      "name": "addCommunity",
+      "description": "Adds a new community.",
+      "parameterDecorators": [
+        {
+          "name": "_managers",
+          "description": "addresses of the community managers.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_ambassador",
+          "description": "address of the ambassador.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_claimAmount",
+          "description": "base amount to be claim by the beneficiary.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_maxClaim",
+          "description": "limit that a beneficiary can claim at in total.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_decreaseStep",
+          "description": "value decreased from maxClaim for every beneficiary added.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_baseInterval",
+          "description": "base interval to start claiming.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_incrementInterval",
+          "description": "increment interval used in each claim.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minTranche",
+          "description": "minimum amount that the community will receive when requesting funds.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_maxTranche",
+          "description": "maximum amount that the community will receive when requesting funds.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_maxBeneficiaries",
+          "description": "maximum number of valid beneficiaries.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "ambassadors()",
+      "name": "ambassadors",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "cUSD()",
+      "name": "cUSD",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "communities(address)",
+      "name": "communities",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "communityImplementation()",
+      "name": "communityImplementation",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "communityListAt(uint256)",
+      "name": "communityListAt",
+      "description": "Returns the address of a community from communityList.",
+      "parameterDecorators": [
+        {
+          "name": "_index",
+          "description": "index of the community.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "address of the community.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "communityListLength()",
+      "name": "communityListLength",
+      "description": "Returns the number of communities.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint256 number of communities.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "communityMiddleProxy()",
+      "name": "communityMiddleProxy",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "communityProxyAdmin()",
+      "name": "communityProxyAdmin",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "fundCommunity()",
+      "name": "fundCommunity",
+      "description": "Funds an existing community if it hasn't enough funds.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getVersion()",
+      "name": "getVersion",
+      "description": "Returns the current implementation version.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "impactMarketCouncil()",
+      "name": "impactMarketCouncil",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,address)",
+      "name": "initialize",
+      "description": "Used to initialize a new CommunityAdmin contract.",
+      "parameterDecorators": [
+        {
+          "name": "_communityImplementation",
+          "description": "Address of the Community implementation used for deploying new communities.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_cUSD",
+          "description": "Address of the cUSD token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isAmbassadorOrEntityOfCommunity(address,address)",
+      "name": "isAmbassadorOrEntityOfCommunity",
+      "description": "Returns if an address is the ambassador or entity of the community.",
+      "parameterDecorators": [
+        {
+          "name": "_community",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_ambassadorOrEntity",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "bool true if the address is an ambassador or entity of the community.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "migrateCommunity(address[],address)",
+      "name": "migrateCommunity",
+      "description": "Migrates a community by deploying a new contract.",
+      "parameterDecorators": [
+        {
+          "name": "_managers",
+          "description": "address of the community managers.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_previousCommunity",
+          "description": "address of the community to be migrated.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeCommunity(address)",
+      "name": "removeCommunity",
+      "description": "Removes an existing community. All community funds are transferred to the treasury.",
+      "parameterDecorators": [
+        {
+          "name": "_community",
+          "description": "address of the community.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setCommunityToAmbassador(address,address)",
+      "name": "setCommunityToAmbassador",
+      "description": "Set an existing ambassador to an existing community.",
+      "parameterDecorators": [
+        {
+          "name": "_ambassador",
+          "description": "address of the ambassador.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_communityAddress",
+          "description": "address of the community contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transfer(address,address,uint256)",
+      "name": "transfer",
+      "description": "Transfers an amount of an ERC20 from this contract to an address.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the ERC20 token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "address of the receiver.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "amount of the transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferFromCommunity(address,address,address,uint256)",
+      "name": "transferFromCommunity",
+      "description": "Transfers an amount of an ERC20 from community to an address.",
+      "parameterDecorators": [
+        {
+          "name": "_community",
+          "description": "address of the community.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_token",
+          "description": "address of the ERC20 token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "address of the receiver.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "amount of the transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "treasury()",
+      "name": "treasury",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "updateAmbassadors(address)",
+      "name": "updateAmbassadors",
+      "description": "Updates proxy implementation address of ambassadors.",
+      "parameterDecorators": [
+        {
+          "name": "_newAmbassadors",
+          "description": "address of new implementation contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateBeneficiaryParams(address,uint256,uint256,uint256,uint256,uint256,uint256)",
+      "name": "updateBeneficiaryParams",
+      "description": "Updates the beneficiary params of a community.",
+      "parameterDecorators": [
+        {
+          "name": "_community",
+          "description": "address of the community.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_claimAmount",
+          "description": "base amount to be claim by the beneficiary.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_maxClaim",
+          "description": "limit that a beneficiary can claim in total.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_decreaseStep",
+          "description": "value decreased from maxClaim each time a is beneficiary added.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_baseInterval",
+          "description": "base interval to start claiming.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_incrementInterval",
+          "description": "increment interval used in each claim.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_maxBeneficiaries",
+          "description": "maximum number of beneficiaries.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateCommunityImplementation(address)",
+      "name": "updateCommunityImplementation",
+      "description": "Updates the address of the the communityImplementation.",
+      "parameterDecorators": [
+        {
+          "name": "_newCommunityImplementation",
+          "description": "address of the new communityImplementation contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateCommunityMiddleProxy(address)",
+      "name": "updateCommunityMiddleProxy",
+      "description": "Updates communityMiddleProxy address.",
+      "parameterDecorators": [
+        {
+          "name": "_newCommunityMiddleProxy",
+          "description": "address of new implementation contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateCommunityParams(address,uint256,uint256)",
+      "name": "updateCommunityParams",
+      "description": "Updates params of a community.",
+      "parameterDecorators": [
+        {
+          "name": "_community",
+          "description": "address of the community.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minTranche",
+          "description": "minimum amount that the community will receive when requesting funds.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_maxTranche",
+          "description": "maximum amount that the community will receive when requesting funds.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateCommunityToken(address,address,address[])",
+      "name": "updateCommunityToken",
+      "description": "Updates token address of a community.",
+      "parameterDecorators": [
+        {
+          "name": "_community",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newToken",
+          "description": "new token address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_exchangePath",
+          "description": "path used by uniswap to exchange the current tokens to the new tokens.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateImpactMarketCouncil(address)",
+      "name": "updateImpactMarketCouncil",
+      "description": "Updates proxy implementation address of impactMarket council.",
+      "parameterDecorators": [
+        {
+          "name": "_newImpactMarketCouncil",
+          "description": "address of new implementation contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateProxyImplementation(address,address)",
+      "name": "updateProxyImplementation",
+      "description": "Updates proxy implementation address of a community.",
+      "parameterDecorators": [
+        {
+          "name": "_CommunityMiddleProxy",
+          "description": "address of the community.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newCommunityImplementation",
+          "description": "address of new implementation contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateTreasury(address)",
+      "name": "updateTreasury",
+      "description": "Updates the address of the treasury.",
+      "parameterDecorators": [
+        {
+          "name": "_newTreasury",
+          "description": "address of the new treasury contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

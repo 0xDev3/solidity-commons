@@ -1,0 +1,619 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "swaps"
+  ],
+  "name": "AugustusSwapper",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "Bought(address,address,address,address,uint256,uint256,uint256,string)",
+      "name": "Bought",
+      "description": "Emit on setPercentPerSecond().",
+      "parameterDecorators": [
+        {
+          "name": "initiator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "beneficiary",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "srcToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "destToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "srcAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "receivedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "expectedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "referrer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Donation(address,uint256)",
+      "name": "Donation",
+      "description": "Emit on setPercentPerSecond().",
+      "parameterDecorators": [
+        {
+          "name": "receiver",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "donationBasisPoints",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "FeeTaken(uint256,uint256,uint256)",
+      "name": "FeeTaken",
+      "description": "Emit on setPercentPerSecond().",
+      "parameterDecorators": [
+        {
+          "name": "fee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "partnerShare",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "paraswapShare",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emit on setPercentPerSecond().",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Paused()",
+      "name": "Paused",
+      "description": "Emit on setPercentPerSecond().",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "Swapped(address,address,address,address,uint256,uint256,uint256,string)",
+      "name": "Swapped",
+      "description": "Emit on setPercentPerSecond().",
+      "parameterDecorators": [
+        {
+          "name": "initiator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "beneficiary",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "srcToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "destToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "srcAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "receivedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "expectedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "referrer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unpaused()",
+      "name": "Unpaused",
+      "description": "Emit on setPercentPerSecond().",
+      "parameterDecorators": []
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "buy(address,address,uint256,uint256,uint256,tuple(address,address,uint256,uint256,bytes,uint256)[],uint256,address,uint256,string)",
+      "name": "buy",
+      "description": "The function which performs the single path buy.",
+      "parameterDecorators": [
+        {
+          "name": "fromToken",
+          "description": "Address of the source token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "toToken",
+          "description": "Address of the destination token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fromAmount",
+          "description": "Max amount of source tokens to be swapped.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "toAmount",
+          "description": "Destination token amount expected out of this swap.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "expectedAmount",
+          "description": "Expected amount of source tokens to be used without slippage.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "route",
+          "description": "Route to be taken for this swap to take place.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "exchange",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "targetExchange",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "fromAmount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "toAmount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "payload",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "networkFee",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "mintPrice",
+          "description": "Price of gas at the time of minting of gas tokens, if any. In wei. 0 means gas token will not be used.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "beneficiary",
+          "description": "Beneficiary address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "donationBasisPoints",
+          "description": "Basis points of returned amount to be transferred to beneficiary, if beneficiary is available. If this is passed as 0 then 100% will be transferred to beneficiary. Pass 10000 for 100%.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "referrer",
+          "description": "referral id.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeGSTHolder(address)",
+      "name": "changeGSTHolder",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "gstHolder",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getFeeWallet()",
+      "name": "getFeeWallet",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPartnerRegistry()",
+      "name": "getPartnerRegistry",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokenTransferProxy()",
+      "name": "getTokenTransferProxy",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVersion()",
+      "name": "getVersion",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getWhitelistAddress()",
+      "name": "getWhitelistAddress",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "multiSwap(address,address,uint256,uint256,uint256,tuple(address,uint256,tuple[])[],uint256,address,uint256,string)",
+      "name": "multiSwap",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "fromToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "toToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fromAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "toAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "expectedAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "path",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "to",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "totalNetworkFee",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "routes",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "mintPrice",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "beneficiary",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "donationBasisPoints",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "referrer",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ownerTransferTokens(address,address,uint256)",
+      "name": "ownerTransferTokens",
+      "description": "Allows owner of the contract to transfer tokens any tokens which are assigned to the contract This method is for saftey if by any chance tokens or ETHs are assigned to the contract by mistaketoken Address of the token to be transferreddestination Recepient of the tokenamount Amount of tokens to be transferred.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "destination",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "pause()",
+      "name": "pause",
+      "description": "Called by a pauser to pause, triggers stopped state.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "paused()",
+      "name": "paused",
+      "description": "Returns true if the contract is paused, and false otherwise.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setFeeWallet(address)",
+      "name": "setFeeWallet",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "feeWallet",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setPartnerRegistry(address)",
+      "name": "setPartnerRegistry",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "partnerRegistry",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setWhitelistAddress(address)",
+      "name": "setWhitelistAddress",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "whitelisted",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unpause()",
+      "name": "unpause",
+      "description": "Called by a pauser to unpause, returns to normal state.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

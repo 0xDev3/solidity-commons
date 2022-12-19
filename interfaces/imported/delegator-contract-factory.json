@@ -1,0 +1,705 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "DelegatorFactory",
+  "description": "Delegator Contract Factory. Contract in charge of generating Delegator contracts, handling delegations and CTX balance map, rewards.",
+  "eventDecorators": [
+    {
+      "signature": "DelegatorCreated(address,address)",
+      "name": "DelegatorCreated",
+      "description": "An event emitted when a Delegator is created.",
+      "parameterDecorators": [
+        {
+          "name": "delegator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "delegatee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RewardAdded(uint256)",
+      "name": "RewardAdded",
+      "description": "An event emitted when a reward is added.",
+      "parameterDecorators": [
+        {
+          "name": "reward",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RewardPaid(address,uint256)",
+      "name": "RewardPaid",
+      "description": "An event emitted when reward is paid to a user.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "reward",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RewardsDurationUpdated(uint256)",
+      "name": "RewardsDurationUpdated",
+      "description": "An event emitted when the rewards duration is updated.",
+      "parameterDecorators": [
+        {
+          "name": "newDuration",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Staked(address,address,uint256)",
+      "name": "Staked",
+      "description": "An event emitted when an user has staked and delegated.",
+      "parameterDecorators": [
+        {
+          "name": "delegator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "delegatee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WaitTimeUpdated(uint256)",
+      "name": "WaitTimeUpdated",
+      "description": "An event emitted when the minimum wait time is updated.",
+      "parameterDecorators": [
+        {
+          "name": "waitTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Withdrawn(address,address,uint256)",
+      "name": "Withdrawn",
+      "description": "An event emitted when an user removes stake and undelegated.",
+      "parameterDecorators": [
+        {
+          "name": "delegator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "delegatee",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "balanceOf(address)",
+      "name": "balanceOf",
+      "description": "Returns the amount of staked tokens from specific user.",
+      "parameterDecorators": [
+        {
+          "name": "account_",
+          "description": "address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "createDelegator(address)",
+      "name": "createDelegator",
+      "description": "Creates a new delegator contract that delegates all votes to delegatee_. only one delegator contract pointing to the same delegatee can exist.",
+      "parameterDecorators": [
+        {
+          "name": "delegatee_",
+          "description": "address that will be receiving all votes.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "delegateeToDelegator(address)",
+      "name": "delegateeToDelegator",
+      "description": "Tracks the delegator contract address from delegatee address.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "delegatorToDelegatee(address)",
+      "name": "delegatorToDelegatee",
+      "description": "Tracks the address of a delegatee with a delegator contract address.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "delegators(address)",
+      "name": "delegators",
+      "description": "Tracks if address is an official delegator.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "earned(address)",
+      "name": "earned",
+      "description": "Returns the amount of reward tokens a user has earned.",
+      "parameterDecorators": [
+        {
+          "name": "account_",
+          "description": "address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getReward()",
+      "name": "getReward",
+      "description": "Transfers to the caller the current amount of rewards tokens earned. updates rewards on call.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getRewardForDuration()",
+      "name": "getRewardForDuration",
+      "description": "Returns reward rate for a duration.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastTimeRewardApplicable()",
+      "name": "lastTimeRewardApplicable",
+      "description": "Returns the minimum between current block timestamp or the finish period of rewards.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastUpdateTime()",
+      "name": "lastUpdateTime",
+      "description": "Last time rewards were updated.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "min(uint256,uint256)",
+      "name": "min",
+      "description": "Returns the minimum between two variables.",
+      "parameterDecorators": [
+        {
+          "name": "a_",
+          "description": "uint.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "b_",
+          "description": "uint.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "notifyRewardAmount(uint256)",
+      "name": "notifyRewardAmount",
+      "description": "Notifies the contract that reward has been added to be given. Only owner can call itIncreases duration of rewards.",
+      "parameterDecorators": [
+        {
+          "name": "reward_",
+          "description": "uint.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "periodFinish()",
+      "name": "periodFinish",
+      "description": "Tracks the period where users stop earning rewards.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rewardPerToken()",
+      "name": "rewardPerToken",
+      "description": "Returns the calculated reward per token deposited.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardPerTokenStored()",
+      "name": "rewardPerTokenStored",
+      "description": "Amount of reward calculated per token stored.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardRate()",
+      "name": "rewardRate",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewards(address)",
+      "name": "rewards",
+      "description": "Tracks the user rewards.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardsDuration()",
+      "name": "rewardsDuration",
+      "description": "How long the rewards lasts, it updates when more rewards are added.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardsToken()",
+      "name": "rewardsToken",
+      "description": "Address of the reward token.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setRewardsDuration(uint256)",
+      "name": "setRewardsDuration",
+      "description": "Updates the reward duration. Only owner can call itPrevious rewards must be complete.",
+      "parameterDecorators": [
+        {
+          "name": "rewardsDuration_",
+          "description": "uint.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stake(address,uint256)",
+      "name": "stake",
+      "description": "Stakes to delegator_ the amount_ specified. Delegator must be valid and amount has to be greater than 0amount_ is transferred to the delegator contract and staker starts earning rewards if activeupdates rewards on call.",
+      "parameterDecorators": [
+        {
+          "name": "delegator_",
+          "description": "contract address where to send the amount_.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount_",
+          "description": "uint to be staked and delegated.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stakerWaitTime(address,address)",
+      "name": "stakerWaitTime",
+      "description": "Tracks minimum wait time the account has to wait before removing stake.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "stakingToken()",
+      "name": "stakingToken",
+      "description": "Address of the staking governance token.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalSupply()",
+      "name": "totalSupply",
+      "description": "Returns the total amount of staked tokens.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateWaitTime(uint256)",
+      "name": "updateWaitTime",
+      "description": "updates the min wait time between delegation and unDelegation. only the owner can call it.",
+      "parameterDecorators": [
+        {
+          "name": "waitTime_",
+          "description": "uint new wait time.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "userRewardPerTokenPaid(address)",
+      "name": "userRewardPerTokenPaid",
+      "description": "Track the rewards paid to users.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "waitTime()",
+      "name": "waitTime",
+      "description": "Minimum wait time before removing stake.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw(address,uint256)",
+      "name": "withdraw",
+      "description": "Removes amount_ from delegator_. Delegator must be valid and amount has to be greater than 0amount_ must be <= that current user stakeamount_ is transferred from the delegator contract to the stakerupdates rewards on callrequires that at least waitTime has passed since delegation to unDelegate.",
+      "parameterDecorators": [
+        {
+          "name": "delegator_",
+          "description": "contract address where to remove the stake from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount_",
+          "description": "uint to be removed from stake and undelegated.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

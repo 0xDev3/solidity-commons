@@ -1,0 +1,645 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "compound"
+  ],
+  "name": "AFIController",
+  "description": "AFI Controller Contract.",
+  "eventDecorators": [
+    {
+      "signature": "AFISpeedUpdated(address,uint256)",
+      "name": "AFISpeedUpdated",
+      "description": "Emitted when a new AFI speed is calculated for a market. Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "afiToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newSpeed",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DistributedAFI(address,address,uint256,uint256)",
+      "name": "DistributedAFI",
+      "description": "Emitted when AFI is distributed to a supplier. Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "afiToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "supplier",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "afiDelta",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "afiSupplyIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "MarketAFId(address,bool)",
+      "name": "MarketAFId",
+      "description": "Emitted when market afid status is changed. Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "afiToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "isAFId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "MarketListed(address)",
+      "name": "MarketListed",
+      "description": "Emitted when an admin supports a market. Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "afiToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewAFIOracle(address,address)",
+      "name": "NewAFIOracle",
+      "description": "Emitted when oracle is changed. Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "oldAFIOracle",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newAFIOracle",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewAFIRate(uint256,uint256)",
+      "name": "NewAFIRate",
+      "description": "Emitted when AFI rate is changed. Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "oldAFIRate",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newAFIRate",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "_addAFIMarkets(address[])",
+      "name": "_addAFIMarkets",
+      "description": "Add markets to afiMarkets, allowing them to earn AFI in the flywheel.",
+      "parameterDecorators": [
+        {
+          "name": "afiTokens",
+          "description": "The addresses of the markets to add.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "_become(address)",
+      "name": "_become",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_unitroller",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "_dropAFIMarket(address)",
+      "name": "_dropAFIMarket",
+      "description": "Remove a market from afiMarkets, preventing it from earning AFI in the flywheel.",
+      "parameterDecorators": [
+        {
+          "name": "afiToken",
+          "description": "The address of the market to drop.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "_resetMarkets()",
+      "name": "_resetMarkets",
+      "description": "Remove all markets from afiMarkets. This should only be called in case of emergency.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "_setAFIAddress(address)",
+      "name": "_setAFIAddress",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_afiAddress",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "_setAFIRate(uint256)",
+      "name": "_setAFIRate",
+      "description": "Set the amount of AFI distributed per block.",
+      "parameterDecorators": [
+        {
+          "name": "afiRate_",
+          "description": "The amount of AFI wei per block to distribute.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "_setBonusDistribution(uint256)",
+      "name": "_setBonusDistribution",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_bonusMultiplier",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "_setPriceOracle(address)",
+      "name": "_setPriceOracle",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "priceOracle_",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "_supportMarkets(address[])",
+      "name": "_supportMarkets",
+      "description": "Add the market to the markets mapping and set it as listed. Admin function to set isListed and add support for the market.",
+      "parameterDecorators": [
+        {
+          "name": "afiTokens",
+          "description": "The array of addresses of the markets (token) to list.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint 0=success, otherwise a failure. (See enum Error for details).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "admin()",
+      "name": "admin",
+      "description": "Administrator for this contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "afiAccrued(address)",
+      "name": "afiAccrued",
+      "description": "The AFI accrued but not yet transferred to each user.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "afiAddress()",
+      "name": "afiAddress",
+      "description": "AFI governance token address.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "afiClaimThreshold()",
+      "name": "afiClaimThreshold",
+      "description": "The threshold above which the flywheel transfers AFI, in wei.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "afiInitialIndex()",
+      "name": "afiInitialIndex",
+      "description": "The initial AFI index for a market.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "afiRate()",
+      "name": "afiRate",
+      "description": "The rate at which the flywheel distributes AFI, per block.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "afiSpeeds(address)",
+      "name": "afiSpeeds",
+      "description": "The portion of compRate that each market currently receives.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "afiSupplierIndex(address,address)",
+      "name": "afiSupplierIndex",
+      "description": "The AFI supply index for each market for each supplier as of the last time they accrued AFI.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "afiSupplyState(address)",
+      "name": "afiSupplyState",
+      "description": "The AFI market supply state for each market.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "block",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "allMarkets(uint256)",
+      "name": "allMarkets",
+      "description": "A list of all markets.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "bonusEnd()",
+      "name": "bonusEnd",
+      "description": "Itimestamp to limit bonus distribution on the first month.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "bonusMultiplier()",
+      "name": "bonusMultiplier",
+      "description": "timestamp for bonus end.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claimAfi(address[],address[])",
+      "name": "claimAfi",
+      "description": "Claim all afi accrued by the holders.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "afiTokens",
+          "description": "The list of markets to claim AFI in.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "comptrollerImplementation()",
+      "name": "comptrollerImplementation",
+      "description": "Active brains of Unitroller.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAllMarkets()",
+      "name": "getAllMarkets",
+      "description": "Return all of the markets. The automatic getter may be used to access an individual market.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The list of market addresses.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "markets(address)",
+      "name": "markets",
+      "description": "Official mapping of afiTokens -> Market metadata.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "isListed",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "isAFId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "oracle()",
+      "name": "oracle",
+      "description": "Oracle which gives the price of any given asset.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pendingAdmin()",
+      "name": "pendingAdmin",
+      "description": "Pending administrator for this contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pendingComptrollerImplementation()",
+      "name": "pendingComptrollerImplementation",
+      "description": "Pending brains of Unitroller.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "refreshAFISpeeds()",
+      "name": "refreshAFISpeeds",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

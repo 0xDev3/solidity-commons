@@ -1,0 +1,591 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "Staking",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "PercentPerSecondUpdated(uint256)",
+      "name": "PercentPerSecondUpdated",
+      "description": "Emit on setPercentPerSecond().",
+      "parameterDecorators": [
+        {
+          "name": "percentPerSecond",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addressToStake(address)",
+      "name": "addressToStake",
+      "description": "Staker address to staker info.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "lastUpdate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "normalizedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculatePotentialCompoundRate(uint256,uint256,uint64,uint64)",
+      "name": "calculatePotentialCompoundRate",
+      "description": "Calculate not safe compound rate. Can be reverted on big values. Needed to reduce gas costs.",
+      "parameterDecorators": [
+        {
+          "name": "_compoundRate",
+          "description": "Current compound rate.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_percentPerSecond",
+          "description": "Percents per seconds.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_timestamp",
+          "description": "Particular timestamp.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_compoundRateLastUpdate",
+          "description": "Last compound rate update.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "compoundRate()",
+      "name": "compoundRate",
+      "description": "Contain actual compound rate.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "compoundRateLastUpdate()",
+      "name": "compoundRateLastUpdate",
+      "description": "Contain last update of percentPerSecond value.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "endTimestamp()",
+      "name": "endTimestamp",
+      "description": "Stake end timestamp.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAggregatedAmount()",
+      "name": "getAggregatedAmount",
+      "description": "Return aggregated staked amount (without percents).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAggregatedNormalizedAmount()",
+      "name": "getAggregatedNormalizedAmount",
+      "description": "Return aggregated normalized amount.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCompoundRate()",
+      "name": "getCompoundRate",
+      "description": "Calculate compound rate for this moment. Call this function always when you need actual compound rate.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getDenormalizedAmount(address)",
+      "name": "getDenormalizedAmount",
+      "description": "Return amount of tokens + percents at this moment.",
+      "parameterDecorators": [
+        {
+          "name": "_address",
+          "description": "Staker address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPotentialAmount(address,uint64)",
+      "name": "getPotentialAmount",
+      "description": "Return amount of tokens + percents at given timestamp.",
+      "parameterDecorators": [
+        {
+          "name": "_address",
+          "description": "Staker address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_timestamp",
+          "description": "Given timestamp (seconds).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPotentialCompoundRate(uint64)",
+      "name": "getPotentialCompoundRate",
+      "description": "Calculate compound rate at a particular time. Call this function always when you need compound rate at a particular time.",
+      "parameterDecorators": [
+        {
+          "name": "_timestamp",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lockPeriod()",
+      "name": "lockPeriod",
+      "description": "Period when address can't withdraw after stake.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "monitorSecurityMargin()",
+      "name": "monitorSecurityMargin",
+      "description": "Return coefficient in decimals. If coefficient more than 1, all holders will be able to receive awards.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "mul(uint256,uint256,uint256)",
+      "name": "mul",
+      "description": "Multiply function. See FullMath library for details.",
+      "parameterDecorators": [
+        {
+          "name": "_a",
+          "description": "Num 1.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_b",
+          "description": "Num 2.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_denominator",
+          "description": "(_a * _b / _denominator).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "percentPerSecond()",
+      "name": "percentPerSecond",
+      "description": "Compound interest per second. ((1 + <interest_for_the_period> / 100)^(1 / <period>)) * 10^27.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pow(uint256,uint256,uint256)",
+      "name": "pow",
+      "description": "Modulo exponentiation.",
+      "parameterDecorators": [
+        {
+          "name": "_num",
+          "description": "Number.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_exponent",
+          "description": "Exponent.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_base",
+          "description": "(_num * _base). Base - precision index, is assumed to be _getDecimals().",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "resetCompoundRate()",
+      "name": "resetCompoundRate",
+      "description": "Reset compound rate to 1.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setPercentPerSecond(uint256)",
+      "name": "setPercentPerSecond",
+      "description": "Set percent per second, update compound rate and last compound rate update. Call this function only when percent per period will change.",
+      "parameterDecorators": [
+        {
+          "name": "_newPercentPerSecond",
+          "description": "New percent per period.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stake(uint256)",
+      "name": "stake",
+      "description": "Stake tokens to contract.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "Stake amount.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "startTimestamp()",
+      "name": "startTimestamp",
+      "description": "Stake start timestamp.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "supplyRewardPool(uint256)",
+      "name": "supplyRewardPool",
+      "description": "Transfer tokens to contract as reward.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "Token amount.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "Staking token contract address.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferStuckERC20(address,address,uint256)",
+      "name": "transferStuckERC20",
+      "description": "Transfer stuck ERC20 tokens.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "Token address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "Address 'to'.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "Token amount.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(address,uint256)",
+      "name": "withdraw",
+      "description": "Withdraw tokens from stake.",
+      "parameterDecorators": [
+        {
+          "name": "_holderAddress",
+          "description": "Staker address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_withdrawAmount",
+          "description": "Tokens amount to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

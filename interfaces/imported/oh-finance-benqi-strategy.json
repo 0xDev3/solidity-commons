@@ -1,0 +1,414 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "vesting",
+    "strategies",
+    "compound"
+  ],
+  "name": "OhAvalancheBenqiStrategy",
+  "description": "Oh! Finance Benqi Strategy. https://compound.finance/docs/ctokens. Standard, unleveraged strategy. Invest underlying tokens into derivative cTokens.",
+  "eventDecorators": [
+    {
+      "signature": "Liquidate(address,address,uint256)",
+      "name": "Liquidate",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "router",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Sweep(address,uint256,address)",
+      "name": "Sweep",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "bank()",
+      "name": "bank",
+      "description": "The Bank that the Strategy is associated with.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "comptroller()",
+      "name": "comptroller",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "derivative()",
+      "name": "derivative",
+      "description": "The derivative token received from AaveV2 (aToken).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "derivativeBalance()",
+      "name": "derivativeBalance",
+      "description": "Balance of derivative tokens received from Strategy, if applicable.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The balance of derivative tokens.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "extraReward()",
+      "name": "extraReward",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "extraRewardBalance()",
+      "name": "extraRewardBalance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "governance()",
+      "name": "governance",
+      "description": "Get the Governance address.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The current Governance address.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initializeBenqiStrategy(address,address,address,address,address,address,address)",
+      "name": "initializeBenqiStrategy",
+      "description": "Initializes the Benqi Strategy Proxy. The function should be called at time of deployment.",
+      "parameterDecorators": [
+        {
+          "name": "registry_",
+          "description": "the registry contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "bank_",
+          "description": "the bank associated with the strategy.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "underlying_",
+          "description": "the underlying token that is deposited.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "derivative_",
+          "description": "the qiToken address received from Benqi.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "reward_",
+          "description": "the address of the reward token QI.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "extraReward_",
+          "description": "the address of the reward token WAVAX.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "comptroller_",
+          "description": "the Benqi rewards contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "invest()",
+      "name": "invest",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "investedBalance()",
+      "name": "investedBalance",
+      "description": "Get the balance of underlying invested by the Strategy. Get the exchange rate (which is scaled up by 1e18) and multiply by amount of qiTokens.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The amount of underlying the strategy has invested.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "manager()",
+      "name": "manager",
+      "description": "Get the Manager address.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The current Manager address.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "registry()",
+      "name": "registry",
+      "description": "Get the Registry address.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The current Registry address.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "reward()",
+      "name": "reward",
+      "description": "The reward token received from AaveV2 (stkAave).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardBalance()",
+      "name": "rewardBalance",
+      "description": "Balance of reward tokens awaiting liquidation, if applicable.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setRegistry(address)",
+      "name": "setRegistry",
+      "description": "Set the Registry for the contract. Only callable by Governance. Requires sender to be Governance of the new Registry to avoid bricking.Ideally should not be used.",
+      "parameterDecorators": [
+        {
+          "name": "registry_",
+          "description": "The new registry.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "sweep(address,uint256,address)",
+      "name": "sweep",
+      "description": "Governance function to sweep any stuck / airdrop tokens to a given recipient.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "The address of the token to sweep.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "The amount of tokens to sweep.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "recipient",
+          "description": "The address to send the sweeped tokens to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "underlying()",
+      "name": "underlying",
+      "description": "The underlying token the Strategy invests in AaveV2.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "underlyingBalance()",
+      "name": "underlyingBalance",
+      "description": "Balance of underlying awaiting Strategy investment.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw(uint256)",
+      "name": "withdraw",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawAll()",
+      "name": "withdrawAll",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

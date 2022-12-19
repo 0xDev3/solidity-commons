@@ -1,0 +1,332 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "liquidity",
+    "vaults"
+  ],
+  "name": "Vault",
+  "description": "Domination Finance vault. Provide and withdraw dominance pair liquidity in fewer transactions.",
+  "eventDecorators": [
+    {
+      "signature": "VaultDeposited(address,address,uint256)",
+      "name": "VaultDeposited",
+      "description": "Emitted when `cancelOrder` is called.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "lsp",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amountUSDC",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "arbitrage(uint256,uint256,address,address,uint256,tuple(uint8,bytes32,bytes32))",
+      "name": "arbitrage",
+      "description": "Arb a pair's pools: use supplied USDC to mint+sell or buy+redeem. Return USDC + profits to sender. compute optimal arb amount off-chain.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "USDC to use for arbitrage.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokensToBuy",
+          "description": "Number of tokens to buy and redeem. If 0, mint and sell with supplied USDC.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "lsp",
+          "description": "LongShortPair for the target dominance pair.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "router",
+          "description": "Address of Uniswap, Quickswap, etc. router.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "Timestamp beyond which tx will revert.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "usdcSignature",
+          "description": "optional signature.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "v",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "r",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "s",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deposit(uint256,uint256,address,tuple(uint256),address,tuple(uint8,bytes32,bytes32),uint256,address,address,uint256)",
+      "name": "deposit",
+      "description": "Deposit USDC into the vault. Convert it all into LSP liquidity. Keep params in usage order https://levelup.gitconnected.com/stack-too-deep-error-in-solidity-ca83326ff0f0.",
+      "parameterDecorators": [
+        {
+          "name": "usdcForArb",
+          "description": "Portion of supplied USDC to use for arbitrage. Will be deposited along with profits.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokensToBuyForArb",
+          "description": "If buying+redeeming to arb pools, amount of tokens. See arbitrage() for more detail.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "router",
+          "description": "Address of Uniswap, Quickswap, etc. router.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "priceDeviation_",
+          "description": "FixedPoint.Unsigned fraction: maximum % difference between long+short and collateralPerPair.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "rawValue",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "lsp",
+          "description": "LongShortPair for the target dominance pair.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "usdcSignature",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "v",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "r",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "s",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "amount",
+          "description": "How much USDC to supply.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "longStaking",
+          "description": "Optional. Staking contract for long LP token. Must be during staking window.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "shortStaking",
+          "description": "Optional. Staking contract for long LP token. Must be during staking window.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "timestamp beyond which tx will revert.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "depositedFor(address,address,address,address,address)",
+      "name": "depositedFor",
+      "description": "Check the market value of a user's LSP liquidity, in USDC.",
+      "parameterDecorators": [
+        {
+          "name": "factory",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "lsp",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "longStaking",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "shortStaking",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rescue(address)",
+      "name": "rescue",
+      "description": "The vault should never hold any tokens. This method allows anyone to withdraw a token's entire balance. It should be used if tokens are mistakenly sent to the contract, or if a bug causes leftover balances.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "address of a ERC20.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(tuple(uint256),address,uint256,uint256,address,uint256,tuple(uint8,bytes32,bytes32),tuple(uint8,bytes32,bytes32),uint8)",
+      "name": "withdraw",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "priceDeviation_",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "rawValue",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "lsp",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "longLPAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "shortLPAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "router",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "longSignature",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "v",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "r",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "s",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "shortSignature",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "v",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "r",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "s",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "withdrawMode",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

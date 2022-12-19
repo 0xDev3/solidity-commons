@@ -1,0 +1,409 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "SHD",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "Approval(address,address,uint256)",
+      "name": "Approval",
+      "description": "event emitted when a user has unstaked a token.",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "spender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DelegateChanged(address,address,address)",
+      "name": "DelegateChanged",
+      "description": "event emitted when a user has unstaked a token.",
+      "parameterDecorators": [
+        {
+          "name": "delegator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "fromDelegate",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "toDelegate",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "DelegateVotesChanged(address,uint256,uint256)",
+      "name": "DelegateVotesChanged",
+      "description": "event emitted when a user has unstaked a token.",
+      "parameterDecorators": [
+        {
+          "name": "delegate",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "previousBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Transfer(address,address,uint256)",
+      "name": "Transfer",
+      "description": "event emitted when a user has unstaked a token.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "DELEGATION_TYPEHASH()",
+      "name": "DELEGATION_TYPEHASH",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "DOMAIN_TYPEHASH()",
+      "name": "DOMAIN_TYPEHASH",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "checkpoints(address,uint32)",
+      "name": "checkpoints",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "fromBlock",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        },
+        {
+          "name": "votes",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint96"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "decimals()",
+      "name": "decimals",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "delegate(address)",
+      "name": "delegate",
+      "description": "This is not an offer or sale of a security instrument and should not be construed as such. This instrument incorporates the Shield Token Acquisition Agreement as well as all disclaimers on the ShieldDAO platform. All Shield holders agree that Shield Tokens are only acquired for participation in future BLOCKCHAIN GOVERNANCE experiments. By interacting with this smart contract, you acknowledge having read the foregoing documents and disclaimers, and having electronically affixed your signature hereto You accept all terms and conditions. / constructor(address account) public { balances[account] = uint96(totalSupply); emit Transfer(address(0), account, totalSupply); } function allowance(address account, address spender) external view returns (uint) { return allowances[account][spender]; } function approve(address spender, uint rawAmount) external returns (bool) { uint96 amount; if (rawAmount == uint(-1)) { amount = uint96(-1); } else { amount = safe96(rawAmount, \"SHD::approve: amount exceeds 96 bits\"); } allowances[msg.sender][spender] = amount; emit Approval(msg.sender, spender, amount); return true; } function balanceOf(address account) external view returns (uint) { return balances[account]; } function transfer(address dst, uint rawAmount) external returns (bool) { uint96 amount = safe96(rawAmount, \"SHD::transfer: amount exceeds 96 bits\"); _transferTokens(msg.sender, dst, amount); return true; } function transferFrom(address src, address dst, uint rawAmount) external returns (bool) { address spender = msg.sender; uint96 spenderAllowance = allowances[src][spender]; uint96 amount = safe96(rawAmount, \"SHD::approve: amount exceeds 96 bits\"); if (spender != src && spenderAllowance != uint96(-1)) { uint96 newAllowance = sub96(spenderAllowance, amount, \"SHD::transferFrom: transfer amount exceeds spender allowance\"); allowances[src][spender] = newAllowance; emit Approval(src, spender, newAllowance); } _transferTokens(src, dst, amount); return true; } /**Delegate votes from `msg.sender` to `delegatee`.",
+      "parameterDecorators": [
+        {
+          "name": "delegatee",
+          "description": "The address to delegate votes to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "delegateBySig(address,uint256,uint256,uint8,bytes32,bytes32)",
+      "name": "delegateBySig",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "delegatee",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "nonce",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "expiry",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "v",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "r",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "s",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "delegates(address)",
+      "name": "delegates",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentVotes(address)",
+      "name": "getCurrentVotes",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint96"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPriorVotes(address,uint256)",
+      "name": "getPriorVotes",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "blockNumber",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint96"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "name()",
+      "name": "name",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nonces(address)",
+      "name": "nonces",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "numCheckpoints(address)",
+      "name": "numCheckpoints",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "symbol()",
+      "name": "symbol",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalSupply()",
+      "name": "totalSupply",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

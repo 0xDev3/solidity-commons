@@ -1,0 +1,661 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "locking"
+  ],
+  "name": "IndexerStakingContract",
+  "description": "Indexer Staking Contract. Staking contract that accepts an IERC20 compatible token contract the contract has no reward mechanism and functions on the basis of a lock-in. The lock-in is set to 90 days (3 months approx) initially and can be changed by an admin.",
+  "eventDecorators": [
+    {
+      "signature": "EmergencyUnstakeEvent(address,bytes,uint256,address)",
+      "name": "EmergencyUnstakeEvent",
+      "description": "Event emitted when user create request for credit.",
+      "parameterDecorators": [
+        {
+          "name": "staker",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "publicKey",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "stakedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "approvedByAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SlashStakeEvent(address,bytes,uint256,address)",
+      "name": "SlashStakeEvent",
+      "description": "Event emitted when user create request for credit.",
+      "parameterDecorators": [
+        {
+          "name": "staker",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "publicKey",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "stakedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "reporterAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "StakeEvent(address,bytes,uint256)",
+      "name": "StakeEvent",
+      "description": "Event emitted when user create request for credit.",
+      "parameterDecorators": [
+        {
+          "name": "staker",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "publicKey",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "stakedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UnstakeByIndexer(address,bytes,uint256)",
+      "name": "UnstakeByIndexer",
+      "description": "Event emitted when user create request for credit.",
+      "parameterDecorators": [
+        {
+          "name": "staker",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "publicKey",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "stakedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addAdmin(address)",
+      "name": "addAdmin",
+      "description": "add an admin.",
+      "parameterDecorators": [
+        {
+          "name": "_adminAddress",
+          "description": "the address of the admin to be added.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "adminMap(address)",
+      "name": "adminMap",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "adminID",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "adminAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "isCurrentAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "approvedIndexers(address)",
+      "name": "approvedIndexers",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "indexerID",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "indexerAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "indexerPublicKey",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        },
+        {
+          "name": "stakeStartTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "stakeAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "hasStaked",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "isActive",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "contractOwner()",
+      "name": "contractOwner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "defaultExpiryPeriod()",
+      "name": "defaultExpiryPeriod",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "emergencyUnstake(address)",
+      "name": "emergencyUnstake",
+      "description": "This unstake event can only be triggered by an admin. The indexer is immediately unstaked at the end of this bypassing lock-in period, but cannot get back stake nor will get rewards until expiry of lock-in.",
+      "parameterDecorators": [
+        {
+          "name": "_indexerAddress",
+          "description": "the address of the indexer to unstake.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "expectedRewards(address)",
+      "name": "expectedRewards",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_indexerAddress",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "harvestRewards()",
+      "name": "harvestRewards",
+      "description": "This call allows an indexer to harvest rewards. When called, their stakeStartTime is reset. There is also no delay after the call is made to when the rewards can be collected unless they unstake before collecting rewards.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lockIn()",
+      "name": "lockIn",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minimumStake()",
+      "name": "minimumStake",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "numActiveIndexers()",
+      "name": "numActiveIndexers",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "numCurrentAdmins()",
+      "name": "numCurrentAdmins",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ownerPublicKey()",
+      "name": "ownerPublicKey",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "registryAddress()",
+      "name": "registryAddress",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeAdmin(address)",
+      "name": "removeAdmin",
+      "description": "remove an admin.",
+      "parameterDecorators": [
+        {
+          "name": "_adminAddress",
+          "description": "address of the admin to remove.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeStake(address,address)",
+      "name": "removeStake",
+      "description": "Function called in the event that an indexer is badly behaving. can only be triggered by an admin, results in a `SlashStakeEvent` than splits the indexer's stake between the reporter and the owner.",
+      "parameterDecorators": [
+        {
+          "name": "_indexerAddress",
+          "description": "address of the indexer getting slashed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "reporterAddress",
+          "description": "address of the reporter.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "revertEmergencyUnstake(address)",
+      "name": "revertEmergencyUnstake",
+      "description": "This stake event can only be triggered by an admin. The indexer is immediately staked at the end of this. It is to be called if a deadlock with an indexer is resolved in the indexer's favour The stakeStartTime of the indexer is however reset.",
+      "parameterDecorators": [
+        {
+          "name": "_indexerAddress",
+          "description": "the address of the indexer to revert an emergency unstake for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDefaultExpiryPeriod(uint256)",
+      "name": "setDefaultExpiryPeriod",
+      "description": "set the public key of the contract owner.",
+      "parameterDecorators": [
+        {
+          "name": "_defaultExpiryPeriod",
+          "description": "The default expiry period after which tokens can be withdrawn from the pool.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setLockIn(uint256)",
+      "name": "setLockIn",
+      "description": "change the default lock-in period if sender is an admin.",
+      "parameterDecorators": [
+        {
+          "name": "_lockIn",
+          "description": "Set the Lock-IN period.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMinimumStake(uint256)",
+      "name": "setMinimumStake",
+      "description": "Function that lets an admin set the stake. function to allow changing the default value of a stake post deployment.",
+      "parameterDecorators": [
+        {
+          "name": "_stakeAmount",
+          "description": "set the minimum stake necessary.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setOwnerPublicKey(bytes)",
+      "name": "setOwnerPublicKey",
+      "description": "set the public key of the contract owner.",
+      "parameterDecorators": [
+        {
+          "name": "_pubKey",
+          "description": "The public key of the registry.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRegistryAddress(string)",
+      "name": "setRegistryAddress",
+      "description": "change the registry address.",
+      "parameterDecorators": [
+        {
+          "name": "_regAddress",
+          "description": "address of the registry.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "slashWithdrawal(address,address)",
+      "name": "slashWithdrawal",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_poolMemberAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_slashReceiver",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stake(bytes,uint256)",
+      "name": "stake",
+      "description": "Function to call when making a stake.",
+      "parameterDecorators": [
+        {
+          "name": "_indexerPublicKey",
+          "description": "public key of the indexer.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amountOfTokens",
+          "description": "amount of tokens being staked.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tokenAddress()",
+      "name": "tokenAddress",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unstake()",
+      "name": "unstake",
+      "description": "called by an indexer when their lock-in has ended and they wish to unstake.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "viewAPY()",
+      "name": "viewAPY",
+      "description": "change the default lock-in period if sender is an admin.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "_apy returns the APY set in the contract.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdrawFromPool()",
+      "name": "withdrawFromPool",
+      "description": "This call allows anyone owed money by the contract to collect it by initiating a transfer to their account. The call can only be made if the lock-in for withdrawal has expired.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawPool(address)",
+      "name": "withdrawPool",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountPayable",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "slashable",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "lockInExpiryBlock",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "exists",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

@@ -1,0 +1,416 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "locking"
+  ],
+  "name": "TokenLock",
+  "description": "ERC20 token locker. all time in this contract is in seconds. Owner can lock tokens for specified period of time (lock meaning they can't withdraw)There's a 3 day buffer between requesting to unlock and being able to.",
+  "eventDecorators": [
+    {
+      "signature": "LockCreated(address,uint256,uint256)",
+      "name": "LockCreated",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "requestTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LockTimeExtended(address,uint256,uint256,uint256)",
+      "name": "LockTimeExtended",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "durationExtension",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newRequestTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TokenUnlocked(address,uint256,address)",
+      "name": "TokenUnlocked",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UnlockRequested(address,uint256,uint256,address)",
+      "name": "UnlockRequested",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "unlockTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "createLock(address,uint256,uint256)",
+      "name": "createLock",
+      "description": "Locks a token for the specified duration.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "an ERC20 token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "amount of token to be locked in wei.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "duration",
+          "description": "how long the lock will last for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "extendLock(uint256,uint256)",
+      "name": "extendLock",
+      "description": "Adds time to a lock.",
+      "parameterDecorators": [
+        {
+          "name": "lockIndex",
+          "description": "index of the lock in locks.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "durationExtension",
+          "description": "time to be added to the lock.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getLocks()",
+      "name": "getLocks",
+      "description": "These are needed since the default getter for arrays get indivdual elements.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "token",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "requestTime",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            }
+          ],
+          "solidityType": "tuple[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRequests()",
+      "name": "getRequests",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "token",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "unlockTime",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "recipient",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            }
+          ],
+          "solidityType": "tuple[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "locks(uint256)",
+      "name": "locks",
+      "description": "After the lock duration, these can be added to requests.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "requestTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "requestLock(uint256,address)",
+      "name": "requestLock",
+      "description": "If the lock duration is over, requests the tokens be moved to the recipient This can then be be done with unlock() after 3 days.",
+      "parameterDecorators": [
+        {
+          "name": "lockIndex",
+          "description": "index of the lock in locks.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "recipient",
+          "description": "address that will receive the tokens.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "requests(uint256)",
+      "name": "requests",
+      "description": "These can be withdrawn as long as the buffer has past.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "unlockTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unlock(uint256)",
+      "name": "unlock",
+      "description": "Enacts the request if at least 3 days has passed.",
+      "parameterDecorators": [
+        {
+          "name": "requestIndex",
+          "description": "index of the request in locks.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

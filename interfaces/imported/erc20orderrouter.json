@@ -1,0 +1,132 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "ERC20OrderRouter",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "DepositToken(bytes32,address,uint256,address,address,address,address,bytes,bytes32)",
+      "name": "DepositToken",
+      "description": "Emitted when the contract is unpaused.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "module",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "inputToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "witness",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "secret",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "depositToken(uint256,address,address,address,address,bytes,bytes32)",
+      "name": "depositToken",
+      "description": "To be backward compatible with old ERC20 Order submission parameters are in format expected by subgraph: https://github.com/gelatodigital/limit-orders-subgraph/blob/7614c138e462577475d240074000c60bad6b76cc/src/handlers/Order.ts#L58 ERC20 transfer should have an extra data we use to identify a order. A transfer with a order looks like: 0xa9059cbb 000000000000000000000000c8b6046580622eb6037d5ef2ca74faf63dc93631 0000000000000000000000000000000000000000000000000de0b6b3a7640000 0000000000000000000000000000000000000000000000000000000000000060 0000000000000000000000000000000000000000000000000000000000000120 000000000000000000000000ef6c6b0bce4d2060efab0d16736c6ce7473deddc 000000000000000000000000c7ad46e0b8a400bb3c915120d284aafba8fc4735 0000000000000000000000005523f2fc0889a6d46ae686bcd8daa9658cf56496 0000000000000000000000008153f16765f9124d754c432add5bd40f76f057b4 00000000000000000000000000000000000000000000000000000000000000c0 67656c61746f6e6574776f726b2020d83ddc09ea73fa863b164de440a270be31 0000000000000000000000000000000000000000000000000000000000000060 000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee 00000000000000000000000000000000000000000000000004b1e20ebf83c000 000000000000000000000000842A8Dea50478814e2bFAFF9E5A27DC0D1FdD37c The important part is 67656c61746f6e6574776f726b which is gelato's secret (gelatonetwork in hex) We use that as the index to parse the input data: - module = 5 * 32 bytes before secret index - inputToken = ERC20 which emits the Transfer event - owner = `from` parameter of the Transfer event - witness = 2 * 32 bytes before secret index - secret = 32 bytes from the secret index - data = 2 * 32 bytes after secret index (64 or 96 bytes length). Contains: - outputToken = 2 * 32 bytes after secret index - minReturn = 3 * 32 bytes after secret index - handler = 4 * 32 bytes after secret index (optional).",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_module",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_inputToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_owner",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_witness",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_secret",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "gelatoPineCore()",
+      "name": "gelatoPineCore",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

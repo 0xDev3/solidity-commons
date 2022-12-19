@@ -1,0 +1,337 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "staking"
+  ],
+  "name": "SBCWrapper",
+  "description": "SBCWrapper. Wrapper engine contract for minting wrapped tokens that can be deposited into SBC. Used for wrapping of STAKE and other possible ERC20 tokens.",
+  "eventDecorators": [
+    {
+      "signature": "Paused(address)",
+      "name": "Paused",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Swap(address,address,uint256,uint256)",
+      "name": "Swap",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "received",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SwapRateUpdated(address,uint256)",
+      "name": "SwapRateUpdated",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "rate",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TokenSwapEnabled(address)",
+      "name": "TokenSwapEnabled",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TokenSwapPaused(address)",
+      "name": "TokenSwapPaused",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Unpaused(address)",
+      "name": "Unpaused",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "claimTokens(address,address)",
+      "name": "claimTokens",
+      "description": "Allows to transfer any locked token from this contract. Only admin can call this method. While it is not allowed to claim previously enabled or paused tokens, the admin should still verify that the claimed token is a valid ERC20 token contract.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the token, if it is not provided (0x00..00), native coins will be transferred.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "address that will receive the locked tokens on this contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "enableToken(address,uint256)",
+      "name": "enableToken",
+      "description": "Enables swapping of new token into wrapped SBC token at a given rate. Only admin can call this method.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the enabled or reenabled token contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_rate",
+          "description": "exchange rate for the new pair, multiplied by 10**18.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "onTokenTransfer(address,uint256,bytes)",
+      "name": "onTokenTransfer",
+      "description": "ERC677 callback for swapping tokens in the simpler way during transferAndCall.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "address of the received token contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "amount of the received tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "should be empty for a simple token swap, otherwise will pass it further to the deposit contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "pause()",
+      "name": "pause",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "pauseToken(address)",
+      "name": "pauseToken",
+      "description": "Temporary pauses swapping of some particular token, which can be reenaled later. Only admin can call this method.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the paused token contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "paused()",
+      "name": "paused",
+      "description": "Returns true if the contract is paused, and false otherwise.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "sbcDepositContract()",
+      "name": "sbcDepositContract",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "sbcToken()",
+      "name": "sbcToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "swap(address,uint256,bytes)",
+      "name": "swap",
+      "description": "Swaps some of the whitelisted tokens for the newly created wrapped tokens. Tokens must be pre-approved before calling this function.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the swapped token contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "amount of tokens to swap.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_permitData",
+          "description": "optional permit calldata to use for preliminary token approval. supports STAKE permit and EIP2612 standards.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tokenRate(address)",
+      "name": "tokenRate",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tokenStatus(address)",
+      "name": "tokenStatus",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unpause()",
+      "name": "unpause",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

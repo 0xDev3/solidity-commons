@@ -1,0 +1,393 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "vesting"
+  ],
+  "name": "Claimable",
+  "description": "Claimable Protocol. Smart contract allow recipients to claim ERC20 tokens according to an initial cliff and a vesting period Formual: - claimable at cliff: (cliff / vesting) * amount - claimable at time t after cliff (t0 = start time) (t - t0) / vesting * amount - multiple claims, last claim at t1, claim at t: (t - t1) / vesting * amount or (t - t0) / vesting * amount - claimed.",
+  "eventDecorators": [
+    {
+      "signature": "Claimed(uint256,address,uint256)",
+      "name": "Claimed",
+      "description": "Event for token purchase logging. Emitted when admins mapping is modified.",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Revoked(uint256,uint256)",
+      "name": "Revoked",
+      "description": "Event for token purchase logging. Emitted when admins mapping is modified.",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TicketCreated(uint256,address,uint256,bool)",
+      "name": "TicketCreated",
+      "description": "Event for token purchase logging. Emitted when admins mapping is modified.",
+      "parameterDecorators": [
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "irrevocable",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "available(uint256)",
+      "name": "available",
+      "description": "check available claims, only grantor or beneficiary can call.",
+      "parameterDecorators": [
+        {
+          "name": "_id",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claim(uint256)",
+      "name": "claim",
+      "description": "claim available balance, only beneficiary can call.",
+      "parameterDecorators": [
+        {
+          "name": "_id",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "create(address,address,uint256,uint256,uint256,bool)",
+      "name": "create",
+      "description": "special cases: cliff = period: all claimable after the cliff.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_beneficiary",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_cliff",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_vesting",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_irrevocable",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "ticketId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "currentId()",
+      "name": "currentId",
+      "description": "unique claim ticket id, auto-increment.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "hasCliffed(uint256)",
+      "name": "hasCliffed",
+      "description": "checks the ticket has cliffed or not.",
+      "parameterDecorators": [
+        {
+          "name": "_id",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "myBeneficiaryTickets()",
+      "name": "myBeneficiaryTickets",
+      "description": "show all my beneficiary tickets.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "myTickets",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "myGrantorTickets()",
+      "name": "myGrantorTickets",
+      "description": "show all my grantor tickets.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "myTickets",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "revoke(uint256)",
+      "name": "revoke",
+      "description": "revoke ticket, balance returns to grantor, only grantor can call.",
+      "parameterDecorators": [
+        {
+          "name": "_id",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tickets(uint256)",
+      "name": "tickets",
+      "description": "id => Ticket.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "grantor",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "beneficiary",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "cliff",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "vesting",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "claimed",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "balance",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "createdAt",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "lastClaimedAt",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "numClaims",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "irrevocable",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "isRevoked",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "revokedAt",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unlocked(uint256)",
+      "name": "unlocked",
+      "description": "calculates the available balances excluding cliff and claims.",
+      "parameterDecorators": [
+        {
+          "name": "_id",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

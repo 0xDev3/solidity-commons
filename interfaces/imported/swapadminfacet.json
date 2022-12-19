@@ -1,0 +1,306 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "swaps"
+  ],
+  "name": "SwapAdminFacet",
+  "description": "SwapAdminFacet. This module is used through inheritance. It will make available the modifier `onlyOwner`, which can be applied to your functions to restrict their use to the owner. Contract module which exposes only-admin controls for the StableSwapFacet contract.",
+  "eventDecorators": [
+    {
+      "signature": "AdminFeesSet(bytes32,uint256,address)",
+      "name": "AdminFeesSet",
+      "description": "Emitted when the owner sets admin fees.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "- Identifier for asset.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newAdminFee",
+          "description": "- The updated fee.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "- The caller of the function.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AdminFeesWithdrawn(bytes32,address)",
+      "name": "AdminFeesWithdrawn",
+      "description": "Emitted when the owner withdraws admin fees.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "- Identifier for asset.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "caller",
+          "description": "- The caller of the function.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RampAStarted(bytes32,uint256,uint256,address)",
+      "name": "RampAStarted",
+      "description": "Emitted when the owner starts ramping up or down the A parameter.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "- Identifier for asset.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "futureA",
+          "description": "- The final A value after ramp.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "futureTime",
+          "description": "- The time A should reach the final value.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "- The caller of the function.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RampAStopped(bytes32,address)",
+      "name": "RampAStopped",
+      "description": "Emitted when the owner stops ramping up or down the A parameter.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "- Identifier for asset.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "caller",
+          "description": "- The caller of the function.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SwapFeesSet(bytes32,uint256,address)",
+      "name": "SwapFeesSet",
+      "description": "Emitted when the owner sets swap fees.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "- Identifier for asset.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newSwapFee",
+          "description": "- The updated fee.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "- The caller of the function.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SwapInitialized(bytes32,tuple,address)",
+      "name": "SwapInitialized",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "swap",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "initializeSwap(bytes32,address[],uint8[],string,string,uint256,uint256,uint256,address)",
+      "name": "initializeSwap",
+      "description": "Initializes this Swap contract with the given parameters. This will also clone a LPToken contract that represents users' LP positions. The owner of LPToken will be this contract - which means only this contract is allowed to mint/burn tokens.",
+      "parameterDecorators": [
+        {
+          "name": "_key",
+          "description": "the hash of the canonical id and domain for token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_pooledTokens",
+          "description": "an array of ERC20s this pool will accept.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "decimals",
+          "description": "the decimals to use for each pooled token, eg 8 for WBTC. Cannot be larger than POOL_PRECISION_DECIMALS.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "lpTokenName",
+          "description": "the long-form name of the token to be deployed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "lpTokenSymbol",
+          "description": "the short symbol for the token to be deployed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_a",
+          "description": "the amplification coefficient * n * (n - 1). See the StableSwap paper for details.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_fee",
+          "description": "default swap fee to be initialized with.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_adminFee",
+          "description": "default adminFee to be initialized with.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "lpTokenTargetAddress",
+          "description": "the address of an existing LPToken contract to use as a target.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rampA(bytes32,uint256,uint256)",
+      "name": "rampA",
+      "description": "Start ramping up or down A parameter towards given futureA and futureTime Checks if the change is too rapid, and commits the new A value only when it falls under the limit range.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical domain and id.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "futureA",
+          "description": "the new A to ramp towards.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "futureTime",
+          "description": "timestamp when the new A should be reached.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setSwapAdminFee(bytes32,uint256)",
+      "name": "setSwapAdminFee",
+      "description": "Update the admin fee. Admin fee takes portion of the swap fee.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical domain and id.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newAdminFee",
+          "description": "new admin fee to be applied on future transactions.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setSwapFee(bytes32,uint256)",
+      "name": "setSwapFee",
+      "description": "Update the swap fee to be applied on swaps.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical domain and id.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newSwapFee",
+          "description": "new swap fee to be applied on future transactions.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stopRampA(bytes32)",
+      "name": "stopRampA",
+      "description": "Stop ramping A immediately. Reverts if ramp A is already stopped.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical domain and id.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawSwapAdminFees(bytes32)",
+      "name": "withdrawSwapAdminFees",
+      "description": "Withdraw all admin fees to the contract owner.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical domain and id.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

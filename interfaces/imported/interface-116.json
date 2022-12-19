@@ -1,0 +1,348 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "oracles",
+    "bridges"
+  ],
+  "name": "SinkOracle",
+  "description": "Extension of BeaconOracle that is intended to be deployed on non-Mainnet networks to give financial contracts on those networks the ability to trigger cross-chain price requests to the Mainnet DVM. Also has the ability to receive published prices from Mainnet. This contract can be treated as the \"DVM\" for a non-Mainnet network, because a calling contract can request and access a resolved price request from this contract.",
+  "eventDecorators": [
+    {
+      "signature": "PriceRequestAdded(address,uint8,bytes32,uint256,bytes)",
+      "name": "PriceRequestAdded",
+      "description": "when the auction of a token gets started.",
+      "parameterDecorators": [
+        {
+          "name": "requester",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "chainID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "identifier",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "ancillaryData",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PushedPrice(address,uint8,bytes32,uint256,bytes,int256)",
+      "name": "PushedPrice",
+      "description": "when the auction of a token gets started.",
+      "parameterDecorators": [
+        {
+          "name": "pusher",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "chainID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "identifier",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "ancillaryData",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "currentChainID()",
+      "name": "currentChainID",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "destinationChainID()",
+      "name": "destinationChainID",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "executePublishPrice(uint8,bytes32,uint256,bytes,int256)",
+      "name": "executePublishPrice",
+      "description": "This method will ultimately be called after a `publishPrice` has been bridged cross-chain from Mainnet to this network via an off-chain relayer. The relayer will call `Bridge.executeProposal` on this local network, which call `GenericHandler.executeProposal()` and ultimately this method. This method should publish the price data for a requested price request. If this method fails for some reason, then it means that the price was never requested. Can only be called by the `GenericHandler`.",
+      "parameterDecorators": [
+        {
+          "name": "sinkChainID",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "identifier",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ancillaryData",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "finder()",
+      "name": "finder",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "formatMetadata(uint8,bytes32,uint256,bytes)",
+      "name": "formatMetadata",
+      "description": "This helper method is useful for calling Bridge.deposit(). GenericHandler.deposit() expects data to be formatted as: len(data) uint256 bytes 0 - 64 data bytes bytes 64 - END.",
+      "parameterDecorators": [
+        {
+          "name": "chainID",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "identifier",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ancillaryData",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPrice(bytes32,uint256,bytes)",
+      "name": "getPrice",
+      "description": "Returns resolved price for the request.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ancillaryData",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "int256 Price, or reverts if no resolved price for any reason.",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getResourceId()",
+      "name": "getResourceId",
+      "description": "Convenience method to get cross-chain Bridge resource ID linking this contract with the SourceOracle. More details about Resource ID's here: https://chainbridge.chainsafe.io/spec/#resource-id.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "bytes32 Hash containing the chain ID of the SourceOracle.",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "hasPrice(bytes32,uint256,bytes)",
+      "name": "hasPrice",
+      "description": "Returns whether a price has resolved for the request.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ancillaryData",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "True if a price is available, False otherwise. If true, then getPrice will succeed for the request.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "requestPrice(bytes32,uint256,bytes)",
+      "name": "requestPrice",
+      "description": "This is the first method that should be called in order to bridge a price request to Mainnet. Can be called only by a Registered contract that is allowed to make DVM price requests. Will mark this price request as Requested, and therefore able to receive the ultimate price resolution data, and also calls the local Bridge's deposit() method which will emit a Deposit event in order to signal to an off-chain relayer to begin the cross-chain process.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ancillaryData",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "validateDeposit(uint8,bytes32,uint256,bytes)",
+      "name": "validateDeposit",
+      "description": "This method will ultimately be called after `requestPrice` calls `Bridge.deposit()`, which will call `GenericHandler.deposit()` and ultimately this method. This method should basically check that the `Bridge.deposit()` was triggered by a valid price request, specifically one that has not resolved yet and was called by a registered contract. Without this check, `Bridge.deposit()` could be called by non-registered contracts to make price requests to the DVM.",
+      "parameterDecorators": [
+        {
+          "name": "sinkChainID",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "identifier",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ancillaryData",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

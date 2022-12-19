@@ -1,0 +1,1704 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "LongShort",
+  "description": "Core logic of Float Protocal markets. All functions in this file are currently `virtual`. This is NOT to encourage inheritance. It is merely for convenince when unit testing. visit https://float.capital for more info.",
+  "eventDecorators": [
+    {
+      "signature": "AdminChanged(address,address)",
+      "name": "AdminChanged",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "previousAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BeaconUpgraded(address)",
+      "name": "BeaconUpgraded",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "beacon",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ExecuteNextPriceSettlementsUser(address,uint32)",
+      "name": "ExecuteNextPriceSettlementsUser",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "marketIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LongShortV1(address,address,address)",
+      "name": "LongShortV1",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "admin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tokenFactory",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "staker",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewMarketLaunchedAndSeeded(uint32,uint256,uint256)",
+      "name": "NewMarketLaunchedAndSeeded",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "initialSeed",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "marketLeverage",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NextPriceDeposit(uint32,bool,uint256,address,uint256)",
+      "name": "NextPriceDeposit",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "isLong",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "depositAdded",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "oracleUpdateIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NextPriceRedeem(uint32,bool,uint256,address,uint256)",
+      "name": "NextPriceRedeem",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "isLong",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "synthRedeemed",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "oracleUpdateIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NextPriceSyntheticPositionShift(uint32,bool,uint256,address,uint256)",
+      "name": "NextPriceSyntheticPositionShift",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "isShiftFromLong",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "synthShifted",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "oracleUpdateIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OracleUpdated(uint32,address,address)",
+      "name": "OracleUpdated",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "oldOracleAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newOracleAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RoleAdminChanged(bytes32,bytes32,bytes32)",
+      "name": "RoleAdminChanged",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "previousAdminRole",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newAdminRole",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RoleGranted(bytes32,address,address)",
+      "name": "RoleGranted",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RoleRevoked(bytes32,address,address)",
+      "name": "RoleRevoked",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "SyntheticMarketCreated(uint32,address,address,address,int256,string,string,address,address)",
+      "name": "SyntheticMarketCreated",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "longTokenAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "shortTokenAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "paymentToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "initialAssetPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "name",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "symbol",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "oracleAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "yieldManagerAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SystemStateUpdated(uint32,uint256,int256,uint256,uint256,uint256,uint256)",
+      "name": "SystemStateUpdated",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "updateIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "underlyingAssetPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "longValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "shortValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "longPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "shortPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Upgraded(address)",
+      "name": "Upgraded",
+      "description": "** EVENTS ** ///.",
+      "parameterDecorators": [
+        {
+          "name": "implementation",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "ADMIN_ROLE()",
+      "name": "ADMIN_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "DEFAULT_ADMIN_ROLE()",
+      "name": "DEFAULT_ADMIN_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "PERMANENT_INITIAL_LIQUIDITY_HOLDER()",
+      "name": "PERMANENT_INITIAL_LIQUIDITY_HOLDER",
+      "description": "this is the address that permanently locked initial liquidity for markets is held by. These tokens will never move so market can never have zero liquidity on a side.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "UPGRADER_ROLE()",
+      "name": "UPGRADER_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "assetPrice(uint32)",
+      "name": "assetPrice",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "batched_amountPaymentToken_deposit(uint32,bool)",
+      "name": "batched_amountPaymentToken_deposit",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "batched_amountSyntheticToken_redeem(uint32,bool)",
+      "name": "batched_amountSyntheticToken_redeem",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "batched_amountSyntheticToken_toShiftAwayFrom_marketSide(uint32,bool)",
+      "name": "batched_amountSyntheticToken_toShiftAwayFrom_marketSide",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "changeMarketTreasurySplitGradient(uint32,uint256)",
+      "name": "changeMarketTreasurySplitGradient",
+      "description": "changes the gradient of the line for determining the yield split between market and treasury.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndex",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_marketTreasurySplitGradient_e18",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createNewSyntheticMarket(string,string,address,address,address)",
+      "name": "createNewSyntheticMarket",
+      "description": "Creates an entirely new long/short market tracking an underlying oracle price. Make sure the synthetic names/symbols are unique. This does not make the market active. The `initializeMarket` function was split out separately to this function to reduce costs.",
+      "parameterDecorators": [
+        {
+          "name": "syntheticName",
+          "description": "Name of the synthetic asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "syntheticSymbol",
+          "description": "Symbol for the synthetic asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_paymentToken",
+          "description": "The address of the erc20 token used to buy this synthetic asset this will likely always be DAI.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_oracleManager",
+          "description": "The address of the oracle manager that provides the price feed for this market.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_yieldManager",
+          "description": "The contract that manages depositing the paymentToken into a yield bearing protocol.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createNewSyntheticMarketExternalSyntheticTokens(string,string,address,address,address,address,address)",
+      "name": "createNewSyntheticMarketExternalSyntheticTokens",
+      "description": "Creates an entirely new long/short market tracking an underlying oracle price. Uses already created synthetic tokens. This does not make the market active. The `initializeMarket` function was split out separately to this function to reduce costs.",
+      "parameterDecorators": [
+        {
+          "name": "syntheticName",
+          "description": "Name of the synthetic asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "syntheticSymbol",
+          "description": "Symbol for the synthetic asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_longToken",
+          "description": "Address for the long token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_shortToken",
+          "description": "Address for the short token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_paymentToken",
+          "description": "The address of the erc20 token used to buy this synthetic asset this will likely always be DAI.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_oracleManager",
+          "description": "The address of the oracle manager that provides the price feed for this market.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_yieldManager",
+          "description": "The contract that manages depositing the paymentToken into a yield bearing protocol.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "executeOutstandingNextPriceSettlementsUser(address,uint32)",
+      "name": "executeOutstandingNextPriceSettlementsUser",
+      "description": "After markets have been batched updated on a new oracle price, transfers any owed tokens to a user from their next price actions for that update to that user.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "The address of the user for whom to execute the function.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "marketIndex",
+          "description": "An uint32 which uniquely identifies a market.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "executeOutstandingNextPriceSettlementsUserMulti(address,uint32[])",
+      "name": "executeOutstandingNextPriceSettlementsUserMulti",
+      "description": "Executes outstanding next price settlements for a user for multiple markets.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "The address of the user for whom to execute the function.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "marketIndexes",
+          "description": "An array of int32s which each uniquely identify a market.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "gems()",
+      "name": "gems",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAmountSyntheticTokenToMintOnTargetSide(uint32,uint256,bool,uint256)",
+      "name": "getAmountSyntheticTokenToMintOnTargetSide",
+      "description": "Given an executed next price shift from tokens on one market side to the other, determines how many other side tokens the shift was worth. Intended for use primarily by Staker.sol.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndex",
+          "description": "An uint32 which uniquely identifies a market.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountSyntheticToken_redeemOnOriginSide",
+          "description": "Amount of synth token in wei.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "isShiftFromLong",
+          "description": "Whether the token shift is from long to short (true), or short to long (false).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "priceSnapshotIndex",
+          "description": "Index which identifies which synth prices to use.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountSyntheticTokensToMintOnTargetSide",
+          "description": "The amount in wei of tokens for the other side that the shift was worth.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoleAdmin(bytes32)",
+      "name": "getRoleAdmin",
+      "description": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUsersConfirmedButNotSettledSynthBalance(address,uint32,bool)",
+      "name": "getUsersConfirmedButNotSettledSynthBalance",
+      "description": "The amount of a synth token a user is owed following a batch execution. 4 possible states for next price actions: - \"Pending\" - means the next price update hasn't happened or been enacted on by the updateSystemState function. - \"Confirmed\" - means the next price has been updated by the updateSystemState function. There is still - outstanding (lazy) computation that needs to be executed per user in the batch. - \"Settled\" - there is no more computation left for the user. - \"Non-existent\" - user has no next price actions. This function returns a calculated value only in the case of 'confirmed' next price actions. It should return zero for all other types of next price actions. Used in SyntheticToken.sol balanceOf to allow for automatic reflection of next price actions.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "The address of the user for whom to execute the function for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "marketIndex",
+          "description": "An uint32 which uniquely identifies a market.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "isLong",
+          "description": "Whether it is for the long synthetic asset or the short synthetic asset.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "confirmedButNotSettledBalance",
+          "description": "The amount in wei of tokens that the user is owed.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "grantRole(bytes32,address)",
+      "name": "grantRole",
+      "description": "Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted} event. Requirements: - the caller must have ``role``'s admin role.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "RoleGranted(bytes32,address,address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "hasRole(bytes32,address)",
+      "name": "hasRole",
+      "description": "Returns `true` if `account` has been granted `role`.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,address,address,address)",
+      "name": "initialize",
+      "description": "Initializes the contract. Calls OpenZeppelin's initializer modifier.",
+      "parameterDecorators": [
+        {
+          "name": "_admin",
+          "description": "Address of the admin role.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokenFactory",
+          "description": "Address of the contract which creates synthetic asset tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_staker",
+          "description": "Address of the contract which handles synthetic asset stakes.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_gems",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initializeMarket(uint32,uint256,uint256,uint256,uint256,uint256,int256,uint256,uint256)",
+      "name": "initializeMarket",
+      "description": "Sets a market as active once it has already been setup by createNewSyntheticMarket. Seperated from createNewSyntheticMarket due to gas considerations.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndex",
+          "description": "An int32 which uniquely identifies the market.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "kInitialMultiplier",
+          "description": "Linearly decreasing multiplier for Float token issuance for the market when staking synths.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "kPeriod",
+          "description": "Time which kInitialMultiplier will last.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "unstakeFee_e18",
+          "description": "Base 1e18 percentage fee levied when unstaking for the market.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "initialMarketSeedForEachMarketSide",
+          "description": "Amount of payment token that will be deposited in each market side to seed the market.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "balanceIncentiveCurve_exponent",
+          "description": "Sets the degree to which Float token issuance differs for market sides in unbalanced markets. See Staker.sol.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "balanceIncentiveCurve_equilibriumOffset",
+          "description": "An offset to account for naturally imbalanced markets when Float token issuance should differ for market sides. See Staker.sol.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_marketTreasurySplitGradient_e18",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "marketLeverage",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "latestMarket()",
+      "name": "latestMarket",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "marketExists(uint32)",
+      "name": "marketExists",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "marketLeverage_e18(uint32)",
+      "name": "marketLeverage_e18",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "marketSideValueInPaymentToken(uint32,bool)",
+      "name": "marketSideValueInPaymentToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "marketTreasurySplitGradient_e18(uint32)",
+      "name": "marketTreasurySplitGradient_e18",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "marketUpdateIndex(uint32)",
+      "name": "marketUpdateIndex",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "mintLongNextPrice(uint32,uint256)",
+      "name": "mintLongNextPrice",
+      "description": "Allows users to mint long synthetic assets for a market. To prevent front-running these mints are executed on the next price update from the oracle.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndex",
+          "description": "An uint32 which uniquely identifies a market.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "Amount of payment tokens in that token's lowest denominationfor which to mint synthetic assets at next price.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "mintShortNextPrice(uint32,uint256)",
+      "name": "mintShortNextPrice",
+      "description": "Allows users to mint short synthetic assets for a market. To prevent front-running these mints are executed on the next price update from the oracle.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndex",
+          "description": "An uint32 which uniquely identifies a market.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "Amount of payment tokens in that token's lowest denominationfor which to mint synthetic assets at next price.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "oracleManagers(uint32)",
+      "name": "oracleManagers",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "paymentTokens(uint32)",
+      "name": "paymentTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "redeemLongNextPrice(uint32,uint256)",
+      "name": "redeemLongNextPrice",
+      "description": "Allows users to redeem long synthetic assets for a market. To prevent front-running these redeems are executed on the next price update from the oracle.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndex",
+          "description": "An uint32 which uniquely identifies a market.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokens_redeem",
+          "description": "Amount in wei of synth tokens to redeem at the next oracle price.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "redeemShortNextPrice(uint32,uint256)",
+      "name": "redeemShortNextPrice",
+      "description": "Allows users to redeem short synthetic assets for a market. To prevent front-running these redeems are executed on the next price update from the oracle.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndex",
+          "description": "An uint32 which uniquely identifies a market.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokens_redeem",
+          "description": "Amount in wei of synth tokens to redeem at the next oracle price.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceRole(bytes32,address)",
+      "name": "renounceRole",
+      "description": "Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "RoleRevoked(bytes32,address,address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "revokeRole(bytes32,address)",
+      "name": "revokeRole",
+      "description": "Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "RoleRevoked(bytes32,address,address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "shiftPositionFromLongNextPrice(uint32,uint256)",
+      "name": "shiftPositionFromLongNextPrice",
+      "description": "Allows users to shift their position from long to short in a single transaction. To prevent front-running these shifts are executed on the next price update from the oracle.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndex",
+          "description": "An uint32 which uniquely identifies a market.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountSyntheticTokensToShift",
+          "description": "Amount in wei of synthetic tokens to shift from long to short the next oracle price update.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "shiftPositionFromShortNextPrice(uint32,uint256)",
+      "name": "shiftPositionFromShortNextPrice",
+      "description": "Allows users to shift their position from short to long in a single transaction. To prevent front-running these shifts are executed on the next price update from the oracle.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndex",
+          "description": "An uint32 which uniquely identifies a market.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountSyntheticTokensToShift",
+          "description": "Amount in wei of synthetic tokens to shift from the short to long at the next oracle price update.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "shiftPositionNextPrice(uint32,uint256,bool)",
+      "name": "shiftPositionNextPrice",
+      "description": "Allows users to shift their position from one side of the market to the other in a single transaction. To prevent front-running these shifts are executed on the next price update from the oracle. Called by external functions to shift either way. Intended for primary use by Staker.sol.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndex",
+          "description": "An uint32 which uniquely identifies a market.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountSyntheticTokensToShift",
+          "description": "Amount in wei of synthetic tokens to shift from the one side to the other at the next oracle price update.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "isShiftFromLong",
+          "description": "Whether the token shift is from long to short (true), or short to long (false).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "staker()",
+      "name": "staker",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "supportsInterface(bytes4)",
+      "name": "supportsInterface",
+      "description": "See {IERC165-supportsInterface}.",
+      "parameterDecorators": [
+        {
+          "name": "interfaceId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "syntheticToken_priceSnapshot(uint32,bool,uint256)",
+      "name": "syntheticToken_priceSnapshot",
+      "description": "synthetic token prices of a given market of a (long/short) at every previous price update.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "syntheticTokens(uint32,bool)",
+      "name": "syntheticTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tokenFactory()",
+      "name": "tokenFactory",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "updateMarketOracle(uint32,address)",
+      "name": "updateMarketOracle",
+      "description": "Update oracle for a market. Can only be called by the current admin.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndex",
+          "description": "An uint32 which uniquely identifies a market.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newOracleManager",
+          "description": "Address of the replacement oracle manager.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateSystemState(uint32)",
+      "name": "updateSystemState",
+      "description": "Updates the state of a market to account for the latest oracle price update.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndex",
+          "description": "An uint32 which uniquely identifies a market.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateSystemStateMulti(uint32[])",
+      "name": "updateSystemStateMulti",
+      "description": "Updates the state of multiples markets to account for their latest oracle price updates.",
+      "parameterDecorators": [
+        {
+          "name": "marketIndexes",
+          "description": "An array of int32s which uniquely identify markets.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeTo(address)",
+      "name": "upgradeTo",
+      "description": "Upgrade the implementation of the proxy to `newImplementation`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "Upgraded(address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeToAndCall(address,bytes)",
+      "name": "upgradeToAndCall",
+      "description": "Upgrade the implementation of the proxy to `newImplementation`, and subsequently execute the function call encoded in `data`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "Upgraded(address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "userNextPrice_currentUpdateIndex(uint32,address)",
+      "name": "userNextPrice_currentUpdateIndex",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "userNextPrice_paymentToken_depositAmount(uint32,bool,address)",
+      "name": "userNextPrice_paymentToken_depositAmount",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "userNextPrice_syntheticToken_redeemAmount(uint32,bool,address)",
+      "name": "userNextPrice_syntheticToken_redeemAmount",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "userNextPrice_syntheticToken_toShiftAwayFrom_marketSide(uint32,bool,address)",
+      "name": "userNextPrice_syntheticToken_toShiftAwayFrom_marketSide",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "yieldManagers(uint32)",
+      "name": "yieldManagers",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

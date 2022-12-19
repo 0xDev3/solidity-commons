@@ -1,0 +1,470 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "swaps",
+    "vesting",
+    "merkle proofs",
+    "dao",
+    "uniswap",
+    "balancer"
+  ],
+  "name": "MerkleDistributor",
+  "description": "MerkleDistributor contract. The Merkle trees are not validated in any way, so the system assumes the contract owner behaves honestly. Inspired by: - https://github.com/pie-dao/vested-token-migration-app - https://github.com/Uniswap/merkle-distributor - https://github.com/balancer-labs/erc20-redeemableAllows an owner to distribute any reward ERC20 to claimants according to Merkle roots. The owner can specify multiple Merkle roots distributions with customized reward currencies.",
+  "eventDecorators": [
+    {
+      "signature": "Claimed(address,uint256,address,uint256,uint256,address)",
+      "name": "Claimed",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "windowIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "accountIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "rewardToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "CreatedWindow(uint256,uint256,address,address)",
+      "name": "CreatedWindow",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "beneficiary",
+          "description": "who got the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "purchaser",
+          "description": "who paid for the tokens.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "weis paid for purchase.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DeleteWindow(uint256,address)",
+      "name": "DeleteWindow",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "windowIndex",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "WithdrawRewards(address,uint256,address)",
+      "name": "WithdrawRewards",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "amount of tokens purchased.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "currency",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "claim(tuple(uint256,uint256,uint256,address,bytes32[]))",
+      "name": "claim",
+      "description": "Claim amount of reward tokens for account, as described by Claim input object. If the `_claim`'s `amount`, `accountIndex`, and `account` do not exactly match the values stored in the merkle root for the `_claim`'s `windowIndex` this method will revert.",
+      "parameterDecorators": [
+        {
+          "name": "_claim",
+          "description": "claim object describing amount, accountIndex, account, window index, and merkle proof.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "windowIndex",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "accountIndex",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "account",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "merkleProof",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimMulti(tuple(uint256,uint256,uint256,address,bytes32[])[])",
+      "name": "claimMulti",
+      "description": "Batch claims to reduce gas versus individual submitting all claims. Method will fail if any individual claims within the batch would fail. Optimistically tries to batch together consecutive claims for the same account and same reward token to reduce gas. Therefore, the most gas-cost-optimal way to use this method is to pass in an array of claims sorted by account and reward currency.",
+      "parameterDecorators": [
+        {
+          "name": "claims",
+          "description": "array of claims to claim.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "windowIndex",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "accountIndex",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "account",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "merkleProof",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deleteWindow(uint256)",
+      "name": "deleteWindow",
+      "description": "Delete merkle root at window index. Callable only by owner. Likely to be followed by a withdrawRewards call to clear contract state.",
+      "parameterDecorators": [
+        {
+          "name": "windowIndex",
+          "description": "merkle root index to delete.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isClaimed(uint256,uint256)",
+      "name": "isClaimed",
+      "description": "Returns True if the claim for `accountIndex` has already been completed for the Merkle root at `windowIndex`. This method will only work as intended if all `accountIndex`'s are unique for a given `windowIndex`. The onus is on the Owner of this contract to submit only valid Merkle roots.",
+      "parameterDecorators": [
+        {
+          "name": "windowIndex",
+          "description": "merkle root to check.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "accountIndex",
+          "description": "account index to check within window index.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "True if claim has been executed already, False otherwise.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "merkleWindows(uint256)",
+      "name": "merkleWindows",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "merkleRoot",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        },
+        {
+          "name": "rewardToken",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "ipfsHash",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nextCreatedIndex()",
+      "name": "nextCreatedIndex",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setWindow(uint256,address,bytes32,string)",
+      "name": "setWindow",
+      "description": "Set merkle root for the next available window index and seed allocations.Callable only by owner of this contract. Caller must have approved this contract to transfer `rewardsToDeposit` amount of `rewardToken` or this call will fail. Importantly, we assume that the owner of this contract correctly chooses an amount `rewardsToDeposit` that is sufficient to cover all claims within the `merkleRoot`. Otherwise, a race condition can be created. This situation can occur because we do not segregate reward balances by window, for code simplicity purposes. (If `rewardsToDeposit` is purposefully insufficient to payout all claims, then the admin must subsequently transfer in rewards or the following situation can occur). Example race situation: - Window 1 Tree: Owner sets `rewardsToDeposit=100` and insert proofs that give claimant A 50 tokens and claimant B 51 tokens. The owner has made an error by not setting the `rewardsToDeposit` correctly to 101. - Window 2 Tree: Owner sets `rewardsToDeposit=1` and insert proofs that give claimant A 1 token. The owner correctly set `rewardsToDeposit` this time. - At this point contract owns 100 + 1 = 101 tokens. Now, imagine the following sequence: (1) Claimant A claims 50 tokens for Window 1, contract now has 101 - 50 = 51 tokens. (2) Claimant B claims 51 tokens for Window 1, contract now has 51 - 51 = 0 tokens. (3) Claimant A tries to claim 1 token for Window 2 but fails because contract has 0 tokens. - In summary, the contract owner created a race for step(2) and step(3) in which the first claim would succeed and the second claim would fail, even though both claimants would expect their claims to succeed.",
+      "parameterDecorators": [
+        {
+          "name": "rewardsToDeposit",
+          "description": "amount of rewards to deposit to seed this allocation.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "rewardToken",
+          "description": "ERC20 reward token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "merkleRoot",
+          "description": "merkle root describing allocation.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ipfsHash",
+          "description": "hash of IPFS object, conveniently stored for clients.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "verifyClaim(tuple(uint256,uint256,uint256,address,bytes32[]))",
+      "name": "verifyClaim",
+      "description": "Returns True if leaf described by {account, amount, accountIndex} is stored in Merkle root at given window index.",
+      "parameterDecorators": [
+        {
+          "name": "_claim",
+          "description": "claim object describing amount, accountIndex, account, window index, and merkle proof.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "windowIndex",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "accountIndex",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "account",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "merkleProof",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "valid",
+          "description": "True if leaf exists.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdrawRewards(address,uint256)",
+      "name": "withdrawRewards",
+      "description": "Emergency method that transfers rewards out of the contract if the contract was configured improperly. Callable only by owner.",
+      "parameterDecorators": [
+        {
+          "name": "rewardCurrency",
+          "description": "rewards to withdraw from contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "amount of rewards to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

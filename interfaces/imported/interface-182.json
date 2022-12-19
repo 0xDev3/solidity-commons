@@ -1,0 +1,537 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "curve finance",
+    "avalanche"
+  ],
+  "name": "JoeHatBondingCurve",
+  "description": "Trader Joe's bonding curve contract for the $HAT token. Allows buying/selling of HATs to AVAX along a bonding curve.",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "SeedContract(address,uint256,uint256)",
+      "name": "SeedContract",
+      "description": "Emitted when an owner seed the contract with amountAvax $AVAX and hatAmount $HAT.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "avaxAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "hatAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SwapAvaxForHat(uint256,uint256)",
+      "name": "SwapAvaxForHat",
+      "description": "Emitted swapping Avax for $HAT.",
+      "parameterDecorators": [
+        {
+          "name": "avaxAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "hatAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SwapHatForAvax(uint256,uint256)",
+      "name": "SwapHatForAvax",
+      "description": "Emitted swapping $HAT for Avax.",
+      "parameterDecorators": [
+        {
+          "name": "hatAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "avaxAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TeamWithdraw(uint256)",
+      "name": "TeamWithdraw",
+      "description": "Emitted when an owner withdraw the tokens of the team balance.",
+      "parameterDecorators": [
+        {
+          "name": "teamBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "_a()",
+      "name": "_a",
+      "description": "a/b is between 0 and 1. During a sale, 1 - a/b is kept by the contract so that it can be retrieved by the team and to encourage people to HODL.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "_b()",
+      "name": "_b",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "balanceOf(address)",
+      "name": "balanceOf",
+      "description": "Gets balance of $HAT held by an account.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "- Account that you want to view balance for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "balanceOfAccount - the amount of tokens owned by `account`.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "burn(uint256)",
+      "name": "burn",
+      "description": "Burns a given amount of $HAT from sender's balance.",
+      "parameterDecorators": [
+        {
+          "name": "hatAmount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getAvaxAmountInForExactHatAmountOut(uint256)",
+      "name": "getAvaxAmountInForExactHatAmountOut",
+      "description": "Calculates the required amount of AVAX to buy a given amount of $HAT.",
+      "parameterDecorators": [
+        {
+          "name": "hatAmount",
+          "description": "- The amount of $HAT to buy.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "avaxAmount - The amount of AVAX required.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAvaxAmountOutForExactHatAmountInWithFees(uint256)",
+      "name": "getAvaxAmountOutForExactHatAmountInWithFees",
+      "description": "Calculates the received amount of AVAX if a given amount of $HAT is sold with fees deducted.",
+      "parameterDecorators": [
+        {
+          "name": "hatAmount",
+          "description": "- The amount of $HAT to sell.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "avaxAmount - The amount of AVAX received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getHatAmountInForExactAvaxAmountOutWithFees(uint256)",
+      "name": "getHatAmountInForExactAvaxAmountOutWithFees",
+      "description": "Calculates the required amount of $HAT to buy a given amount of AVAX with fees taken into account.",
+      "parameterDecorators": [
+        {
+          "name": "avaxAmount",
+          "description": "- The amount of AVAX to buy.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "hatAmount - The amount of $HAT required.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getHatAmountOutForExactAvaxAmountIn(uint256)",
+      "name": "getHatAmountOutForExactAvaxAmountIn",
+      "description": "Calculates the amount of $HAT received if a given amount of AVAX is sold.",
+      "parameterDecorators": [
+        {
+          "name": "avaxAmount",
+          "description": "- The amount of AVAX sold.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "hatAmount - The amount of $HAT received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getReserveAvax()",
+      "name": "getReserveAvax",
+      "description": "Gets the reserveAvax if we were using a uniswap pool.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "reserveAvax - The reserveAvax of that pool if it was a uniswap pool.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getReserveHat()",
+      "name": "getReserveHat",
+      "description": "Gets the reserveHat if we were using a uniswap pool.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "reserveHat - The reserveHat of that pool if it was a uniswap pool.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTeamBalance()",
+      "name": "getTeamBalance",
+      "description": "Gets the team AVAX balance, which is calculated by taking the AVAX balance of the contract and removing the AVAX needed to pay everyone if all HODLers sell all their tokens.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "teamBalance - The amount of AVAX owned by the contract but not needed.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "k()",
+      "name": "k",
+      "description": "k the constant of the uniswap curve.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastHatPriceInAvax()",
+      "name": "lastHatPriceInAvax",
+      "description": "Used to calculate the price of the very last token, because with uniswap you'll never be able to buy the very last token, as it diverges to infinity, (1/0).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxSupply()",
+      "name": "maxSupply",
+      "description": "Max Supply of $HAT, when initialising, it's equal to the circulating supply.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "redeemHat()",
+      "name": "redeemHat",
+      "description": "Redeems 1 $HAT. Sender needs at least 1 $HAT.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "redeemers(uint256)",
+      "name": "redeemers",
+      "description": "Keep a list of all the redeemers ordered by time. It will be used at some point...",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "seedContract()",
+      "name": "seedContract",
+      "description": "Adds $AVAX and $HAT to the contract. IMPORTANT : this needs to be called to seed the contract, you shouldn't send tokens directly to the contract. You need to approve the token's contract, with at least the value you'll send to the contract, which is: k * 1e18 / (avaxAmount + k * 1e18 / maxSupply)).",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapAvaxForExactHat(uint256)",
+      "name": "swapAvaxForExactHat",
+      "description": "Buys a given amount of $HAT for $AVAX.",
+      "parameterDecorators": [
+        {
+          "name": "exactHatAmount",
+          "description": "- The exact amount of $HAT.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapExactAvaxForHat(uint256)",
+      "name": "swapExactAvaxForHat",
+      "description": "Sells a given amount of AVAX for $HAT.",
+      "parameterDecorators": [
+        {
+          "name": "minHatAmount",
+          "description": "- The min amount of $HAT to be received.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapExactHatForAvaxWithFees(uint256,uint256)",
+      "name": "swapExactHatForAvaxWithFees",
+      "description": "Sells a given amount of $HAT for AVAX with fees deducted.",
+      "parameterDecorators": [
+        {
+          "name": "exactHatAmount",
+          "description": "- The amount of $HAT to swap for AVAX.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minAvaxAmount",
+          "description": "- The min amount of AVAX to be received.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapHatForExactAvaxWithFees(uint256,uint256)",
+      "name": "swapHatForExactAvaxWithFees",
+      "description": "Buys a given amount of $AVAX for $HAT with fees deducted.",
+      "parameterDecorators": [
+        {
+          "name": "exactAvaxAmount",
+          "description": "- The exact amount of $AVAX to be received.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxHatAmount",
+          "description": "- The max amount of $HAT to be sold.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "totalSupply()",
+      "name": "totalSupply",
+      "description": "Gets total supply of $HAT.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Returns the amount of $HAT in existence.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawTeamBalance()",
+      "name": "withdrawTeamBalance",
+      "description": "Withdraws the team funds, which is equal to the amount of AVAX kept by the contract that aren't needed if everyone sells their tokens.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

@@ -1,0 +1,1328 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "swaps",
+    "staking"
+  ],
+  "name": "OolongSwapV1Base",
+  "description": "OolongSwapV1Base is the IV implementation that targets Oolong Swap's Oolong Farm. It takes the base asset and stakes into oolongFarm.",
+  "eventDecorators": [
+    {
+      "signature": "BeneficiaryAdded(address,uint256,uint256)",
+      "name": "BeneficiaryAdded",
+      "description": "Events ///.",
+      "parameterDecorators": [
+        {
+          "name": "_target",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_psRatio",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_psRole",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BeneficiaryRemoved(address)",
+      "name": "BeneficiaryRemoved",
+      "description": "Events ///.",
+      "parameterDecorators": [
+        {
+          "name": "_target",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CreditorInvested(address,uint256,uint256)",
+      "name": "CreditorInvested",
+      "description": "Events ///.",
+      "parameterDecorators": [
+        {
+          "name": "_creditor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_baseAssetInvested",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "shareMinted",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CreditorWithdrawn(address,uint256,uint256)",
+      "name": "CreditorWithdrawn",
+      "description": "Events ///.",
+      "parameterDecorators": [
+        {
+          "name": "_creditor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_baseAssetRequested",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_baseAssetTransferred",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DividendClaimed(address,uint256)",
+      "name": "DividendClaimed",
+      "description": "Events ///.",
+      "parameterDecorators": [
+        {
+          "name": "_who",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "InsuranceClaimFiled(uint256)",
+      "name": "InsuranceClaimFiled",
+      "description": "Events ///.",
+      "parameterDecorators": [
+        {
+          "name": "filedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OpsCollectProfit(uint256)",
+      "name": "OpsCollectProfit",
+      "description": "Events ///.",
+      "parameterDecorators": [
+        {
+          "name": "baseAssetProfit",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OpsInvestAll()",
+      "name": "OpsInvestAll",
+      "description": "Events ///.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "OpsInvestmentPulled(uint256)",
+      "name": "OpsInvestmentPulled",
+      "description": "Events ///.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "VaultRemoved(address)",
+      "name": "VaultRemoved",
+      "description": "Events ///.",
+      "parameterDecorators": [
+        {
+          "name": "_target",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "ASSET_ID_BASE()",
+      "name": "ASSET_ID_BASE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "RATIO_DENOMINATOR()",
+      "name": "RATIO_DENOMINATOR",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "SHARE_UNIT()",
+      "name": "SHARE_UNIT",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "activeCreditor(address)",
+      "name": "activeCreditor",
+      "description": "Whitelist the vaults/ creditors for depositing funds into the IV.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addBeneficiary(address,uint256,uint256)",
+      "name": "addBeneficiary",
+      "description": "Adds a beneficiary to the Investment Vehicle. A beneficiary is a party that benefits the Investment Vehicle, thus should gain something in return.",
+      "parameterDecorators": [
+        {
+          "name": "_target",
+          "description": "Address of the new beneficiary.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_psRatio",
+          "description": "Profit sharing ratio designated to the beneficiary.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_psRole",
+          "description": "an identifier for different roles in the protocol.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addCreditor(address)",
+      "name": "addCreditor",
+      "description": "Add a creditor (typically a vault) to whitelist.",
+      "parameterDecorators": [
+        {
+          "name": "_target",
+          "description": "Address of the creditor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addRewardToken(address)",
+      "name": "addRewardToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "askToInvestAsCreditor(uint256)",
+      "name": "askToInvestAsCreditor",
+      "description": "Creditor pushing more funds into vehicle returns how much funds was accepted by the vehicle.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "the amount of base asset that the creditor wants to invest.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The amount that was accepted by the IV.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "autoControl()",
+      "name": "autoControl",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "baseAsset()",
+      "name": "baseAsset",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "baseAssetAsShareBalance(uint256)",
+      "name": "baseAssetAsShareBalance",
+      "description": "Converts base asset amount to share amount.",
+      "parameterDecorators": [
+        {
+          "name": "_baseAssetAmount",
+          "description": "amount in base asset.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the equivalent share amount.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "baseAssetBalanceOf(address)",
+      "name": "baseAssetBalanceOf",
+      "description": "Returns base asset amount that an address holds.",
+      "parameterDecorators": [
+        {
+          "name": "_address",
+          "description": "the target address, could be a creditor or beneficiary.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "base asset amount of the target address.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claimDividendAsBeneficiary()",
+      "name": "claimDividendAsBeneficiary",
+      "description": "Claim the dividend.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimDividendForBeneficiary(address)",
+      "name": "claimDividendForBeneficiary",
+      "description": "Claim the dividend for a beneficiary.",
+      "parameterDecorators": [
+        {
+          "name": "_who",
+          "description": "Address of the beneficiary.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "collectProfitAndDistribute(uint256)",
+      "name": "collectProfitAndDistribute",
+      "description": "Operators can call this to account all the profit that has accumulated to all the creditors and beneficiaries of the IV.",
+      "parameterDecorators": [
+        {
+          "name": "minBaseProfit",
+          "description": "the minimum profit that should be accounted.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "fileInsuanceClaim()",
+      "name": "fileInsuanceClaim",
+      "description": "Anyone can call the function when the IV has more debt than funds in the investment opportunity, this means that it has lost money and could file for insurance. The function would calculate the lost amount automatically, and call contracts that have provided insurance. If the loss is negligible, the function will not call the respective contracts.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "governance()",
+      "name": "governance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,address,uint256)",
+      "name": "initialize",
+      "description": "initialize the iv with oolongFarm and its respective base asset.",
+      "parameterDecorators": [
+        {
+          "name": "_store",
+          "description": "the address of system storage.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_baseAsset",
+          "description": "the address of base asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_pid",
+          "description": "the pid of the Oolong Swap LP pair.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialize(address,address)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_store",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_baseAsset",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialize(address)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_store",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "investAll()",
+      "name": "investAll",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "invested()",
+      "name": "invested",
+      "description": "calculates the amount of base asset that is deposited into oolongFarm.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "amount of base asset in oolongFarm.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isAdmin(address)",
+      "name": "isAdmin",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_who",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isBeneficiary(address)",
+      "name": "isBeneficiary",
+      "description": "Check if a target is a beneficiary (profit share).",
+      "parameterDecorators": [
+        {
+          "name": "_address",
+          "description": "target address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Return true if the address is a beneficiary.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isOperator(address)",
+      "name": "isOperator",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_who",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "olo()",
+      "name": "olo",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "oolongFarm()",
+      "name": "oolongFarm",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "oolongRouter()",
+      "name": "oolongRouter",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pid()",
+      "name": "pid",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "profitAssetHeld(address)",
+      "name": "profitAssetHeld",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "profitAssets(uint256)",
+      "name": "profitAssets",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "profitsPending()",
+      "name": "profitsPending",
+      "description": "Returns the profit that has not been accounted.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The pending profit in the investment opportunity yet to be accounted.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "profitsPendingInEth()",
+      "name": "profitsPendingInEth",
+      "description": "calculates the amount of profit that has not been accounted in the system this is useful for the operators to determine whether it is time to call `collectProfitAndDistribute` or not.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "profitInETH",
+          "description": "the amount of profit that has not been accounted yet.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "psInfo(address)",
+      "name": "psInfo",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "ratio",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "profit",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "psListLength()",
+      "name": "psListLength",
+      "description": "Returns the length of the profit sharing list.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pullFundsFromInvestment(uint256)",
+      "name": "pullFundsFromInvestment",
+      "description": "Operator can use this to pull funds out from investment to ease the operation such as moving the funds to another iv, emergency exit, etc.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "the amount of funds that we are removing from the investment opportunity.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "registry()",
+      "name": "registry",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeBeneficiary(address)",
+      "name": "removeBeneficiary",
+      "description": "Remove the target address from the beneciary list. The target address will no longer receive dividend. However, the target address can still claim the existing dividend.",
+      "parameterDecorators": [
+        {
+          "name": "_target",
+          "description": "Address of the beneficiary that is being removed.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeRewardToken(uint256)",
+      "name": "removeRewardToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeVault(address)",
+      "name": "removeVault",
+      "description": "Remove the target address from the whitelist for further depositing funds into IV. The target address can still withdraw the deposited funds.",
+      "parameterDecorators": [
+        {
+          "name": "_target",
+          "description": "Vault address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rewardTokenList(uint256)",
+      "name": "rewardTokenList",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardTokenMapping(address)",
+      "name": "rewardTokenMapping",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setAutoControl(uint256)",
+      "name": "setAutoControl",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_autoControl",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "shareBalance(address)",
+      "name": "shareBalance",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "shareBalanceAsBaseAsset(uint256)",
+      "name": "shareBalanceAsBaseAsset",
+      "description": "Converts IV share to amount in base asset.",
+      "parameterDecorators": [
+        {
+          "name": "_shareBalance",
+          "description": "the share amount.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the equivalent base asset amount.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "sharePrice()",
+      "name": "sharePrice",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "storageFetchAddress(bytes32)",
+      "name": "storageFetchAddress",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "storageFetchAddressInArray(bytes32,uint256)",
+      "name": "storageFetchAddressInArray",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "storageFetchBool(bytes32)",
+      "name": "storageFetchBool",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "storageFetchBoolInArray(bytes32,uint256)",
+      "name": "storageFetchBoolInArray",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "storageFetchUint256(bytes32)",
+      "name": "storageFetchUint256",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "storageFetchUint256InArray(bytes32,uint256)",
+      "name": "storageFetchUint256InArray",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "store()",
+      "name": "store",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "swapCenter()",
+      "name": "swapCenter",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "token0()",
+      "name": "token0",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "token1()",
+      "name": "token1",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalDebt()",
+      "name": "totalDebt",
+      "description": "Returns the total debt of the IV.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the total debt of the IV.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalShares()",
+      "name": "totalShares",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalStakedLPAmount()",
+      "name": "totalStakedLPAmount",
+      "description": "exposes the amount of staked LP amount owned by this IV.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "totalAmount",
+          "description": "of the staked LP tokens that is owned by this IV.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "treasury()",
+      "name": "treasury",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "weth()",
+      "name": "weth",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdrawAsCreditor(uint256)",
+      "name": "withdrawAsCreditor",
+      "description": "Creditor withdraws funds. If _baseAssetRequested is less than the asset that the vehicle can provide, it will withraw as much as possible.",
+      "parameterDecorators": [
+        {
+          "name": "_baseAssetRequested",
+          "description": "the amount of base asset requested by the creditor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The actual amount that the IV has sent back.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

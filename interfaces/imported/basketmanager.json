@@ -1,0 +1,1052 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "lending"
+  ],
+  "name": "BasketManager",
+  "description": "BasketManager. VERSION: 2.0 DATE: 2020-11-14. Manages the Basket composition for a particular mAsset. Feeds all required basket data to the mAsset and is responsible for keeping accurate records. BasketManager can also optimise lending pool integrations and perform re-collateralisation on failed bAssets.",
+  "eventDecorators": [
+    {
+      "signature": "BasketStatusChanged()",
+      "name": "BasketStatusChanged",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "BasketWeightsUpdated(address[],uint256[])",
+      "name": "BasketWeightsUpdated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "bAssets",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "maxWeights",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BassetAdded(address,address)",
+      "name": "BassetAdded",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "bAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "integrator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BassetRemoved(address)",
+      "name": "BassetRemoved",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "bAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "BassetStatusChanged(address,uint8)",
+      "name": "BassetStatusChanged",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "bAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "status",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BassetsMigrated(address[],address)",
+      "name": "BassetsMigrated",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "bAssets",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newIntegrator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Paused(address)",
+      "name": "Paused",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TransferFeeEnabled(address,bool)",
+      "name": "TransferFeeEnabled",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "bAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "enabled",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unpaused(address)",
+      "name": "Unpaused",
+      "description": "Event for token purchase logging.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addBasset(address,address,bool)",
+      "name": "addBasset",
+      "description": "External func to allow the Governor to conduct add operations on the Basket.",
+      "parameterDecorators": [
+        {
+          "name": "_bAsset",
+          "description": "Address of the ERC20 token to add to the Basket.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_integration",
+          "description": "Address of the vault integration to deposit and withdraw.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isTransferFeeCharged",
+          "description": "Bool - are transfer fees charged on this bAsset.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "basket()",
+      "name": "basket",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "maxBassets",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        },
+        {
+          "name": "undergoingRecol",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "failed",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "collateralisationRatio",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "collectInterest()",
+      "name": "collectInterest",
+      "description": "Called by mAsset to calculate how much interest has been generated in the basket and withdraw it. Cycles through the connected platforms to check the balances.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "interestCollected",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "gains",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "decreaseVaultBalance(uint8,address,uint256)",
+      "name": "decreaseVaultBalance",
+      "description": "Called by mAsset after redeeming tokens. Simply reduce the balance in the vault.",
+      "parameterDecorators": [
+        {
+          "name": "_bAssetIndex",
+          "description": "Index of the bAsset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_decreaseAmount",
+          "description": "Units withdrawn.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "decreaseVaultBalances(uint8[],address[],uint256[])",
+      "name": "decreaseVaultBalances",
+      "description": "Called by mAsset after redeeming tokens. Simply reduce the balance in the vault.",
+      "parameterDecorators": [
+        {
+          "name": "_bAssetIndices",
+          "description": "Array of bAsset indexes.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_decreaseAmount",
+          "description": "Units withdrawn.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "failBasset(address)",
+      "name": "failBasset",
+      "description": "Marks a bAsset as permanently deviated from peg.",
+      "parameterDecorators": [
+        {
+          "name": "_bAsset",
+          "description": "Address of the bAsset.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getBasket()",
+      "name": "getBasket",
+      "description": "Get basket details for `MassetStructs.Basket`.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "b",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "bassets",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "tuple[]"
+            },
+            {
+              "name": "maxBassets",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8"
+            },
+            {
+              "name": "undergoingRecol",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bool"
+            },
+            {
+              "name": "failed",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bool"
+            },
+            {
+              "name": "collateralisationRatio",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getBasset(address)",
+      "name": "getBasset",
+      "description": "Get data for a specific bAsset, if it exists.",
+      "parameterDecorators": [
+        {
+          "name": "_bAsset",
+          "description": "Address of bAsset.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "bAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "addr",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "status",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8"
+            },
+            {
+              "name": "isTransferFeeCharged",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bool"
+            },
+            {
+              "name": "ratio",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "maxWeight",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "vaultBalance",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getBassetIntegrator(address)",
+      "name": "getBassetIntegrator",
+      "description": "Get current integrator for a specific bAsset, if it exists.",
+      "parameterDecorators": [
+        {
+          "name": "_bAsset",
+          "description": "Address of bAsset.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "integrator",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getBassets()",
+      "name": "getBassets",
+      "description": "Get data for a all bAssets in basket.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "bAssets",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "addr",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "status",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8"
+            },
+            {
+              "name": "isTransferFeeCharged",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bool"
+            },
+            {
+              "name": "ratio",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "maxWeight",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "vaultBalance",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            }
+          ],
+          "solidityType": "tuple[]"
+        },
+        {
+          "name": "len",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "handlePegLoss(address,bool)",
+      "name": "handlePegLoss",
+      "description": "Executes the Auto Redistribution event by isolating the bAsset from the Basket.",
+      "parameterDecorators": [
+        {
+          "name": "_bAsset",
+          "description": "Address of the ERC20 token to isolate.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_belowPeg",
+          "description": "Bool to describe whether the bAsset deviated below peg (t) or above (f).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "alreadyActioned",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "increaseVaultBalance(uint8,address,uint256)",
+      "name": "increaseVaultBalance",
+      "description": "Called by only mAsset, and only when the basket is healthy, to add units to storage after they have been deposited into the vault.",
+      "parameterDecorators": [
+        {
+          "name": "_bAssetIndex",
+          "description": "Index of the bAsset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_increaseAmount",
+          "description": "Units deposited.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "increaseVaultBalances(uint8[],address[],uint256[])",
+      "name": "increaseVaultBalances",
+      "description": "Called by only mAsset, and only when the basket is healthy, to add units to storage after they have been deposited into the vault.",
+      "parameterDecorators": [
+        {
+          "name": "_bAssetIndices",
+          "description": "Array of bAsset indexes.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_increaseAmount",
+          "description": "Units deposited.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "integrations(uint256)",
+      "name": "integrations",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "mAsset()",
+      "name": "mAsset",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "migrateBassets(address[],address)",
+      "name": "migrateBassets",
+      "description": "Transfers all collateral from one lending market to another - used initially to handle the migration between Aave V1 and Aave V2. Note - only supports non tx fee enabled assets.",
+      "parameterDecorators": [
+        {
+          "name": "_bAssets",
+          "description": "Array of basket assets to migrate.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newIntegration",
+          "description": "Address of the new platform integration.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "negateIsolation(address)",
+      "name": "negateIsolation",
+      "description": "Negates the isolation of a given bAsset.",
+      "parameterDecorators": [
+        {
+          "name": "_bAsset",
+          "description": "Address of the bAsset.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "nexus()",
+      "name": "nexus",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pause()",
+      "name": "pause",
+      "description": "Called by the Governor to pause, triggers stopped state.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "paused()",
+      "name": "paused",
+      "description": "Returns true if the contract is paused, and false otherwise.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "prepareForgeBasset(address,uint256,bool)",
+      "name": "prepareForgeBasset",
+      "description": "Prepare given bAsset for Forging. Currently returns integrator and essential minting info.",
+      "parameterDecorators": [
+        {
+          "name": "_bAsset",
+          "description": "Address of the bAsset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "isValid",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "bInfo",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "bAsset",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "tuple"
+            },
+            {
+              "name": "integrator",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "index",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "prepareForgeBassets(address[],uint256[],bool)",
+      "name": "prepareForgeBassets",
+      "description": "Prepare given bAsset addresses for Forging. Currently returns integrator and essential minting info for each bAsset.",
+      "parameterDecorators": [
+        {
+          "name": "_bAssets",
+          "description": "Array of bAsset addresses with which to forge.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "props",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "isValid",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bool"
+            },
+            {
+              "name": "bAssets",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "tuple[]"
+            },
+            {
+              "name": "integrators",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address[]"
+            },
+            {
+              "name": "indexes",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8[]"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "prepareRedeemBassets(address[])",
+      "name": "prepareRedeemBassets",
+      "description": "Fetch the array of bAssets for redemption, and pass back all basket info.",
+      "parameterDecorators": [
+        {
+          "name": "_bAssets",
+          "description": "Array of bAsset addresses to redeem.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "props",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "isValid",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bool"
+            },
+            {
+              "name": "allBassets",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "tuple[]"
+            },
+            {
+              "name": "bAssets",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "tuple[]"
+            },
+            {
+              "name": "integrators",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address[]"
+            },
+            {
+              "name": "indexes",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8[]"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "prepareRedeemMulti()",
+      "name": "prepareRedeemMulti",
+      "description": "Prepare given bAsset addresses for RedeemMulti. Currently returns integrator and essential minting info for each bAsset.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "props",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "colRatio",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "bAssets",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "tuple[]"
+            },
+            {
+              "name": "integrators",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address[]"
+            },
+            {
+              "name": "indexes",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8[]"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "prepareSwapBassets(address,address,bool)",
+      "name": "prepareSwapBassets",
+      "description": "Prepare given bAssets for swapping.",
+      "parameterDecorators": [
+        {
+          "name": "_input",
+          "description": "Address of the input bAsset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_output",
+          "description": "Address of the output bAsset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isMint",
+          "description": "Is this swap actually a mint? i.e. output == address(mAsset).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "bAsset",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "tuple"
+            },
+            {
+              "name": "integrator",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "index",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8"
+            }
+          ],
+          "solidityType": "tuple"
+        },
+        {
+          "name": "param3",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "bAsset",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "tuple"
+            },
+            {
+              "name": "integrator",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "index",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeBasset(address)",
+      "name": "removeBasset",
+      "description": "Removes a specific Asset from the Basket, given that its target/collateral level is already 0, throws if invalid.",
+      "parameterDecorators": [
+        {
+          "name": "_assetToRemove",
+          "description": "The asset to remove from the basket.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setBasketWeights(address[],uint256[])",
+      "name": "setBasketWeights",
+      "description": "External call for the governor to set weightings of all bAssets.",
+      "parameterDecorators": [
+        {
+          "name": "_bAssets",
+          "description": "Array of bAsset addresses.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_weights",
+          "description": "Array of bAsset weights - summing 100% where 100% == 1e18.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setTransferFeesFlag(address,bool)",
+      "name": "setTransferFeesFlag",
+      "description": "Update transfer fee flag for a given bAsset, should it change its fee practice.",
+      "parameterDecorators": [
+        {
+          "name": "_bAsset",
+          "description": "bAsset address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_flag",
+          "description": "Charge transfer fee when its set to 'true', otherwise 'false'.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unpause()",
+      "name": "unpause",
+      "description": "Called by Governor to unpause, returns to normal state.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

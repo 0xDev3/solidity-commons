@@ -1,0 +1,737 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "locking",
+    "vaults"
+  ],
+  "name": "BoostedSavingsVault",
+  "description": "BoostedSavingsVault. Forked from rewards/staking/StakingRewards.sol Changes: - Lockup implemented in `updateReward` hook (20% unlock immediately, 80% locked for 6 months) - `updateBoost` hook called after every external action to reset a users boost - Struct packing of common data - Searching for and claiming of unlocked rewards. Accrues rewards second by second, based on a users boosted balance.",
+  "eventDecorators": [
+    {
+      "signature": "Poked(address)",
+      "name": "Poked",
+      "description": "The event emitted when the uniswap window changes.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RewardAdded(uint256)",
+      "name": "RewardAdded",
+      "description": "The event emitted when the uniswap window changes.",
+      "parameterDecorators": [
+        {
+          "name": "reward",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RewardPaid(address,uint256)",
+      "name": "RewardPaid",
+      "description": "The event emitted when the uniswap window changes.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "reward",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Staked(address,uint256,address)",
+      "name": "Staked",
+      "description": "The event emitted when the uniswap window changes.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "payer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Withdrawn(address,uint256)",
+      "name": "Withdrawn",
+      "description": "The event emitted when the uniswap window changes.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "DURATION()",
+      "name": "DURATION",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "LOCKUP()",
+      "name": "LOCKUP",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "UNLOCK()",
+      "name": "UNLOCK",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "balanceOf(address)",
+      "name": "balanceOf",
+      "description": "Get the boosted balance of a given account.",
+      "parameterDecorators": [
+        {
+          "name": "_account",
+          "description": "User for which to retrieve balance.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claimReward()",
+      "name": "claimReward",
+      "description": "Claims only the tokens that have been immediately unlocked, not including those that are in the lockers.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimRewards()",
+      "name": "claimRewards",
+      "description": "Claims all unlocked rewards for sender. Note, this function is costly - the args for _claimRewards should be determined off chain and then passed to other fn.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimRewards(uint256,uint256)",
+      "name": "claimRewards",
+      "description": "Claims all unlocked rewards for sender. Both immediately unlocked rewards and also locked rewards past their time lock.",
+      "parameterDecorators": [
+        {
+          "name": "_first",
+          "description": "Index of the first array element to claim.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_last",
+          "description": "Index of the last array element to claim.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "earned(address)",
+      "name": "earned",
+      "description": "Returned the units of IMMEDIATELY claimable rewards a user has to receive. Note - this does NOT include the majority of rewards which will be locked up.",
+      "parameterDecorators": [
+        {
+          "name": "_account",
+          "description": "User address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "exit(uint256,uint256)",
+      "name": "exit",
+      "description": "Withdraws stake from pool and claims any unlocked rewards.",
+      "parameterDecorators": [
+        {
+          "name": "_first",
+          "description": "Index of the first array element to claim.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_last",
+          "description": "Index of the last array element to claim.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "exit()",
+      "name": "exit",
+      "description": "Withdraws stake from pool and claims any unlocked rewards. Note, this function is costly - the args for _claimRewards should be determined off chain and then passed to other fn.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getBoost(address)",
+      "name": "getBoost",
+      "description": "Read the boost for the given address.",
+      "parameterDecorators": [
+        {
+          "name": "_account",
+          "description": "User for which to return the boost.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRewardToken()",
+      "name": "getRewardToken",
+      "description": "Gets the RewardsToken.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastTimeRewardApplicable()",
+      "name": "lastTimeRewardApplicable",
+      "description": "Gets the last applicable timestamp for this reward period.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastUpdateTime()",
+      "name": "lastUpdateTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nexus()",
+      "name": "nexus",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "notifyRewardAmount(uint256)",
+      "name": "notifyRewardAmount",
+      "description": "Notifies the contract that new rewards have been added. Calculates an updated rewardRate based on the rewards in period.",
+      "parameterDecorators": [
+        {
+          "name": "_reward",
+          "description": "Units of RewardToken that have been added to the pool.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "periodFinish()",
+      "name": "periodFinish",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pokeBoost(address)",
+      "name": "pokeBoost",
+      "description": "Pokes a given account to reset the boost.",
+      "parameterDecorators": [
+        {
+          "name": "_account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rawBalanceOf(address)",
+      "name": "rawBalanceOf",
+      "description": "Get the RAW balance of a given account.",
+      "parameterDecorators": [
+        {
+          "name": "_account",
+          "description": "User for which to retrieve balance.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardPerToken()",
+      "name": "rewardPerToken",
+      "description": "Calculates the amount of unclaimed rewards per token since last update, and sums with stored to give the new cumulative reward per token.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardPerTokenStored()",
+      "name": "rewardPerTokenStored",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardRate()",
+      "name": "rewardRate",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardsDistributor()",
+      "name": "rewardsDistributor",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardsToken()",
+      "name": "rewardsToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setRewardsDistribution(address)",
+      "name": "setRewardsDistribution",
+      "description": "Change the rewardsDistributor - only called by mStable governor.",
+      "parameterDecorators": [
+        {
+          "name": "_rewardsDistributor",
+          "description": "Address of the new distributor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stake(uint256)",
+      "name": "stake",
+      "description": "Stakes a given amount of the StakingToken for the sender.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "Units of StakingToken.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stake(address,uint256)",
+      "name": "stake",
+      "description": "Stakes a given amount of the StakingToken for a given beneficiary.",
+      "parameterDecorators": [
+        {
+          "name": "_beneficiary",
+          "description": "Staked tokens are credited to this address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "Units of StakingToken.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stakingContract()",
+      "name": "stakingContract",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "stakingToken()",
+      "name": "stakingToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalSupply()",
+      "name": "totalSupply",
+      "description": "Get the total boosted amount.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unclaimedRewards(address)",
+      "name": "unclaimedRewards",
+      "description": "Calculates all unclaimed reward data, finding both immediately unlocked rewards and those that have passed their time lock.",
+      "parameterDecorators": [
+        {
+          "name": "_account",
+          "description": "User address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "first",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "last",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "userClaim(address)",
+      "name": "userClaim",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "userData(address)",
+      "name": "userData",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "rewardPerTokenPaid",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "rewards",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "lastAction",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "userRewards(address,uint256)",
+      "name": "userRewards",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "start",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "finish",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "rate",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw(uint256)",
+      "name": "withdraw",
+      "description": "Withdraws given stake amount from the pool.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "Units of the staked token to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

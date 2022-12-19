@@ -1,0 +1,984 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "ConditionalWager",
+  "description": "Bartrr Conditional Wager Contract. This contract is used to manage conditional wagers for the Bartrr protocol.",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "PaymentTokensUpdated(address[],address[],bool)",
+      "name": "PaymentTokensUpdated",
+      "description": "Emitted when an array of payment tokens is updated.",
+      "parameterDecorators": [
+        {
+          "name": "tokens",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "oracles",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "update",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WagerCancelled(uint256,address)",
+      "name": "WagerCancelled",
+      "description": "Emitted when a wager is cancelled.",
+      "parameterDecorators": [
+        {
+          "name": "wagerId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "WagerCreated(uint256,address,address,address,int256,int256)",
+      "name": "WagerCreated",
+      "description": "Emitted when a wager is created.",
+      "parameterDecorators": [
+        {
+          "name": "wagerId",
+          "description": "The wager id.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "userA",
+          "description": "The user who created the wager.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "userB",
+          "description": "The user who will fill the wager (zero address if the wager is open for anyone to fill).",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "wagerToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "wagerPriceA",
+          "description": "The wagered price of wagerToken by userA.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "wagerPriceB",
+          "description": "The wagered price of wagerToken by userB.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WagerFilled(uint256,address,address,address,int256,int256)",
+      "name": "WagerFilled",
+      "description": "Emitted when a wager is filled by the second party.",
+      "parameterDecorators": [
+        {
+          "name": "wagerId",
+          "description": "The wager id.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "userA",
+          "description": "The user who created the wager.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "userB",
+          "description": "The user who filled the wager.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "wagerToken",
+          "description": "The token whose price was wagered.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "wagerPriceA",
+          "description": "The wagered price of wagerToken by userA.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "wagerPriceB",
+          "description": "The wagered price of wagerToken by userB.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WagerRedeemed(uint256,address,address,uint256)",
+      "name": "WagerRedeemed",
+      "description": "Emitted when a wager is redeemed.",
+      "parameterDecorators": [
+        {
+          "name": "wagerId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "winner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "paymentToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "winningSum",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WagerRefunded(uint256,address,address,uint256)",
+      "name": "WagerRefunded",
+      "description": "Emitted when a wager is refunded.",
+      "parameterDecorators": [
+        {
+          "name": "wagerId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "paymentToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WagerTokensUpdated(address[],address[],bool)",
+      "name": "WagerTokensUpdated",
+      "description": "Emitted when an array of wager tokens is updated.",
+      "parameterDecorators": [
+        {
+          "name": "tokens",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "oracles",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "update",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "MIN_FEE_AMOUNT()",
+      "name": "MIN_FEE_AMOUNT",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MIN_WAGER_AMOUNT()",
+      "name": "MIN_WAGER_AMOUNT",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MIN_WAGER_AMOUNT_FACTOR()",
+      "name": "MIN_WAGER_AMOUNT_FACTOR",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MIN_WAGER_DURATION()",
+      "name": "MIN_WAGER_DURATION",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "cancelWager(uint256)",
+      "name": "cancelWager",
+      "description": "Cancels a wager that has not been filled. Fee is not refunded if wager was created as p2m.",
+      "parameterDecorators": [
+        {
+          "name": "_wagerId",
+          "description": "id of the wager.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "checkWinner(uint256)",
+      "name": "checkWinner",
+      "description": "Returns the winner of the wager once it is completed.",
+      "parameterDecorators": [
+        {
+          "name": "_wagerId",
+          "description": "id of the wager.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "winner The winner of the wager (or the zero address if it is a draw).",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "createWager(address,address,address,int256,int256,uint256,uint256,uint256)",
+      "name": "createWager",
+      "description": "Creates a new wager.",
+      "parameterDecorators": [
+        {
+          "name": "_userB",
+          "description": "address of userB (0x0 if p2m).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_wagerToken",
+          "description": "address of token to be wagered on.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_paymentToken",
+          "description": "address of token to be paid with.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_wagerPriceA",
+          "description": "UserA bet price -- USD price + 8 decimals.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_wagerPriceB",
+          "description": "UserB bet price -- USD price + 8 decimals.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amountUserA",
+          "description": "amount userA wagered.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amountUserB",
+          "description": "amount userB wagered.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_duration",
+          "description": "duration of the wager.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createdTimes(uint256)",
+      "name": "createdTimes",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "endTimes(uint256)",
+      "name": "endTimes",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "feeAddress()",
+      "name": "feeAddress",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "fillWager(uint256)",
+      "name": "fillWager",
+      "description": "Fills a wager and starts the wager countdown.",
+      "parameterDecorators": [
+        {
+          "name": "_wagerId",
+          "description": "id of the wager.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getAllWagers()",
+      "name": "getAllWagers",
+      "description": "Get all wagers.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "All created wagers.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "isFilled",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bool"
+            },
+            {
+              "name": "isClosed",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bool"
+            },
+            {
+              "name": "userA",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "userB",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "wagerToken",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "paymentToken",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "wagerPriceA",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "int256"
+            },
+            {
+              "name": "wagerPriceB",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "int256"
+            },
+            {
+              "name": "amountUserA",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "amountUserB",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "duration",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            }
+          ],
+          "solidityType": "tuple[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "idCounter()",
+      "name": "idCounter",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "init(address,address,address)",
+      "name": "init",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_feeAddress",
+          "description": "address of the fee recipient.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_owner",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_roundIdFetcher",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isInitialized()",
+      "name": "isInitialized",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "oracleMalfunction(address)",
+      "name": "oracleMalfunction",
+      "description": "Called if an error is detected in the chainlink oracle.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the token whose wagers need to be refunded.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "oracleRecovery(address)",
+      "name": "oracleRecovery",
+      "description": "Called when there is working update for the chainlink oracle.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the token whose wagers need to be refunded.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "oracles(address)",
+      "name": "oracles",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "paymentTokens(address)",
+      "name": "paymentTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "redeem(uint256)",
+      "name": "redeem",
+      "description": "Redeems a wager.",
+      "parameterDecorators": [
+        {
+          "name": "_wagerId",
+          "description": "id of the wager.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "refundUserA(uint256)",
+      "name": "refundUserA",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "refundUserB(uint256)",
+      "name": "refundUserB",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "refundableTimestamp(address)",
+      "name": "refundableTimestamp",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "refundable",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "nonrefundable",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "roundIdFetcher()",
+      "name": "roundIdFetcher",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updatePaymentTokens(address[],address[],bool)",
+      "name": "updatePaymentTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_paymentTokens",
+          "description": "array of payment token addresses.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_oracles",
+          "description": "array of oracles for the payment tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_update",
+          "description": "true if the tokens are being added, false if they are being removed.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateWagerTokens(address[],address[],bool)",
+      "name": "updateWagerTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_wagerTokens",
+          "description": "array of wager token addresses.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_oracles",
+          "description": "array of oracles for the wager tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_update",
+          "description": "true if the tokens are being added, false if they are being removed.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "wagerTokens(address)",
+      "name": "wagerTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "wagers(uint256)",
+      "name": "wagers",
+      "description": "Array of wagers.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "isFilled",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "isClosed",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "userA",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "userB",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "wagerToken",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "paymentToken",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "wagerPriceA",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "wagerPriceB",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "amountUserA",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "amountUserB",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "duration",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

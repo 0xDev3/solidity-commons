@@ -1,0 +1,312 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "oracles"
+  ],
+  "name": "OracleSpoke",
+  "description": "Cross-chain Oracle L2 Oracle Spoke. The intended client of this contract is an OptimisticOracle on sidechain that needs price resolution secured by the DVM on mainnet.",
+  "eventDecorators": [
+    {
+      "signature": "PriceRequestAdded(bytes32,uint256,bytes,bytes32)",
+      "name": "PriceRequestAdded",
+      "description": "Emitted when `cancelOrder` is called.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "ancillaryData",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "requestHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "PushedPrice(bytes32,uint256,bytes,int256,bytes32)",
+      "name": "PushedPrice",
+      "description": "Emitted when `cancelOrder` is called.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "ancillaryData",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "requestHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "finder()",
+      "name": "finder",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getChildMessenger()",
+      "name": "getChildMessenger",
+      "description": "Returns the child messenger address set in the finder.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "ChildMessengerInterface instance of child messenger deployed on L2.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPrice(bytes32,uint256,bytes)",
+      "name": "getPrice",
+      "description": "Returns resolved price for the request. Reverts if price is not available.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "Identifier of price request.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "Timestamp of price request.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ancillaryData",
+          "description": "extra data of price request.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "int256 Price, or reverts if no resolved price for any reason.",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPrice(bytes32,uint256)",
+      "name": "getPrice",
+      "description": "Overloaded function to provide backwards compatibility for legacy financial contracts that do not use ancillary data.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "hasPrice(bytes32,uint256)",
+      "name": "hasPrice",
+      "description": "Overloaded function to provide backwards compatibility for legacy financial contracts that do not use ancillary data.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "hasPrice(bytes32,uint256,bytes)",
+      "name": "hasPrice",
+      "description": "Returns whether a price has resolved for the request. This method will not revert.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "Identifier of price request.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "Timestamp of price request.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ancillaryData",
+          "description": "extra data of price request.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "True if a price is available, False otherwise. If true, then getPrice will succeed for the request.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "processMessageFromParent(bytes)",
+      "name": "processMessageFromParent",
+      "description": "Resolves a price request originating from a message sent by the DVM on the parent chain. Can only be called by the ChildMessenger contract which is designed to communicate only with the ParentMessenger contract on Mainnet. See the SpokeBase for the onlyMessenger modifier.",
+      "parameterDecorators": [
+        {
+          "name": "data",
+          "description": "ABI encoded params with which to call `_publishPrice`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "requestPrice(bytes32,uint256,bytes)",
+      "name": "requestPrice",
+      "description": "This is called to bridge a price request to mainnet. This method will enqueue a new price request or return silently if already requested. Price requests are relayed to mainnet (the \"Parent\" chain) via the ChildMessenger contract. Can be called only by a registered contract that is allowed to make DVM price requests. Will mark this price request as Requested, and therefore able to receive the price resolution data from mainnet.Contract registration enables the DVM to validate that the calling contract correctly pays final fees. Therefore, this function does not directly attempt to pull a final fee from the caller.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "Identifier of price request.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "Timestamp of price request.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "ancillaryData",
+          "description": "extra data of price request.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "requestPrice(bytes32,uint256)",
+      "name": "requestPrice",
+      "description": "Overloaded function to provide backwards compatibility for legacy financial contracts that do not use ancillary data.",
+      "parameterDecorators": [
+        {
+          "name": "identifier",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "time",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stampAncillaryData(bytes)",
+      "name": "stampAncillaryData",
+      "description": "Generates stamped ancillary data in the format that it would be used in the case of a price request.",
+      "parameterDecorators": [
+        {
+          "name": "ancillaryData",
+          "description": "ancillary data of the price being requested.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the stamped ancillary bytes.",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

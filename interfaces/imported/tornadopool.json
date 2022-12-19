@@ -1,0 +1,946 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "TornadoPool",
+  "description": "This contract(pool) allows deposit of an arbitrary amount to it, shielded transfer to another registered user inside the pool and withdrawal from the pool. Project utilizes UTXO model to handle users' funds.",
+  "eventDecorators": [
+    {
+      "signature": "NewCommitment(bytes32,uint256,bytes)",
+      "name": "NewCommitment",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "commitment",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "encryptedOutput",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewNullifier(bytes32)",
+      "name": "NewNullifier",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "nullifier",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PublicKey(address,bytes)",
+      "name": "PublicKey",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "key",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "FIELD_SIZE()",
+      "name": "FIELD_SIZE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MAX_EXT_AMOUNT()",
+      "name": "MAX_EXT_AMOUNT",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MAX_FEE()",
+      "name": "MAX_FEE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ROOT_HISTORY_SIZE()",
+      "name": "ROOT_HISTORY_SIZE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ZERO_VALUE()",
+      "name": "ZERO_VALUE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ambBridge()",
+      "name": "ambBridge",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculatePublicAmount(int256,uint256)",
+      "name": "calculatePublicAmount",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_extAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_fee",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "configureLimits(uint256,uint256)",
+      "name": "configureLimits",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_minimalWithdrawalAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_maximumDepositAmount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "currentRootIndex()",
+      "name": "currentRootIndex",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "filledSubtrees(uint256)",
+      "name": "filledSubtrees",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getLastRoot()",
+      "name": "getLastRoot",
+      "description": "Returns the last root.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "hashLeftRight(bytes32,bytes32)",
+      "name": "hashLeftRight",
+      "description": "Hash 2 tree leaves, returns Poseidon(_left, _right).",
+      "parameterDecorators": [
+        {
+          "name": "_left",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_right",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "hasher()",
+      "name": "hasher",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(uint256,uint256)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_minimalWithdrawalAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_maximumDepositAmount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isCalledByOwner()",
+      "name": "isCalledByOwner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isKnownRoot(bytes32)",
+      "name": "isKnownRoot",
+      "description": "Whether the root is present in the root history.",
+      "parameterDecorators": [
+        {
+          "name": "_root",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isSpent(bytes32)",
+      "name": "isSpent",
+      "description": "whether a note is already spent.",
+      "parameterDecorators": [
+        {
+          "name": "_nullifierHash",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "l1Unwrapper()",
+      "name": "l1Unwrapper",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastBalance()",
+      "name": "lastBalance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "levels()",
+      "name": "levels",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maximumDepositAmount()",
+      "name": "maximumDepositAmount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minimalWithdrawalAmount()",
+      "name": "minimalWithdrawalAmount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nextIndex()",
+      "name": "nextIndex",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nullifierHashes(bytes32)",
+      "name": "nullifierHashes",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "omniBridge()",
+      "name": "omniBridge",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "onTokenBridged(address,uint256,bytes)",
+      "name": "onTokenBridged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ownerChainId()",
+      "name": "ownerChainId",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "register(tuple(address,bytes))",
+      "name": "register",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_account",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "owner",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "publicKey",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "registerAndTransact(tuple(address,bytes),tuple(bytes,bytes32,bytes32[],bytes32[2],uint256,bytes32),tuple(address,int256,address,uint256,bytes,bytes,bool))",
+      "name": "registerAndTransact",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_account",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "owner",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "publicKey",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "_proofArgs",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "proof",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "root",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "inputNullifiers",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "outputCommitments",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "publicAmount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "extDataHash",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "_extData",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "recipient",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "extAmount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "relayer",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "fee",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "encryptedOutput1",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "encryptedOutput2",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "isL1Withdrawal",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "roots(uint256)",
+      "name": "roots",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transact(tuple(bytes,bytes32,bytes32[],bytes32[2],uint256,bytes32),tuple(address,int256,address,uint256,bytes,bytes,bool))",
+      "name": "transact",
+      "description": "Main function that allows deposits, transfers and withdrawal.",
+      "parameterDecorators": [
+        {
+          "name": "_args",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "proof",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "root",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "inputNullifiers",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "outputCommitments",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "publicAmount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "extDataHash",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "_extData",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "recipient",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "extAmount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "relayer",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "fee",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "encryptedOutput1",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "encryptedOutput2",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "isL1Withdrawal",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "verifier16()",
+      "name": "verifier16",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "verifier2()",
+      "name": "verifier2",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "verifyProof(tuple(bytes,bytes32,bytes32[],bytes32[2],uint256,bytes32))",
+      "name": "verifyProof",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_args",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "proof",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "root",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "inputNullifiers",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "outputCommitments",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "publicAmount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "extDataHash",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "zeros(uint256)",
+      "name": "zeros",
+      "description": "provides Zero (Empty) elements for a MiMC MerkleTree. Up to 32 levels.",
+      "parameterDecorators": [
+        {
+          "name": "i",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

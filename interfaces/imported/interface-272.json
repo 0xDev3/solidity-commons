@@ -1,0 +1,1836 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "swaps"
+  ],
+  "name": "DharmaTradeReserveV17ImplementationStaging",
+  "description": "DharmaTradeReserveV17Implementation (staging version).",
+  "eventDecorators": [
+    {
+      "signature": "EtherReceived(address,uint256)",
+      "name": "EtherReceived",
+      "description": "event emitted when a user has unstaked a token.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "GasReserveRefilled(uint256)",
+      "name": "GasReserveRefilled",
+      "description": "event emitted when a user has unstaked a token.",
+      "parameterDecorators": [
+        {
+          "name": "etherAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "event emitted when a user has unstaked a token.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RoleModified(uint8,address)",
+      "name": "RoleModified",
+      "description": "event emitted when a user has unstaked a token.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RolePaused(uint8)",
+      "name": "RolePaused",
+      "description": "event emitted when a user has unstaked a token.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RoleUnpaused(uint8)",
+      "name": "RoleUnpaused",
+      "description": "event emitted when a user has unstaked a token.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Trade(address,address,address,address,uint256,uint256,uint256)",
+      "name": "Trade",
+      "description": "event emitted when a user has unstaked a token.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "suppliedAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "receivedAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "retainedAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "suppliedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "recievedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "retainedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "acceptOwnership()",
+      "name": "acceptOwnership",
+      "description": "Transfers ownership of the contract to the caller. Can only be called by a new potential owner set by the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "callAny(address,uint256,bytes)",
+      "name": "callAny",
+      "description": "Call account `target`, supplying value `amount` and data `data`. Only the owner may call this function.",
+      "parameterDecorators": [
+        {
+          "name": "target",
+          "description": "address The account to call.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "uint256 The amount of ether to include as an endowment.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "bytes The data to include along with the call.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "ok",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "returnData",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cancelOwnershipTransfer()",
+      "name": "cancelOwnershipTransfer",
+      "description": "Cancel a transfer of ownership to a new account. Can only be called by the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "finalizeEtherDeposit(address,address,uint256)",
+      "name": "finalizeEtherDeposit",
+      "description": "Transfer `etherAmount` Ether to `smartWallet`, providing the initial user signing key `initialUserSigningKey` as proof that the specified smart wallet is indeed a Dharma Smart Wallet - this assumes that the address is derived and deployed using the Dharma Smart Wallet Factory V1. In addition, the Ether amount must be less than the configured limit amount. Only the owner or the designated deposit manager role may call this function.",
+      "parameterDecorators": [
+        {
+          "name": "smartWallet",
+          "description": "address The smart wallet to transfer Ether to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "initialUserSigningKey",
+          "description": "address The initial user signing key supplied when deriving the smart wallet address - this could be an EOA or a Dharma key ring address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "etherAmount",
+          "description": "uint256 The amount of Ether to transfer - this amount must be less than the current limit.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "finalizeTokenDeposit(address,address,address,uint256)",
+      "name": "finalizeTokenDeposit",
+      "description": "Transfer `amount` of token `token` to `smartWallet`, providing the initial user signing key `initialUserSigningKey` as proof that the specified smart wallet is indeed a Dharma Smart Wallet - this assumes that the address is derived and deployed using the Dharma Smart Wallet Factory V1. Only the owner or the designated deposit manager role may call this function.",
+      "parameterDecorators": [
+        {
+          "name": "smartWallet",
+          "description": "address The smart wallet to transfer tokens to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "initialUserSigningKey",
+          "description": "address The initial user signing key supplied when deriving the smart wallet address - this could be an EOA or a Dharma key ring address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "token",
+          "description": "ERC20Interface The token to transfer.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "uint256 The amount of tokens to transfer.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getAdjuster()",
+      "name": "getAdjuster",
+      "description": "External view function to check the account currently holding the adjuster role. The adjuster can exchange Dai in reserves for Dharma Dai and vice-versa via minting or redeeming.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "adjuster",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getDepositManager()",
+      "name": "getDepositManager",
+      "description": "External view function to check the account currently holding the deposit manager role. The deposit manager can process standard deposit finalization via `finalizeDaiDeposit` and `finalizeDharmaDaiDeposit`, but must prove that the recipient is a Dharma Smart Wallet and adhere to the current deposit size limit.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "depositManager",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getGasReserveRefiller()",
+      "name": "getGasReserveRefiller",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "gasReserveRefiller",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getImplementation()",
+      "name": "getImplementation",
+      "description": "External view function to check the current implementation of this contract (i.e. the \"logic\" for the contract).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "implementation",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getInstance()",
+      "name": "getInstance",
+      "description": "External pure function to get the address of the actual contract instance (i.e. the \"storage\" foor this contract).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "instance",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPauser()",
+      "name": "getPauser",
+      "description": "External view function to check the account currently holding the pauser role. The pauser can pause any role from taking its standard action, though the owner will still be able to call the associated function in the interim and is the only entity able to unpause the given role once paused.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "pauser",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPrimaryDaiRecipient()",
+      "name": "getPrimaryDaiRecipient",
+      "description": "External view function to check the address of the current primary recipient for Dai.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPrimaryUSDCRecipient()",
+      "name": "getPrimaryUSDCRecipient",
+      "description": "External view function to check the address of the current primary recipient for USDC.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getReserveTrader()",
+      "name": "getReserveTrader",
+      "description": "External view function to check the account currently holding the reserve trader role. The reserve trader can trigger trades that utilize reserves in addition to supplied funds, if any.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "reserveTrader",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getReserves()",
+      "name": "getReserves",
+      "description": "External view function to check the current reserves held by this contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "dai",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "dDai",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "dDaiUnderlying",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVersion()",
+      "name": "getVersion",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "version",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getWithdrawalManager()",
+      "name": "getWithdrawalManager",
+      "description": "External view function to check the account currently holding the withdrawal manager role. The withdrawal manager can transfer USDC to the \"primary recipient\" address set by the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "withdrawalManager",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isDharmaSmartWallet(address,address)",
+      "name": "isDharmaSmartWallet",
+      "description": "External view function to check whether a \"proof\" that a given smart wallet is actually a Dharma Smart Wallet, based on the initial user signing key, is valid or not. This proof only works when the Dharma Smart Wallet in question is derived using V1 of the Dharma Smart Wallet Factory.",
+      "parameterDecorators": [
+        {
+          "name": "smartWallet",
+          "description": "address The smart wallet to check.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "initialUserSigningKey",
+          "description": "address The initial user signing key supplied when deriving the smart wallet address - this could be an EOA or a Dharma key ring address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "dharmaSmartWallet",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isOwner()",
+      "name": "isOwner",
+      "description": "Returns true if the caller is the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isPaused(uint8)",
+      "name": "isPaused",
+      "description": "External view function to check whether or not the functionality associated with a given role is currently paused or not. The owner or the pauser may pause any given role (including the pauser itself), but only the owner may unpause functionality. Additionally, the owner may call paused functions directly.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "The role to check the pause status on.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "paused",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isRole(uint8)",
+      "name": "isRole",
+      "description": "External view function to check whether the caller is the current role holder.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "The role to check for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "hasRole",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pause(uint8)",
+      "name": "pause",
+      "description": "Pause a currently unpaused role and emit a `RolePaused` event. Only the owner or the designated pauser may call this function. Also, bear in mind that only the owner may unpause a role once paused.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "The role to pause.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "redeem(uint256)",
+      "name": "redeem",
+      "description": "Redeem `dDaiAmount` Dharma Dai for Dai. Only the owner or the designated adjuster role may call this function.",
+      "parameterDecorators": [
+        {
+          "name": "dDaiAmount",
+          "description": "uint256 The amount of Dharma Dai to supply when redeeming for Dai.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "daiReceived",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "refillGasReserve(uint256)",
+      "name": "refillGasReserve",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "etherAmount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeRole(uint8)",
+      "name": "removeRole",
+      "description": "Remove any current role bearer for a given role and emit a `RoleModified` event if a role holder was previously set. Only the owner may call this function.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "The role that the account will be removed from.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setPrimaryDaiRecipient(address)",
+      "name": "setPrimaryDaiRecipient",
+      "description": "Set `recipient` as the new primary recipient for Dai withdrawals. Only the owner may call this function.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "address The new primary recipient.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setPrimaryUSDCRecipient(address)",
+      "name": "setPrimaryUSDCRecipient",
+      "description": "Set `recipient` as the new primary recipient for USDC withdrawals. Only the owner may call this function.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "address The new primary recipient.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRole(uint8,address)",
+      "name": "setRole",
+      "description": "Set a new account on a given role and emit a `RoleModified` event if the role holder has changed. Only the owner may call this function.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "The role that the account will be set for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "The account to set as the designated role bearer.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeEtherForToken(address,uint256,uint256)",
+      "name": "tradeEtherForToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalEtherSold",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeEtherForTokenSpecifyingFee(address,uint256,uint256,uint256)",
+      "name": "tradeEtherForTokenSpecifyingFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "etherFeeAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalTokensBought",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeEtherForTokenUsingEtherizer(address,uint256,uint256,uint256)",
+      "name": "tradeEtherForTokenUsingEtherizer",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "etherAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalEtherSold",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeEtherForTokenUsingReserves(address,uint256,uint256,uint256)",
+      "name": "tradeEtherForTokenUsingReserves",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "etherAmountFromReserves",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalEtherSold",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeEtherForTokenUsingReservesSpecifyingFee(address,uint256,uint256,uint256,uint256)",
+      "name": "tradeEtherForTokenUsingReservesSpecifyingFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "etherAmountFromReserves",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "etherFeeAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalTokensBought",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeEtherForTokenUsingReservesWithFeeOnTransferSpecifyingFee(address,uint256,uint256,uint256,uint256,uint256)",
+      "name": "tradeEtherForTokenUsingReservesWithFeeOnTransferSpecifyingFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "etherAmountFromReserves",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenAmountAfterTransferFee",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "etherFeeAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalTokensBought",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeEtherForTokenWithFeeOnTransfer(address,uint256,uint256,uint256)",
+      "name": "tradeEtherForTokenWithFeeOnTransfer",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenAmountAfterTransferFee",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalTokensBought",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeEtherForTokenWithFeeOnTransferSpecifyingFee(address,uint256,uint256,uint256,uint256)",
+      "name": "tradeEtherForTokenWithFeeOnTransferSpecifyingFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenAmountAfterTransferFee",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "etherFeeAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalTokensBought",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeEtherForTokenWithFeeOnTransferUsingEtherizer(address,uint256,uint256,uint256,uint256)",
+      "name": "tradeEtherForTokenWithFeeOnTransferUsingEtherizer",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "etherAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenAmountAfterTransferFee",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalTokensBought",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeTokenForEther(address,uint256,uint256,uint256)",
+      "name": "tradeTokenForEther",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedEtherAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalEtherBought",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeTokenForEtherSpecifyingFee(address,uint256,uint256,uint256,uint256)",
+      "name": "tradeTokenForEtherSpecifyingFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedEtherAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maximumEtherFeeAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalEtherBought",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeTokenForEtherUsingReserves(address,uint256,uint256,uint256)",
+      "name": "tradeTokenForEtherUsingReserves",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenAmountFromReserves",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedEtherAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalEtherBought",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeTokenForEtherUsingReservesSpecifyingFee(address,uint256,uint256,uint256,uint256)",
+      "name": "tradeTokenForEtherUsingReservesSpecifyingFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenAmountFromReserves",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedEtherAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maximumEtherFeeAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalEtherBought",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeTokenForEtherUsingReservesWithFeeOnTransferSpecifyingFee(address,uint256,uint256,uint256,uint256)",
+      "name": "tradeTokenForEtherUsingReservesWithFeeOnTransferSpecifyingFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenAmountFromReserves",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedEtherAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maximumEtherFeeAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalEtherBought",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeTokenForEtherWithFeeOnTransfer(address,uint256,uint256,uint256)",
+      "name": "tradeTokenForEtherWithFeeOnTransfer",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedEtherAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalEtherBought",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeTokenForEtherWithFeeOnTransferSpecifyingFee(address,uint256,uint256,uint256,uint256)",
+      "name": "tradeTokenForEtherWithFeeOnTransferSpecifyingFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedEtherAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maximumEtherFeeAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalEtherBought",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeTokenForToken(address,address,uint256,uint256,uint256,bool)",
+      "name": "tradeTokenForToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "tokenProvided",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenReceived",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenProvidedAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenReceivedAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "routeThroughEther",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalTokensSold",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeTokenForTokenSpecifyingFee(address,address,uint256,uint256,uint256,uint256,bool)",
+      "name": "tradeTokenForTokenSpecifyingFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "tokenProvided",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenReceived",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenProvidedAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenReceivedAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maximumFeeAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "routeThroughEther",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalTokensBought",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeTokenForTokenUsingReserves(address,address,uint256,uint256,uint256,bool)",
+      "name": "tradeTokenForTokenUsingReserves",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "tokenProvidedFromReserves",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenReceived",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenProvidedAmountFromReserves",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenReceivedAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "routeThroughEther",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalTokensSold",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeTokenForTokenUsingReservesSpecifyingFee(address,address,uint256,uint256,uint256,uint256,bool)",
+      "name": "tradeTokenForTokenUsingReservesSpecifyingFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "tokenProvidedFromReserves",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenReceived",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenProvidedAmountFromReserves",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenReceivedAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maximumFeeAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "routeThroughEther",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalTokensBought",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeTokenForTokenUsingReservesWithFeeOnTransferSpecifyingFee(address,address,uint256,uint256,uint256,uint256,bool)",
+      "name": "tradeTokenForTokenUsingReservesWithFeeOnTransferSpecifyingFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "tokenProvidedFromReserves",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenReceived",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenProvidedAmountFromReserves",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenReceivedAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maximumFeeAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "routeThroughEther",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalTokensBought",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeTokenForTokenWithFeeOnTransfer(address,address,uint256,uint256,uint256,uint256,bool)",
+      "name": "tradeTokenForTokenWithFeeOnTransfer",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "tokenProvided",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenReceived",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenProvidedAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenReceivedAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenReceivedAmountAfterTransferFee",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "routeThroughEther",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalTokensBought",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tradeTokenForTokenWithFeeOnTransferSpecifyingFee(address,address,uint256,uint256,uint256,uint256,uint256,bool)",
+      "name": "tradeTokenForTokenWithFeeOnTransferSpecifyingFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "tokenProvided",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenReceived",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenProvidedAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenReceivedAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quotedTokenReceivedAmountAfterTransferFee",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maximumFeeAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "routeThroughEther",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalTokensBought",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Allows a new account (`newOwner`) to accept ownership. Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unpause(uint8)",
+      "name": "unpause",
+      "description": "Unpause a currently paused role and emit a `RoleUnpaused` event. Only the owner may call this function.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "The role to pause.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(address,address,uint256)",
+      "name": "withdraw",
+      "description": "Transfer `amount` of ERC20 token `token` to `recipient`. Only the owner may call this function.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "ERC20Interface The ERC20 token to transfer.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "recipient",
+          "description": "address The account to transfer the tokens to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "uint256 The amount of tokens to transfer.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawDai(address,uint256)",
+      "name": "withdrawDai",
+      "description": "Transfer `daiAmount` Dai to `recipient`. Only the owner may call this function.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "address The account to transfer Dai to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "daiAmount",
+          "description": "uint256 The amount of Dai to transfer.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawDaiToPrimaryRecipient(uint256)",
+      "name": "withdrawDaiToPrimaryRecipient",
+      "description": "Transfer `daiAmount` Dai for to the current primary recipient set by the owner. Only the owner or the designated withdrawal manager role may call this function.",
+      "parameterDecorators": [
+        {
+          "name": "daiAmount",
+          "description": "uint256 The amount of Dai to transfer to the primary recipient.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawEther(address,uint256)",
+      "name": "withdrawEther",
+      "description": "Transfer `etherAmount` Ether to `recipient`. Only the owner may call this function.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "address The account to transfer Ether to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "etherAmount",
+          "description": "uint256 The amount of Ether to transfer.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawUSDC(address,uint256)",
+      "name": "withdrawUSDC",
+      "description": "Transfer `usdcAmount` USDC to `recipient`. Only the owner may call this function.",
+      "parameterDecorators": [
+        {
+          "name": "recipient",
+          "description": "address The account to transfer USDC to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "usdcAmount",
+          "description": "uint256 The amount of USDC to transfer.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawUSDCToPrimaryRecipient(uint256)",
+      "name": "withdrawUSDCToPrimaryRecipient",
+      "description": "Transfer `usdcAmount` USDC for to the current primary recipient set by the owner. Only the owner or the designated withdrawal manager role may call this function.",
+      "parameterDecorators": [
+        {
+          "name": "usdcAmount",
+          "description": "uint256 The amount of USDC to transfer to the primary recipient.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

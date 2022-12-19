@@ -1,0 +1,837 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "vaults"
+  ],
+  "name": "SorbetVault",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "CollectFees(uint256,uint256,uint256,uint256)",
+      "name": "CollectFees",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "feesFromPool0",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "feesFromPool1",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "usersFees0",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "usersFees1",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Deposit(address,uint256,uint256,uint256)",
+      "name": "Deposit",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "liquidity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount0",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount1",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Rerange(int24,int24,uint256,uint256)",
+      "name": "Rerange",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "tickLower",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "tickUpper",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount0",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount1",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RewardPaid(address,uint256,uint256)",
+      "name": "RewardPaid",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "fees0",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "fees1",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Snapshot(uint256,uint256)",
+      "name": "Snapshot",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "totalAmount0",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalAmount1",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Withdraw(address,uint256,uint256,uint256)",
+      "name": "Withdraw",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "liquidity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount0",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount1",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "accruedProtocolFees0()",
+      "name": "accruedProtocolFees0",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "accruedProtocolFees1()",
+      "name": "accruedProtocolFees1",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "baseThreshold()",
+      "name": "baseThreshold",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int24"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "collectProtocolFees(uint256,uint256)",
+      "name": "collectProtocolFees",
+      "description": "Used to collect accumulated protocol fees.",
+      "parameterDecorators": [
+        {
+          "name": "amount0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deposit(uint256,uint256,uint256,uint256)",
+      "name": "deposit",
+      "description": "Deposits tokens in proportion to the vault's current holdings. These tokens sit in the vault and are not used for liquidity on Uniswap until the next rebalance. Also note it's not necessary to check if user manipulated price to deposit cheaper, as the value of range orders can only by manipulated higher.",
+      "parameterDecorators": [
+        {
+          "name": "amount0Desired",
+          "description": "Max amount of token0 to deposit.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount1Desired",
+          "description": "Max amount of token1 to deposit.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount0Min",
+          "description": "Revert if resulting `amount0` is less than this.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount1Min",
+          "description": "Revert if resulting `amount1` is less than this param to Recipient of shares.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "liquidity",
+          "description": "minted.",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "amount0",
+          "description": "Amount of token0 deposited.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "amount1",
+          "description": "Amount of token1 deposited.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "emergencyBurn(int24,int24,uint128)",
+      "name": "emergencyBurn",
+      "description": "Removes liquidity and transfer tokens to governance in case of emergency. Cannot be called if already finalized.",
+      "parameterDecorators": [
+        {
+          "name": "_tickLower",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tickUpper",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "liquidity",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "emergencyWithdraw(address,uint256)",
+      "name": "emergencyWithdraw",
+      "description": "Transfers tokens to governance in case of emergency. Cannot be called if already finalized.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "emergencyWithdrawEth()",
+      "name": "emergencyWithdrawEth",
+      "description": "Transfers tokens to governance in case of emergency. Cannot be called if already finalized.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "finalized()",
+      "name": "finalized",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTwap()",
+      "name": "getTwap",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int24"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "governance()",
+      "name": "governance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "harvestFees()",
+      "name": "harvestFees",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "init(address)",
+      "name": "init",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_strategy",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lastTimeUpdated()",
+      "name": "lastTimeUpdated",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxTwapDeviation()",
+      "name": "maxTwapDeviation",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int24"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pool()",
+      "name": "pool",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "position()",
+      "name": "position",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "liquidity",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "feeGrowthInside0LastX128",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "feeGrowthInside1LastX128",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "tokensOwed0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "tokensOwed1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "protocolFee()",
+      "name": "protocolFee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rerange()",
+      "name": "rerange",
+      "description": "Updates vault's positions. Can only be called by the strategy. Two orders are placed - a base order and a limit order. The base order is placed first with as much liquidity as possible. This order should use up all of one token, leaving only the other one. This excess amount is then placed as a single-sided bid or ask order.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tickLower()",
+      "name": "tickLower",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int24"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tickSpacing()",
+      "name": "tickSpacing",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int24"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tickUpper()",
+      "name": "tickUpper",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int24"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "token0()",
+      "name": "token0",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "token0PerLiquidityStored()",
+      "name": "token0PerLiquidityStored",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "token1()",
+      "name": "token1",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "token1PerLiquidityStored()",
+      "name": "token1PerLiquidityStored",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalLiquidity()",
+      "name": "totalLiquidity",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "twapDuration()",
+      "name": "twapDuration",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "uniswapV3MintCallback(uint256,uint256,bytes)",
+      "name": "uniswapV3MintCallback",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount1",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "userInfo(address)",
+      "name": "userInfo",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "liquidity",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "token0Rewards",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "token1Rewards",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "token0PerLiquidityPaid",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "token1PerLiquidityPaid",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "usersFees0()",
+      "name": "usersFees0",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "usersFees1()",
+      "name": "usersFees1",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "weth()",
+      "name": "weth",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw(uint128,uint256,uint256)",
+      "name": "withdraw",
+      "description": "Withdraws tokens in proportion to the vault's holdings. Removes proportional amount of liquidity from Uniswap. Note it doesn't collect share of fees since last rebalance to save gas.",
+      "parameterDecorators": [
+        {
+          "name": "liquidity",
+          "description": "burned by sender.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount0Min",
+          "description": "Revert if resulting `amount0` is smaller than this.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount1Min",
+          "description": "Revert if resulting `amount1` is smaller than this.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amount0",
+          "description": "Amount of token0 sent to recipient.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "amount1",
+          "description": "Amount of token1 sent to recipient.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

@@ -1,0 +1,672 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "merkle proofs",
+    "celo network"
+  ],
+  "name": "Home",
+  "description": "Home. Accepts messages to be dispatched to remote chains, constructs a Merkle tree of the messages, and accepts signatures from a bonded Updater which notarize the Merkle tree roots. Accepts submissions of fraudulent signatures by the Updater and slashes the Updater in this case.",
+  "eventDecorators": [
+    {
+      "signature": "Dispatch(bytes32,uint256,uint64,bytes32,bytes)",
+      "name": "Dispatch",
+      "description": "Emitted when a new message is dispatched via Optics.",
+      "parameterDecorators": [
+        {
+          "name": "messageHash",
+          "description": "Hash of message; the leaf inserted to the Merkle tree for the message.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "leafIndex",
+          "description": "Index of message's leaf in merkle tree.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "destinationAndNonce",
+          "description": "Destination and destination-specific nonce combined in single field ((destination << 32) & nonce).",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "committedRoot",
+          "description": "the latest notarized root submitted in the last signed Update.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "message",
+          "description": "Raw bytes of message.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DoubleUpdate(bytes32,bytes32[2],bytes,bytes)",
+      "name": "DoubleUpdate",
+      "description": "Emitted when proof of a double update is submitted, which sets the contract to FAILED state.",
+      "parameterDecorators": [
+        {
+          "name": "oldRoot",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newRoot",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "signature",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "signature2",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ImproperUpdate(bytes32,bytes32,bytes)",
+      "name": "ImproperUpdate",
+      "description": "Emitted when proof of an improper update is submitted, which sets the contract to FAILED state.",
+      "parameterDecorators": [
+        {
+          "name": "oldRoot",
+          "description": "Old root of the improper update.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newRoot",
+          "description": "New root of the improper update.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "signature",
+          "description": "Signature on `oldRoot` and `newRoot.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewUpdater(address)",
+      "name": "NewUpdater",
+      "description": "Emitted when Updater is rotated by the UpdaterManager.",
+      "parameterDecorators": [
+        {
+          "name": "updater",
+          "description": "The address of the new updater.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewUpdaterManager(address)",
+      "name": "NewUpdaterManager",
+      "description": "Emitted when the UpdaterManager contract is changed.",
+      "parameterDecorators": [
+        {
+          "name": "updaterManager",
+          "description": "The address of the new updaterManager.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Update(uint32,bytes32,bytes32,bytes)",
+      "name": "Update",
+      "description": "Emitted when update is made on Home or unconfirmed update root is submitted on Replica.",
+      "parameterDecorators": [
+        {
+          "name": "homeDomain",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "oldRoot",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newRoot",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "signature",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UpdaterSlashed(address,address)",
+      "name": "UpdaterSlashed",
+      "description": "Emitted when the Updater is slashed (should be paired with ImproperUpdater or DoubleUpdate event).",
+      "parameterDecorators": [
+        {
+          "name": "updater",
+          "description": "The address of the updater.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "reporter",
+          "description": "The address of the entity that reported the updater misbehavior.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "MAX_MESSAGE_BODY_BYTES()",
+      "name": "MAX_MESSAGE_BODY_BYTES",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "VERSION()",
+      "name": "VERSION",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "committedRoot()",
+      "name": "committedRoot",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "count()",
+      "name": "count",
+      "description": "Returns the number of inserted leaves in the tree (current index).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "dispatch(uint32,bytes32,bytes)",
+      "name": "dispatch",
+      "description": "Dispatch the message it to the destination domain & recipient. Format the message, insert its hash into Merkle tree, enqueue the new Merkle root, and emit `Dispatch` event with message information.",
+      "parameterDecorators": [
+        {
+          "name": "_destinationDomain",
+          "description": "Domain of destination chain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_recipientAddress",
+          "description": "Address of recipient on destination chain as bytes32.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_messageBody",
+          "description": "Raw bytes content of message.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "doubleUpdate(bytes32,bytes32[2],bytes,bytes)",
+      "name": "doubleUpdate",
+      "description": "Called by external agent. Checks that signatures on two sets of roots are valid and that the new roots conflict with each other. If both cases hold true, the contract is failed and a `DoubleUpdate` event is emitted. When `fail()` is called on Home, updater is slashed.",
+      "parameterDecorators": [
+        {
+          "name": "_oldRoot",
+          "description": "Old root shared between two conflicting updates.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newRoot",
+          "description": "Array containing two conflicting new roots.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_signature",
+          "description": "Signature on `_oldRoot` and `_newRoot`[0].",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_signature2",
+          "description": "Signature on `_oldRoot` and `_newRoot`[1].",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "homeDomainHash()",
+      "name": "homeDomainHash",
+      "description": "Hash of Home domain concatenated with \"OPTICS\".",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "improperUpdate(bytes32,bytes32,bytes)",
+      "name": "improperUpdate",
+      "description": "Check if an Update is an Improper Update; if so, slash the Updater and set the contract to FAILED state. An Improper Update is an update building off of the Home's `committedRoot` for which the `_newRoot` does not currently exist in the Home's queue. This would mean that message(s) that were not truly dispatched on Home were falsely included in the signed root. An Improper Update will only be accepted as valid by the Replica If an Improper Update is attempted on Home, the Updater will be slashed immediately. If an Improper Update is submitted to the Replica, it should be relayed to the Home contract using this function in order to slash the Updater with an Improper Update. An Improper Update submitted to the Replica is only valid while the `_oldRoot` is still equal to the `committedRoot` on Home; if the `committedRoot` on Home has already been updated with a valid Update, then the Updater should be slashed with a Double Update. Reverts (and doesn't slash updater) if signature is invalid or update not current.",
+      "parameterDecorators": [
+        {
+          "name": "_oldRoot",
+          "description": "Old merkle tree root (should equal home's committedRoot).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newRoot",
+          "description": "New merkle tree root.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_signature",
+          "description": "Updater signature on `_oldRoot` and `_newRoot`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "TRUE if update was an Improper Update (implying Updater was slashed).",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialize(address)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_updaterManager",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "localDomain()",
+      "name": "localDomain",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nonces(uint32)",
+      "name": "nonces",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "queueContains(bytes32)",
+      "name": "queueContains",
+      "description": "Returns TRUE iff `_item` is in the queue.",
+      "parameterDecorators": [
+        {
+          "name": "_item",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "queueEnd()",
+      "name": "queueEnd",
+      "description": "Returns last item enqueued to the queue.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "queueLength()",
+      "name": "queueLength",
+      "description": "Returns number of elements in queue.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "root()",
+      "name": "root",
+      "description": "Calculates and returns tree's current root.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setUpdater(address)",
+      "name": "setUpdater",
+      "description": "Set a new Updater.",
+      "parameterDecorators": [
+        {
+          "name": "_updater",
+          "description": "the new Updater.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setUpdaterManager(address)",
+      "name": "setUpdaterManager",
+      "description": "Set a new UpdaterManager contract. Home(s) will initially be initialized using a trusted UpdaterManager contract; we will progressively decentralize by swapping the trusted contract with a new implementation that implements Updater bonding & slashing, and rules for Updater selection & rotation.",
+      "parameterDecorators": [
+        {
+          "name": "_updaterManager",
+          "description": "the new UpdaterManager contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "state()",
+      "name": "state",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "suggestUpdate()",
+      "name": "suggestUpdate",
+      "description": "Suggest an update for the Updater to sign and submit. If queue is empty, null bytes returned for both (No update is necessary because no messages have been dispatched since the last update).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_committedRoot",
+          "description": "Latest root signed by the Updater.",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        },
+        {
+          "name": "_new",
+          "description": "Latest enqueued Merkle root.",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tree()",
+      "name": "tree",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "count",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "update(bytes32,bytes32,bytes)",
+      "name": "update",
+      "description": "Submit a signature from the Updater \"notarizing\" a root, which updates the Home contract's `committedRoot`, and publishes the signature which will be relayed to Replica contracts. emits Update eventIf _newRoot is not contained in the queue, the Update is a fraudulent Improper Update, so the Updater is slashed & Home is set to FAILED state.",
+      "parameterDecorators": [
+        {
+          "name": "_committedRoot",
+          "description": "Current updated merkle root which the update is building off of.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newRoot",
+          "description": "New merkle root to update the contract state to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_signature",
+          "description": "Updater signature on `_committedRoot` and `_newRoot`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updater()",
+      "name": "updater",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "updaterManager()",
+      "name": "updaterManager",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

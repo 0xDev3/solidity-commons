@@ -1,0 +1,605 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "AuctionRaffle",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "NewAuctionWinner(uint256)",
+      "name": "NewAuctionWinner",
+      "description": "Emitted if a new DAO is registered. A bidder has been drawn as auction winner.",
+      "parameterDecorators": [
+        {
+          "name": "bidderID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewBid(address,uint256,uint256)",
+      "name": "NewBid",
+      "description": "Emitted if a new DAO is registered. A new bid has been placed or an existing bid has been bumped.",
+      "parameterDecorators": [
+        {
+          "name": "bidder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "bidderID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "bidAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewGoldenTicketWinner(uint256)",
+      "name": "NewGoldenTicketWinner",
+      "description": "Emitted if a new DAO is registered. A bidder has been drawn as the golden ticket winner.",
+      "parameterDecorators": [
+        {
+          "name": "bidderID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewRaffleWinner(uint256)",
+      "name": "NewRaffleWinner",
+      "description": "Emitted if a new DAO is registered. A bidder has been drawn as raffle winner.",
+      "parameterDecorators": [
+        {
+          "name": "bidderID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emitted if a new DAO is registered.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "auctionWinnersCount()",
+      "name": "auctionWinnersCount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "bid()",
+      "name": "bid",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "biddingEndTime()",
+      "name": "biddingEndTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "biddingStartTime()",
+      "name": "biddingStartTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claim(uint256)",
+      "name": "claim",
+      "description": "Allows a bidder to claim their funds after the raffle is settled. Golden Ticket winner can withdraw the full bid amount. Raffle winner can withdraw the bid amount minus `_reservePrice`. Non-winning bidder can withdraw the bid amount minus 2% fee. Auction winner pays the full bid amount and is not entitled to any withdrawal.",
+      "parameterDecorators": [
+        {
+          "name": "bidderID",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimFees(uint256)",
+      "name": "claimFees",
+      "description": "Allows the owner to claim the 2% fees from non-winning bids after the raffle is settled. This function is designed to be called multiple times, to split iteration though all non-winning bids across multiple transactions.",
+      "parameterDecorators": [
+        {
+          "name": "bidsCount",
+          "description": "The number of bids to be processed at once.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimProceeds()",
+      "name": "claimProceeds",
+      "description": "Allows the owner to claim proceeds from the ticket sale after the raffle is settled. Proceeds include: sum of auction winner bid amounts, `_reservePrice` paid by each raffle winner (except the Golden Ticket winner).",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimingEndTime()",
+      "name": "claimingEndTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAuctionWinners()",
+      "name": "getAuctionWinners",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "A list of auction winner bidder IDs.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getBid(address)",
+      "name": "getBid",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "bidder",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "bidderID",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "winType",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8"
+            },
+            {
+              "name": "claimed",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bool"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getBidByID(uint256)",
+      "name": "getBidByID",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "bidderID",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "bidderID",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "winType",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8"
+            },
+            {
+              "name": "claimed",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bool"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getBidWithAddress(uint256)",
+      "name": "getBidWithAddress",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "bidderID",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "bidder",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "bid",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "tuple"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getBidderAddress(uint256)",
+      "name": "getBidderAddress",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "bidderID",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Address of bidder account for given bidder ID.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getBiddersCount()",
+      "name": "getBiddersCount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getBidsWithAddresses()",
+      "name": "getBidsWithAddresses",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "bidder",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "bid",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "tuple"
+            }
+          ],
+          "solidityType": "tuple[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRaffleParticipants()",
+      "name": "getRaffleParticipants",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRaffleWinners()",
+      "name": "getRaffleWinners",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "A list of raffle winner bidder IDs.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getState()",
+      "name": "getState",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minBidIncrement()",
+      "name": "minBidIncrement",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "raffleWinnersCount()",
+      "name": "raffleWinnersCount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rescueTokens(address)",
+      "name": "rescueTokens",
+      "description": "Allows the owner to retrieve any ERC-20 tokens that were sent to the contract by accident.",
+      "parameterDecorators": [
+        {
+          "name": "tokenAddress",
+          "description": "The address of an ERC-20 token contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "reservePrice()",
+      "name": "reservePrice",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "settleAuction()",
+      "name": "settleAuction",
+      "description": "Draws auction winners and changes contract state to AUCTION_SETTLED. Removes highest bids from the heap, sets their WinType to AUCTION and adds them to _auctionWinners array. Temporarily adds auction winner bidderIDs to a separate heap and then retrieves them in descending order. This is done to efficiently remove auction winners from _raffleParticipants array as they no longer take part in the raffle.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "settleRaffle(uint256[])",
+      "name": "settleRaffle",
+      "description": "Draws raffle winners and changes contract state to RAFFLE_SETTLED. The first selected raffle winner becomes the Golden Ticket winner. Sets WinType of the first selected bid to GOLDEN_TICKET. Sets WinType to RAFFLE for the remaining selected bids.",
+      "parameterDecorators": [
+        {
+          "name": "randomNumbers",
+          "description": "The source of randomness for the function. Each random number is used to draw at most `_winnersPerRandom` raffle winners.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawUnclaimedFunds()",
+      "name": "withdrawUnclaimedFunds",
+      "description": "Allows the owner to withdraw all funds left in the contract by the participants. Callable only after the claiming window is closed.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

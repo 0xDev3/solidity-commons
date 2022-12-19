@@ -1,0 +1,487 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "liquidity"
+  ],
+  "name": "TenderFarm",
+  "description": "TenderFarm. TenderFarm is responsible for incetivizing liquidity providers, by accepting LP Tokens and a proportionaly rewarding them with TenderTokens over time.",
+  "eventDecorators": [
+    {
+      "signature": "Farm(address,uint256)",
+      "name": "Farm",
+      "description": "Farm gets emitted when an account stakes LP tokens.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Harvest(address,uint256)",
+      "name": "Harvest",
+      "description": "Harvest gets emitted when an accounts harvests outstanding rewards.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RewardsAdded(uint256)",
+      "name": "RewardsAdded",
+      "description": "RewardsAdded gets emitted when new rewards are added and a new epoch begins.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Unfarm(address,uint256)",
+      "name": "Unfarm",
+      "description": "Unfarm gets emitted when an account unstakes LP tokens.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "CRF()",
+      "name": "CRF",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addRewards(uint256)",
+      "name": "addRewards",
+      "description": "add new rewards. will 'start' a new 'epoch'.only callable by owner.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "amount of reward tokens to add.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "availableRewards(address)",
+      "name": "availableRewards",
+      "description": "Check available rewards for an account.",
+      "parameterDecorators": [
+        {
+          "name": "_for",
+          "description": "address address of the account to check rewards for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "rewards for the provided account address.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "farm(uint256)",
+      "name": "farm",
+      "description": "stake liquidity pool tokens to receive rewards. '_amount' needs to be approved for the 'TenderFarm' to transfer.harvests current rewards before accounting updates are made.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "amount of liquidity pool tokens to stake.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "farmFor(address,uint256)",
+      "name": "farmFor",
+      "description": "stake liquidity pool tokens for a specific account so that it receives rewards. '_amount' needs to be approved for the 'TenderFarm' to transfer.staked tokens will belong to the account they are staked for.harvests current rewards before accounting updates are made.",
+      "parameterDecorators": [
+        {
+          "name": "_for",
+          "description": "account to stake for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "amount of liquidity pool tokens to stake.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "farmWithPermit(uint256,uint256,uint8,bytes32,bytes32)",
+      "name": "farmWithPermit",
+      "description": "allow spending token and stake liquidity pool tokens to receive rewards. '_amount' needs to be approved for the 'TenderFarm' to transfer.harvests current rewards before accounting updates are made.calls permit on LP Token.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "amount of liquidity pool tokens to stake.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_deadline",
+          "description": "deadline of the permit.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_v",
+          "description": "v of signed Permit message.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_r",
+          "description": "r of signed Permit message.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_s",
+          "description": "s of signed Permit message.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "harvest()",
+      "name": "harvest",
+      "description": "harvest outstanding rewards. reverts when trying to harvest multiple times if no new rewards have been added.emits an event with how many reward tokens have been harvested.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialize(address,address,address)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_stakeToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_rewardToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tenderizer",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "nextTotalStake()",
+      "name": "nextTotalStake",
+      "description": "Return the total amount of LP tokens staked for the next reward epoch.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardToken()",
+      "name": "rewardToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "selfPermit(address,uint256,uint256,uint8,bytes32,bytes32)",
+      "name": "selfPermit",
+      "description": "Permits this contract to spend a given token from `msg.sender`. The `owner` is always msg.sender and the `spender` is always address(this).",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "The address of the token spent.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_value",
+          "description": "The amount that can be spent of token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_deadline",
+          "description": "A timestamp, the current blocktime must be less than or equal to this timestamp.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_v",
+          "description": "Must produce valid secp256k1 signature from the holder along with `r` and `s`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_r",
+          "description": "Must produce valid secp256k1 signature from the holder along with `v` and `s`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_s",
+          "description": "Must produce valid secp256k1 signature from the holder along with `r` and `v`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "selfPermitIfNecessary(address,uint256,uint256,uint8,bytes32,bytes32)",
+      "name": "selfPermitIfNecessary",
+      "description": "Permits this contract to spend a given token from `msg.sender`. The `owner` is always msg.sender and the `spender` is always address(this). Can be used instead of #selfPermit to prevent calls from failing due to a frontrun of a call to #selfPermit.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "The address of the token spent.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_value",
+          "description": "The amount that can be spent of token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_deadline",
+          "description": "A timestamp, the current blocktime must be less than or equal to this timestamp.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_v",
+          "description": "Must produce valid secp256k1 signature from the holder along with `r` and `s`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_r",
+          "description": "Must produce valid secp256k1 signature from the holder along with `v` and `s`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_s",
+          "description": "Must produce valid secp256k1 signature from the holder along with `r` and `v`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setTenderizer(address)",
+      "name": "setTenderizer",
+      "description": "Changes the tenderizer of the contract.",
+      "parameterDecorators": [
+        {
+          "name": "_tenderizer",
+          "description": "address of the new tenderizer.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stakeOf(address)",
+      "name": "stakeOf",
+      "description": "Check stake for an account.",
+      "parameterDecorators": [
+        {
+          "name": "_of",
+          "description": "address address of the account to check stake for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "LP tokens deposited for address.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "stakes(address)",
+      "name": "stakes",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "stake",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "lastCRF",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tenderizer()",
+      "name": "tenderizer",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalStake()",
+      "name": "totalStake",
+      "description": "Return the total amount of LP tokens staked in this farm.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "unfarm(uint256)",
+      "name": "unfarm",
+      "description": "unstake liquidity pool tokens. '_amount' needs to be approved for the 'TenderFarm' to transfer.harvests current rewards before accounting updates are made.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "amount of liquidity pool tokens to stake.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

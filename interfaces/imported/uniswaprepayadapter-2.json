@@ -1,0 +1,598 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "swaps",
+    "aave",
+    "uniswap"
+  ],
+  "name": "UniswapRepayAdapter",
+  "description": "UniswapRepayAdapter. Uniswap V2 Adapter to perform a repay of a debt with collateral.",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Swapped(address,address,uint256,uint256)",
+      "name": "Swapped",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "fromAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "toAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "fromAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "receivedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "ADDRESSES_PROVIDER()",
+      "name": "ADDRESSES_PROVIDER",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "FLASHLOAN_PREMIUM_TOTAL()",
+      "name": "FLASHLOAN_PREMIUM_TOTAL",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "LENDING_POOL()",
+      "name": "LENDING_POOL",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MAX_SLIPPAGE()",
+      "name": "MAX_SLIPPAGE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MAX_SLIPPAGE_PERCENT()",
+      "name": "MAX_SLIPPAGE_PERCENT",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ORACLE()",
+      "name": "ORACLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "UNISWAP_ROUTER()",
+      "name": "UNISWAP_ROUTER",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "USD_ADDRESS()",
+      "name": "USD_ADDRESS",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "WETH_ADDRESS()",
+      "name": "WETH_ADDRESS",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "executeOperation(address[],uint256[],uint256[],address,bytes)",
+      "name": "executeOperation",
+      "description": "Uses the received funds from the flash loan to repay a debt on the protocol on behalf of the user. Then pulls the collateral from the user and swaps it to the debt asset to repay the flash loan. The user should give this contract allowance to pull the ATokens in order to withdraw the underlying asset, swap it and repay the flash loan. Supports only one asset on the flash loan.",
+      "parameterDecorators": [
+        {
+          "name": "assets",
+          "description": "Address of debt asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amounts",
+          "description": "Amount of the debt to be repaid.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "premiums",
+          "description": "Fee of the flash loan.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "initiator",
+          "description": "Address of the user.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "params",
+          "description": "Additional variadic field to include extra params. Expected parameters: address collateralAsset Address of the reserve to be swapped uint256 collateralAmount Amount of reserve to be swapped uint256 rateMode Rate modes of the debt to be repaid uint256 permitAmount Amount for the permit signature uint256 deadline Deadline for the permit signature uint8 v V param for the permit signature bytes32 r R param for the permit signature bytes32 s S param for the permit signature.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getAmountsIn(uint256,address,address)",
+      "name": "getAmountsIn",
+      "description": "Returns the minimum input asset amount required to buy the given output asset amount and the prices.",
+      "parameterDecorators": [
+        {
+          "name": "amountOut",
+          "description": "Amount of reserveOut.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "reserveIn",
+          "description": "Address of the asset to be swap from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "reserveOut",
+          "description": "Address of the asset to be swap to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param3",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param4",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAmountsOut(uint256,address,address)",
+      "name": "getAmountsOut",
+      "description": "Given an input asset amount, returns the maximum output amount of the other asset and the prices.",
+      "parameterDecorators": [
+        {
+          "name": "amountIn",
+          "description": "Amount of reserveIn.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "reserveIn",
+          "description": "Address of the asset to be swap from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "reserveOut",
+          "description": "Address of the asset to be swap to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param3",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param4",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "repayFromCollateral(tuple(address,address,address,address[],uint256,uint256,uint256,bool,bool,bool),tuple(uint256,uint256,uint8,bytes32,bytes32))",
+      "name": "repayFromCollateral",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "repayParams",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "user",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "collateralAsset",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "debtAsset",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "path",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "collateralAmount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "debtRepayAmount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "rateMode",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "useATokenAsFrom",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "useATokenAsTo",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "useFlashLoan",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "permitSignature",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "deadline",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "v",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "r",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "s",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rescueTokens(address)",
+      "name": "rescueTokens",
+      "description": "Emergency rescue for token stucked on this contract, as failsafe mechanism - Funds should never remain in this contract more time than during transactions - Only callable by the owner*.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapAndRepayWithPath(address,address,address[],uint256,uint256,uint256,tuple(uint256,uint256,uint8,bytes32,bytes32),bool,bool)",
+      "name": "swapAndRepayWithPath",
+      "description": "Swaps the user collateral for the debt asset and then repay the debt on the protocol on behalf of the user without using flash loans. This method can be used when the temporary transfer of the collateral asset to this contract does not affect the user position. The user should give this contract allowance to pull the ATokens in order to withdraw the underlying asset.",
+      "parameterDecorators": [
+        {
+          "name": "collateralAsset",
+          "description": "Address of asset to be swapped.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "debtAsset",
+          "description": "Address of debt asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "path",
+          "description": "Path for swapping collateralAsset into debtAsset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "collateralAmount",
+          "description": "Amount of the collateral to be swapped.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "debtRepayAmount",
+          "description": "Amount of the debt to be repaid.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "debtRateMode",
+          "description": "Rate mode of the debt to be repaid.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "permitSignature",
+          "description": "struct containing the permit signature.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "deadline",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "v",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "r",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "s",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "useATokenAsFrom",
+          "description": "use corresponding aToken instead of collateralAsset in swap.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "useATokenAsTo",
+          "description": "use corresponding aToken instead of debtAsset in swap.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

@@ -1,0 +1,894 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "Core",
+  "description": "Azuro internal core managing pre-match conditions and processing bets on them.",
+  "eventDecorators": [
+    {
+      "signature": "ConditionCreated(uint256,uint256,uint256)",
+      "name": "ConditionCreated",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "gameId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "oracleConditionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "conditionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ConditionResolved(uint256,uint8,uint64,int128)",
+      "name": "ConditionResolved",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "conditionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "state",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "outcomeWin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "lpProfit",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ConditionStopped(uint256,bool)",
+      "name": "ConditionStopped",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "conditionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "flag",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Initialized(uint8)",
+      "name": "Initialized",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "version",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewBet(address,address,uint256,uint256,uint64,uint128,uint64,uint128[2])",
+      "name": "NewBet",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "bettor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "affiliate",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "conditionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokenId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "outcomeId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "odds",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "funds",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OddsChanged(uint256,uint64[2])",
+      "name": "OddsChanged",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "conditionId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOdds",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "azuroBet()",
+      "name": "azuroBet",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calcOdds(uint256,uint128,uint64)",
+      "name": "calcOdds",
+      "description": "Calculate the odds of bet with amount `amount` for outcome `outcome` of condition `conditionId`.",
+      "parameterDecorators": [
+        {
+          "name": "conditionId",
+          "description": "the match or condition ID.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "amount of tokens to bet.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "outcome",
+          "description": "predicted outcome.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "odds",
+          "description": "betting odds.",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "cancelByMaintainer(uint256)",
+      "name": "cancelByMaintainer",
+      "description": "Maintainer: Indicate the condition `conditionId` as canceled.",
+      "parameterDecorators": [
+        {
+          "name": "conditionId",
+          "description": "the match or condition ID.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cancelByOracle(uint256)",
+      "name": "cancelByOracle",
+      "description": "Oracle: Indicate the condition `oracleConditionId` as canceled.",
+      "parameterDecorators": [
+        {
+          "name": "oracleConditionId",
+          "description": "the match or condition ID in oracle's internal numbering.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeOdds(uint256,uint64[2])",
+      "name": "changeOdds",
+      "description": "Oracle: Change the current condition `oracleConditionId` odds.",
+      "parameterDecorators": [
+        {
+          "name": "oracleConditionId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newOdds",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "checkOwner(address)",
+      "name": "checkOwner",
+      "description": "Throws if the account is not the owner.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "conditions(uint256)",
+      "name": "conditions",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "gameId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "reinforcement",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "profit",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "outcomeWin",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "margin",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "endsAt",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "state",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        },
+        {
+          "name": "leaf",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint48"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "createCondition(uint256,uint256,uint64[2],uint64[2],uint128,uint64)",
+      "name": "createCondition",
+      "description": "Oracle: See {ICoreBase-createCondition}.",
+      "parameterDecorators": [
+        {
+          "name": "gameId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "oracleConditionId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "odds",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "outcomes",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "reinforcement",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "margin",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getCondition(uint256)",
+      "name": "getCondition",
+      "description": "Get condition by it's ID.",
+      "parameterDecorators": [
+        {
+          "name": "conditionId",
+          "description": "the match or condition ID.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the condition struct.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "gameId",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "funds",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint128[2]"
+            },
+            {
+              "name": "virtualFunds",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint128[2]"
+            },
+            {
+              "name": "reinforcement",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint128"
+            },
+            {
+              "name": "profit",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint128"
+            },
+            {
+              "name": "outcomes",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint64[2]"
+            },
+            {
+              "name": "outcomeWin",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint64"
+            },
+            {
+              "name": "margin",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint64"
+            },
+            {
+              "name": "endsAt",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint64"
+            },
+            {
+              "name": "state",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8"
+            },
+            {
+              "name": "leaf",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint48"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokenId(uint256,uint256)",
+      "name": "getTokenId",
+      "description": "Get AzuroBet token type ID.",
+      "parameterDecorators": [
+        {
+          "name": "conditionId",
+          "description": "the match or condition ID.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "outcomeIndex",
+          "description": "index of one of the condition outcomes.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "AzuroBet token type ID.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokenInfo(uint256)",
+      "name": "getTokenInfo",
+      "description": "Get AzuroBet token type info by it's ID.",
+      "parameterDecorators": [
+        {
+          "name": "tokenId",
+          "description": "AzuroBet token type ID.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the match or condition ID the token belongs to.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "gameId",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "funds",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint128[2]"
+            },
+            {
+              "name": "virtualFunds",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint128[2]"
+            },
+            {
+              "name": "reinforcement",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint128"
+            },
+            {
+              "name": "profit",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint128"
+            },
+            {
+              "name": "outcomes",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint64[2]"
+            },
+            {
+              "name": "outcomeWin",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint64"
+            },
+            {
+              "name": "margin",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint64"
+            },
+            {
+              "name": "endsAt",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint64"
+            },
+            {
+              "name": "state",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8"
+            },
+            {
+              "name": "leaf",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint48"
+            }
+          ],
+          "solidityType": "tuple"
+        },
+        {
+          "name": "_1",
+          "description": "index of the condition outcome the token belongs to.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,address)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "azuroBet_",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "lp_",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lp()",
+      "name": "lp",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "oracleConditionIds(address,uint256)",
+      "name": "oracleConditionIds",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "putBet(address,uint128,tuple(address,uint256,uint64,uint64))",
+      "name": "putBet",
+      "description": "Liquidity Pool: See {ICoreBase-putBet}.",
+      "parameterDecorators": [
+        {
+          "name": "bettor",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "affiliate",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "conditionId",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "outcomeId",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "minOdds",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "resolveAffiliateReward(address,uint256,uint256)",
+      "name": "resolveAffiliateReward",
+      "description": "Liquidity Pool: Resolve affiliate's contribution to total profit that is not rewarded yet.",
+      "parameterDecorators": [
+        {
+          "name": "affiliate_",
+          "description": "address indicated as an affiliate when placing bets.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "start",
+          "description": "index of the first element to check reward in an array of all conditions contributed by the affiliate that are not rewarded yet.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "count",
+          "description": "number of elements of the array to check. Set to 0 to check the array until the end.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "contribution amount.",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "resolveCondition(uint256,uint64)",
+      "name": "resolveCondition",
+      "description": "Oracle: Indicate outcome `outcomeWin` as happened in oracle's condition `oracleConditionId`.",
+      "parameterDecorators": [
+        {
+          "name": "oracleConditionId",
+          "description": "the match or condition ID in oracle's internal numbering.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "outcomeWin",
+          "description": "ID of happened condition's outcome.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "resolvePayout(address,uint256)",
+      "name": "resolvePayout",
+      "description": "Liquidity Pool: Resolve AzuroBet token type `tokenId` payout for `account`.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "AzuroBet tokens owner.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenId",
+          "description": "AzuroBet token type ID.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "payout",
+          "description": "amount of winnings of the account.",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stopCondition(uint256,bool)",
+      "name": "stopCondition",
+      "description": "Maintainer: Indicate the status of condition `conditionId` bet lock.",
+      "parameterDecorators": [
+        {
+          "name": "conditionId",
+          "description": "the match or condition ID.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "flag",
+          "description": "if stop receiving bets for the condition or not.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "viewPayout(address,uint256)",
+      "name": "viewPayout",
+      "description": "Get AzuroBet token type `tokenId` payout for `account`.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "AzuroBet tokens owner.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenId",
+          "description": "AzuroBet token type ID.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "is bet accepted.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "_1",
+          "description": "winnings of the sender.",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

@@ -1,0 +1,727 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "swaps",
+    "liquidity"
+  ],
+  "name": "StableSwapFacet",
+  "description": "Swap - A StableSwap implementation in solidity. Most of the logic is stored as a library `SwapUtils` for the sake of contract readability.",
+  "eventDecorators": [],
+  "functionDecorators": [
+    {
+      "signature": "addSwapLiquidity(bytes32,uint256[],uint256,uint256)",
+      "name": "addSwapLiquidity",
+      "description": "Add liquidity to the pool with the given amounts of tokens.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amounts",
+          "description": "the amounts of each token to add, in their native precision.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minToMint",
+          "description": "the minimum LP tokens adding this amount of liquidity should mint, otherwise revert. Handy for front-running mitigation.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "latest timestamp to accept this transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "amount of LP token user minted and received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "calculateRemoveSwapLiquidity(bytes32,uint256)",
+      "name": "calculateRemoveSwapLiquidity",
+      "description": "A simple method to calculate amount of each underlying tokens that is returned upon burning given amount of LP tokens.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "the amount of LP tokens that would be burned on withdrawal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "array of token balances that the user will receive.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateRemoveSwapLiquidityOneToken(bytes32,uint256,uint8)",
+      "name": "calculateRemoveSwapLiquidityOneToken",
+      "description": "Calculate the amount of underlying token available to withdraw when withdrawing via only single token.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenAmount",
+          "description": "the amount of LP token to burn.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenIndex",
+          "description": "index of which token will be withdrawn.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "availableTokenAmount",
+          "description": "calculated amount of underlying token available to withdraw.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateSwap(bytes32,uint8,uint8,uint256)",
+      "name": "calculateSwap",
+      "description": "Calculate amount of tokens you receive on swap.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenIndexFrom",
+          "description": "the token the user wants to sell.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenIndexTo",
+          "description": "the token the user wants to buy.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "dx",
+          "description": "the amount of tokens the user wants to sell. If the token charges a fee on transfers, use the amount that gets transferred after the fee.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "amount of tokens the user will receive.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateSwapTokenAmount(bytes32,uint256[],bool)",
+      "name": "calculateSwapTokenAmount",
+      "description": "A simple method to calculate prices from deposits or withdrawals, excluding fees but including slippage. This is helpful as an input into the various \"min\" parameters on calls to fight front-running. This shouldn't be used outside frontends for user estimates.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amounts",
+          "description": "an array of token amounts to deposit or withdrawal, corresponding to pooledTokens. The amount should be in each pooled token's native precision. If a token charges a fee on transfers, use the amount that gets transferred after the fee.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deposit",
+          "description": "whether this is a deposit or a withdrawal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "token amount the user will receive.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSwapA(bytes32)",
+      "name": "getSwapA",
+      "description": "Return A, the amplification coefficient * n * (n - 1). See the StableSwap paper for details.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "A parameter.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSwapAPrecise(bytes32)",
+      "name": "getSwapAPrecise",
+      "description": "Return A in its raw precision form. See the StableSwap paper for details.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "A parameter in its raw precision form.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSwapAdminBalance(bytes32,uint256)",
+      "name": "getSwapAdminBalance",
+      "description": "This function reads the accumulated amount of admin fees of the token with given index.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "Index of the pooled token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "admin's token balance in the token's precision.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSwapLPToken(bytes32)",
+      "name": "getSwapLPToken",
+      "description": "Return LP token for canonical Id.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "LPToken.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSwapStorage(bytes32)",
+      "name": "getSwapStorage",
+      "description": "Return Stable swap storage.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "SwapUtils.Swap.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "key",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bytes32"
+            },
+            {
+              "name": "initialA",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "futureA",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "initialATime",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "futureATime",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "swapFee",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "adminFee",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "lpToken",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "pooledTokens",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address[]"
+            },
+            {
+              "name": "tokenPrecisionMultipliers",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256[]"
+            },
+            {
+              "name": "balances",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256[]"
+            },
+            {
+              "name": "adminFees",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256[]"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSwapToken(bytes32,uint8)",
+      "name": "getSwapToken",
+      "description": "Return address of the pooled token at given index. Reverts if tokenIndex is out of range.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "the index of the token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "address of the token at given index.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSwapTokenBalance(bytes32,uint8)",
+      "name": "getSwapTokenBalance",
+      "description": "Return current balance of the pooled token at given index.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "the index of the token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "current balance of the pooled token at given index with token's native precision.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSwapTokenIndex(bytes32,address)",
+      "name": "getSwapTokenIndex",
+      "description": "Return the index of the given token address. Reverts if no matching token is found.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenAddress",
+          "description": "address of the token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the index of the given token address.",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSwapVirtualPrice(bytes32)",
+      "name": "getSwapVirtualPrice",
+      "description": "Get the virtual price, to help calculate profit.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the virtual price, scaled to the POOL_PRECISION_DECIMALS.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeSwapLiquidity(bytes32,uint256,uint256[],uint256)",
+      "name": "removeSwapLiquidity",
+      "description": "Burn LP tokens to remove liquidity from the pool. Withdraw fee that decays linearly over period of 4 weeks since last deposit will apply. Liquidity can always be removed, even when the pool is paused.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "the amount of LP tokens to burn.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minAmounts",
+          "description": "the minimum amounts of each token in the pool acceptable for this burn. Useful as a front-running mitigation.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "latest timestamp to accept this transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "amounts of tokens user received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeSwapLiquidityImbalance(bytes32,uint256[],uint256,uint256)",
+      "name": "removeSwapLiquidityImbalance",
+      "description": "Remove liquidity from the pool, weighted differently than the pool's current balances. Withdraw fee that decays linearly over period of 4 weeks since last deposit will apply.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amounts",
+          "description": "how much of each token to withdraw.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxBurnAmount",
+          "description": "the max LP token provider is willing to pay to remove liquidity. Useful as a front-running mitigation.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "latest timestamp to accept this transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "amount of LP tokens burned.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeSwapLiquidityOneToken(bytes32,uint256,uint8,uint256,uint256)",
+      "name": "removeSwapLiquidityOneToken",
+      "description": "Remove liquidity from the pool all in one token. Withdraw fee that decays linearly over period of 4 weeks since last deposit will apply.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenAmount",
+          "description": "the amount of the token you want to receive.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenIndex",
+          "description": "the index of the token you want to receive.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minAmount",
+          "description": "the minimum amount to withdraw, otherwise revert.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "latest timestamp to accept this transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "amount of chosen token user received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swap(bytes32,uint8,uint8,uint256,uint256,uint256)",
+      "name": "swap",
+      "description": "Swap two tokens using this pool.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenIndexFrom",
+          "description": "the token the user wants to swap from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenIndexTo",
+          "description": "the token the user wants to swap to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "dx",
+          "description": "the amount of tokens the user wants to swap from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minDy",
+          "description": "the min amount the user would like to receive, or revert.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "latest timestamp to accept this transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapExact(bytes32,uint256,address,address,uint256,uint256)",
+      "name": "swapExact",
+      "description": "Swap two tokens using this pool.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountIn",
+          "description": "the amount of tokens the user wants to swap from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "assetIn",
+          "description": "the token the user wants to swap from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "assetOut",
+          "description": "the token the user wants to swap to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "minAmountOut",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapExactOut(bytes32,uint256,address,address,uint256,uint256)",
+      "name": "swapExactOut",
+      "description": "Swap two tokens using this pool.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "Hash of the canonical id + domain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountOut",
+          "description": "the amount of tokens the user wants to swap to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "assetIn",
+          "description": "the token the user wants to swap from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "assetOut",
+          "description": "the token the user wants to swap to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "maxAmountIn",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

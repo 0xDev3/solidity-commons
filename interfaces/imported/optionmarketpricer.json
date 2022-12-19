@@ -1,0 +1,718 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "OptionMarketPricer",
+  "description": "OptionMarketPricer. Logic for working out the price of an option. Includes the IV impact of the trade, the fee components and premium.",
+  "eventDecorators": [],
+  "functionDecorators": [
+    {
+      "signature": "getFee(tuple(uint256,uint256,uint256,uint256,uint256,uint256,int256,int256,uint256,uint256),uint256,uint256,uint256)",
+      "name": "getFee",
+      "description": "Calculate the fee for a trade.",
+      "parameterDecorators": [
+        {
+          "name": "pricingGlobals",
+          "description": "The PricingGlobals.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "optionPriceFeeCoefficient",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "spotPriceFeeCoefficient",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "vegaFeeCoefficient",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "vegaNormFactor",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "standardSize",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "skewAdjustmentFactor",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "rateAndCarry",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "minDelta",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "volatilityCutoff",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "spotPrice",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "amount",
+          "description": "The amount of options being traded.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "optionPrice",
+          "description": "The fair price for one option.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "vegaUtil",
+          "description": "The vega utilisation of the LiquidityPool.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "fee",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPremium(tuple(bool,uint256,uint256,uint256,tuple),tuple(uint256,int256,int256,int256),tuple(uint256,uint256,uint256,uint256,uint256,uint256,int256,int256,uint256,uint256))",
+      "name": "getPremium",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "trade",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "isBuy",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "vol",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "expiry",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "liquidity",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "pricing",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "optionPrice",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "preTradeAmmNetStdVega",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "postTradeAmmNetStdVega",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "callDelta",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "pricingGlobals",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "optionPriceFeeCoefficient",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "spotPriceFeeCoefficient",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "vegaFeeCoefficient",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "vegaNormFactor",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "standardSize",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "skewAdjustmentFactor",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "rateAndCarry",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "minDelta",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "volatilityCutoff",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "spotPrice",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "premium",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVegaUtil(tuple(bool,uint256,uint256,uint256,tuple),tuple(uint256,int256,int256,int256),tuple(uint256,uint256,uint256,uint256,uint256,uint256,int256,int256,uint256,uint256))",
+      "name": "getVegaUtil",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "trade",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "isBuy",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "vol",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "expiry",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "liquidity",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "pricing",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "optionPrice",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "preTradeAmmNetStdVega",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "postTradeAmmNetStdVega",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "callDelta",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "pricingGlobals",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "optionPriceFeeCoefficient",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "spotPriceFeeCoefficient",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "vegaFeeCoefficient",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "vegaNormFactor",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "standardSize",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "skewAdjustmentFactor",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "rateAndCarry",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "minDelta",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "volatilityCutoff",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "spotPrice",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "vegaUtil",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "init(address,address)",
+      "name": "init",
+      "description": "Initialize the contract.",
+      "parameterDecorators": [
+        {
+          "name": "_optionMarket",
+          "description": "OptionMarket address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_greekCache",
+          "description": "OptionGreekCache address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "ivImpactForTrade(tuple(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),tuple(bool,uint256,uint256,uint256,tuple),tuple(uint256,uint256,uint256,uint256,uint256,uint256,int256,int256,uint256,uint256),uint256)",
+      "name": "ivImpactForTrade",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "listing",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "id",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "strike",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "skew",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "longCall",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "shortCall",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "longPut",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "shortPut",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "boardId",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "trade",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "isBuy",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "vol",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "expiry",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "liquidity",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "pricingGlobals",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "optionPriceFeeCoefficient",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "spotPriceFeeCoefficient",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "vegaFeeCoefficient",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "vegaNormFactor",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "standardSize",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "skewAdjustmentFactor",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "rateAndCarry",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "minDelta",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "volatilityCutoff",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "spotPrice",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "boardBaseIv",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "updateCacheAndGetTotalCost(tuple(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256),tuple(bool,uint256,uint256,uint256,tuple),tuple(uint256,uint256,uint256,uint256,uint256,uint256,int256,int256,uint256,uint256),uint256)",
+      "name": "updateCacheAndGetTotalCost",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "listing",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "id",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "strike",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "skew",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "longCall",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "shortCall",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "longPut",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "shortPut",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "boardId",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "trade",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "isBuy",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "vol",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "expiry",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "liquidity",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "pricingGlobals",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "optionPriceFeeCoefficient",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "spotPriceFeeCoefficient",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "vegaFeeCoefficient",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "vegaNormFactor",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "standardSize",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "skewAdjustmentFactor",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "rateAndCarry",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "minDelta",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "volatilityCutoff",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "spotPrice",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "boardBaseIv",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalCost",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "newBaseIv",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "newSkew",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

@@ -1,0 +1,819 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens"
+  ],
+  "name": "TokenFacet",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "AssetAdded(bytes32,bytes32,uint32,address,address,address)",
+      "name": "AssetAdded",
+      "description": "Emitted when a new asset is added.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "- The key in the mapping (hash of canonical id and domain).",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "canonicalId",
+          "description": "- The canonical identifier of the token the local <> adopted AMM is for.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "domain",
+          "description": "- The domain of the canonical token for the local <> adopted amm.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "adoptedAsset",
+          "description": "- The address of the adopted (user-expected) asset.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "localAsset",
+          "description": "- The address of the local asset.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "- The account that called the function.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AssetRemoved(bytes32,address)",
+      "name": "AssetRemoved",
+      "description": "Emitted when an asset is removed from whitelists.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "- The hash of the canonical identifier and domain of the token removed.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "caller",
+          "description": "- The account that called the function.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LiquidityCapUpdated(bytes32,bytes32,uint32,uint256,address)",
+      "name": "LiquidityCapUpdated",
+      "description": "Emitted when a liquidity cap is updated.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "- The key in the mapping (hash of canonical id and domain).",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "canonicalId",
+          "description": "- The canonical identifier of the token the local <> adopted AMM is for.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "domain",
+          "description": "- The domain of the canonical token for the local <> adopted amm.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "cap",
+          "description": "- The newly enforced liquidity cap (if it is 0, no cap is enforced).",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "- The account that called the function.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "StableSwapAdded(bytes32,bytes32,uint32,address,address)",
+      "name": "StableSwapAdded",
+      "description": "Emitted when a new stable-swap AMM is added for the local <> adopted token.",
+      "parameterDecorators": [
+        {
+          "name": "key",
+          "description": "- The key in the mapping (hash of canonical id and domain).",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "canonicalId",
+          "description": "- The canonical identifier of the token the local <> adopted AMM is for.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "domain",
+          "description": "- The domain of the canonical token for the local <> adopted amm.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "swapPool",
+          "description": "- The address of the AMM.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "- The account that called the function.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TokenDeployed(uint32,bytes32,address)",
+      "name": "TokenDeployed",
+      "description": "emitted when a representation token contract is deployed.",
+      "parameterDecorators": [
+        {
+          "name": "domain",
+          "description": "the domain of the chain where the canonical asset is deployed.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "id",
+          "description": "the bytes32 address of the canonical token contract.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "representation",
+          "description": "the address of the newly locally deployed representation contract.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addStableSwapPool(tuple(uint32,bytes32),address)",
+      "name": "addStableSwapPool",
+      "description": "Adds a stable swap pool for the local <> adopted asset. Must pass in the _canonical information so it can be emitted in event.",
+      "parameterDecorators": [
+        {
+          "name": "_canonical",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "domain",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "id",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "_stableSwapPool",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "adoptedToCanonical(address)",
+      "name": "adoptedToCanonical",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_adopted",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "domain",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint32"
+            },
+            {
+              "name": "id",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bytes32"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "adoptedToLocalPools(bytes32)",
+      "name": "adoptedToLocalPools",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_key",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "adoptedToLocalPools(tuple(uint32,bytes32))",
+      "name": "adoptedToLocalPools",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_canonical",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "domain",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "id",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "approvedAssets(bytes32)",
+      "name": "approvedAssets",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_key",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "approvedAssets(tuple(uint32,bytes32))",
+      "name": "approvedAssets",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_canonical",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "domain",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "id",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "canonicalToAdopted(bytes32)",
+      "name": "canonicalToAdopted",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_key",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "canonicalToAdopted(tuple(uint32,bytes32))",
+      "name": "canonicalToAdopted",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_canonical",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "domain",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "id",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "canonicalToRepresentation(bytes32)",
+      "name": "canonicalToRepresentation",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_key",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "canonicalToRepresentation(tuple(uint32,bytes32))",
+      "name": "canonicalToRepresentation",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_canonical",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "domain",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "id",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getLocalAndAdoptedToken(bytes32,uint32)",
+      "name": "getLocalAndAdoptedToken",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_id",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_domain",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokenId(address)",
+      "name": "getTokenId",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_candidate",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "domain",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint32"
+            },
+            {
+              "name": "id",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bytes32"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeAssetId(tuple(uint32,bytes32),address,address)",
+      "name": "removeAssetId",
+      "description": "Used to remove assets from the whitelist.",
+      "parameterDecorators": [
+        {
+          "name": "_canonical",
+          "description": "- The canonical id and domain to remove.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "domain",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "id",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "_adoptedAssetId",
+          "description": "- Corresponding adopted asset to remove.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_representation",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeAssetId(bytes32,address,address)",
+      "name": "removeAssetId",
+      "description": "Used to remove assets from the whitelist.",
+      "parameterDecorators": [
+        {
+          "name": "_key",
+          "description": "- The hash of the canonical id and domain to remove (mapping key).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_adoptedAssetId",
+          "description": "- Corresponding adopted asset to remove.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_representation",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "representationToCanonical(address)",
+      "name": "representationToCanonical",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_representation",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "domain",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint32"
+            },
+            {
+              "name": "id",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bytes32"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setupAsset(tuple(uint32,bytes32),uint8,string,string,address,address,uint256)",
+      "name": "setupAsset",
+      "description": "Used to add supported assets. This is an admin only function. When whitelisting the canonical asset, all representational assets would be whitelisted as well. In the event you have a different adopted asset (i.e. PoS USDC on polygon), you should *not* whitelist the adopted asset. The stable swap pool address used should allow you to swap between the local <> adopted asset.",
+      "parameterDecorators": [
+        {
+          "name": "_canonical",
+          "description": "- The canonical asset to add by id and domain. All representations will be whitelisted as well.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "domain",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "id",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "_canonicalDecimals",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_representationName",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_representationSymbol",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_adoptedAssetId",
+          "description": "- The used asset id for this domain (e.g. PoS USDC for polygon).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_stableSwapPool",
+          "description": "- The address of the local stableswap pool, if it exists.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_cap",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_local",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setupAssetWithDeployedRepresentation(tuple(uint32,bytes32),address,address,address,uint256)",
+      "name": "setupAssetWithDeployedRepresentation",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_canonical",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "domain",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "id",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "_representation",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_adoptedAssetId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_stableSwapPool",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_cap",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateDetails(tuple(uint32,bytes32),string,string)",
+      "name": "updateDetails",
+      "description": "Used to update the name and symbol of a local token.",
+      "parameterDecorators": [
+        {
+          "name": "_canonical",
+          "description": "- The canonical id and domain to remove.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "domain",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "id",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "_name",
+          "description": "- The new name.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_symbol",
+          "description": "- The new symbol.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateLiquidityCap(tuple(uint32,bytes32),uint256)",
+      "name": "updateLiquidityCap",
+      "description": "Adds a stable swap pool for the local <> adopted asset. Must pass in the _canonical information so it can be emitted in event.",
+      "parameterDecorators": [
+        {
+          "name": "_canonical",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "domain",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "id",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "_updated",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

@@ -1,0 +1,1544 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "locking",
+    "merkle proofs",
+    "dao"
+  ],
+  "name": "GReputation",
+  "description": "GReputation extends Reputation with delegation and cross blockchain merkle states. NOTICE: this breaks DAOStack nativeReputation usage, since it is not possiible to upgrade the original nativeReputation token. it means you can no longer rely on avatar.nativeReputation() or controller.nativeReputation() to return the current reputation token. The DAO avatar will be the owner of this reputation token and not the Controller. Minting by the DAO will be done using controller.genericCall and not via controller.mintReputation.",
+  "eventDecorators": [
+    {
+      "signature": "AdminChanged(address,address)",
+      "name": "AdminChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "Unstake amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "holder",
+          "description": "Address of the holder.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BeaconUpgraded(address)",
+      "name": "BeaconUpgraded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "beacon",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Burn(address,uint256)",
+      "name": "Burn",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "Unstake amount.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "holder",
+          "description": "Address of the holder.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DelegateVotesChanged(address,address,uint256,uint256)",
+      "name": "DelegateVotesChanged",
+      "description": "An event thats emitted when a delegate account's vote balance changes.",
+      "parameterDecorators": [
+        {
+          "name": "delegate",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "delegator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "previousBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Mint(address,uint256)",
+      "name": "Mint",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "Unstake amount.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "holder",
+          "description": "Address of the holder.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RoleAdminChanged(bytes32,bytes32,bytes32)",
+      "name": "RoleAdminChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "previousAdminRole",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newAdminRole",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RoleGranted(bytes32,address,address)",
+      "name": "RoleGranted",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RoleRevoked(bytes32,address,address)",
+      "name": "RoleRevoked",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "StateHash(string,bytes32,uint256)",
+      "name": "StateHash",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "blockchain",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "merkleRoot",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalSupply",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "StateHashProof(string,address,uint256)",
+      "name": "StateHashProof",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "blockchain",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "repBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Upgraded(address)",
+      "name": "Upgraded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "implementation",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "DEFAULT_ADMIN_ROLE()",
+      "name": "DEFAULT_ADMIN_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "DELEGATION_TYPEHASH()",
+      "name": "DELEGATION_TYPEHASH",
+      "description": "The EIP-712 typehash for the delegation struct used by the contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "DOMAIN_TYPEHASH()",
+      "name": "DOMAIN_TYPEHASH",
+      "description": "The EIP-712 typehash for the contract's domain.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MINTER_ROLE()",
+      "name": "MINTER_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ROOT_STATE()",
+      "name": "ROOT_STATE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "activeBlockchains(uint256)",
+      "name": "activeBlockchains",
+      "description": "list of blockchains having a statehash for easy iteration.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "activeVotes(address,uint256)",
+      "name": "activeVotes",
+      "description": "map of user non delegated + delegated votes to user. this is used for actual voting.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "avatar()",
+      "name": "avatar",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "balanceOf(address)",
+      "name": "balanceOf",
+      "description": "same as getVotes, be compatible with metamask.",
+      "parameterDecorators": [
+        {
+          "name": "_user",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "balance",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "balanceOfLocal(address)",
+      "name": "balanceOfLocal",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_owner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "balanceOfLocalAt(address,uint256)",
+      "name": "balanceOfLocalAt",
+      "description": "Queries the balance of `_owner` at a specific `_blockNumber`.",
+      "parameterDecorators": [
+        {
+          "name": "_owner",
+          "description": "The address from which the balance will be retrieved.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_blockNumber",
+          "description": "The block number when the balance is queried.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The balance at `_blockNumber`.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "balances(address,uint256)",
+      "name": "balances",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "blockchainStates(bytes32,uint256)",
+      "name": "blockchainStates",
+      "description": "mapping from blockchain id hash to list of states.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "stateHash",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        },
+        {
+          "name": "hashType",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "totalSupply",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "blockNumber",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "burn(address,uint256)",
+      "name": "burn",
+      "description": "Burns `_amount` reputation from `_owner`.",
+      "parameterDecorators": [
+        {
+          "name": "_user",
+          "description": "The address that will lose the reputation.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The quantity of reputation to burn.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "True if the reputation are burned correctly.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "checkProofOrdered(bytes32[],bytes32,bytes32,uint256)",
+      "name": "checkProofOrdered",
+      "description": "non sorted merkle tree proof check.",
+      "parameterDecorators": [
+        {
+          "name": "_proof",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_root",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_hash",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "dao()",
+      "name": "dao",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "decimals()",
+      "name": "decimals",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "delegateBySig(address,uint256,uint256,uint8,bytes32,bytes32)",
+      "name": "delegateBySig",
+      "description": "Delegates votes from signatory to `delegate`.",
+      "parameterDecorators": [
+        {
+          "name": "_delegate",
+          "description": "The address to delegate votes to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_nonce",
+          "description": "The contract state required to match the signature.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_expiry",
+          "description": "The time at which to expire the signature.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_v",
+          "description": "The recovery byte of the signature.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_r",
+          "description": "Half of the ECDSA signature pair.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_s",
+          "description": "Half of the ECDSA signature pair.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "delegateOf(address)",
+      "name": "delegateOf",
+      "description": "returns current delegate of _user.",
+      "parameterDecorators": [
+        {
+          "name": "_user",
+          "description": "the delegatee.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the address of the delegate (can be _user if no delegate or 0x0 if _user doesnt exists).",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "delegateTo(address)",
+      "name": "delegateTo",
+      "description": "delegate votes to another user.",
+      "parameterDecorators": [
+        {
+          "name": "_delegate",
+          "description": "the recipient of votes.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "delegates(address)",
+      "name": "delegates",
+      "description": "keep map of user -> delegate.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentVotes(address)",
+      "name": "getCurrentVotes",
+      "description": "same as getVotes be compatible with compound.",
+      "parameterDecorators": [
+        {
+          "name": "_user",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPriorVotes(address,uint256)",
+      "name": "getPriorVotes",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_user",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_block",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoleAdmin(bytes32)",
+      "name": "getRoleAdmin",
+      "description": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVotes(address)",
+      "name": "getVotes",
+      "description": "returns aggregated active votes in all blockchains and delegated.",
+      "parameterDecorators": [
+        {
+          "name": "_user",
+          "description": "the user to get active votes for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the number of votes.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVotesAt(address,uint256)",
+      "name": "getVotesAt",
+      "description": "returns aggregated active votes in all blockchains and delegated at specific block.",
+      "parameterDecorators": [
+        {
+          "name": "_user",
+          "description": "user to get active votes for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_blockNumber",
+          "description": "get votes state at specific block.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the number of votes.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVotesAt(address,bool,uint256)",
+      "name": "getVotesAt",
+      "description": "get the number of active votes a user holds after delegation (vs the basic balance of reputation he holds).",
+      "parameterDecorators": [
+        {
+          "name": "_user",
+          "description": "the user to get active votes for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_global",
+          "description": "wether to include reputation from other blockchains.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_blockNumber",
+          "description": "get votes state at specific block.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the number of votes.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVotesAtBlockchain(bytes32,address,uint256)",
+      "name": "getVotesAtBlockchain",
+      "description": "get the number of active votes a user holds after delegation in specific blockchain.",
+      "parameterDecorators": [
+        {
+          "name": "_id",
+          "description": "the keccak hash of the blockchain string id.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_user",
+          "description": "the user to get active votes for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_blockNumber",
+          "description": "get votes state at specific block.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the number of votes.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "grantRole(bytes32,address)",
+      "name": "grantRole",
+      "description": "Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted} event. Requirements: - the caller must have ``role``'s admin role.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "RoleGranted(bytes32,address,address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "hasRole(bytes32,address)",
+      "name": "hasRole",
+      "description": "Returns `true` if `account` has been granted `role`.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,string,bytes32,uint256)",
+      "name": "initialize",
+      "description": "initialize.",
+      "parameterDecorators": [
+        {
+          "name": "_ns",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_stateId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_stateHash",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_totalSupply",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialize(address)",
+      "name": "initialize",
+      "description": "initialize.",
+      "parameterDecorators": [
+        {
+          "name": "_ns",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "mint(address,uint256)",
+      "name": "mint",
+      "description": "Generates `_amount` reputation that are assigned to `_owner`.",
+      "parameterDecorators": [
+        {
+          "name": "_user",
+          "description": "The address that will be assigned the new reputation.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The quantity of reputation generated.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "True if the reputation are generated correctly.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "name()",
+      "name": "name",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nameService()",
+      "name": "nameService",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nativeToken()",
+      "name": "nativeToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "nonces(address)",
+      "name": "nonces",
+      "description": "A record of states for signing / validating signatures.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "proveBalanceOfAtBlockchain(string,address,uint256,bytes32[],uint256)",
+      "name": "proveBalanceOfAtBlockchain",
+      "description": "prove user balance in a specific blockchain state hash. \"rootState\" is a special state that can be supplied once, and actually mints reputation on the current blockchain we use non sorted merkle tree, as sorting while preparing merkle tree is heavy.",
+      "parameterDecorators": [
+        {
+          "name": "_id",
+          "description": "the string id of the blockchain we supply proof for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_user",
+          "description": "the user to prove his balance.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_balance",
+          "description": "the balance we are prooving.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_proof",
+          "description": "array of byte32 with proof data (currently merkle tree path).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_nodeIndex",
+          "description": "index of node in the tree (for unsorted merkle tree proof).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "true if proof is valid.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceRole(bytes32,address)",
+      "name": "renounceRole",
+      "description": "Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "RoleRevoked(bytes32,address,address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "reputationRecipients(address)",
+      "name": "reputationRecipients",
+      "description": "keep map of address -> reputation recipient, an address can set that its earned rep will go to another address.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "revokeRole(bytes32,address)",
+      "name": "revokeRole",
+      "description": "Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "RoleRevoked(bytes32,address,address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "setBlockchainStateHash(string,bytes32,uint256)",
+      "name": "setBlockchainStateHash",
+      "description": "sets the state hash of a blockchain, can only be called by owner.",
+      "parameterDecorators": [
+        {
+          "name": "_id",
+          "description": "the string name of the blockchain (will be hashed to produce byte32 id).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_hash",
+          "description": "the state hash.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_totalSupply",
+          "description": "total supply of reputation on the specific blockchain.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setReputationRecipient(address)",
+      "name": "setReputationRecipient",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_target",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stateHashBalances(bytes32,address)",
+      "name": "stateHashBalances",
+      "description": "mapping from stateHash to the user balance can be >0 only after supplying state proof.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "supportsInterface(bytes4)",
+      "name": "supportsInterface",
+      "description": "See {IERC165-supportsInterface}.",
+      "parameterDecorators": [
+        {
+          "name": "interfaceId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "symbol()",
+      "name": "symbol",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalSupply()",
+      "name": "totalSupply",
+      "description": "This function makes it easy to get the total number of reputation.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The total number of reputation.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalSupplyAt(uint256)",
+      "name": "totalSupplyAt",
+      "description": "returns total supply in all blockchain aggregated.",
+      "parameterDecorators": [
+        {
+          "name": "_blockNumber",
+          "description": "get total supply at specific block.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the totaly supply.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalSupplyAtBlockchain(bytes32,uint256)",
+      "name": "totalSupplyAtBlockchain",
+      "description": "returns total supply in a specific blockchain.",
+      "parameterDecorators": [
+        {
+          "name": "_id",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_blockNumber",
+          "description": "get total supply at specific block.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the totaly supply.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalSupplyHistory(uint256)",
+      "name": "totalSupplyHistory",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalSupplyLocal()",
+      "name": "totalSupplyLocal",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalSupplyLocal(uint256)",
+      "name": "totalSupplyLocal",
+      "description": "returns total supply in current blockchain.",
+      "parameterDecorators": [
+        {
+          "name": "_blockNumber",
+          "description": "get total supply at specific block.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the totaly supply.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalSupplyLocalAt(uint256)",
+      "name": "totalSupplyLocalAt",
+      "description": "Total amount of reputation at a specific `_blockNumber`.",
+      "parameterDecorators": [
+        {
+          "name": "_blockNumber",
+          "description": "The block number when the totalSupply is queried.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The total amount of reputation at `_blockNumber`.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "undelegate()",
+      "name": "undelegate",
+      "description": "cancel user delegation. makes user his own delegate.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateAvatar()",
+      "name": "updateAvatar",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateDAO(address)",
+      "name": "updateDAO",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_ns",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeTo(address)",
+      "name": "upgradeTo",
+      "description": "Upgrade the implementation of the proxy to `newImplementation`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "Upgraded(address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeToAndCall(address,bytes)",
+      "name": "upgradeToAndCall",
+      "description": "Upgrade the implementation of the proxy to `newImplementation`, and subsequently execute the function call encoded in `data`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "Upgraded(address)"
+      ],
+      "readOnly": false
+    }
+  ]
+}

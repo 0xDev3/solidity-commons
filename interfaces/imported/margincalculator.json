@@ -1,0 +1,844 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "vaults"
+  ],
+  "name": "MarginCalculator",
+  "description": "MarginCalculator. Calculator module that checks if a given vault is valid, calculates margin requirements, and settlement proceeds.",
+  "eventDecorators": [
+    {
+      "signature": "CollateralDustUpdated(address,uint256)",
+      "name": "CollateralDustUpdated",
+      "description": "Event for token purchase logging. Emitted when setting contract parameters.",
+      "parameterDecorators": [
+        {
+          "name": "collateral",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "dust",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "MaxPriceAdded(bytes32,uint256,uint256)",
+      "name": "MaxPriceAdded",
+      "description": "Event for token purchase logging. Emitted when setting contract parameters.",
+      "parameterDecorators": [
+        {
+          "name": "productHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "timeToExpiry",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "MaxPriceUpdated(bytes32,uint256,uint256,uint256)",
+      "name": "MaxPriceUpdated",
+      "description": "Event for token purchase logging. Emitted when setting contract parameters.",
+      "parameterDecorators": [
+        {
+          "name": "productHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "timeToExpiry",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "oldValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newValue",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OracleDeviationUpdated(uint256)",
+      "name": "OracleDeviationUpdated",
+      "description": "Event for token purchase logging. Emitted when setting contract parameters.",
+      "parameterDecorators": [
+        {
+          "name": "oracleDeviation",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Event for token purchase logging. Emitted when setting contract parameters.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "SpotShockUpdated(bytes32,uint256)",
+      "name": "SpotShockUpdated",
+      "description": "Event for token purchase logging. Emitted when setting contract parameters.",
+      "parameterDecorators": [
+        {
+          "name": "product",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "spotShock",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TimeToExpiryAdded(bytes32,uint256)",
+      "name": "TimeToExpiryAdded",
+      "description": "Event for token purchase logging. Emitted when setting contract parameters.",
+      "parameterDecorators": [
+        {
+          "name": "productHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "timeToExpiry",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "AUCTION_TIME()",
+      "name": "AUCTION_TIME",
+      "description": "auction length.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCollateralDust(address)",
+      "name": "getCollateralDust",
+      "description": "get dust amount for collateral asset.",
+      "parameterDecorators": [
+        {
+          "name": "_collateral",
+          "description": "collateral asset address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "dust amount.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getExcessCollateral(tuple(address[],address[],address[],uint256[],uint256[],uint256[]),uint256)",
+      "name": "getExcessCollateral",
+      "description": "returns the amount of collateral that can be removed from an actual or a theoretical vault. return amount is denominated in the collateral asset for the oToken in the vault, or the collateral asset in the vault.",
+      "parameterDecorators": [
+        {
+          "name": "_vault",
+          "description": "theoretical vault that needs to be checked.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "shortOtokens",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "longOtokens",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "collateralAssets",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "shortAmounts",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "longAmounts",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "collateralAmounts",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "_vaultType",
+          "description": "vault type (0 for spread/max loss, 1 for naked margin).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "excessCollateral the amount by which the margin is above or below the required amount.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_1",
+          "description": "isExcess True if there is excess margin in the vault, False if there is a deficit of margin in the vault if True, collateral can be taken out from the vault, if False, additional collateral needs to be added to vault.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getExpiredPayoutRate(address)",
+      "name": "getExpiredPayoutRate",
+      "description": "return the cash value of an expired oToken, denominated in collateral.",
+      "parameterDecorators": [
+        {
+          "name": "_otoken",
+          "description": "oToken address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "how much collateral can be taken out by 1 otoken unit, scaled by 1e8, or how much collateral can be taken out for 1 (1e8) oToken.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getMarginRequired(tuple(address[],address[],address[],uint256[],uint256[],uint256[]),uint256)",
+      "name": "getMarginRequired",
+      "description": "calculate required collateral margin for a vault.",
+      "parameterDecorators": [
+        {
+          "name": "_vault",
+          "description": "theoretical vault that needs to be checked.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "shortOtokens",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "longOtokens",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "collateralAssets",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "shortAmounts",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "longAmounts",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "collateralAmounts",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "_vaultType",
+          "description": "vault type.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "int256"
+            }
+          ],
+          "solidityType": "tuple"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "int256"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getMaxPrice(address,address,address,bool,uint256)",
+      "name": "getMaxPrice",
+      "description": "get option upper bound value for specific time to expiry.",
+      "parameterDecorators": [
+        {
+          "name": "_underlying",
+          "description": "otoken underlying asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_strike",
+          "description": "otoken strike asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_collateral",
+          "description": "otoken collateral asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isPut",
+          "description": "otoken type.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_timeToExpiry",
+          "description": "option time to expiry timestamp.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "option upper bound value (1e27).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getNakedMarginRequired(address,address,address,uint256,uint256,uint256,uint256,uint256,bool)",
+      "name": "getNakedMarginRequired",
+      "description": "return the collateral required for naked margin vault, in collateral asset decimals. _shortAmount, _strikePrice and _underlyingPrice should be scaled by 1e8.",
+      "parameterDecorators": [
+        {
+          "name": "_underlying",
+          "description": "underlying asset address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_strike",
+          "description": "strike asset address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_collateral",
+          "description": "collateral asset address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_shortAmount",
+          "description": "amount of short otoken.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_strikePrice",
+          "description": "otoken strike price.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_underlyingPrice",
+          "description": "otoken underlying price.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_shortExpiryTimestamp",
+          "description": "otoken expiry timestamp.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_collateralDecimals",
+          "description": "otoken collateral asset decimals.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isPut",
+          "description": "otoken type.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "collateral required for a naked margin vault, in collateral asset decimals.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getOracleDeviation()",
+      "name": "getOracleDeviation",
+      "description": "get oracle deviation.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "oracle deviation value (1e27).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSpotShock(address,address,address,bool)",
+      "name": "getSpotShock",
+      "description": "get spot shock value.",
+      "parameterDecorators": [
+        {
+          "name": "_underlying",
+          "description": "otoken underlying asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_strike",
+          "description": "otoken strike asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_collateral",
+          "description": "otoken collateral asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isPut",
+          "description": "otoken type.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "_shockValue spot shock value (1e27).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTimesToExpiry(address,address,address,bool)",
+      "name": "getTimesToExpiry",
+      "description": "get times to expiry for a specific product.",
+      "parameterDecorators": [
+        {
+          "name": "_underlying",
+          "description": "otoken underlying asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_strike",
+          "description": "otoken strike asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_collateral",
+          "description": "otoken collateral asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isPut",
+          "description": "otoken type.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "array of times to expiry.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isLiquidatable(tuple(address[],address[],address[],uint256[],uint256[],uint256[]),uint256,uint256,uint256)",
+      "name": "isLiquidatable",
+      "description": "check if a specific vault is undercollateralized at a specific chainlink round. if the vault is of type 0, the function will revert.",
+      "parameterDecorators": [
+        {
+          "name": "_vault",
+          "description": "vault struct.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "shortOtokens",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "longOtokens",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "collateralAssets",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "shortAmounts",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "longAmounts",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "collateralAmounts",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "_vaultType",
+          "description": "vault type (0 for max loss/spread and 1 for naked margin vault).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_vaultLatestUpdate",
+          "description": "vault latest update (timestamp when latest vault state change happened).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_roundId",
+          "description": "chainlink round id.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "oracle()",
+      "name": "oracle",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setCollateralDust(address,uint256)",
+      "name": "setCollateralDust",
+      "description": "set dust amount for collateral asset. can only be called by owner.",
+      "parameterDecorators": [
+        {
+          "name": "_collateral",
+          "description": "collateral asset address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_dust",
+          "description": "dust amount, should be scaled by collateral asset decimals.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setOracleDeviation(uint256)",
+      "name": "setOracleDeviation",
+      "description": "set oracle deviation (1e27). can only be called by owner.",
+      "parameterDecorators": [
+        {
+          "name": "_deviation",
+          "description": "deviation value.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setSpotShock(address,address,address,bool,uint256)",
+      "name": "setSpotShock",
+      "description": "set spot shock value, scaled to 1e27. can only be called by owner.",
+      "parameterDecorators": [
+        {
+          "name": "_underlying",
+          "description": "otoken underlying asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_strike",
+          "description": "otoken strike asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_collateral",
+          "description": "otoken collateral asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isPut",
+          "description": "otoken type.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_shockValue",
+          "description": "spot shock value.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setUpperBoundValues(address,address,address,bool,uint256[],uint256[])",
+      "name": "setUpperBoundValues",
+      "description": "set product upper bound values. can only be called by owner.",
+      "parameterDecorators": [
+        {
+          "name": "_underlying",
+          "description": "otoken underlying asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_strike",
+          "description": "otoken strike asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_collateral",
+          "description": "otoken collateral asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isPut",
+          "description": "otoken type.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_timesToExpiry",
+          "description": "array of times to expiry timestamp.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_values",
+          "description": "upper bound values array.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateUpperBoundValue(address,address,address,bool,uint256,uint256)",
+      "name": "updateUpperBoundValue",
+      "description": "set option upper bound value for specific time to expiry (1e27). can only be called by owner.",
+      "parameterDecorators": [
+        {
+          "name": "_underlying",
+          "description": "otoken underlying asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_strike",
+          "description": "otoken strike asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_collateral",
+          "description": "otoken collateral asset.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_isPut",
+          "description": "otoken type.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_timeToExpiry",
+          "description": "option time to expiry timestamp.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_value",
+          "description": "upper bound value.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

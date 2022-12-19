@@ -1,0 +1,549 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "yield"
+  ],
+  "name": "RariGovernanceTokenDistributor",
+  "description": "RariGovernanceToken. RariGovernanceTokenDistributor distributes RGT (Rari Governance Token) to Rari Stable Pool, Yield Pool, and Ethereum Pool holders.",
+  "eventDecorators": [
+    {
+      "signature": "Claim(address,uint256,uint256,uint256)",
+      "name": "Claim",
+      "description": "An event emitted when a vault is liquidated.",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "claimed",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "transferred",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "burned",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Disabled()",
+      "name": "Disabled",
+      "description": "An event emitted when a vault is liquidated.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "Enabled()",
+      "name": "Enabled",
+      "description": "An event emitted when a vault is liquidated.",
+      "parameterDecorators": []
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "An event emitted when a vault is liquidated.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "DISTRIBUTION_PERIOD()",
+      "name": "DISTRIBUTION_PERIOD",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "FINAL_RGT_DISTRIBUTION()",
+      "name": "FINAL_RGT_DISTRIBUTION",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "beforeFirstPoolTokenTransferIn(address,uint8)",
+      "name": "beforeFirstPoolTokenTransferIn",
+      "description": "Stores the RGT distributed per RSPT/RYPT/REPT right before `holder`'s first incoming RSPT/RYPT/REPT transfer since having a zero balance.",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "The holder of RSPT, RYPT, and/or REPT.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "pool",
+          "description": "The Rari pool of the pool token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimAllRgt()",
+      "name": "claimAllRgt",
+      "description": "Claims all unclaimed RGT earned by `msg.sender` in all pools.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimRgt(uint256)",
+      "name": "claimRgt",
+      "description": "Claims `amount` unclaimed RGT earned by `msg.sender` in all pools.",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "The amount of RGT to claim.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "disabled()",
+      "name": "disabled",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "distributeRgt(address,uint8)",
+      "name": "distributeRgt",
+      "description": "Distributes all undistributed RGT earned by `holder` in `pool` (without reverting if no RGT is available to distribute).",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "The holder of RSPT, RYPT, or REPT whose RGT is to be distributed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "pool",
+          "description": "The Rari pool for which to distribute RGT.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "distributionEndBlock()",
+      "name": "distributionEndBlock",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "distributionStartBlock()",
+      "name": "distributionStartBlock",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getEthUsdPrice()",
+      "name": "getEthUsdPrice",
+      "description": "Retrives the latest ETH/USD price.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPublicRgtClaimFee(uint256)",
+      "name": "getPublicRgtClaimFee",
+      "description": "Returns the public RGT claim fee for users during liquidity mining (scaled by 1e18) at `blockNumber`.",
+      "parameterDecorators": [
+        {
+          "name": "blockNumber",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRgtDistributed(uint256)",
+      "name": "getRgtDistributed",
+      "description": "Returns the amount of RGT earned via liquidity mining at the given `blockNumber`. See the following graph for a visualization of RGT distributed via liquidity mining vs. blocks since distribution started: https://www.desmos.com/calculator/2yvnflg4ir.",
+      "parameterDecorators": [
+        {
+          "name": "blockNumber",
+          "description": "The block number to check.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUnclaimedRgt(address)",
+      "name": "getUnclaimedRgt",
+      "description": "Returns the quantity of unclaimed RGT earned by `holder` via liquidity mining across all pools.",
+      "parameterDecorators": [
+        {
+          "name": "holder",
+          "description": "The holder of RSPT, RYPT, or REPT.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address)",
+      "name": "initialize",
+      "description": "Initializes the contract setting the deployer as the initial owner.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialize(uint256,address[3],address[3])",
+      "name": "initialize",
+      "description": "Initializer that reserves 8.75 million RGT for liquidity mining and 1.25 million RGT to the team.",
+      "parameterDecorators": [
+        {
+          "name": "startBlock",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fundManagers",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fundTokens",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isOwner()",
+      "name": "isOwner",
+      "description": "Returns true if the caller is the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "refreshDistributionSpeeds()",
+      "name": "refreshDistributionSpeeds",
+      "description": "Updates RGT distribution speeds for each pool.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "refreshDistributionSpeeds(uint8,uint256)",
+      "name": "refreshDistributionSpeeds",
+      "description": "Updates RGT distribution speeds for each pool given one `pool` and its `newBalance` (only accessible by the RariFundManager corresponding to `pool`).",
+      "parameterDecorators": [
+        {
+          "name": "pool",
+          "description": "The pool whose balance should be refreshed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newBalance",
+          "description": "The new balance of the pool to be refreshed.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "refreshDistributionSpeeds(uint8)",
+      "name": "refreshDistributionSpeeds",
+      "description": "Updates RGT distribution speeds for each pool given one `pool` whose balance should be refreshed.",
+      "parameterDecorators": [
+        {
+          "name": "pool",
+          "description": "The pool whose balance should be refreshed.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. * > Note: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDisabled(bool)",
+      "name": "setDisabled",
+      "description": "Disables/enables primary functionality of this RariGovernanceTokenDistributor so contract(s) can be upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "_disabled",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setEthUsdPriceFeed()",
+      "name": "setEthUsdPriceFeed",
+      "description": "Sets the ETH/USD price feed if not initialized due to upgrade.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setFundManager(uint8,address)",
+      "name": "setFundManager",
+      "description": "Sets the RariFundManager for `pool`.",
+      "parameterDecorators": [
+        {
+          "name": "pool",
+          "description": "The pool associated with this RariFundManager.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fundManager",
+          "description": "The RariFundManager associated with this pool.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setFundToken(uint8,address)",
+      "name": "setFundToken",
+      "description": "Sets the RariFundToken for `pool`.",
+      "parameterDecorators": [
+        {
+          "name": "pool",
+          "description": "The pool associated with this RariFundToken.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fundToken",
+          "description": "The RariFundToken associated with this pool.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setGovernanceToken(address)",
+      "name": "setGovernanceToken",
+      "description": "Sets the RariGovernanceToken distributed by ths RariGovernanceTokenDistributor.",
+      "parameterDecorators": [
+        {
+          "name": "governanceToken",
+          "description": "The new RariGovernanceToken contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upgrade(address)",
+      "name": "upgrade",
+      "description": "Forwards all RGT to a new RariGovernanceTokenDistributor contract.",
+      "parameterDecorators": [
+        {
+          "name": "newContract",
+          "description": "The new RariGovernanceTokenDistributor contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

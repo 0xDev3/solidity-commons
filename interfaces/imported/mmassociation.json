@@ -1,0 +1,643 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "staking"
+  ],
+  "name": "MMAssociation",
+  "description": "This contract represents an Association in the MM Project, acting as a whitelist for actions that can only be taken by members Membership is gained by staking a certain amount of MIYI, which can be retrieved by exiting the association. Bad behaviour can be punished by banning an address from the association, making them lose their stake and disabling their access to whitelisted functionality. This contract is upgradeable since more functionality may be added in the future, and also to fit the association creation in one single transaction. See `MMCommunityFactory`. Association contract.",
+  "eventDecorators": [
+    {
+      "signature": "AssociationJoined(address,uint256)",
+      "name": "AssociationJoined",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "who",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "staked",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "AssociationLeft(address,uint256)",
+      "name": "AssociationLeft",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "who",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "unstaked",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Banned(address)",
+      "name": "Banned",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "who",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "MinimumStakeChanged(uint256)",
+      "name": "MinimumStakeChanged",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "minimumStake",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TCRAdded(address)",
+      "name": "TCRAdded",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "tcr",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WhitelistAdminAdded(address)",
+      "name": "WhitelistAdminAdded",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "WhitelistAdminRemoved(address)",
+      "name": "WhitelistAdminRemoved",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "WhitelistedAdded(address)",
+      "name": "WhitelistedAdded",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "WhitelistedRemoved(address)",
+      "name": "WhitelistedRemoved",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addTCR(address)",
+      "name": "addTCR",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "tcr",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addWhitelistAdmin(address)",
+      "name": "addWhitelistAdmin",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addWhitelisted(address)",
+      "name": "addWhitelisted",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "ban(address)",
+      "name": "ban",
+      "description": "Allows the owner to ban someone from the association. Only whitelisted members can be banned. This is a limitation posed by the WhitelistedRole contract.",
+      "parameterDecorators": [
+        {
+          "name": "who",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "banlist(address)",
+      "name": "banlist",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "baseToken()",
+      "name": "baseToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "defiEnabled()",
+      "name": "defiEnabled",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "defiImplementation()",
+      "name": "defiImplementation",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,uint256,address)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minimumStake",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_paymentReceiver",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isOwner()",
+      "name": "isOwner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isWhitelistAdmin(address)",
+      "name": "isWhitelistAdmin",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isWhitelisted(address)",
+      "name": "isWhitelisted",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "joinAssociation()",
+      "name": "joinAssociation",
+      "description": "Allows an user to join the association by staking.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "leaveAssociation()",
+      "name": "leaveAssociation",
+      "description": "Allows a user to leave the association. check that the defi system actually allows us to leave gracefully.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "memberCount()",
+      "name": "memberCount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minimumStake()",
+      "name": "minimumStake",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "paymentReceiver()",
+      "name": "paymentReceiver",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeWhitelisted(address)",
+      "name": "removeWhitelisted",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Renouncing to ownership will leave the contract without an owner. It will not be possible to call the functions with the `onlyOwner` modifier anymore. Allows the current owner to relinquish control of the contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceWhitelistAdmin()",
+      "name": "renounceWhitelistAdmin",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceWhitelisted()",
+      "name": "renounceWhitelisted",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "repayLoan(uint256)",
+      "name": "repayLoan",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDefiEnabled(bool)",
+      "name": "setDefiEnabled",
+      "description": "Allows the Association owner to change whether defi can be used.",
+      "parameterDecorators": [
+        {
+          "name": "enabled",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDefiImplementation(address)",
+      "name": "setDefiImplementation",
+      "description": "Allows the Association owner to set the defi protocol implementation. Can only be set once.",
+      "parameterDecorators": [
+        {
+          "name": "implementation",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMinimumStake(uint256)",
+      "name": "setMinimumStake",
+      "description": "Allows the Association owner to change the minimum stake required to join the association.",
+      "parameterDecorators": [
+        {
+          "name": "newStake",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "takeLoan(uint256)",
+      "name": "takeLoan",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tcrCount()",
+      "name": "tcrCount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tcrs(uint256)",
+      "name": "tcrs",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Allows the current owner to transfer control of the contract to a newOwner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "The address to transfer ownership to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "whitelist()",
+      "name": "whitelist",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

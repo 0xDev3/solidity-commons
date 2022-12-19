@@ -1,0 +1,462 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "vesting",
+    "escrows"
+  ],
+  "name": "Vesting",
+  "description": "Vesting. 단 하나의 Ownership을 가집니다. 베스팅 컨트랙트와 연결되어 작동합니다. Escrow를 통해 예탁된 토큰을 해당 컨트랙트를 통해 배분하게 됩니다. 수수료에 따라 배분될 총량에서 제외됩니다.",
+  "eventDecorators": [
+    {
+      "signature": "Claimed(address,uint256)",
+      "name": "Claimed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Vested(address,address,uint256,address[],uint256[],uint32,uint32)",
+      "name": "Vested",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "recruiter",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "subToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "subAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "startTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "endTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "FEE_RATE()",
+      "name": "FEE_RATE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "changeFeeRate(uint256)",
+      "name": "changeFeeRate",
+      "description": "수수료를 변경합니다.",
+      "parameterDecorators": [
+        {
+          "name": "feeRate",
+          "description": "이 값은, 1e10 과 0사이여야 합니다.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claim(address,address,address)",
+      "name": "claim",
+      "description": "출금가능한 토큰 수량만큼 출금합니다.",
+      "parameterDecorators": [
+        {
+          "name": "recruiter",
+          "description": "토큰을 부여한 주소.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "토큰을 수여받은 주소.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenAddr",
+          "description": "토큰 주소.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimableOf(address,address,address)",
+      "name": "claimableOf",
+      "description": "출금가능한 토큰 수량을 조회합니다.",
+      "parameterDecorators": [
+        {
+          "name": "recruiter",
+          "description": "토큰을 부여한 주소.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "토큰을 수여받은 주소.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenAddr",
+          "description": "토큰 주소.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "collect(address)",
+      "name": "collect",
+      "description": "수수료로 쌓인 토큰을 출금하여, 컨트랙트의 소유자에게 전송합니다.",
+      "parameterDecorators": [
+        {
+          "name": "tokenAddr",
+          "description": "해당 컨트랙트에 쌓여있는 토큰 주소.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "escrow()",
+      "name": "escrow",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "fee()",
+      "name": "fee",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,address,uint256)",
+      "name": "initialize",
+      "description": "해당 컨트랙트를 초기화 합니다.",
+      "parameterDecorators": [
+        {
+          "name": "socialToken",
+          "description": "해당 컨트랙트에 예치되어야 하는 토큰 주소.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "escrowAddr",
+          "description": "토큰을 실제로 수여할 컨트랙트 주소.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "feeRate",
+          "description": "0 ~ 1e10 사이의 수수료 값.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lock(address,address,uint256,address[],uint256[],uint32,uint32)",
+      "name": "lock",
+      "description": "address에게 토큰의 베스팅을 할당합니다. Escrow만 호출할 수 있으며, 이 함수가 실행되기 이전에 Escrow로 부터 토큰이 전송되어야 합니다.",
+      "parameterDecorators": [
+        {
+          "name": "recruiter",
+          "description": "토큰을 수여하고자 하는 주소.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "베스팅이 부여되는 주소.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "해당 컨트랙트에 기록된 토큰의 베스팅 수량.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "subTokens",
+          "description": "추가적으로 베스팅이 부여될 토큰의 주소.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "subAmounts",
+          "description": "추가적으로 베스팅이 부여될 토큰의 수량.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "startTime",
+          "description": "베스팅이 시작될 시점.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "endTime",
+          "description": "베스팅이 종료되는 시점.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "success",
+          "description": "해당 함수의 성공 여부.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "multicall(bytes[])",
+      "name": "multicall",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "callData",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "returnData",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Get the address of the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "resignOwnership()",
+      "name": "resignOwnership",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Set the address of the new owner of the contract.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "The address of the new owner of the contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unallocateOf(address)",
+      "name": "unallocateOf",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "vestingInfos(address,address,address)",
+      "name": "vestingInfos",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "startTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        },
+        {
+          "name": "endTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        },
+        {
+          "name": "initialLocked",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint96"
+        },
+        {
+          "name": "totalClaimed",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint96"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

@@ -1,0 +1,581 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "EACAggregatorProxy",
+  "description": "External Access Controlled Aggregator Proxy. A trusted proxy for updating where current answers are read fromThis contract provides a consistent address for the Aggregator and AggregatorV3Interface but delegates where it reads from to the owner, who is trusted to update it.Only access enabled addresses are allowed to access getters for aggregated answers and round information.",
+  "eventDecorators": [
+    {
+      "signature": "AnswerUpdated(int256,uint256,uint256)",
+      "name": "AnswerUpdated",
+      "description": "Emitted when an array of wager tokens is updated.",
+      "parameterDecorators": [
+        {
+          "name": "current",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "roundId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "updatedAt",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewRound(uint256,address,uint256)",
+      "name": "NewRound",
+      "description": "Emitted when an array of wager tokens is updated.",
+      "parameterDecorators": [
+        {
+          "name": "roundId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "startedBy",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "startedAt",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferRequested(address,address)",
+      "name": "OwnershipTransferRequested",
+      "description": "Emitted when an array of wager tokens is updated.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emitted when an array of wager tokens is updated.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "acceptOwnership()",
+      "name": "acceptOwnership",
+      "description": "Allows an ownership transfer to be completed by the recipient.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "accessController()",
+      "name": "accessController",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "aggregator()",
+      "name": "aggregator",
+      "description": "returns the current phase's aggregator address.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "confirmAggregator(address)",
+      "name": "confirmAggregator",
+      "description": "Allows the owner to confirm and change the address to the proposed aggregator. Reverts if the given address doesn't match what was previously proposed.",
+      "parameterDecorators": [
+        {
+          "name": "_aggregator",
+          "description": "The new address for the aggregator contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "decimals()",
+      "name": "decimals",
+      "description": "represents the number of decimals the aggregator responses represent.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "description()",
+      "name": "description",
+      "description": "returns the description of the aggregator the proxy points to.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAnswer(uint256)",
+      "name": "getAnswer",
+      "description": "get past rounds answers. overridden function to add the checkAccess() modifier #[deprecated] Use getRoundData instead. This does not error if no answer has been reached, it will simply return 0. Either wait to point to an already answered Aggregator or use the recommended getRoundData instead which includes better verification information.",
+      "parameterDecorators": [
+        {
+          "name": "_roundId",
+          "description": "the answer number to retrieve the answer for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoundData(uint80)",
+      "name": "getRoundData",
+      "description": "get data about a round. Consumers are encouraged to check that they're receiving fresh data by inspecting the updatedAt and answeredInRound return values. Note that different underlying implementations of AggregatorV3Interface have slightly different semantics for some of the return values. Consumers should determine what implementations they expect to receive data from and validate that they can properly handle return data from all of them. Note that answer and updatedAt may change between queries.",
+      "parameterDecorators": [
+        {
+          "name": "_roundId",
+          "description": "the round ID to retrieve the round data for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "roundId",
+          "description": "is the round ID from the aggregator for which the data was retrieved combined with a phase to ensure that round IDs get larger as time moves forward.",
+          "recommendedTypes": [],
+          "solidityType": "uint80"
+        },
+        {
+          "name": "answer",
+          "description": "is the answer for the given round.",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "startedAt",
+          "description": "is the timestamp when the round was started. (Only some AggregatorV3Interface implementations return meaningful values).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "updatedAt",
+          "description": "is the timestamp when the round last was updated (i.e. answer was last computed).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "answeredInRound",
+          "description": "is the round ID of the round in which the answer was computed. (Only some AggregatorV3Interface implementations return meaningful values).",
+          "recommendedTypes": [],
+          "solidityType": "uint80"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTimestamp(uint256)",
+      "name": "getTimestamp",
+      "description": "get block timestamp when an answer was last updated. overridden function to add the checkAccess() modifier #[deprecated] Use getRoundData instead. This does not error if no answer has been reached, it will simply return 0. Either wait to point to an already answered Aggregator or use the recommended getRoundData instead which includes better verification information.",
+      "parameterDecorators": [
+        {
+          "name": "_roundId",
+          "description": "the answer number to retrieve the updated timestamp for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "latestAnswer()",
+      "name": "latestAnswer",
+      "description": "Reads the current answer from aggregator delegated to. overridden function to add the checkAccess() modifier #[deprecated] Use latestRoundData instead. This does not error if no answer has been reached, it will simply return 0. Either wait to point to an already answered Aggregator or use the recommended latestRoundData instead which includes better verification information.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "latestRound()",
+      "name": "latestRound",
+      "description": "get the latest completed round where the answer was updated. overridden function to add the checkAccess() modifier #[deprecated] Use latestRoundData instead. This does not error if no answer has been reached, it will simply return 0. Either wait to point to an already answered Aggregator or use the recommended latestRoundData instead which includes better verification information.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "latestRoundData()",
+      "name": "latestRoundData",
+      "description": "get data about the latest round. Consumers are encouraged to check that they're receiving fresh data by inspecting the updatedAt and answeredInRound return values. Note that different underlying implementations of AggregatorV3Interface have slightly different semantics for some of the return values. Consumers should determine what implementations they expect to receive data from and validate that they can properly handle return data from all of them. Note that answer and updatedAt may change between queries.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "roundId",
+          "description": "is the round ID from the aggregator for which the data was retrieved combined with a phase to ensure that round IDs get larger as time moves forward.",
+          "recommendedTypes": [],
+          "solidityType": "uint80"
+        },
+        {
+          "name": "answer",
+          "description": "is the answer for the given round.",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "startedAt",
+          "description": "is the timestamp when the round was started. (Only some AggregatorV3Interface implementations return meaningful values).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "updatedAt",
+          "description": "is the timestamp when the round last was updated (i.e. answer was last computed).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "answeredInRound",
+          "description": "is the round ID of the round in which the answer was computed. (Only some AggregatorV3Interface implementations return meaningful values).",
+          "recommendedTypes": [],
+          "solidityType": "uint80"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "latestTimestamp()",
+      "name": "latestTimestamp",
+      "description": "get the latest completed round where the answer was updated. This ID includes the proxy's phase, to make sure round IDs increase even when switching to a newly deployed aggregator. #[deprecated] Use latestRoundData instead. This does not error if no answer has been reached, it will simply return 0. Either wait to point to an already answered Aggregator or use the recommended latestRoundData instead which includes better verification information.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "phaseAggregators(uint16)",
+      "name": "phaseAggregators",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "phaseId()",
+      "name": "phaseId",
+      "description": "returns the current phase's ID.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint16"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "proposeAggregator(address)",
+      "name": "proposeAggregator",
+      "description": "Allows the owner to propose a new address for the aggregator.",
+      "parameterDecorators": [
+        {
+          "name": "_aggregator",
+          "description": "The new address for the aggregator contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "proposedAggregator()",
+      "name": "proposedAggregator",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "proposedGetRoundData(uint80)",
+      "name": "proposedGetRoundData",
+      "description": "Used if an aggregator contract has been proposed.",
+      "parameterDecorators": [
+        {
+          "name": "_roundId",
+          "description": "the round ID to retrieve the round data for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "roundId",
+          "description": "is the round ID for which data was retrieved.",
+          "recommendedTypes": [],
+          "solidityType": "uint80"
+        },
+        {
+          "name": "answer",
+          "description": "is the answer for the given round.",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "startedAt",
+          "description": "is the timestamp when the round was started. (Only some AggregatorV3Interface implementations return meaningful values).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "updatedAt",
+          "description": "is the timestamp when the round last was updated (i.e. answer was last computed).",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "answeredInRound",
+          "description": "is the round ID of the round in which the answer was computed.",
+          "recommendedTypes": [],
+          "solidityType": "uint80"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "proposedLatestRoundData()",
+      "name": "proposedLatestRoundData",
+      "description": "Used if an aggregator contract has been proposed.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "roundId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint80"
+        },
+        {
+          "name": "answer",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "startedAt",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "updatedAt",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "answeredInRound",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint80"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setController(address)",
+      "name": "setController",
+      "description": "Allows the owner to update the accessController contract address.",
+      "parameterDecorators": [
+        {
+          "name": "_accessController",
+          "description": "The new address for the accessController contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Allows an owner to begin transferring ownership to a new address, pending.",
+      "parameterDecorators": [
+        {
+          "name": "_to",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "version()",
+      "name": "version",
+      "description": "the version number representing the type of aggregator the proxy points to.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

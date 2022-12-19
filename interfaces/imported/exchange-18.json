@@ -1,0 +1,1107 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "Exchange",
+  "description": "Exchange. Exchange contract for the Orion Protocol.",
+  "eventDecorators": [
+    {
+      "signature": "NewAssetTransaction(address,address,bool,uint112,uint64)",
+      "name": "NewAssetTransaction",
+      "description": "An event emitted when a vault is liquidated.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "assetAddress",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "isDeposit",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "timestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "NewTrade(address,address,address,address,uint64,uint192,uint192)",
+      "name": "NewTrade",
+      "description": "An event emitted when a vault is liquidated.",
+      "parameterDecorators": [
+        {
+          "name": "buyer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "seller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "baseAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "quoteAsset",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "filledPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "filledAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amountQuote",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "assetRisks(address)",
+      "name": "assetRisks",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calcPosition(address)",
+      "name": "calcPosition",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "state",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint8"
+            },
+            {
+              "name": "weightedPosition",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "int256"
+            },
+            {
+              "name": "totalPosition",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "int256"
+            },
+            {
+              "name": "totalLiabilities",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "int256"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "checkPosition(address)",
+      "name": "checkPosition",
+      "description": "users can cancel an order. write an orderHash in the contract so that such an order cannot be filled (executed).",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deposit()",
+      "name": "deposit",
+      "description": "Deposit ETH to the exchange contract. deposit event will be emitted with the amount in decimal format (10^8)balance will be stored in decimal format too.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "depositAsset(address,uint112)",
+      "name": "depositAsset",
+      "description": "Deposit ERC20 tokens to the exchange contractUser needs to approve token contract first.",
+      "parameterDecorators": [
+        {
+          "name": "assetAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "asset amount to deposit in its base unit.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "fillOrders(tuple(address,address,address,address,address,uint64,uint64,uint64,uint64,uint64,uint8,bytes),tuple(address,address,address,address,address,uint64,uint64,uint64,uint64,uint64,uint8,bytes),uint64,uint112)",
+      "name": "fillOrders",
+      "description": "Settle a trade with two orders, filled price and amount. 2 orders are submitted, it is necessary to match them: check conditions in orders for compliance filledPrice, filledAmountbuyOrderHash change balances on the contract respectively with buyer, seller, matcbuyOrderHashher.",
+      "parameterDecorators": [
+        {
+          "name": "buyOrder",
+          "description": "structure of buy side orderbuyOrderHash.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "senderAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "matcherAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "baseAsset",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "quoteAsset",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "matcherFeeAsset",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "price",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "matcherFee",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "nonce",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "expiration",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "buySide",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "signature",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "sellOrder",
+          "description": "structure of sell side order.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "senderAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "matcherAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "baseAsset",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "quoteAsset",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "matcherFeeAsset",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "price",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "matcherFee",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "nonce",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "expiration",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "buySide",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "signature",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "filledPrice",
+          "description": "price at which the order was settled.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "filledAmount",
+          "description": "amount settled between orders.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getBalance(address,address)",
+      "name": "getBalance",
+      "description": "Get asset balance for a specific address.",
+      "parameterDecorators": [
+        {
+          "name": "assetAddress",
+          "description": "address of the asset to query.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "user",
+          "description": "user address to query.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "assetBalance",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int192"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getBalances(address[],address)",
+      "name": "getBalances",
+      "description": "Batch query of asset balances for a user.",
+      "parameterDecorators": [
+        {
+          "name": "assetsAddresses",
+          "description": "array of addresses of teh assets to query.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "user",
+          "description": "user address to query.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int192[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCollateralAssets()",
+      "name": "getCollateralAssets",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getFilledAmounts(bytes32)",
+      "name": "getFilledAmounts",
+      "description": "get trades for a specific order.",
+      "parameterDecorators": [
+        {
+          "name": "orderHash",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalFilled",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int192"
+        },
+        {
+          "name": "totalFeesPaid",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int192"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getLiabilities(address)",
+      "name": "getLiabilities",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "liabilitiesArray",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "asset",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "timestamp",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint64"
+            },
+            {
+              "name": "outstandingAmount",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint192"
+            }
+          ],
+          "solidityType": "tuple[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getOrderHash(tuple(address,address,address,address,address,uint64,uint64,uint64,uint64,uint64,uint8,bytes))",
+      "name": "getOrderHash",
+      "description": "get hash for an order.",
+      "parameterDecorators": [
+        {
+          "name": "order",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "senderAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "matcherAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "baseAsset",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "quoteAsset",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "matcherFeeAsset",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "price",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "matcherFee",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "nonce",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "expiration",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "buySide",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "signature",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getOrderTrades(tuple(address,address,address,address,address,uint64,uint64,uint64,uint64,uint64,uint8,bytes))",
+      "name": "getOrderTrades",
+      "description": "get trades for a specific order.",
+      "parameterDecorators": [
+        {
+          "name": "order",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "senderAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "matcherAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "baseAsset",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "quoteAsset",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "matcherFeeAsset",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "price",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "matcherFee",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "nonce",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "expiration",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "buySide",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "signature",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "filledPrice",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint64"
+            },
+            {
+              "name": "filledAmount",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint192"
+            },
+            {
+              "name": "feePaid",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint192"
+            },
+            {
+              "name": "timestamp",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint64"
+            }
+          ],
+          "solidityType": "tuple[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "liabilities(address,uint256)",
+      "name": "liabilities",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "asset",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "timestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "outstandingAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint192"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "liquidationPremium()",
+      "name": "liquidationPremium",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "moveFromStake(address,uint64)",
+      "name": "moveFromStake",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "moveToStake(address,uint64)",
+      "name": "moveToStake",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "partiallyLiquidate(address,address,uint112)",
+      "name": "partiallyLiquidate",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "broker",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "redeemedAsset",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "positionOverdue()",
+      "name": "positionOverdue",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "priceOverdue()",
+      "name": "priceOverdue",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setBasicParams(address,address,address,address)",
+      "name": "setBasicParams",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "orionVaultContractAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "orionToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "priceOracleAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "allowedMatcher",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stakeRisk()",
+      "name": "stakeRisk",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "trades(bytes32,uint256)",
+      "name": "trades",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "filledPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "filledAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint192"
+        },
+        {
+          "name": "feePaid",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint192"
+        },
+        {
+          "name": "timestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "updateAssetRisks(address[],uint8[])",
+      "name": "updateAssetRisks",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "assets",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "risks",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateMarginalSettings(address[],uint8,uint8,uint64,uint64)",
+      "name": "updateMarginalSettings",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_collateralAssets",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_stakeRisk",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_liquidationPremium",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_priceOverdue",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_positionOverdue",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "validateOrder(tuple(address,address,address,address,address,uint64,uint64,uint64,uint64,uint64,uint8,bytes))",
+      "name": "validateOrder",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "order",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "senderAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "matcherAddress",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "baseAsset",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "quoteAsset",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "matcherFeeAsset",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "amount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "price",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "matcherFee",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "nonce",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "expiration",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "buySide",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "signature",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "isValid",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw(address,uint112)",
+      "name": "withdraw",
+      "description": "Withdrawal of remaining funds from the contract back to the address.",
+      "parameterDecorators": [
+        {
+          "name": "assetAddress",
+          "description": "address of the asset to withdraw.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "asset amount to withdraw in its base unit.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

@@ -1,0 +1,382 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "staking",
+    "voting",
+    "celo network"
+  ],
+  "name": "Manager",
+  "description": "Manages the StakedCelo system, by controlling the minting and burning of stCELO and implementing strategies for voting and unvoting of deposited or withdrawn CELO.",
+  "eventDecorators": [
+    {
+      "signature": "AdminChanged(address,address)",
+      "name": "AdminChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BeaconUpgraded(address)",
+      "name": "BeaconUpgraded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "beacon",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "GroupActivated(address)",
+      "name": "GroupActivated",
+      "description": "Emitted when a new group is activated for voting.",
+      "parameterDecorators": [
+        {
+          "name": "group",
+          "description": "The group's address.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "GroupDeprecated(address)",
+      "name": "GroupDeprecated",
+      "description": "Emitted when a group is deprecated.",
+      "parameterDecorators": [
+        {
+          "name": "group",
+          "description": "The group's address.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "GroupRemoved(address)",
+      "name": "GroupRemoved",
+      "description": "Emitted when a deprecated group is no longer being voted for and the contract forgets about it entirely.",
+      "parameterDecorators": [
+        {
+          "name": "group",
+          "description": "The group's address.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Upgraded(address)",
+      "name": "Upgraded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "implementation",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "activateGroup(address)",
+      "name": "activateGroup",
+      "description": "Marks a group as votable. Fails if the maximum number of groups are already being voted for by the Account smart contract (as per the `maxNumGroupsVotedFor` in the Election contract).",
+      "parameterDecorators": [
+        {
+          "name": "group",
+          "description": "The address of the group to add to the set of votable groups.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deposit()",
+      "name": "deposit",
+      "description": "Used to deposit CELO into the StakedCelo system. The user will receive an amount of stCELO proportional to their contribution. The CELO will be scheduled to be voted for with the Account contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deprecateGroup(address)",
+      "name": "deprecateGroup",
+      "description": "Marks a group as deprecated. A deprecated group will remain in the `deprecatedGroups` array as long as it is still being voted for by the Account contract. Deprecated groups will be the first to have their votes withdrawn.",
+      "parameterDecorators": [
+        {
+          "name": "group",
+          "description": "The group to deprecate.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getDeprecatedGroups()",
+      "name": "getDeprecatedGroups",
+      "description": "Returns the list of deprecated groups.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The list of deprecated groups.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getGroups()",
+      "name": "getGroups",
+      "description": "Returns the array of active groups.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The array of active groups.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,address)",
+      "name": "initialize",
+      "description": "Initialize the contract with registry and owner.",
+      "parameterDecorators": [
+        {
+          "name": "_registry",
+          "description": "The address of the Celo registry.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_owner",
+          "description": "The address of the contract owner.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "registry()",
+      "name": "registry",
+      "description": "The Registry.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDependencies(address,address)",
+      "name": "setDependencies",
+      "description": "Set this contract's dependencies in the StakedCelo system. Manager, Account and StakedCelo all reference each other so we need a way of setting these after all contracts are deployed and initialized.",
+      "parameterDecorators": [
+        {
+          "name": "_stakedCelo",
+          "description": "the address of the StakedCelo contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_account",
+          "description": "The address of the Account contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "toCelo(uint256)",
+      "name": "toCelo",
+      "description": "Computes the amount of CELO that should be withdrawn for a given amount of stCELO burned.",
+      "parameterDecorators": [
+        {
+          "name": "stCeloAmount",
+          "description": "The amount of stCELO burned.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The amount of CELO that should be withdrawn.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "toStakedCelo(uint256)",
+      "name": "toStakedCelo",
+      "description": "Computes the amount of stCELO that should be minted for a given amount of CELO deposited.",
+      "parameterDecorators": [
+        {
+          "name": "celoAmount",
+          "description": "The amount of CELO deposited.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The amount of stCELO that should be minted.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeTo(address)",
+      "name": "upgradeTo",
+      "description": "Upgrade the implementation of the proxy to `newImplementation`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "Upgraded(address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeToAndCall(address,bytes)",
+      "name": "upgradeToAndCall",
+      "description": "Upgrade the implementation of the proxy to `newImplementation`, and subsequently execute the function call encoded in `data`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "Upgraded(address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "withdraw(uint256)",
+      "name": "withdraw",
+      "description": "Used to withdraw CELO from the system, in exchange for burning stCELO. Calculates the CELO amount based on the ratio of outstanding stCELO and the total amount of CELO owned and used for voting by Account. See `toCelo`.The funds need to be withdrawn using calls to `Account.withdraw` and `Account.finishPendingWithdrawal`.",
+      "parameterDecorators": [
+        {
+          "name": "stakedCeloAmount",
+          "description": "The amount of stCELO to burn.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

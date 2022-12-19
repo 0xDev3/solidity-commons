@@ -1,0 +1,572 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "swaps",
+    "staking"
+  ],
+  "name": "StakingPools",
+  "description": "StakingPools. A contract which allows users to stake to farm tokens. This contract was inspired by Chef Nomi's 'MasterChef' contract which can be found in this repository: https://github.com/sushiswap/sushiswap.",
+  "eventDecorators": [
+    {
+      "signature": "GovernanceUpdated(address)",
+      "name": "GovernanceUpdated",
+      "description": "An event emitted when a vote has been cast on a proposal. This event will be emitted every time the implementation gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "implementation",
+          "description": "representing the address of the upgraded implementation.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PendingGovernanceUpdated(address)",
+      "name": "PendingGovernanceUpdated",
+      "description": "An event emitted when a vote has been cast on a proposal. This event will be emitted every time the implementation gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "implementation",
+          "description": "representing the address of the upgraded implementation.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PoolCreated(uint256,address)",
+      "name": "PoolCreated",
+      "description": "An event emitted when a vote has been cast on a proposal. This event will be emitted every time the implementation gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "poolId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "PoolRewardWeightUpdated(uint256,uint256)",
+      "name": "PoolRewardWeightUpdated",
+      "description": "An event emitted when a vote has been cast on a proposal. This event will be emitted every time the implementation gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "poolId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "rewardWeight",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RewardRateUpdated(uint256)",
+      "name": "RewardRateUpdated",
+      "description": "An event emitted when a vote has been cast on a proposal. This event will be emitted every time the implementation gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "implementation",
+          "description": "representing the address of the upgraded implementation.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TokensClaimed(address,uint256,uint256)",
+      "name": "TokensClaimed",
+      "description": "An event emitted when a vote has been cast on a proposal. This event will be emitted every time the implementation gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "poolId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TokensDeposited(address,uint256,uint256)",
+      "name": "TokensDeposited",
+      "description": "An event emitted when a vote has been cast on a proposal. This event will be emitted every time the implementation gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "poolId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TokensWithdrawn(address,uint256,uint256)",
+      "name": "TokensWithdrawn",
+      "description": "An event emitted when a vote has been cast on a proposal. This event will be emitted every time the implementation gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "poolId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "acceptGovernance()",
+      "name": "acceptGovernance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claim(uint256)",
+      "name": "claim",
+      "description": "use this function to claim the tokens from a corresponding pool by ID. Claims all rewarded tokens from a pool.",
+      "parameterDecorators": [
+        {
+          "name": "_poolId",
+          "description": "The pool to claim rewards from.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createPool(address)",
+      "name": "createPool",
+      "description": "Creates a new pool. The created pool will need to have its reward weight initialized before it begins generating rewards.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "The token the pool will accept for staking.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the identifier for the newly created pool.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deposit(uint256,uint256)",
+      "name": "deposit",
+      "description": "Stakes tokens into a pool.",
+      "parameterDecorators": [
+        {
+          "name": "_poolId",
+          "description": "the pool to deposit tokens into.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_depositAmount",
+          "description": "the amount of tokens to deposit.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "exit(uint256)",
+      "name": "exit",
+      "description": "Claims all rewards from a pool and then withdraws all staked tokens.",
+      "parameterDecorators": [
+        {
+          "name": "_poolId",
+          "description": "the pool to exit from.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getPoolRewardRate(uint256)",
+      "name": "getPoolRewardRate",
+      "description": "Gets the amount of tokens per block being distributed to stakers for a pool.",
+      "parameterDecorators": [
+        {
+          "name": "_poolId",
+          "description": "the identifier of the pool.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the pool reward rate.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPoolRewardWeight(uint256)",
+      "name": "getPoolRewardWeight",
+      "description": "Gets the reward weight of a pool which determines how much of the total rewards it receives per block.",
+      "parameterDecorators": [
+        {
+          "name": "_poolId",
+          "description": "the identifier of the pool.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the pool reward weight.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPoolToken(uint256)",
+      "name": "getPoolToken",
+      "description": "Gets the token a pool accepts.",
+      "parameterDecorators": [
+        {
+          "name": "_poolId",
+          "description": "the identifier of the pool.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the token.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPoolTotalDeposited(uint256)",
+      "name": "getPoolTotalDeposited",
+      "description": "Gets the total amount of funds staked in a pool.",
+      "parameterDecorators": [
+        {
+          "name": "_poolId",
+          "description": "the identifier of the pool.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the total amount of staked or deposited tokens.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getStakeTotalDeposited(address,uint256)",
+      "name": "getStakeTotalDeposited",
+      "description": "Gets the number of tokens a user has staked into a pool.",
+      "parameterDecorators": [
+        {
+          "name": "_account",
+          "description": "The account to query.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_poolId",
+          "description": "the identifier of the pool.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the amount of deposited tokens.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getStakeTotalUnclaimed(address,uint256)",
+      "name": "getStakeTotalUnclaimed",
+      "description": "Gets the number of unclaimed reward tokens a user can claim from a pool.",
+      "parameterDecorators": [
+        {
+          "name": "_account",
+          "description": "The account to get the unclaimed balance of.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_poolId",
+          "description": "The pool to check for unclaimed rewards.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the amount of unclaimed reward tokens a user has in a pool.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "governance()",
+      "name": "governance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pendingGovernance()",
+      "name": "pendingGovernance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "poolCount()",
+      "name": "poolCount",
+      "description": "Gets the number of pools that exist.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the pool count.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "reward()",
+      "name": "reward",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardRate()",
+      "name": "rewardRate",
+      "description": "Gets the rate at which tokens are minted to stakers for all pools.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the reward rate.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setPendingGovernance(address)",
+      "name": "setPendingGovernance",
+      "description": "Sets the governance. This function can only called by the current governance.",
+      "parameterDecorators": [
+        {
+          "name": "_pendingGovernance",
+          "description": "the new pending governance.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRewardRate(uint256)",
+      "name": "setRewardRate",
+      "description": "Sets the distribution reward rate. This will update all of the pools.",
+      "parameterDecorators": [
+        {
+          "name": "_rewardRate",
+          "description": "The number of tokens to distribute per second.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRewardWeights(uint256[])",
+      "name": "setRewardWeights",
+      "description": "Sets the reward weights of all of the pools.",
+      "parameterDecorators": [
+        {
+          "name": "_rewardWeights",
+          "description": "The reward weights of all of the pools.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tokenPoolIds(address)",
+      "name": "tokenPoolIds",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalRewardWeight()",
+      "name": "totalRewardWeight",
+      "description": "Gets the total reward weight between all the pools.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "the total reward weight.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw(uint256,uint256)",
+      "name": "withdraw",
+      "description": "Withdraws staked tokens from a pool.",
+      "parameterDecorators": [
+        {
+          "name": "_poolId",
+          "description": "The pool to withdraw staked tokens from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_withdrawAmount",
+          "description": "The number of tokens to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

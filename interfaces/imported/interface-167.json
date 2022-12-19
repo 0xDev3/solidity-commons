@@ -1,0 +1,789 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "celo network"
+  ],
+  "name": "MultiSig",
+  "description": "Multisignature wallet - Allows multiple parties to agree on proposals before execution.",
+  "eventDecorators": [
+    {
+      "signature": "AdminChanged(address,address)",
+      "name": "AdminChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "BeaconUpgraded(address)",
+      "name": "BeaconUpgraded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "beacon",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "CeloDeposited(address,uint256)",
+      "name": "CeloDeposited",
+      "description": "Emitted when CELO is sent to this contract.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "The account which sent the CELO.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "The amount of CELO sent.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ConfirmationRevoked(address,uint256)",
+      "name": "ConfirmationRevoked",
+      "description": "Used when a confirmation is successfully revoked.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "The address of the sender.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "proposalId",
+          "description": "The ID of the proposal.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "DelayChanged(uint256,uint256)",
+      "name": "DelayChanged",
+      "description": "Used when `delay` is changed.",
+      "parameterDecorators": [
+        {
+          "name": "delay",
+          "description": "The current delay value.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newDelay",
+          "description": "The new delay value.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnerAdded(address)",
+      "name": "OwnerAdded",
+      "description": "Emitted when an Owner is successfully added as part of the multisig.",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "The added owner.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnerRemoved(address)",
+      "name": "OwnerRemoved",
+      "description": "Emitted when an Owner is successfully removed from the multisig.",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "The removed owner.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ProposalAdded(uint256)",
+      "name": "ProposalAdded",
+      "description": "Used when a proposal is successfully added.",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "The ID of the proposal that was added.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ProposalConfirmed(address,uint256)",
+      "name": "ProposalConfirmed",
+      "description": "Used when a proposal is successfully confirmed.",
+      "parameterDecorators": [
+        {
+          "name": "sender",
+          "description": "The address of the sender.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "proposalId",
+          "description": "The ID of the proposal.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ProposalExecuted(uint256,bytes)",
+      "name": "ProposalExecuted",
+      "description": "Emitted when a confirmed proposal is successfully executed.",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "The ID of the proposal that was executed.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "returnData",
+          "description": "The response that was recieved from the external call.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ProposalScheduled(uint256)",
+      "name": "ProposalScheduled",
+      "description": "Emitted when a proposal is scheduled.",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "The ID of the proposal that is scheduled.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RequirementChanged(uint256)",
+      "name": "RequirementChanged",
+      "description": "Emitted when the minimum amount of required confirmations is successfully changed.",
+      "parameterDecorators": [
+        {
+          "name": "required",
+          "description": "The new required amount.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TransactionExecuted(uint256,uint256,bytes)",
+      "name": "TransactionExecuted",
+      "description": "Emitted when one of the transactions that make up a proposal is successfully executed.",
+      "parameterDecorators": [
+        {
+          "name": "index",
+          "description": "The index of the transaction within the proposal.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "proposalId",
+          "description": "The ID of the proposal.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "returnData",
+          "description": "The response that was recieved from the external call.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Upgraded(address)",
+      "name": "Upgraded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "implementation",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "MAX_OWNER_COUNT()",
+      "name": "MAX_OWNER_COUNT",
+      "description": "The maximum number of multisig owners.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addOwner(address)",
+      "name": "addOwner",
+      "description": "Adds a new multisig owner. This call can only be made by this contract.",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "The owner to add.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeDelay(uint256)",
+      "name": "changeDelay",
+      "description": "Changes the value of the delay that must elapse before a proposal can become executable. Proposal has to be sent by wallet.",
+      "parameterDecorators": [
+        {
+          "name": "newDelay",
+          "description": "The new delay value.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeRequirement(uint256)",
+      "name": "changeRequirement",
+      "description": "Changes the number of confirmations required to consider a proposal fully confirmed. Proposal has to be sent by wallet.",
+      "parameterDecorators": [
+        {
+          "name": "newRequired",
+          "description": "The new number of confirmations required.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "confirmProposal(uint256)",
+      "name": "confirmProposal",
+      "description": "Confirms a proposal. A proposal is executed if this confirmation makes it fully confirmed.",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "The ID of the proposal to confirm.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "delay()",
+      "name": "delay",
+      "description": "The delay that must elapse to be able to execute a proposal.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "executeProposal(uint256)",
+      "name": "executeProposal",
+      "description": "Executes a proposal. A proposal is only executetable if it is fully confirmed, scheduled and the set delay has elapsed. Any of the multisig owners can execute a given proposal, even though they may not have participated in its confirmation process.",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getConfirmations(uint256)",
+      "name": "getConfirmations",
+      "description": "Gets the list of owners' addresses which have confirmed a given proposal.",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "The ID of the proposal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The list of owner addresses.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getOwners()",
+      "name": "getOwners",
+      "description": "Get the list of multisig owners.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The list of owner addresses.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getProposal(uint256)",
+      "name": "getProposal",
+      "description": "Gets the destinations, values and payloads of a proposal.",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "The ID of the proposal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "destinations",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "values",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "payloads",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTimestamp(uint256)",
+      "name": "getTimestamp",
+      "description": "Returns the timestamp at which a proposal becomes executable.",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "The ID of the proposal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The timestamp at which the proposal becomes executable.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address[],uint256,uint256)",
+      "name": "initialize",
+      "description": "Bootstraps this contract with initial data. This plays the role of a typical contract constructor. Sets initial owners and required number of confirmations. The initializer modifier ensures that this function is ONLY callable once.",
+      "parameterDecorators": [
+        {
+          "name": "initialOwners",
+          "description": "The list of initial owners.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "requiredConfirmations",
+          "description": "The number of required confirmations for a proposal to be fully confirmed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_delay",
+          "description": "The delay that must elapse to be able to execute a proposal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isConfirmedBy(uint256,address)",
+      "name": "isConfirmedBy",
+      "description": "Checks that a proposal is confirmed by an owner.",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "The ID of the proposal to check.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "owner",
+          "description": "The address to check.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Whether or not the proposal is confirmed by the given owner.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isFullyConfirmed(uint256)",
+      "name": "isFullyConfirmed",
+      "description": "Checks that a proposal has been confirmed by at least the `required` number of owners.",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "The ID of the proposal to check.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Whether or not the proposal is confirmed by the minimum set of owners.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isOwner(address)",
+      "name": "isOwner",
+      "description": "Checks that an address is a multisig owner.",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "The address to check.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Whether or not the address is a multisig owner.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isProposalTimelockReached(uint256)",
+      "name": "isProposalTimelockReached",
+      "description": "Returns whether a proposal is executable or not. A proposal is executable if it is scheduled, the delay has elapsed and it is not yet executed.",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "The ID of the proposal to check.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Whether or not the time lock is reached.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isScheduled(uint256)",
+      "name": "isScheduled",
+      "description": "Returns whether a proposal is scheduled.",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "The ID of the proposal to check.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Whether or not the proposal is scheduled.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minDelay()",
+      "name": "minDelay",
+      "description": "The minimum time in seconds that must elapse before a proposal is executable.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "proposalCount()",
+      "name": "proposalCount",
+      "description": "The total count of proposals.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "proposals(uint256)",
+      "name": "proposals",
+      "description": "Keyed by proposal ID, the Proposal record.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "timestampExecutable",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeOwner(address)",
+      "name": "removeOwner",
+      "description": "Removes an existing owner. This call can only be made by this contract.",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "The owner to remove.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "replaceOwner(address,address)",
+      "name": "replaceOwner",
+      "description": "Replaces an existing owner with a new owner. This call can only be made by this contract.",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "The owner to be replaced.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "required()",
+      "name": "required",
+      "description": "The amount of confirmations required for a proposal to be fully confirmed.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "revokeConfirmation(uint256)",
+      "name": "revokeConfirmation",
+      "description": "Void a confirmation for a previously confirmed proposal.",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "The ID of the proposal to be revoked.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "scheduleProposal(uint256)",
+      "name": "scheduleProposal",
+      "description": "Schedules a proposal with a time lock.",
+      "parameterDecorators": [
+        {
+          "name": "proposalId",
+          "description": "The ID of the proposal to confirm.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "submitProposal(address[],uint256[],bytes[])",
+      "name": "submitProposal",
+      "description": "Creates a proposal and triggers the first confirmation on behalf of the proposal creator.",
+      "parameterDecorators": [
+        {
+          "name": "destinations",
+          "description": "The addresses at which the proposal is target at.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "values",
+          "description": "The CELO values involved in the proposal if any.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "payloads",
+          "description": "The payloads of the proposal.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "proposalId",
+          "description": "Returns the ID of the proposal that gets generated.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeTo(address)",
+      "name": "upgradeTo",
+      "description": "Upgrade the implementation of the proxy to `newImplementation`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "Upgraded(address)"
+      ],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeToAndCall(address,bytes)",
+      "name": "upgradeToAndCall",
+      "description": "Upgrade the implementation of the proxy to `newImplementation`, and subsequently execute the function call encoded in `data`. Calls {_authorizeUpgrade}. Emits an {Upgraded} event.",
+      "parameterDecorators": [
+        {
+          "name": "newImplementation",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [
+        "Upgraded(address)"
+      ],
+      "readOnly": false
+    }
+  ]
+}

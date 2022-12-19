@@ -1,0 +1,888 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "staking"
+  ],
+  "name": "BerryMaster",
+  "description": "Berry Master. This is the Master contract with all berry getter functions and delegate call to Berry. The logic for the functions on this contract is saved on the BerryGettersLibrary, BerryTransfer, BerryGettersLibrary, and BerryStake.",
+  "eventDecorators": [
+    {
+      "signature": "NewBerryAddress(address)",
+      "name": "NewBerryAddress",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_newBerry",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "allowance(address,address)",
+      "name": "allowance",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_user",
+          "description": "address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_spender",
+          "description": "address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "allowedToTrade(address,uint256)",
+      "name": "allowedToTrade",
+      "description": "This function returns whether or not a given user is allowed to trade a given amount.",
+      "parameterDecorators": [
+        {
+          "name": "_user",
+          "description": "address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "uint of amount.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "balanceOf(address)",
+      "name": "balanceOf",
+      "description": "Gets balance of owner specified.",
+      "parameterDecorators": [
+        {
+          "name": "_user",
+          "description": "is the owner address used to look up the balance.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "balanceOfAt(address,uint256)",
+      "name": "balanceOfAt",
+      "description": "Queries the balance of _user at a specific _blockNumber.",
+      "parameterDecorators": [
+        {
+          "name": "_user",
+          "description": "The address from which the balance will be retrieved.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_blockNumber",
+          "description": "The block number when the balance is queried.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "changeBerryContract(address)",
+      "name": "changeBerryContract",
+      "description": "allows for the deity to make fast upgrades. Deity should be 0 address if decentralized.",
+      "parameterDecorators": [
+        {
+          "name": "_berryContract",
+          "description": "the address of the new Berry Contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeDeity(address)",
+      "name": "changeDeity",
+      "description": "Gets the 5 miners who mined the value for the specified requestId/_timestampOnly needs to be in library.",
+      "parameterDecorators": [
+        {
+          "name": "_newDeity",
+          "description": "the new Deity in the contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "didMine(bytes32,address)",
+      "name": "didMine",
+      "description": "This function tells you if a given challenge has been completed by a given miner.",
+      "parameterDecorators": [
+        {
+          "name": "_challenge",
+          "description": "the challenge to search for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_miner",
+          "description": "address that you want to know if they solved the challenge.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "didVote(uint256,address)",
+      "name": "didVote",
+      "description": "Checks if an address voted in a given dispute.",
+      "parameterDecorators": [
+        {
+          "name": "_disputeId",
+          "description": "to look up.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_address",
+          "description": "to look up.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAddressVars(bytes32)",
+      "name": "getAddressVars",
+      "description": "allows Berry to read data from the addressVars mapping.",
+      "parameterDecorators": [
+        {
+          "name": "_data",
+          "description": "is the keccak256(\"variable_name\") of the variable that is being accessed. These are examples of how the variables are saved within other functions: addressVars[keccak256(\"_owner\")] addressVars[keccak256(\"berryContract\")].",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAllDisputeVars(uint256)",
+      "name": "getAllDisputeVars",
+      "description": "Gets all dispute variables.",
+      "parameterDecorators": [
+        {
+          "name": "_disputeId",
+          "description": "to look up.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "param3",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "param4",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "param5",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "param6",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "param7",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[9]"
+        },
+        {
+          "name": "param8",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getCurrentVariables()",
+      "name": "getCurrentVariables",
+      "description": "Getter function for variables for the requestId being currently mined(currentRequestId).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param3",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        },
+        {
+          "name": "param4",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param5",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getDisputeIdByDisputeHash(bytes32)",
+      "name": "getDisputeIdByDisputeHash",
+      "description": "Checks if a given hash of miner,requestId has been disputed.",
+      "parameterDecorators": [
+        {
+          "name": "_hash",
+          "description": "is the sha256(abi.encodePacked(_miners[2],_requestId));.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getDisputeUintVars(uint256,bytes32)",
+      "name": "getDisputeUintVars",
+      "description": "Checks for uint variables in the disputeUintVars mapping based on the disuputeId.",
+      "parameterDecorators": [
+        {
+          "name": "_disputeId",
+          "description": "is the dispute id;.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "the variable to pull from the mapping. _data = keccak256(\"variable_name\") where variable_name is the variables/strings used to save the data in the mapping. The variables names are commented out under the disputeUintVars under the Dispute struct.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getLastNewValue()",
+      "name": "getLastNewValue",
+      "description": "Gets the a value for the latest timestamp available.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getLastNewValueById(uint256)",
+      "name": "getLastNewValueById",
+      "description": "Gets the a value for the latest timestamp available.",
+      "parameterDecorators": [
+        {
+          "name": "_requestId",
+          "description": "being requested.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getMinedBlockNum(uint256,uint256)",
+      "name": "getMinedBlockNum",
+      "description": "Gets blocknumber for mined timestamp.",
+      "parameterDecorators": [
+        {
+          "name": "_requestId",
+          "description": "to look up.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_timestamp",
+          "description": "is the timestamp to look up blocknumber.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getMinersByRequestIdAndTimestamp(uint256,uint256)",
+      "name": "getMinersByRequestIdAndTimestamp",
+      "description": "Gets the 5 miners who mined the value for the specified requestId/_timestamp.",
+      "parameterDecorators": [
+        {
+          "name": "_requestId",
+          "description": "to look up.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_timestamp",
+          "description": "is the timestamp to look up miners for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[5]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getNewValueCountbyRequestId(uint256)",
+      "name": "getNewValueCountbyRequestId",
+      "description": "Counts the number of values that have been submited for the request if called for the currentRequest being mined it can tell you how many miners have submitted a value for that request so far.",
+      "parameterDecorators": [
+        {
+          "name": "_requestId",
+          "description": "the requestId to look up.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRequestIdByQueryHash(bytes32)",
+      "name": "getRequestIdByQueryHash",
+      "description": "Getter function for requestId based on the queryHash.",
+      "parameterDecorators": [
+        {
+          "name": "_request",
+          "description": "is the hash(of string api and granularity) to check if a request already exists.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRequestIdByRequestQIndex(uint256)",
+      "name": "getRequestIdByRequestQIndex",
+      "description": "Getter function for the specified requestQ index.",
+      "parameterDecorators": [
+        {
+          "name": "_index",
+          "description": "to look up in the requestQ array.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRequestIdByTimestamp(uint256)",
+      "name": "getRequestIdByTimestamp",
+      "description": "Getter function for requestId based on timestamp.",
+      "parameterDecorators": [
+        {
+          "name": "_timestamp",
+          "description": "to check requestId.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRequestQ()",
+      "name": "getRequestQ",
+      "description": "Getter function for the requestQ array.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[51]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRequestUintVars(uint256,bytes32)",
+      "name": "getRequestUintVars",
+      "description": "Allowes access to the uint variables saved in the apiUintVars under the requestDetails struct for the requestId specified.",
+      "parameterDecorators": [
+        {
+          "name": "_requestId",
+          "description": "to look up.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "the variable to pull from the mapping. _data = keccak256(\"variable_name\") where variable_name is the variables/strings used to save the data in the mapping. The variables names are commented out under the apiUintVars under the requestDetails struct.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRequestVars(uint256)",
+      "name": "getRequestVars",
+      "description": "Gets the API struct variables that are not mappings.",
+      "parameterDecorators": [
+        {
+          "name": "_requestId",
+          "description": "to look up.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        },
+        {
+          "name": "param3",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param4",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param5",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getStakerInfo(address)",
+      "name": "getStakerInfo",
+      "description": "This function allows users to retireve all information about a staker.",
+      "parameterDecorators": [
+        {
+          "name": "_staker",
+          "description": "address of staker inquiring about.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getSubmissionsByTimestamp(uint256,uint256)",
+      "name": "getSubmissionsByTimestamp",
+      "description": "Gets the 5 miners who mined the value for the specified requestId/_timestamp.",
+      "parameterDecorators": [
+        {
+          "name": "_requestId",
+          "description": "to look up.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_timestamp",
+          "description": "is the timestampt to look up miners for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[5]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTimestampbyRequestIDandIndex(uint256,uint256)",
+      "name": "getTimestampbyRequestIDandIndex",
+      "description": "Gets the timestamp for the value based on their index.",
+      "parameterDecorators": [
+        {
+          "name": "_requestID",
+          "description": "is the requestId to look up.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_index",
+          "description": "is the value index to look up.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getUintVar(bytes32)",
+      "name": "getUintVar",
+      "description": "Getter for the variables saved under the BerryStorageStruct uintVars variable.",
+      "parameterDecorators": [
+        {
+          "name": "_data",
+          "description": "the variable to pull from the mapping. _data = keccak256(\"variable_name\") where variable_name is the variables/strings used to save the data in the mapping. The variables names are commented out under the uintVars under the BerryStorageStruct struct This is an example of how data is saved into the mapping within other functions: self.uintVars[keccak256(\"stakerCount\")].",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVariablesOnDeck()",
+      "name": "getVariablesOnDeck",
+      "description": "Getter function for next requestId on queue/request with highest payout at time the function is called.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isInDispute(uint256,uint256)",
+      "name": "isInDispute",
+      "description": "Gets the 5 miners who mined the value for the specified requestId/_timestamp.",
+      "parameterDecorators": [
+        {
+          "name": "_requestId",
+          "description": "to look up.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_timestamp",
+          "description": "is the timestamp to look up miners for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "retrieveData(uint256,uint256)",
+      "name": "retrieveData",
+      "description": "Retreive value from oracle based on timestamp.",
+      "parameterDecorators": [
+        {
+          "name": "_requestId",
+          "description": "being requested.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_timestamp",
+          "description": "to retreive data/value from.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalSupply()",
+      "name": "totalSupply",
+      "description": "Getter for the total_supply of oracle tokens.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

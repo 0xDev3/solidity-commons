@@ -1,0 +1,603 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "VersionManager",
+  "description": "VersionManager. Intermediate contract between features and wallets. VersionManager checks that a calling feature is authorised for the wallet and if so, forwards the call to it. Note that VersionManager is meant to be the only module authorised on a wallet and because some of its methods need to be called by the RelayerManager feature, the VersionManager is both a module AND a feature.",
+  "eventDecorators": [
+    {
+      "signature": "FeatureCreated(bytes32)",
+      "name": "FeatureCreated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "name",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnerChanged(address)",
+      "name": "OwnerChanged",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "VersionAdded(uint256,address[])",
+      "name": "VersionAdded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_version",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_features",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WalletUpgraded(address,uint256)",
+      "name": "WalletUpgraded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_wallet",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_version",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addModule(address,address)",
+      "name": "addModule",
+      "description": "Adds a module to a wallet. Cannot execute when wallet is locked (or under recovery).",
+      "parameterDecorators": [
+        {
+          "name": "_wallet",
+          "description": "The target wallet.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_module",
+          "description": "The modules to authorise.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addStorage(address)",
+      "name": "addStorage",
+      "description": "Lets the owner add a storage contract.",
+      "parameterDecorators": [
+        {
+          "name": "_storage",
+          "description": "the storage contract to add.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addVersion(address[],address[])",
+      "name": "addVersion",
+      "description": "Lets the owner add a new version, i.e. a new bundle of features. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! WARNING: if a feature was added to a version and later on removed from a subsequent version, the feature may no longer be used in any future version without first being redeployed. Otherwise, the feature could be initialized more than once. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!.",
+      "parameterDecorators": [
+        {
+          "name": "_features",
+          "description": "the list of features included in the new version.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_featuresToInit",
+          "description": "the subset of features that need to be initialized for a wallet.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeOwner(address)",
+      "name": "changeOwner",
+      "description": "Lets the owner transfer ownership of the contract to a new owner.",
+      "parameterDecorators": [
+        {
+          "name": "_newOwner",
+          "description": "The new owner.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "checkAuthorisedFeatureAndInvokeWallet(address,address,uint256,bytes)",
+      "name": "checkAuthorisedFeatureAndInvokeWallet",
+      "description": "Lets a feature (caller) invoke a wallet.",
+      "parameterDecorators": [
+        {
+          "name": "_wallet",
+          "description": "The target wallet.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "The target address for the transaction.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_value",
+          "description": "The value of the transaction.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "The data of the transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_res",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "featuresToInit(uint256,uint256)",
+      "name": "featuresToInit",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRequiredSignatures(address,bytes)",
+      "name": "getRequiredSignatures",
+      "description": "Gets the number of valid signatures that must be provided to execute a specific relayed transaction.",
+      "parameterDecorators": [
+        {
+          "name": "_data",
+          "description": "The data of the relayed transaction.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "The data of the relayed transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getStaticCallSignatures()",
+      "name": "getStaticCallSignatures",
+      "description": "Gets the list of static call signatures that this feature responds to on behalf of wallets.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_sigs",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes4[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "init(address)",
+      "name": "init",
+      "description": "Inits a Feature for a wallet by e.g. setting some wallet specific parameters in storage.",
+      "parameterDecorators": [
+        {
+          "name": "_wallet",
+          "description": "The wallet.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "invokeStorage(address,address,bytes)",
+      "name": "invokeStorage",
+      "description": "Lets a feature write data to a storage contract.",
+      "parameterDecorators": [
+        {
+          "name": "_wallet",
+          "description": "The target wallet.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_storage",
+          "description": "The storage contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "The data of the call.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isFeatureAuthorised(address,address)",
+      "name": "isFeatureAuthorised",
+      "description": "Returns true if the feature is authorised for the wallet.",
+      "parameterDecorators": [
+        {
+          "name": "_wallet",
+          "description": "The target wallet.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_feature",
+          "description": "The feature.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isFeatureAuthorisedInVersionManager(address,address)",
+      "name": "isFeatureAuthorisedInVersionManager",
+      "description": "Helper method to check if an address is an authorised feature of a target wallet.",
+      "parameterDecorators": [
+        {
+          "name": "_wallet",
+          "description": "The target wallet.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_feature",
+          "description": "The address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isFeatureInVersion(address,uint256)",
+      "name": "isFeatureInVersion",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isStorage(address)",
+      "name": "isStorage",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastVersion()",
+      "name": "lastVersion",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minVersion()",
+      "name": "minVersion",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "recoverToken(address)",
+      "name": "recoverToken",
+      "description": "Utility method to recover any ERC20 token that was sent to the Feature by mistake.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "The token to recover.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMinVersion(uint256)",
+      "name": "setMinVersion",
+      "description": "Lets the owner change the minimum allowed version.",
+      "parameterDecorators": [
+        {
+          "name": "_minVersion",
+          "description": "the minimum allowed version.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setOwner(address,address)",
+      "name": "setOwner",
+      "description": "Sets a new owner for the wallet.",
+      "parameterDecorators": [
+        {
+          "name": "_wallet",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newOwner",
+          "description": "The new owner.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "staticCallExecutors(uint256,bytes4)",
+      "name": "staticCallExecutors",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "staticCallSignatures(uint256,uint256)",
+      "name": "staticCallSignatures",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes4"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "upgradeWallet(address,uint256)",
+      "name": "upgradeWallet",
+      "description": "Upgrade a wallet to a new version.",
+      "parameterDecorators": [
+        {
+          "name": "_wallet",
+          "description": "the wallet to upgrade.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_toVersion",
+          "description": "the new version.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "verifyStaticCall()",
+      "name": "verifyStaticCall",
+      "description": "This method is used by the VersionManager's fallback (via an internal call) to determine whether the current transaction is a staticcall or not. The method succeeds if the current transaction is a static call, and reverts otherwise. The use of an if/else allows to encapsulate the whole logic in a single function.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "walletVersions(address)",
+      "name": "walletVersions",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

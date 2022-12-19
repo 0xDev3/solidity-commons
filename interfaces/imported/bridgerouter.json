@@ -1,0 +1,574 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "bridges"
+  ],
+  "name": "BridgeRouter",
+  "description": "BridgeRouter.",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Send(address,address,uint32,bytes32,uint256)",
+      "name": "Send",
+      "description": "emitted when tokens are sent from this domain to another domain.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "the address of the token contract.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "from",
+          "description": "the address sending tokens.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "toDomain",
+          "description": "the domain of the chain the tokens are being sent to.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "toId",
+          "description": "the bytes32 address of the recipient of the tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "the amount of tokens sent.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TokenDeployed(uint32,bytes32,address)",
+      "name": "TokenDeployed",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "domain",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "representation",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "PRE_FILL_FEE_DENOMINATOR()",
+      "name": "PRE_FILL_FEE_DENOMINATOR",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "PRE_FILL_FEE_NUMERATOR()",
+      "name": "PRE_FILL_FEE_NUMERATOR",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "VERSION()",
+      "name": "VERSION",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "canonicalToRepresentation(bytes32)",
+      "name": "canonicalToRepresentation",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "enrollCustom(uint32,bytes32,address)",
+      "name": "enrollCustom",
+      "description": "Enroll a custom token. This allows projects to work with governance to specify a custom representation. This is done by inserting the custom representation into the token lookup tables. It is permissioned to the owner (governance) and can potentially break token representations. It must be used with extreme caution. After the token is inserted, new mint instructions will be sent to the custom token. The default representation (and old custom representations) may still be burnt. Until all users have explicitly called migrate, both representations will continue to exist. The custom representation MUST be trusted, and MUST allow the router to both mint AND burn tokens at will.",
+      "parameterDecorators": [
+        {
+          "name": "_domain",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_id",
+          "description": "the canonical ID of the Token to enroll, as a byte vector.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_custom",
+          "description": "the address of the custom implementation to use.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "enrollRemoteRouter(uint32,bytes32)",
+      "name": "enrollRemoteRouter",
+      "description": "Register the address of a Router contract for the same xApp on a remote chain.",
+      "parameterDecorators": [
+        {
+          "name": "_domain",
+          "description": "The domain of the remote xApp Router.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_router",
+          "description": "The address of the remote xApp Router.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getCanonicalAddress(address)",
+      "name": "getCanonicalAddress",
+      "description": "Looks up the canonical identifier for a local representation. If no such canonical ID is known, this instead returns (0, bytes32(0)).",
+      "parameterDecorators": [
+        {
+          "name": "_local",
+          "description": "The local address of the representation.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_domain",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        },
+        {
+          "name": "_id",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getLocalAddress(uint32,bytes32)",
+      "name": "getLocalAddress",
+      "description": "Looks up the local address corresponding to a domain/id pair. If the token is local, it will return the local address. If the token is non-local and no local representation exists, this will return `address(0)`.",
+      "parameterDecorators": [
+        {
+          "name": "_domain",
+          "description": "the domain of the canonical version.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_id",
+          "description": "the identifier of the canonical version in its domain.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_token",
+          "description": "the local address of the token contract.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getLocalAddress(uint32,address)",
+      "name": "getLocalAddress",
+      "description": "Looks up the local address corresponding to a domain/id pair. If the token is local, it will return the local address. If the token is non-local and no local representation exists, this will return `address(0)`.",
+      "parameterDecorators": [
+        {
+          "name": "_domain",
+          "description": "the domain of the canonical version.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_id",
+          "description": "the identifier of the canonical version in its domain.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_token",
+          "description": "the local address of the token contract.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "handle(uint32,bytes32,bytes)",
+      "name": "handle",
+      "description": "Handles an incoming message.",
+      "parameterDecorators": [
+        {
+          "name": "_origin",
+          "description": "The origin domain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_sender",
+          "description": "The sender address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_message",
+          "description": "The message.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "initialize(address,address)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_tokenBeacon",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_xAppConnectionManager",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "liquidityProvider(bytes32)",
+      "name": "liquidityProvider",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "migrate(address)",
+      "name": "migrate",
+      "description": "Migrate all tokens in a previous representation to the latest custom representation. This works by looking up local mappings and then burning old tokens and minting new tokens. This is explicitly opt-in to allow dapps to decide when and how to upgrade to the new representation.",
+      "parameterDecorators": [
+        {
+          "name": "_oldRepr",
+          "description": "The address of the old token to migrate.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "preFill(bytes)",
+      "name": "preFill",
+      "description": "Allows a liquidity provider to give an end user fast liquidity by pre-filling an incoming transfer message. Transfers tokens from the liquidity provider to the end recipient, minus the LP fee; Records the liquidity provider, who receives the full token amount when the transfer message is handled. fast liquidity can only be provided for ONE token transfer with the same (recipient, amount) at a time. in the case that multiple token transfers with the same (recipient, amount).",
+      "parameterDecorators": [
+        {
+          "name": "_message",
+          "description": "The incoming transfer message to pre-fill.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "remotes(uint32)",
+      "name": "remotes",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "representationToCanonical(address)",
+      "name": "representationToCanonical",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "domain",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        },
+        {
+          "name": "id",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "requestDetails(uint32,bytes32)",
+      "name": "requestDetails",
+      "description": "Request updated token metadata from another chain. This is only owner to prevent abuse and spam. Requesting details should be done automatically on token instantiation.",
+      "parameterDecorators": [
+        {
+          "name": "_domain",
+          "description": "The domain where that token is native.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_id",
+          "description": "The token id on that domain.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "send(address,uint256,uint32,bytes32)",
+      "name": "send",
+      "description": "Send tokens to a recipient on a remote chain.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "The token address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The token amount.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_destination",
+          "description": "The destination domain.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_recipient",
+          "description": "The recipient address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setXAppConnectionManager(address)",
+      "name": "setXAppConnectionManager",
+      "description": "Modify the contract the xApp uses to validate Replica contracts.",
+      "parameterDecorators": [
+        {
+          "name": "_xAppConnectionManager",
+          "description": "The address of the xAppConnectionManager contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tokenBeacon()",
+      "name": "tokenBeacon",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "xAppConnectionManager()",
+      "name": "xAppConnectionManager",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

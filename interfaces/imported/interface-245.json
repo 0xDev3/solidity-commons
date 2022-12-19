@@ -1,0 +1,453 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "oracles"
+  ],
+  "name": "WitnetRandomness",
+  "description": "WitnetRandomness: A trustless randomness generator and registry, based on the Witnet oracle.",
+  "eventDecorators": [
+    {
+      "signature": "Cloned(address,address,address)",
+      "name": "Cloned",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "by",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "self",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "clone",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Randomized(address,uint256,uint256,bytes32)",
+      "name": "Randomized",
+      "description": "Thrown every time a new WitnetRandomnessRequest gets succesfully posted to the WitnetRequestBoard.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "prevBlock",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "witnetQueryId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "witnetRequestHash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "clone()",
+      "name": "clone",
+      "description": "Deploys and returns the address of a minimal proxy clone that replicates contract behaviour while using its own EVM storage. This function should always provide a new address, no matter how many times is actually called from the same `msg.sender`.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_newInstance",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cloneDeterministic(bytes32)",
+      "name": "cloneDeterministic",
+      "description": "Deploys and returns the address of a minimal proxy clone that replicates contract behaviour while using its own EVM storage. This function uses the CREATE2 opcode and a `_salt` to deterministically deploythe clone. Using the same `_salt` multiple time will revert, sinceno contract can be deployed more than once at the same address.",
+      "parameterDecorators": [
+        {
+          "name": "_salt",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_newInstance",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cloned()",
+      "name": "cloned",
+      "description": "Tells whether this contract is a clone of another (i.e. `self()`).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "estimateRandomizeFee(uint256)",
+      "name": "estimateRandomizeFee",
+      "description": "Returns amount of wei required to be paid as a fee when requesting randomization with a transaction gas price as the one given.",
+      "parameterDecorators": [
+        {
+          "name": "_gasPrice",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRandomizeData(uint256)",
+      "name": "getRandomizeData",
+      "description": "Retrieves data of a randomization request that got successfully posted to the WRB within a given block. Returns zero values if no randomness request was actually posted within a given block.",
+      "parameterDecorators": [
+        {
+          "name": "_block",
+          "description": "Block number whose randomness request is being queried for.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_from",
+          "description": "Address from which the latest randomness request was posted.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "_id",
+          "description": "Unique request identifier as provided by the WRB.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_prevBlock",
+          "description": "Block number in which a randomness request got posted just before this one. 0 if none.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_nextBlock",
+          "description": "Block number in which a randomness request got posted just after this one, 0 if none.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRandomnessAfter(uint256)",
+      "name": "getRandomnessAfter",
+      "description": "Retrieves the randomness generated upon solving a request that was posted within a given block, if any, or to the _first_ request posted after that block, otherwise. Should the intended request happen to be finalized with errors on the Witnet oracle network side, this function will recursively try to return randomness from the next non-faulty randomization request found in storage, if any. Fails if:i. no `randomize()` was not called in either the given block, or afterwards.ii. a request posted in/after given block does exist, but no result has been provided yet.iii. all requests in/after the given block were solved with errors.",
+      "parameterDecorators": [
+        {
+          "name": "_block",
+          "description": "Block number from which the search will start.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRandomnessNextBlock(uint256)",
+      "name": "getRandomnessNextBlock",
+      "description": "Tells what is the number of the next block in which a randomization request was posted after the given one.",
+      "parameterDecorators": [
+        {
+          "name": "_block",
+          "description": "Block number from which the search will start.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Number of the first block found after the given one, or `0` otherwise.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRandomnessPrevBlock(uint256)",
+      "name": "getRandomnessPrevBlock",
+      "description": "Gets previous block in which a randomness request was posted before the given one.",
+      "parameterDecorators": [
+        {
+          "name": "_block",
+          "description": "Block number from which the search will start. Cannot be zero.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "First block found before the given one, or `0` otherwise.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(bytes)",
+      "name": "initialize",
+      "description": "Initializes contract's storage context.",
+      "parameterDecorators": [
+        {
+          "name": "_initData",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isRandomized(uint256)",
+      "name": "isRandomized",
+      "description": "Returns `true` only when the randomness request that got posted within given block was already reported back from the Witnet oracle, either successfully or with an error of any kind.",
+      "parameterDecorators": [
+        {
+          "name": "_block",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "latestRandomizeBlock()",
+      "name": "latestRandomizeBlock",
+      "description": "Returns latest block in which a randomness request got sucessfully posted to the WRB.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "random(uint32,uint256,uint256)",
+      "name": "random",
+      "description": "Generates a pseudo-random number uniformly distributed within the range [0 .. _range), by using the given `_nonce` value and the randomness returned by `getRandomnessAfter(_block)`. Fails under same conditions as `getRandomnessAfter(uint256)` may do.",
+      "parameterDecorators": [
+        {
+          "name": "_range",
+          "description": "Range within which the uniformly-distributed random number will be generated.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_nonce",
+          "description": "Nonce value enabling multiple random numbers from the same randomness value.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_block",
+          "description": "Block number from which the search will start.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "random(uint32,uint256,bytes32)",
+      "name": "random",
+      "description": "Generates a pseudo-random number uniformly distributed within the range [0 .. _range), by using the given `_nonce` value and the given `_seed` as a source of entropy.",
+      "parameterDecorators": [
+        {
+          "name": "_range",
+          "description": "Range within which the uniformly-distributed random number will be generated.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_nonce",
+          "description": "Nonce value enabling multiple random numbers from the same randomness value.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_seed",
+          "description": "Seed value used as entropy source.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "randomize()",
+      "name": "randomize",
+      "description": "Requests the Witnet oracle to generate an EVM-agnostic and trustless source of randomness. Only one randomness request per block will be actually posted to the WRB. Should there already be a posted request within current block, it will try to upgrade Witnet fee of current's block randomness request according to current gas price. In both cases, all unused funds shall be transfered back to the tx sender.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_usedFunds",
+          "description": "Amount of funds actually used from those provided by the tx sender.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "self()",
+      "name": "self",
+      "description": "Immutable contract address that actually attends all calls to this contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "upgradeRandomizeFee(uint256)",
+      "name": "upgradeRandomizeFee",
+      "description": "Increases Witnet fee related to a pending-to-be-solved randomness request, as much as it may be required in proportion to how much bigger the current tx gas price is with respect the highest gas price that was paid in either previous fee upgrades, or when the given randomness request was posted. All unused funds shall be transferred back to the tx sender.",
+      "parameterDecorators": [
+        {
+          "name": "_block",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_usedFunds",
+          "description": "Amount of dunds actually used from those provided by the tx sender.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "witnet()",
+      "name": "witnet",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "witnetRandomnessRequest()",
+      "name": "witnetRandomnessRequest",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

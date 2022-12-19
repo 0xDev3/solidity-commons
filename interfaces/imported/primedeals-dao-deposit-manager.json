@@ -1,0 +1,983 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "vesting",
+    "dao"
+  ],
+  "name": "DaoDepositManager",
+  "description": "PrimeDeals Dao Deposit Manager. Smart contract to manage the deposits, withdraws and vestings of a DAO.",
+  "eventDecorators": [
+    {
+      "signature": "Deposited(address,uint32,address,uint32,address,uint256)",
+      "name": "Deposited",
+      "description": "This event is emitted when a deposit is made.",
+      "parameterDecorators": [
+        {
+          "name": "dealModule",
+          "description": "The module address of which the dealId is part off.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "dealId",
+          "description": "A specific deal, that is part of the dealModule, for which a deposit is made.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "depositor",
+          "description": "The address of the depositor.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "depositId",
+          "description": "The ID of the deposit action (position in array).",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "token",
+          "description": "The address of the ERC20 token or ETH (ZERO address)deposited.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "The amount that is deposited.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "VestingClaimed(address,uint32,address,address,uint256)",
+      "name": "VestingClaimed",
+      "description": "This event is emitted when a vesting is claimed.",
+      "parameterDecorators": [
+        {
+          "name": "dealModule",
+          "description": "The module address of which the dealId is part off.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "dealId",
+          "description": "A specific deal, that is part of the dealModule, for which a vesting is claimed.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "dao",
+          "description": "The address of the DAO, to which the claimed vesting is sent.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token",
+          "description": "The address of the ERC20 token or ETH (ZERO address).",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "claimed",
+          "description": "The amount that is being claimed.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "VestingStarted(address,uint32,uint256,uint32,uint32,address,uint256)",
+      "name": "VestingStarted",
+      "description": "This event is emitted when a vesting is started.",
+      "parameterDecorators": [
+        {
+          "name": "dealModule",
+          "description": "The module address of which the dealId is part off.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "dealId",
+          "description": "A specific deal, that is part of the dealModule, for which a vesting is started.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "vestingStart",
+          "description": "The Unix timestamp of when the vesting has been initiated.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "vestingCliff",
+          "description": "The vesting cliff, after which tokens can be claimed.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "vestingDuration",
+          "description": "The duration the tokens are vested, in seconds.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "token",
+          "description": "The address of the ERC20 token or ETH (ZERO address).",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "The amount that is being vested.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Withdrawn(address,uint32,address,uint32,address,uint256)",
+      "name": "Withdrawn",
+      "description": "This event is emitted when a withdraw is made.",
+      "parameterDecorators": [
+        {
+          "name": "dealModule",
+          "description": "The module address of which the dealId is part off.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "dealId",
+          "description": "A specific deal, that is part of the dealModule, for which a withdraw is made.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "depositor",
+          "description": "The address of the depositor of the funds that are withdrawn.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "depositId",
+          "description": "The ID of the deposit action (position in array).",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "token",
+          "description": "The address of the ERC20 token or ETH (ZERO address) withdrawn.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "The amount that is withdrawn.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "availableDealBalances(address,address,uint32)",
+      "name": "availableDealBalances",
+      "description": "token address => deal module address => deal module id => balance.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claimDealVestings(address,uint32)",
+      "name": "claimDealVestings",
+      "description": "Claims all the possible ERC20 tokens and ETH, associated with a single dealId. This function can be called to retrieve the claimable amount, to show in the frontend for example.",
+      "parameterDecorators": [
+        {
+          "name": "_module",
+          "description": "The module address of which the dealId is part off.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_dealId",
+          "description": "A specific deal, that is part of the dealModule.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "tokens",
+          "description": "Array of addresses of the claimed tokens, in the same order as the amounts array.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "amounts",
+          "description": "Array of amounts claimed, in the same order as the tokens array.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimVestings()",
+      "name": "claimVestings",
+      "description": "Claims all the possible ERC20 tokens and ETH, across all deals that are part of this DaoDepositManager. This function can be called to retrieve the claimable amounts, to show in the frontend for example.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "tokens",
+          "description": "Array of addresses of the claimed tokens.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "amounts",
+          "description": "Array of amounts claimed, in the same order as the tokens array.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "dao()",
+      "name": "dao",
+      "description": "DAO address to which this DaoDepositContract is linked.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "dealManager()",
+      "name": "dealManager",
+      "description": "Address of the DealManager.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deposit(address,uint32,address,uint256)",
+      "name": "deposit",
+      "description": "Transfers the token amount to the DaoDepositManager and stores the parameters in a Deposit structure. Note: if ETH is deposited, the token address should be ZERO (0).",
+      "parameterDecorators": [
+        {
+          "name": "_module",
+          "description": "The address of the module for which is being deposited.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_dealId",
+          "description": "The dealId to which this deposit is part of.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_token",
+          "description": "The address of the ERC20 token or ETH (ZERO address).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The amount that is deposited.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deposits(address,uint256,uint256)",
+      "name": "deposits",
+      "description": "deal module address => deal id => deposits array.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "depositor",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "used",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "depositedAt",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getAvailableDealBalance(address,uint32,address)",
+      "name": "getAvailableDealBalance",
+      "description": "Returns the stored amount of an ERC20 token or ETH, for a given deal.",
+      "parameterDecorators": [
+        {
+          "name": "_module",
+          "description": "The address of the module to which the dealId is part of.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_dealId",
+          "description": "The dealId that relates to the ERC20 token or ETH balance.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_token",
+          "description": "The address of the ERC20 token or ETH (ZERO address).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint256 The balance amount of the ERC20 token or ETH, specific to the dealId.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getBalance(address)",
+      "name": "getBalance",
+      "description": "Returns the balance the DaoDepositContract holds, for a given ERC20 token or ETH (ZERO address).",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "The address of the ERC20 token or ETH (ZERO address).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint256 The balance the contracts holds for the _token parameter.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getDeposit(address,uint32,uint32)",
+      "name": "getDeposit",
+      "description": "Returns all the members in the Deposit struct for a given depositId. If ETH has been deposited, the token address returned will show ZERO (0).",
+      "parameterDecorators": [
+        {
+          "name": "_module",
+          "description": "The address of the module of which the dealId is part of.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_dealId",
+          "description": "The dealId to for which the deposit has been made.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_depositId",
+          "description": "The ID of the deposit action (position in array).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "address The depositor address.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "_1",
+          "description": "address The address of the ERC20 token or ETH (ZERO address).",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "_2",
+          "description": "uint256 The amount that has been deposited.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_3",
+          "description": "uint256 The amount already used in a deal.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "_4",
+          "description": "uint32 The Unix timestamp of the deposit.",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getDepositRange(address,uint32,uint32,uint32)",
+      "name": "getDepositRange",
+      "description": "Returns all the members from all the Deposits within a given range of depositIds. If ETH has been deposited, the token address returned will show ZERO (0).",
+      "parameterDecorators": [
+        {
+          "name": "_module",
+          "description": "The address of the module of which the dealId is part of.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_dealId",
+          "description": "The dealId to for which the deposits have been made.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_fromDepositId",
+          "description": "First depositId (element in array) of the range IDs.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_toDepositId",
+          "description": "Last depositId (element in array) of the range of IDs.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "depositors",
+          "description": "Array of addresses of the depositors in the deposit range.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "tokens",
+          "description": "Array of token addresses or ETH (ZERO address) in the deposit range.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "amounts",
+          "description": "Array of amounts, sorted similar as tokens array, for the given deposit range.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "usedAmounts",
+          "description": "Array of amounts already used in a deal, for the given deposit range.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        },
+        {
+          "name": "times",
+          "description": "Array of Unix timestamps of the deposits, for the given deposit range.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTotalDepositCount(address,uint32)",
+      "name": "getTotalDepositCount",
+      "description": "Returns the total number of deposits made, for a given dealId.",
+      "parameterDecorators": [
+        {
+          "name": "_module",
+          "description": "The address of the module to which the dealId is part of.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_dealId",
+          "description": "The dealId for which deposits have been made.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint32 The total amount of deposits made, for a given dealId.",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getWithdrawableAmountOfDepositor(address,uint32,address,address)",
+      "name": "getWithdrawableAmountOfDepositor",
+      "description": "Returns the withdrawable amount of a specifc token and dealId, for a given address. If ETH has been deposited, the token address used should be ZERO (0).",
+      "parameterDecorators": [
+        {
+          "name": "_module",
+          "description": "The address of the module of which the dealId is part of.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_dealId",
+          "description": "The dealId for which a deposit has been made, to check for withdrawable amounts.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_depositor",
+          "description": "The address of the depositor that is able to withdraw, deposited amounts.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_token",
+          "description": "The address of the ERC20 token or ETH (ZERO address).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint256 The available amount that can be withdrawn by the depositor.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address)",
+      "name": "initialize",
+      "description": "Initialize the DaoDepositManager.",
+      "parameterDecorators": [
+        {
+          "name": "_dao",
+          "description": "The DAO address to which this contract belongs.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "multipleDeposits(address,uint32,address[],uint256[])",
+      "name": "multipleDeposits",
+      "description": "Transfers multiple tokens and amounts to the DaoDepositManager and stores the parameters for each deposit in a Deposit structure. Note: if ETH is deposited, the token address should be ZERO (0) Note: when calling this function, it is only possible to have 1 ETH deposit, meaning only 1 of the token addresses can be a ZERO address.",
+      "parameterDecorators": [
+        {
+          "name": "_module",
+          "description": "The address of the module for which is being deposited.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_dealId",
+          "description": "The dealId to which the deposits are part of.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_tokens",
+          "description": "Array of addresses of the ERC20 tokens or ETH (ZERO address).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amounts",
+          "description": "Array of amounts that are deposited.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "sendToModule(uint32,address,uint256)",
+      "name": "sendToModule",
+      "description": "Sends the token and amount associated with the dealId into the Deal module.",
+      "parameterDecorators": [
+        {
+          "name": "_dealId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_token",
+          "description": "The address of the ERC20 token or ETH (ZERO address).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The amount that is sent to the module.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDealManager(address)",
+      "name": "setDealManager",
+      "description": "Sets a new address for the DealManager.",
+      "parameterDecorators": [
+        {
+          "name": "_newDealManager",
+          "description": "The address of the new DealManager.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "startVesting(uint32,address,uint256,uint32,uint32)",
+      "name": "startVesting",
+      "description": "Starts the vesting periode for a given token plus amount, associated to a dealId.",
+      "parameterDecorators": [
+        {
+          "name": "_dealId",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_token",
+          "description": "The address of the ERC20 token or ETH (ZERO address).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "The total amount being vested.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_vestingCliff",
+          "description": "The duration after which tokens can be claimed starting from the vesting start, in seconds.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_vestingDuration",
+          "description": "The duration the tokens are vested, in seconds.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tokenBalances(address)",
+      "name": "tokenBalances",
+      "description": "token address => balance.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tokensPerDeal(address,uint256)",
+      "name": "tokensPerDeal",
+      "description": "deal module address => deal id => token counter.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "verifyBalance(address)",
+      "name": "verifyBalance",
+      "description": "Verifies if the DaoDepositContract holds the balance as expected.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "Address of the ERC20 token or ETH (ZERO address).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "vestedBalances(address)",
+      "name": "vestedBalances",
+      "description": "token address => balance.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "vestedTokenAddresses(uint256)",
+      "name": "vestedTokenAddresses",
+      "description": "Array of all the token addresses that are vested.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "vestedTokenAmounts(address)",
+      "name": "vestedTokenAmounts",
+      "description": "token address => amount.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "vestings(uint256)",
+      "name": "vestings",
+      "description": "Array of vestings where the index is the vesting ID.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "dealModule",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "dealId",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "totalVested",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "totalClaimed",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "startTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        },
+        {
+          "name": "cliff",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        },
+        {
+          "name": "duration",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdraw(address,uint32,uint32)",
+      "name": "withdraw",
+      "description": "Sends the token and amount, stored in the Deposit associated with the depositId to the depositor.",
+      "parameterDecorators": [
+        {
+          "name": "_module",
+          "description": "The address of the module to which the dealId is part of.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_dealId",
+          "description": "The dealId to for which the deposit has been made, that is being withdrawn.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_depositId",
+          "description": "The ID of the deposit action (position in array).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "address The address of the depositor.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "_1",
+          "description": "address The address of the ERC20 token or ETH (ZERO address).",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "_2",
+          "description": "uint256 The available amount that is withdrawn.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

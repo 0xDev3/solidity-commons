@@ -1,0 +1,941 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "swaps"
+  ],
+  "name": "ImpossibleRouter",
+  "description": "Router for Impossible Swap V3. See documentation at: https://docs.impossible.finance/impossible-swap/overviewVery little logical changes made in Router02. Most changes to accomodate xybk are in Library. This router builds upon basic Uni V2 Router02 by allowing custom calculations based on settings in pairs (uni/xybk/custom fees).",
+  "eventDecorators": [],
+  "functionDecorators": [
+    {
+      "signature": "WETH()",
+      "name": "WETH",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)",
+      "name": "addLiquidity",
+      "description": "Function for basic add liquidity functionality. Openzeppelin reentrancy guards.",
+      "parameterDecorators": [
+        {
+          "name": "tokenA",
+          "description": "The address of underlying tokenA to add.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenB",
+          "description": "The address of underlying tokenB to add.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountADesired",
+          "description": "The desired amount of tokenA to add.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountBDesired",
+          "description": "The desired amount of tokenB to add.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountAMin",
+          "description": "The min amount of tokenA to add (amountAMin:amountBDesired sets bounds on ratio).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountBMin",
+          "description": "The min amount of tokenB to add (amountADesired:amountBMin sets bounds on ratio).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address to mint LP tokens to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The block number after which this transaction is invalid.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountA",
+          "description": "Amount of tokenA added as liquidity to pair.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "amountB",
+          "description": "Actual amount of tokenB added as liquidity to pair.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "liquidity",
+          "description": "Actual amount of LP tokens minted.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addLiquidityETH(address,uint256,uint256,uint256,address,uint256)",
+      "name": "addLiquidityETH",
+      "description": "Function for add liquidity functionality with 1 token being WETH/WBNB. Openzeppelin reentrancy guards.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "The address of the non-ETH underlying token to add.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountTokenDesired",
+          "description": "The desired amount of non-ETH underlying token to add.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountTokenMin",
+          "description": "The min amount of non-ETH underlying token to add (amountTokenMin:ETH sent sets bounds on ratio).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountETHMin",
+          "description": "The min amount of WETH/WBNB to add (amountTokenDesired:amountETHMin sets bounds on ratio).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address to mint LP tokens to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The block number after which this transaction is invalid.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountToken",
+          "description": "Amount of non-ETH underlying token added as liquidity to pair.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "amountETH",
+          "description": "Actual amount of WETH/WBNB added as liquidity to pair.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "liquidity",
+          "description": "Actual amount of LP tokens minted.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "factory()",
+      "name": "factory",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeLiquidity(address,address,uint256,uint256,uint256,address,uint256)",
+      "name": "removeLiquidity",
+      "description": "Function for basic remove liquidity functionality. Openzeppelin reentrancy guards.",
+      "parameterDecorators": [
+        {
+          "name": "tokenA",
+          "description": "The address of underlying tokenA in LP token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenB",
+          "description": "The address of underlying tokenB in LP token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "liquidity",
+          "description": "The amount of LP tokens to burn.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountAMin",
+          "description": "The min amount of underlying tokenA that has to be received.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountBMin",
+          "description": "The min amount of underlying tokenB that has to be received.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address to send underlying tokens to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The block number after which this transaction is invalid.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountA",
+          "description": "Actual amount of underlying tokenA received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "amountB",
+          "description": "Actual amount of underlying tokenB received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeLiquidityETH(address,uint256,uint256,uint256,address,uint256)",
+      "name": "removeLiquidityETH",
+      "description": "Function for remove liquidity functionality with 1 token being WETH/WBNB. Openzeppelin reentrancy guards.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "The address of the non-ETH underlying token to receive.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "liquidity",
+          "description": "The amount of LP tokens to burn.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountTokenMin",
+          "description": "The desired amount of non-ETH underlying token that has to be received.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountETHMin",
+          "description": "The min amount of ETH that has to be received.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address to send underlying tokens to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The block number after which this transaction is invalid.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountToken",
+          "description": "Actual amount of non-ETH underlying token received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "amountETH",
+          "description": "Actual amount of WETH/WBNB received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeLiquidityETHSupportingFeeOnTransferTokens(address,uint256,uint256,uint256,address,uint256)",
+      "name": "removeLiquidityETHSupportingFeeOnTransferTokens",
+      "description": "Function for remove liquidity functionality with 1 token being WETH/WBNB. This is used when non-WETH/WBNB underlying token is fee-on-transfer: e.g. FEI algo stable v1Openzeppelin reentrancy guards.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "The address of the non-ETH underlying token to receive.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "liquidity",
+          "description": "The amount of LP tokens to burn.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountTokenMin",
+          "description": "The desired amount of non-ETH underlying token that has to be received.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountETHMin",
+          "description": "The min amount of ETH that has to be received.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address to send underlying tokens to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The block number after which this transaction is invalid.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountETH",
+          "description": "Actual amount of WETH/WBNB received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeLiquidityETHWithPermit(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)",
+      "name": "removeLiquidityETHWithPermit",
+      "description": "Function for remove liquidity functionality using EIP712 permit with 1 token being WETH/WBNB.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "The address of the non-ETH underlying token to receive.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "liquidity",
+          "description": "The amount of LP tokens to burn.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountTokenMin",
+          "description": "The desired amount of non-ETH underlying token that has to be received.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountETHMin",
+          "description": "The min amount of ETH that has to be received.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address to send underlying tokens to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The block number after which this transaction is invalid.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "approveMax",
+          "description": "How much tokens are approved for transfer (liquidity, or max).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "v",
+          "description": ",r,s Variables that construct a valid EVM signature.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "r",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "s",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountToken",
+          "description": "Actual amount of non-ETH underlying token received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "amountETH",
+          "description": "Actual amount of WETH/WBNB received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeLiquidityETHWithPermitSupportingFeeOnTransferTokens(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)",
+      "name": "removeLiquidityETHWithPermitSupportingFeeOnTransferTokens",
+      "description": "Function for remove liquidity functionality using EIP712 permit with 1 token being WETH/WBNB. This is used when non-WETH/WBNB underlying token is fee-on-transfer: e.g. FEI algo stable v1.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "The address of the non-ETH underlying token to receive.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "liquidity",
+          "description": "The amount of LP tokens to burn.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountTokenMin",
+          "description": "The desired amount of non-ETH underlying token that has to be received.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountETHMin",
+          "description": "The min amount of ETH that has to be received.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address to send underlying tokens to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The block number after which this transaction is invalid.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "approveMax",
+          "description": "How much tokens are approved for transfer (liquidity, or max).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "v",
+          "description": ",r,s Variables that construct a valid EVM signature.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "r",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "s",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountETH",
+          "description": "Actual amount of WETH/WBNB received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "removeLiquidityWithPermit(address,address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)",
+      "name": "removeLiquidityWithPermit",
+      "description": "Function for remove liquidity functionality using EIP712 permit. Openzeppelin reentrancy guards.",
+      "parameterDecorators": [
+        {
+          "name": "tokenA",
+          "description": "The address of underlying tokenA in LP token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "tokenB",
+          "description": "The address of underlying tokenB in LP token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "liquidity",
+          "description": "The amount of LP tokens to burn.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountAMin",
+          "description": "The min amount of underlying tokenA that has to be received.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountBMin",
+          "description": "The min amount of underlying tokenB that has to be received.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address to send underlying tokens to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The block number after which this transaction is invalid.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "approveMax",
+          "description": "How much tokens are approved for transfer (liquidity, or max).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "v",
+          "description": ",r,s Variables that construct a valid EVM signature.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "r",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "s",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amountA",
+          "description": "Actual amount of underlying tokenA received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "amountB",
+          "description": "Actual amount of underlying tokenB received.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "routerExtension()",
+      "name": "routerExtension",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setUtilities(address,address)",
+      "name": "setUtilities",
+      "description": "Used to set addresses of utility contracts. Only allows setter to set these addresses once for trustlessnessMust set both WETH and routerExtension at the same time, else swap will be bricked.",
+      "parameterDecorators": [
+        {
+          "name": "_WETH",
+          "description": "address of WETH contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_routerExtension",
+          "description": "address of router interface contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapETHForExactTokens(uint256,address[],address,uint256)",
+      "name": "swapETHForExactTokens",
+      "description": "Swap function - receive maximum tokens output given fixed ETH input. Openzeppelin reentrancy guards.",
+      "parameterDecorators": [
+        {
+          "name": "amountOut",
+          "description": "The minimum output amount in tokens required for successful swaps.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "path",
+          "description": "[] An array of token addresses. Trades are made from arr idx 0 to arr end idx sequentially.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address that receives the output tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The block number after which this transaction is invalid.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amounts",
+          "description": "Array of actual output token amounts received per swap, sequentially.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapExactETHForTokens(uint256,address[],address,uint256)",
+      "name": "swapExactETHForTokens",
+      "description": "Swap function - receive maximum output given fixed input of ETH. Openzeppelin reentrancy guards.",
+      "parameterDecorators": [
+        {
+          "name": "amountOutMin",
+          "description": "The minimum output amount allowed for a successful swap.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "path",
+          "description": "[] An array of token addresses. Trades are made from arr idx 0 to arr end idx sequentially.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address that receives the output tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The block number after which this transaction is invalid.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amounts",
+          "description": "Array of actual output token amounts received per swap, sequentially.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapExactETHForTokensSupportingFeeOnTransferTokens(uint256,address[],address,uint256)",
+      "name": "swapExactETHForTokensSupportingFeeOnTransferTokens",
+      "description": "Swap function for fee on transfer tokens with WETH/WBNB.",
+      "parameterDecorators": [
+        {
+          "name": "amountOutMin",
+          "description": "The minimum underlying token output amount required for successful swaps.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "path",
+          "description": "[] An array of token addresses. Trades are made from arr idx 0 to arr end idx sequentially.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address that receives the output tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The block number after which this transaction is invalid.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapExactTokensForETH(uint256,uint256,address[],address,uint256)",
+      "name": "swapExactTokensForETH",
+      "description": "Swap function - receive maximum ETH output given fixed input of tokens. Openzeppelin reentrancy guards.",
+      "parameterDecorators": [
+        {
+          "name": "amountIn",
+          "description": "The amount of input tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountOutMin",
+          "description": "The minimum ETH output amount required for successful swaps.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "path",
+          "description": "[] An array of token addresses. Trades are made from arr idx 0 to arr end idx sequentially.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address that receives the output tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The block number after which this transaction is invalid.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amounts",
+          "description": "Array of actual output token amounts received per swap, sequentially.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapExactTokensForETHSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256)",
+      "name": "swapExactTokensForETHSupportingFeeOnTransferTokens",
+      "description": "Swap function for fee on transfer tokens, no WETH/WBNB.",
+      "parameterDecorators": [
+        {
+          "name": "amountIn",
+          "description": "The amount of input tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountOutMin",
+          "description": "The minimum ETH output amount required for successful swaps.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "path",
+          "description": "[] An array of token addresses. Trades are made from arr idx 0 to arr end idx sequentially.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address that receives the output tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The block number after which this transaction is invalid.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapExactTokensForTokens(uint256,uint256,address[],address,uint256)",
+      "name": "swapExactTokensForTokens",
+      "description": "Swap function - receive maximum output given fixed input. Openzeppelin reentrancy guards.",
+      "parameterDecorators": [
+        {
+          "name": "amountIn",
+          "description": "The exact input amount`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountOutMin",
+          "description": "The minimum output amount allowed for a successful swap.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "path",
+          "description": "[] An array of token addresses. Trades are made from arr idx 0 to arr end idx sequentially.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address that receives the output tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The block number after which this transaction is invalid.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amounts",
+          "description": "Array of actual output token amounts received per swap, sequentially.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256)",
+      "name": "swapExactTokensForTokensSupportingFeeOnTransferTokens",
+      "description": "Swap function for fee on transfer tokens, no WETH/WBNB.",
+      "parameterDecorators": [
+        {
+          "name": "amountIn",
+          "description": "The amount of input tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountOutMin",
+          "description": "The minimum token output amount required for successful swaps.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "path",
+          "description": "[] An array of token addresses. Trades are made from arr idx 0 to arr end idx sequentially.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address that receives the output tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The block number after which this transaction is invalid.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapTokensForExactETH(uint256,uint256,address[],address,uint256)",
+      "name": "swapTokensForExactETH",
+      "description": "Swap function - receive desired ETH output amount given a maximum input amount. Openzeppelin reentrancy guards.",
+      "parameterDecorators": [
+        {
+          "name": "amountOut",
+          "description": "The exact output amount desired.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountInMax",
+          "description": "The maximum input amount allowed for a successful swap.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "path",
+          "description": "[] An array of token addresses. Trades are made from arr idx 0 to arr end idx sequentially.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address that receives the output tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The block number after which this transaction is invalid.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amounts",
+          "description": "Array of actual output token amounts received per swap, sequentially.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "swapTokensForExactTokens(uint256,uint256,address[],address,uint256)",
+      "name": "swapTokensForExactTokens",
+      "description": "Swap function - receive desired output amount given a maximum input amount. Openzeppelin reentrancy guards.",
+      "parameterDecorators": [
+        {
+          "name": "amountOut",
+          "description": "The exact output amount desired.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amountInMax",
+          "description": "The maximum input amount allowed for a successful swap.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "path",
+          "description": "[] An array of token addresses. Trades are made from arr idx 0 to arr end idx sequentially.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "The address that receives the output tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "The block number after which this transaction is invalid.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amounts",
+          "description": "Array of actual output token amounts received per swap, sequentially.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "wrapFactory()",
+      "name": "wrapFactory",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

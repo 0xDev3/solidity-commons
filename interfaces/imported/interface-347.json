@@ -1,0 +1,659 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "escrows"
+  ],
+  "name": "RewardEscrow",
+  "description": "A contract to hold escrowed XTK and free them at given schedules.",
+  "eventDecorators": [
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RewardContractAdded(address)",
+      "name": "RewardContractAdded",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "rewardContract",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RewardContractRemoved(address)",
+      "name": "RewardContractRemoved",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "rewardContract",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Transfer(address,address,uint256)",
+      "name": "Transfer",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "access",
+          "description": "TRUE if the Watcher was given permissions, FALSE if permissions were removed.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "domain",
+          "description": "the remote domain of the Home contract for the Replica.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "watcher",
+          "description": "the address of the Watcher.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Vested(address,uint256,uint256)",
+      "name": "Vested",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "access",
+          "description": "TRUE if the Watcher was given permissions, FALSE if permissions were removed.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "domain",
+          "description": "the remote domain of the Home contract for the Replica.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "watcher",
+          "description": "the address of the Watcher.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "VestingEntryCreated(address,uint256,uint256)",
+      "name": "VestingEntryCreated",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "access",
+          "description": "TRUE if the Watcher was given permissions, FALSE if permissions were removed.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "domain",
+          "description": "the remote domain of the Home contract for the Replica.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "watcher",
+          "description": "the address of the Watcher.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "MAX_VESTING_ENTRIES()",
+      "name": "MAX_VESTING_ENTRIES",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addRewardsContract(address)",
+      "name": "addRewardsContract",
+      "description": "Add a whitelisted rewards contract.",
+      "parameterDecorators": [
+        {
+          "name": "_rewardContract",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "appendVestingEntry(address,uint256)",
+      "name": "appendVestingEntry",
+      "description": "Add a new vesting entry at a given time and quantity to an account's schedule. A call to this should accompany a previous successfull call to xtk.transfer(rewardEscrow, amount), to ensure that when the funds are withdrawn, there is enough balance. Note; although this function could technically be used to produce unbounded arrays, it's only within the limited period of the rewards program (max: 4 years).",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "The account to append a new vesting entry to.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quantity",
+          "description": "The quantity of XTK that will be escrowed.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "balanceOf(address)",
+      "name": "balanceOf",
+      "description": "A simple alias to totalEscrowedAccountBalance: provides ERC20 balance integration.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "checkAccountSchedule(address)",
+      "name": "checkAccountSchedule",
+      "description": "return the full vesting schedule entries vest for a given user.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[520]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getNextVestingEntry(address)",
+      "name": "getNextVestingEntry",
+      "description": "Obtain the next schedule entry that will vest for a given user.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[2]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getNextVestingIndex(address)",
+      "name": "getNextVestingIndex",
+      "description": "Obtain the index of the next schedule entry that will vest for a given user.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getNextVestingQuantity(address)",
+      "name": "getNextVestingQuantity",
+      "description": "Obtain the quantity which the next schedule entry will vest for a given user.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getNextVestingTime(address)",
+      "name": "getNextVestingTime",
+      "description": "Obtain the time at which the next schedule entry will vest for a given user.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVestingQuantity(address,uint256)",
+      "name": "getVestingQuantity",
+      "description": "Get the quantity of XTK associated with a given schedule entry.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVestingScheduleEntry(address,uint256)",
+      "name": "getVestingScheduleEntry",
+      "description": "Get a particular schedule entry for an account.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256[2]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVestingTime(address,uint256)",
+      "name": "getVestingTime",
+      "description": "Get the time at which a given schedule entry will vest.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address)",
+      "name": "initialize",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_xtk",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isOwner()",
+      "name": "isOwner",
+      "description": "Returns true if the caller is the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isRewardContract(address)",
+      "name": "isRewardContract",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "numVestingEntries(address)",
+      "name": "numVestingEntries",
+      "description": "The number of vesting dates in an account's schedule.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "removeRewardsContract(address)",
+      "name": "removeRewardsContract",
+      "description": "Remove a whitelisted rewards contract.",
+      "parameterDecorators": [
+        {
+          "name": "_rewardContract",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. * > Note: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "totalEscrowedAccountBalance(address)",
+      "name": "totalEscrowedAccountBalance",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalEscrowedBalance()",
+      "name": "totalEscrowedBalance",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalSupply()",
+      "name": "totalSupply",
+      "description": "A simple alias to totalEscrowedBalance: provides ERC20 totalSupply integration.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalVestedAccountBalance(address)",
+      "name": "totalVestedAccountBalance",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "vest()",
+      "name": "vest",
+      "description": "Allow a user to withdraw any XTK in their schedule that have vested.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "vestingSchedules(address,uint256,uint256)",
+      "name": "vestingSchedules",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "xtk()",
+      "name": "xtk",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

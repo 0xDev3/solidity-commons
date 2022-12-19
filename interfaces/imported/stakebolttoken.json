@@ -1,0 +1,571 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "staking"
+  ],
+  "name": "StakeBoltToken",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "ClaimReward(address,uint256,uint256)",
+      "name": "ClaimReward",
+      "description": "Emitted when a user withdraws tokens.",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "fixedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "dynamicAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DepositDynamicReward(address,uint256)",
+      "name": "DepositDynamicReward",
+      "description": "Emitted when a user withdraws tokens.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "The amount of withdrawn tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DepositFixedReward(address,uint256)",
+      "name": "DepositFixedReward",
+      "description": "Emitted when a user withdraws tokens.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "The amount of withdrawn tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emitted when a user withdraws tokens.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "StakeTokens(address,uint256)",
+      "name": "StakeTokens",
+      "description": "Emitted when a user withdraws tokens.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "The amount of withdrawn tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "UnstakeTokens(address,uint256)",
+      "name": "UnstakeTokens",
+      "description": "Emitted when a user withdraws tokens.",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "The amount of withdrawn tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WithdrawFixedReward(address,uint256)",
+      "name": "WithdrawFixedReward",
+      "description": "Emitted when a user withdraws tokens.",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "The amount of withdrawn tokens.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "allocateDynamicReward(address[],uint128[],uint128)",
+      "name": "allocateDynamicReward",
+      "description": "Step 2 - each week, an off-chain process will call this function to allocate the rewards to the staked wallets A robust mechanism is required to be sure all addresses are allocated funds and that the allocation matches the tokens previously deposited (in step 1) Multiple calls may be made per round if necessary (e.g. if the arrays grow too big).",
+      "parameterDecorators": [
+        {
+          "name": "_addresses",
+          "description": "[] Array of addresses to receive.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amounts",
+          "description": "[] Number of tokens to deposit in basic units (n * 10**decimals).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_totalAmount",
+          "description": "total number of tokens to Allocate in this call.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claim()",
+      "name": "claim",
+      "description": "Claim all outstanding rewards from the contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "depositDynamicReward(uint128)",
+      "name": "depositDynamicReward",
+      "description": "owner Deposit deposit of dynamic reward for later Allocation.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "Number of tokens to deposit in basic units (n * 10**decimals).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "depositFixedReward(uint128)",
+      "name": "depositFixedReward",
+      "description": "Team deposit of the Fixed staking reward for later distributionThis transfer is intended be done once, in full, before the commencement of the staking period.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "Number of tokens to deposit in basic units (n * 10**decimals).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "dynamicTokensAllocated()",
+      "name": "dynamicTokensAllocated",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "dynamicTokensToAllocate()",
+      "name": "dynamicTokensToAllocate",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "fixedRewardsAvailable()",
+      "name": "fixedRewardsAvailable",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getFixedObligation()",
+      "name": "getFixedObligation",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getMaxStakingLimit()",
+      "name": "getMaxStakingLimit",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRewardLifetime()",
+      "name": "getRewardLifetime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRewardStartTime()",
+      "name": "getRewardStartTime",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getStakeInfo(address)",
+      "name": "getStakeInfo",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_addr",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "unclaimedFixedReward",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "unclaimedDynReward",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "maxObligation",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint128"
+        },
+        {
+          "name": "lastClaimTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        },
+        {
+          "name": "claimtime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getStakeTokenAddress()",
+      "name": "getStakeTokenAddress",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getStakedPercentage(address)",
+      "name": "getStakedPercentage",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_addr",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTokensStaked(address)",
+      "name": "getTokensStaked",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_addr",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTotalStaked()",
+      "name": "getTotalStaked",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRewardStartTime()",
+      "name": "setRewardStartTime",
+      "description": "Initiates the reward generation period. contract & rewards finish \"rewardLifetime\" after this.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Starting Timestamp.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stake(uint128)",
+      "name": "stake",
+      "description": "User function for staking tokens.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "Number of tokens to stake in basic units (n * 10**decimals).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unstake(uint128)",
+      "name": "unstake",
+      "description": "Unstake tokens from the contract. Unstaking will also trigger a claim of all allocated rewards. remaining tokens after unstake will accrue rewards based on the new balance.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "Number of tokens to stake in basic units (n * 10**decimals).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "withdrawFixedReward()",
+      "name": "withdrawFixedReward",
+      "description": "Withdraw unused Fixed reward tokens, deposited at the beginning of the contract period.Withdrawal is allowed only after the contract period has elapsed and then only allow withdrawal of unallocated tokens.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

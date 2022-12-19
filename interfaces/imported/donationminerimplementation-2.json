@@ -1,0 +1,1384 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "DonationMinerImplementation",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "AgainstPeriodsUpdated(uint256,uint256)",
+      "name": "AgainstPeriodsUpdated",
+      "description": "Triggered when the againstPeriods value has been updated.",
+      "parameterDecorators": [
+        {
+          "name": "oldAgainstPeriods",
+          "description": "Old againstPeriods value.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newAgainstPeriods",
+          "description": "New againstPeriods value.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ClaimDelayUpdated(uint256,uint256)",
+      "name": "ClaimDelayUpdated",
+      "description": "Triggered when the claimDelay value has been updated.",
+      "parameterDecorators": [
+        {
+          "name": "oldClaimDelay",
+          "description": "Old claimDelay value.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newClaimDelay",
+          "description": "New claimDelay value.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "CommunityDonationRatioUpdated(uint256,uint256)",
+      "name": "CommunityDonationRatioUpdated",
+      "description": "Triggered when the communityDonationRatio value has been updated.",
+      "parameterDecorators": [
+        {
+          "name": "oldCommunityDonationRatio",
+          "description": "Old communityDonationRatio value.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newCommunityDonationRatio",
+          "description": "New communityDonationRatio value.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DonationAdded(uint256,address,uint256,address,uint256,address)",
+      "name": "DonationAdded",
+      "description": "Triggered when a donation has been added.",
+      "parameterDecorators": [
+        {
+          "name": "donationId",
+          "description": "Id of the donation.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "delegateAddress",
+          "description": "Address of the delegate.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "Number of token donated.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "token",
+          "description": "Address of the token after conversion.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "initialAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "target",
+          "description": "Address of the receiver (community or treasury) or address of the DonationMiner contract otherwise.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Paused(address)",
+      "name": "Paused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RewardClaimed(address,uint256)",
+      "name": "RewardClaimed",
+      "description": "Triggered when a donor has claimed his reward.",
+      "parameterDecorators": [
+        {
+          "name": "donor",
+          "description": "Address of the donner.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "Value of the reward.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RewardClaimedPartial(address,uint256,uint256)",
+      "name": "RewardClaimedPartial",
+      "description": "Triggered when a donor has claimed his reward.",
+      "parameterDecorators": [
+        {
+          "name": "donor",
+          "description": "Address of the donner.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "Value of the reward.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "lastRewardPeriod",
+          "description": "Number of the last reward period for witch the claim was made.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RewardPeriodParamsUpdated(uint256,uint256,uint256,uint256,uint256,uint256)",
+      "name": "RewardPeriodParamsUpdated",
+      "description": "Triggered when reward period params have been updated.",
+      "parameterDecorators": [
+        {
+          "name": "oldRewardPeriodSize",
+          "description": "Old rewardPeriodSize value.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "oldDecayNumerator",
+          "description": "Old decayNumerator value.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "oldDecayDenominator",
+          "description": "Old decayDenominator value.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newRewardPeriodSize",
+          "description": "New rewardPeriodSize value.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newDecayNumerator",
+          "description": "New decayNumerator value.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newDecayDenominator",
+          "description": "New decayDenominator value For further information regarding each parameter, see *DonationMiner* smart contract initialize method.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RewardStaked(address,uint256)",
+      "name": "RewardStaked",
+      "description": "Triggered when a donor has staked his reward.",
+      "parameterDecorators": [
+        {
+          "name": "donor",
+          "description": "Address of the donner.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "Value of the reward.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RewardStakedPartial(address,uint256,uint256)",
+      "name": "RewardStakedPartial",
+      "description": "Triggered when a donor has staked his reward.",
+      "parameterDecorators": [
+        {
+          "name": "donor",
+          "description": "Address of the donner.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "Value of the reward.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "lastRewardPeriod",
+          "description": "Number of the last reward period for witch tha stake was made.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "StakingDonationRatioUpdated(uint256,uint256)",
+      "name": "StakingDonationRatioUpdated",
+      "description": "Triggered when the stakingDonationRatio value has been updated.",
+      "parameterDecorators": [
+        {
+          "name": "oldStakingDonationRatio",
+          "description": "Old stakingDonationRatio value.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newStakingDonationRatio",
+          "description": "New stakingDonationRatio value.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "StakingUpdated(address,address)",
+      "name": "StakingUpdated",
+      "description": "Triggered when the staking address has been updated.",
+      "parameterDecorators": [
+        {
+          "name": "oldStaking",
+          "description": "Old staking address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newStaking",
+          "description": "New staking address.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TransferERC20(address,address,uint256)",
+      "name": "TransferERC20",
+      "description": "Triggered when an amount of an ERC20 has been transferred from this contract to an address.",
+      "parameterDecorators": [
+        {
+          "name": "token",
+          "description": "ERC20 token address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "Address of the receiver.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "Amount of the transaction.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TreasuryUpdated(address,address)",
+      "name": "TreasuryUpdated",
+      "description": "Triggered when the treasury address has been updated.",
+      "parameterDecorators": [
+        {
+          "name": "oldTreasury",
+          "description": "Old treasury address.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newTreasury",
+          "description": "New treasury address.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "Unpaused(address)",
+      "name": "Unpaused",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "PACT()",
+      "name": "PACT",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "againstPeriods()",
+      "name": "againstPeriods",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "apr(address)",
+      "name": "apr",
+      "description": "Calculates the APR of a user based on his staking.",
+      "parameterDecorators": [
+        {
+          "name": "_stakeholderAddress",
+          "description": "address of the stakeHolder.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint256 APR of the user.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "cUSD()",
+      "name": "cUSD",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateClaimableRewards(address)",
+      "name": "calculateClaimableRewards",
+      "description": "Calculates the rewards from ended reward periods of a donor.",
+      "parameterDecorators": [
+        {
+          "name": "_donorAddress",
+          "description": "address of the donor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "claimAmount uint256 sum of all donor's rewards that has not been claimed until _lastPeriodNumber.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "calculateClaimableRewardsByPeriodNumber(address,uint256)",
+      "name": "calculateClaimableRewardsByPeriodNumber",
+      "description": "Calculates the rewards from ended reward periods of a donor.",
+      "parameterDecorators": [
+        {
+          "name": "_donorAddress",
+          "description": "address of the donor.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_lastPeriodNumber",
+          "description": "last reward period number to be computed.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint256 sum of all donor's rewards that has not been claimed until _lastPeriodNumber.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claimDelay()",
+      "name": "claimDelay",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claimRewards()",
+      "name": "claimRewards",
+      "description": "Transfers to the sender the rewards.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "claimRewardsPartial(uint256)",
+      "name": "claimRewardsPartial",
+      "description": "Transfers to the sender the rewards.",
+      "parameterDecorators": [
+        {
+          "name": "_lastPeriodNumber",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "communityDonationRatio()",
+      "name": "communityDonationRatio",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "currentRewardPeriodNumber()",
+      "name": "currentRewardPeriodNumber",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "decayDenominator()",
+      "name": "decayDenominator",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "decayNumerator()",
+      "name": "decayNumerator",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "donate(address,uint256,address)",
+      "name": "donate",
+      "description": "Transfers cUSD tokens to the treasury contract.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "Amount of cUSD tokens to deposit.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_delegateAddress",
+          "description": "the address that will claim the reward for the donation.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "donateToCommunity(address,address,uint256,address)",
+      "name": "donateToCommunity",
+      "description": "Transfers tokens to the community contract.",
+      "parameterDecorators": [
+        {
+          "name": "_community",
+          "description": "address of the community.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_token",
+          "description": "address of the token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "amount of cUSD tokens to deposit.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_delegateAddress",
+          "description": "the address that will claim the reward for the donation.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "donationCount()",
+      "name": "donationCount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "donations(uint256)",
+      "name": "donations",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "donor",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "target",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "rewardPeriod",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "blockNumber",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "initialAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "donorRewardPeriod(address,uint256)",
+      "name": "donorRewardPeriod",
+      "description": "Returns a reward period number from a donor reward period list.",
+      "parameterDecorators": [
+        {
+          "name": "_donor",
+          "description": "address of the donor.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_rewardPeriodIndex",
+          "description": "index of the reward period.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint256 number of the reward period.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "donorScore(address)",
+      "name": "donorScore",
+      "description": "Calculate the score of a user based as this ratio (his donation and staking) / (all donation and staking) E.G. score = 0.01 * 1e18 => the donor have have 1% score so he will get 1% of the reward.",
+      "parameterDecorators": [
+        {
+          "name": "_donorAddress",
+          "description": "address of the donor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint256 donor's score.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "donors(address)",
+      "name": "donors",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "lastClaim",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "rewardPeriodsCount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "lastClaimPeriod",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "estimateClaimableReward(address)",
+      "name": "estimateClaimableReward",
+      "description": "Calculates the estimate reward of a donor for current reward period.",
+      "parameterDecorators": [
+        {
+          "name": "_donorAddress",
+          "description": "address of the donor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint256 reward that donor will receive in current reward period if there isn't another donation.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "estimateClaimableRewardAdvance(address)",
+      "name": "estimateClaimableRewardAdvance",
+      "description": "Calculates the estimate reward of a donor for the next x reward periods.",
+      "parameterDecorators": [
+        {
+          "name": "_donorAddress",
+          "description": "address of the donor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint256 reward that donor will receive in current reward period if there isn't another donation.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVersion()",
+      "name": "getVersion",
+      "description": "Returns the current implementation version.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,address,address,uint256,uint256,uint256,uint256,uint256)",
+      "name": "initialize",
+      "description": "Used to initialize a new DonationMiner contract.",
+      "parameterDecorators": [
+        {
+          "name": "_cUSD",
+          "description": "Address of the cUSD token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_PACT",
+          "description": "Address of the PACT Token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_treasury",
+          "description": "Address of the Treasury.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_firstRewardPerBlock",
+          "description": "Number of PACTs given for each block from the first reward period.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_rewardPeriodSize",
+          "description": "Number of blocks of the reward period.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_startingBlock",
+          "description": "First block of the first reward period.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_decayNumerator",
+          "description": "Decay numerator used for calculating the new reward per block based on the previous reward per block.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_decayDenominator",
+          "description": "Decay denominator used for calculating the new reward per block based on the previous reward per block.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lastPeriodsDonations(address)",
+      "name": "lastPeriodsDonations",
+      "description": "Calculate all donations on the last X epochs as well as everyone else in the same period.",
+      "parameterDecorators": [
+        {
+          "name": "_donorAddress",
+          "description": "address of the donor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "donorAmount",
+          "description": "uint256 sum of donor's donations.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "totalAmount",
+          "description": "uint256 sum of all donations.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "paused()",
+      "name": "paused",
+      "description": "Returns true if the contract is paused, and false otherwise.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rewardPeriodCount()",
+      "name": "rewardPeriodCount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardPeriodDonorAmount(uint256,address)",
+      "name": "rewardPeriodDonorAmount",
+      "description": "Returns the amount of cUSD donated by a user in a reward period.",
+      "parameterDecorators": [
+        {
+          "name": "_period",
+          "description": "number of the reward period.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_donor",
+          "description": "address of the donor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint256 amount of cUSD donated by the user in this reward period.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardPeriodDonorStakeAmounts(uint256,address)",
+      "name": "rewardPeriodDonorStakeAmounts",
+      "description": "Returns the amount of PACT staked by a user at the and of the reward period.",
+      "parameterDecorators": [
+        {
+          "name": "_period",
+          "description": "reward period number.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_donor",
+          "description": "address of the donor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint256 amount of PACT staked by a user at the and of the reward period.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardPeriodSize()",
+      "name": "rewardPeriodSize",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rewardPeriods(uint256)",
+      "name": "rewardPeriods",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "rewardPerBlock",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "rewardAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "startBlock",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "endBlock",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "donationsAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "againstPeriods",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "stakesAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "stakingDonationRatio",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setStakingAmounts(address,uint256,uint256)",
+      "name": "setStakingAmounts",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_holderAddress",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_holderAmount",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_totalAmount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stakeRewards()",
+      "name": "stakeRewards",
+      "description": "Stakes the reward.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stakeRewardsPartial(uint256)",
+      "name": "stakeRewardsPartial",
+      "description": "Stakes the reward.",
+      "parameterDecorators": [
+        {
+          "name": "_lastPeriodNumber",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "staking()",
+      "name": "staking",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "stakingDonationRatio()",
+      "name": "stakingDonationRatio",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transfer(address,address,uint256)",
+      "name": "transfer",
+      "description": "Transfers an amount of an ERC20 from this contract to an address.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "address of the ERC20 token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "address of the receiver.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "amount of the transaction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "treasury()",
+      "name": "treasury",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "updateAgainstPeriods(uint256)",
+      "name": "updateAgainstPeriods",
+      "description": "Updates againstPeriods value.",
+      "parameterDecorators": [
+        {
+          "name": "_newAgainstPeriods",
+          "description": "Number of reward periods for the backward computation.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateClaimDelay(uint256)",
+      "name": "updateClaimDelay",
+      "description": "Updates claimDelay value.",
+      "parameterDecorators": [
+        {
+          "name": "_newClaimDelay",
+          "description": "Number of reward periods a donor has to wait after a donation until he will be able to claim his reward.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateCommunityDonationRatio(uint256)",
+      "name": "updateCommunityDonationRatio",
+      "description": "Updates communityDonationRatio value.",
+      "parameterDecorators": [
+        {
+          "name": "_newCommunityDonationRatio",
+          "description": "Ratio between 1USD donated into the treasury vs 1USD donated to a community.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateRewardPeriodParams(uint256,uint256,uint256)",
+      "name": "updateRewardPeriodParams",
+      "description": "Updates reward period default params.",
+      "parameterDecorators": [
+        {
+          "name": "_newRewardPeriodSize",
+          "description": "value of new rewardPeriodSize.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newDecayNumerator",
+          "description": "value of new decayNumerator.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newDecayDenominator",
+          "description": "value of new decayDenominator.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateStaking(address)",
+      "name": "updateStaking",
+      "description": "Updates Staking address.",
+      "parameterDecorators": [
+        {
+          "name": "_newStaking",
+          "description": "address of new Staking contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateStakingDonationRatio(uint256)",
+      "name": "updateStakingDonationRatio",
+      "description": "Updates stakingDonationRatio value.",
+      "parameterDecorators": [
+        {
+          "name": "_newStakingDonationRatio",
+          "description": "Number of tokens that need to be staked to be counted as 1 PACT donated.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateTreasury(address)",
+      "name": "updateTreasury",
+      "description": "Updates Treasury address.",
+      "parameterDecorators": [
+        {
+          "name": "_newTreasury",
+          "description": "address of new treasury_ contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

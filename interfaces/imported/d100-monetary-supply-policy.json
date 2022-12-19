@@ -1,0 +1,1017 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "oracles",
+    "tokens"
+  ],
+  "name": "D100Policy",
+  "description": "D100 Monetary Supply Policy. This is an implementation of the DEFI100 protocol. D100 operates asymmetrically on expansion and contraction. It will both split and combine coins to maintain a stable unit price. * This component regulates the token supply of the D100 ERC20 token in response to market oracles.",
+  "eventDecorators": [
+    {
+      "signature": "LogAddNewStabilizerPool(address)",
+      "name": "LogAddNewStabilizerPool",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "pool_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogDeleteBreakpoint(bool,int256,int256,int256)",
+      "name": "LogDeleteBreakpoint",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "selected",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "lowerDelta_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "upperDelta_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "lag_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogDeleteStabilizerPool(address)",
+      "name": "LogDeleteStabilizerPool",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "pool_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogNewLagBreakpoint(bool,int256,int256,int256)",
+      "name": "LogNewLagBreakpoint",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "selected",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "lowerDelta_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "upperDelta_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "lag_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogRebase(uint256,uint256,int256,int256,uint256)",
+      "name": "LogRebase",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "epoch_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "exchangeRate_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "requestedSupplyAdjustment_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "rebaseLag_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "timestampSec_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogRewardSentToStabilizer(uint256,address,uint256)",
+      "name": "LogRewardSentToStabilizer",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "poolI",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "transferAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogSelectedBreakpoint(int256,int256,int256)",
+      "name": "LogSelectedBreakpoint",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "lowerDelta_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "upperDelta_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "lag_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogSetDefaultRebaseLag(uint256,uint256)",
+      "name": "LogSetDefaultRebaseLag",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "defaultPositiveRebaseLag_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "defaultNegativeRebaseLag_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogSetDeviationThreshold(uint256,uint256)",
+      "name": "LogSetDeviationThreshold",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "lowerDeviationThreshold_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "upperDeviationThreshold_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogSetOracle(address)",
+      "name": "LogSetOracle",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "oracle_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogSetPriceTargetRate(uint256)",
+      "name": "LogSetPriceTargetRate",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "setPriceTargetRate_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogSetRebaseTimingParameters(uint256,uint256,uint256)",
+      "name": "LogSetRebaseTimingParameters",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "minRebaseTimeIntervalSec_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "rebaseWindowOffsetSec_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "rebaseWindowLengthSec_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogSetStabilizerPoolEnabled(uint256,bool)",
+      "name": "LogSetStabilizerPoolEnabled",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "index_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "enabled_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogSetUseDefaultRebaseLag(bool)",
+      "name": "LogSetUseDefaultRebaseLag",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "useDefaultRebaseLag_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogUpdateBreakpoint(bool,int256,int256,int256)",
+      "name": "LogUpdateBreakpoint",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "selected",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "lowerDelta_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "upperDelta_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "lag_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "LogUsingDefaultRebaseLag(int256)",
+      "name": "LogUsingDefaultRebaseLag",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "defaultRebaseLag_",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emitted when a new `addr` is whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "D100()",
+      "name": "D100",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "addNewLagBreakpoint(bool,int256,int256,int256)",
+      "name": "addNewLagBreakpoint",
+      "description": "Adds new rebase lag parameters into either the upper or lower lag breakpoints. This allows the configuration of custom lag parameters based upon the current range the supply delta is within in. Along with this the two seperate lag breakpoint arrays allows of configuration for positive and negative supply delta ranges.",
+      "parameterDecorators": [
+        {
+          "name": "select",
+          "description": "Flag to select whether the new breakpoint should go in the upper or lower lag breakpoint.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "lowerDelta_",
+          "description": "The lower range in which the delta can be in.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "upperDelta_",
+          "description": "The upper range in which the delta can be in.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "lag_",
+          "description": "The lag to use in a given range.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "addNewStabilizerPool(address)",
+      "name": "addNewStabilizerPool",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "pool_",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "defaultNegativeRebaseLag()",
+      "name": "defaultNegativeRebaseLag",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "defaultPositiveRebaseLag()",
+      "name": "defaultPositiveRebaseLag",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deleteLagBreakpoint(bool)",
+      "name": "deleteLagBreakpoint",
+      "description": "Delete lag breakpoint from the end of either upper and lower breakpoint array.",
+      "parameterDecorators": [
+        {
+          "name": "select",
+          "description": "Whether to delete from upper or lower breakpoint array.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "deleteStabilizerPool(uint256)",
+      "name": "deleteStabilizerPool",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "epoch()",
+      "name": "epoch",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "inRebaseWindow()",
+      "name": "inRebaseWindow",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,address)",
+      "name": "initialize",
+      "description": "Initializes the D100 policy with addresses of the D100 token and the oracle deployer. Along with inital rebasing parameters.",
+      "parameterDecorators": [
+        {
+          "name": "D100_",
+          "description": "Address of the D100 token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "orchestrator_",
+          "description": "Address of the protocol orchestrator.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "lastRebaseTimestampSec()",
+      "name": "lastRebaseTimestampSec",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lowerDeviationThreshold()",
+      "name": "lowerDeviationThreshold",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lowerLagBreakpoints(uint256)",
+      "name": "lowerLagBreakpoints",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "lowerDelta",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "upperDelta",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "lag",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minRebaseTimeIntervalSec()",
+      "name": "minRebaseTimeIntervalSec",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "oracle()",
+      "name": "oracle",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "orchestrator()",
+      "name": "orchestrator",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "priceTargetRate()",
+      "name": "priceTargetRate",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rebase()",
+      "name": "rebase",
+      "description": "Initiates a new rebase operation, provided the minimum time period has elapsed. The supply adjustment equals (_totalSupply * DeviationFromTargetRate) / rebaseLag Where DeviationFromTargetRate is (MarketOracleRate - targetRate) / targetRate and targetRate is CpiOracleRate / baseCpi.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "rebaseWindowLengthSec()",
+      "name": "rebaseWindowLengthSec",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rebaseWindowOffsetSec()",
+      "name": "rebaseWindowOffsetSec",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDefaultRebaseLags(uint256,uint256)",
+      "name": "setDefaultRebaseLags",
+      "description": "Sets the default rebase lag parameter. It is used to dampen the applied supply adjustment by 1 / rebaseLag. If the rebase lag R, equals 1, the smallest value for R, then the full supply correction is applied on each rebase cycle. If it is greater than 1, then a correction of 1/R of is applied on each rebase. This lag will be used if the default rebase flag is set or if the rebase breakpoint array's are empty.",
+      "parameterDecorators": [
+        {
+          "name": "defaultPositiveRebaseLag_",
+          "description": "The new positive rebase lag parameter.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "defaultNegativeRebaseLag_",
+          "description": "The new negative rebase lag parameter.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setDeviationThresholds(uint256,uint256)",
+      "name": "setDeviationThresholds",
+      "description": "Sets the deviation threshold fraction. If the exchange rate given by the market oracle is within this fractional distance from the targetRate, then no supply modifications are made. DECIMALS fixed point number.",
+      "parameterDecorators": [
+        {
+          "name": "upperDeviationThreshold_",
+          "description": "The new exchange rate threshold fraction.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "lowerDeviationThreshold_",
+          "description": "The new exchange rate threshold fraction.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setOracle(address)",
+      "name": "setOracle",
+      "description": "Function to set the oracle to get the exchange price.",
+      "parameterDecorators": [
+        {
+          "name": "oracle_",
+          "description": "Address of the D100 oracle.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setPriceTargetRate(uint256)",
+      "name": "setPriceTargetRate",
+      "description": "Sets the price target for rebases to compare against.",
+      "parameterDecorators": [
+        {
+          "name": "priceTargetRate_",
+          "description": "The new price target.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRebaseTimingParameters(uint256,uint256,uint256)",
+      "name": "setRebaseTimingParameters",
+      "description": "Sets the parameters which control the timing and frequency of rebase operations. a) the minimum time period that must elapse between rebase cycles. b) the rebase window offset parameter. c) the rebase window length parameter.",
+      "parameterDecorators": [
+        {
+          "name": "minRebaseTimeIntervalSec_",
+          "description": "More than this much time must pass between rebase operations, in seconds.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "rebaseWindowOffsetSec_",
+          "description": "The number of seconds from the beginning of the rebase interval, where the rebase window begins.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "rebaseWindowLengthSec_",
+          "description": "The length of the rebase window in seconds.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setStabilizerPoolEnabled(uint256,bool)",
+      "name": "setStabilizerPoolEnabled",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "enabled",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setUseDefaultRebaseLag(bool)",
+      "name": "setUseDefaultRebaseLag",
+      "description": "Function used to set if the default rebase flag will be used.",
+      "parameterDecorators": [
+        {
+          "name": "useDefaultRebaseLag_",
+          "description": "Sets default rebase lag flag.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "stabilizerPools(uint256)",
+      "name": "stabilizerPools",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "enabled",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "pool",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateLagBreakpoint(bool,uint256,int256,int256,int256)",
+      "name": "updateLagBreakpoint",
+      "description": "Updates lag breakpoint at a the specified index with new delta range parameters and lag.",
+      "parameterDecorators": [
+        {
+          "name": "select",
+          "description": "Flag to select whether the new breakpoint should go in the upper or lower lag breakpoint.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "The index of the selected breakpoint.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "lowerDelta_",
+          "description": "The lower range in which the delta can be in.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "upperDelta_",
+          "description": "The upper range in which the delta can be in.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "lag_",
+          "description": "The lag to use in a given range.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upperDeviationThreshold()",
+      "name": "upperDeviationThreshold",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "upperLagBreakpoints(uint256)",
+      "name": "upperLagBreakpoints",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "lowerDelta",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "upperDelta",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        },
+        {
+          "name": "lag",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "useDefaultRebaseLag()",
+      "name": "useDefaultRebaseLag",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

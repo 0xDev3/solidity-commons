@@ -1,0 +1,1169 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "Linguo",
+  "description": "Linguo. This contract trusts that the Arbitrator is honest and will not reenter or modify its costs during a call. The arbitrator must support appeal periods. Linguo is a decentralized platform where anyone can submit a document for translation and have it translated by freelancers. It has no platform fees and disputes about translation quality are handled by Kleros jurors.",
+  "eventDecorators": [
+    {
+      "signature": "AppealContribution(uint256,uint8,address,uint256)",
+      "name": "AppealContribution",
+      "description": "To be emitted when someone contributes to the appeal process.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the respective task.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_party",
+          "description": "The party which received the contribution.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_contributor",
+          "description": "The address of the contributor.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_amount",
+          "description": "The amount contributed.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Dispute(address,uint256,uint256,uint256)",
+      "name": "Dispute",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_arbitrator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_disputeID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_metaEvidenceID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_evidenceGroupID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Evidence(address,uint256,address,string)",
+      "name": "Evidence",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_arbitrator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_evidenceGroupID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_party",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_evidence",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "HasPaidAppealFee(uint256,uint8)",
+      "name": "HasPaidAppealFee",
+      "description": "To be emitted when the appeal fees of one of the parties are fully funded.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the respective task.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_party",
+          "description": "The party that is fully funded.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "MetaEvidence(uint256,string)",
+      "name": "MetaEvidence",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_metaEvidenceID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_evidence",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Ruling(address,uint256,uint256)",
+      "name": "Ruling",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_arbitrator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_disputeID",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_ruling",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TaskAssigned(uint256,address,uint256,uint256)",
+      "name": "TaskAssigned",
+      "description": "To be emitted when a translator assigns a task to himself.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the assigned task.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_translator",
+          "description": "The address that was assigned to the task.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_price",
+          "description": "The task price at the moment it was assigned.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_timestamp",
+          "description": "When the task was assigned.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TaskCreated(uint256,address,uint256)",
+      "name": "TaskCreated",
+      "description": "To be emitted when a new task is created.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the newly created task.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_requester",
+          "description": "The address that created the task.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_timestamp",
+          "description": "When the task was created.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TaskResolved(uint256,string,uint256)",
+      "name": "TaskResolved",
+      "description": "To be emitted when a task is resolved, either by the translation being accepted, the requester being reimbursed or a dispute being settled.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the respective task.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_reason",
+          "description": "Short description of what caused the task to be solved. One of: 'translation-accepted' | 'requester-reimbursed' | 'dispute-settled'.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_timestamp",
+          "description": "When the task was resolved.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TranslationChallenged(uint256,address,uint256)",
+      "name": "TranslationChallenged",
+      "description": "To be emitted when a translation is challenged.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the respective task.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_challenger",
+          "description": "The address of the challenger.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_timestamp",
+          "description": "When the task was challenged.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "TranslationSubmitted(uint256,address,string,uint256)",
+      "name": "TranslationSubmitted",
+      "description": "To be emitted when a translation is submitted.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the respective task.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_translator",
+          "description": "The address that performed the translation.",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_translatedText",
+          "description": "A URI to the translated text.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_timestamp",
+          "description": "When the translation was submitted.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "MULTIPLIER_DIVISOR()",
+      "name": "MULTIPLIER_DIVISOR",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "VERSION_ID()",
+      "name": "VERSION_ID",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "acceptTranslation(uint256)",
+      "name": "acceptTranslation",
+      "description": "Pays the translator for completed task if no one challenged the translation during the review period.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the task.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "amountWithdrawable(uint256,address)",
+      "name": "amountWithdrawable",
+      "description": "Returns the sum of withdrawable wei from appeal rounds. This function is O(n), where n is the number of rounds of the task. This could exceed the gas limit, therefore this function should only be used for interface display and not by other contracts.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the associated task.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_beneficiary",
+          "description": "The contributor for which to query.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "total",
+          "description": "The total amount of wei available to withdraw.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "arbitrationCostMultiplier()",
+      "name": "arbitrationCostMultiplier",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "arbitrator()",
+      "name": "arbitrator",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "arbitratorExtraData()",
+      "name": "arbitratorExtraData",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "assignTask(uint256)",
+      "name": "assignTask",
+      "description": "Assigns a specific task to the sender. Requires a translator's deposit. Note that the deposit should be a little higher than the required value because of the price increase during the time the transaction is mined. The surplus will be reimbursed.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the task.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "batchRoundWithdraw(address,uint256,uint256,uint256)",
+      "name": "batchRoundWithdraw",
+      "description": "Withdraws contributions of multiple appeal rounds at once. This function is O(n) where n is the number of rounds. This could exceed the gas limit, therefore this function should be used only as a utility and not be relied upon by other contracts.",
+      "parameterDecorators": [
+        {
+          "name": "_beneficiary",
+          "description": "The address that made contributions.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_taskID",
+          "description": "The ID of the associated task.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_cursor",
+          "description": "The round from where to start withdrawing.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_count",
+          "description": "The number of rounds to iterate. If set to 0 or a value larger than the number of rounds, iterates until the last round.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "challengeMultiplier()",
+      "name": "challengeMultiplier",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "challengeTranslation(uint256,string)",
+      "name": "challengeTranslation",
+      "description": "Challenges the translation of a specific task. Requires challenger's deposit.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the task.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_evidence",
+          "description": "A link to evidence using its URI. Ignored if not provided.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeArbitrationCostMultiplier(uint256)",
+      "name": "changeArbitrationCostMultiplier",
+      "description": "Changes the multiplier for the arbitration cost part of the translators' deposit.",
+      "parameterDecorators": [
+        {
+          "name": "_arbitrationCostMultiplier",
+          "description": "A new value of the multiplier for calculating translator's deposit. In basis points.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeChallengeMultiplier(uint256)",
+      "name": "changeChallengeMultiplier",
+      "description": "Changes the multiplier for challengers' deposit.",
+      "parameterDecorators": [
+        {
+          "name": "_challengeMultiplier",
+          "description": "A new value of the multiplier for calculating challenger's deposit. In basis points.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeGovernor(address)",
+      "name": "changeGovernor",
+      "description": "Changes the governor of this contract.",
+      "parameterDecorators": [
+        {
+          "name": "_governor",
+          "description": "A new governor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeLoserStakeMultiplier(uint256)",
+      "name": "changeLoserStakeMultiplier",
+      "description": "Changes the percentage of arbitration fees that must be paid as a fee stake by the party that lost the previous round.",
+      "parameterDecorators": [
+        {
+          "name": "_loserStakeMultiplier",
+          "description": "A new value for the multiplier of the appeal cost that the party that lost the previous round has to pay. In basis points.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeReviewTimeout(uint256)",
+      "name": "changeReviewTimeout",
+      "description": "Changes the time allocated for the review phase.",
+      "parameterDecorators": [
+        {
+          "name": "_reviewTimeout",
+          "description": "A new value of the time allotted for reviewing a translation. In seconds.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeSharedStakeMultiplier(uint256)",
+      "name": "changeSharedStakeMultiplier",
+      "description": "Changes the percentage of arbitration fees that must be paid by parties as a fee stake if there was no winner and loser in the previous round.",
+      "parameterDecorators": [
+        {
+          "name": "_sharedStakeMultiplier",
+          "description": "A new value of the multiplier of the appeal cost in case where there was no winner/loser in previous round. In basis point.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeTranslationMultiplier(uint256)",
+      "name": "changeTranslationMultiplier",
+      "description": "Changes the multiplier for the task price part of translators' deposit.",
+      "parameterDecorators": [
+        {
+          "name": "_translationMultiplier",
+          "description": "A new value of the multiplier for calculating translator's deposit. In basis points.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "changeWinnerStakeMultiplier(uint256)",
+      "name": "changeWinnerStakeMultiplier",
+      "description": "Changes the percentage of arbitration fees that must be paid as a fee stake by the party that won the previous round.",
+      "parameterDecorators": [
+        {
+          "name": "_winnerStakeMultiplier",
+          "description": "A new value of the multiplier of the appeal cost that the winner of the previous round has to pay. In basis points.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createTask(uint256,uint256,string)",
+      "name": "createTask",
+      "description": "Creates a task based on provided details. Requires a value of maximum price to be deposited.",
+      "parameterDecorators": [
+        {
+          "name": "_deadline",
+          "description": "The deadline for the translation to be completed.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_minPrice",
+          "description": "A minimum price of the translation. In wei.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_metaEvidence",
+          "description": "A URI of a meta-evidence object for task submission.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "taskID",
+          "description": "The ID of the created task.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "disputeIDtoTaskID(uint256)",
+      "name": "disputeIDtoTaskID",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "fundAppeal(uint256,uint8)",
+      "name": "fundAppeal",
+      "description": "Takes up to the total amount required to fund a side of an appeal. Reimburses the rest. Creates an appeal if all sides are fully funded.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of challenged task.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_side",
+          "description": "The party that pays the appeal fee.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getChallengeValue(uint256)",
+      "name": "getChallengeValue",
+      "description": "Gets the deposit required for challenging the translation.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the task.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "deposit",
+          "description": "The challengers's deposit.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getContributions(uint256,uint256,address)",
+      "name": "getContributions",
+      "description": "Gets the contributions made by a party for a given round of appeal of a task.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the task.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_round",
+          "description": "The position of the round.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_contributor",
+          "description": "The address of the contributor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "contributions",
+          "description": "The contributions.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[3]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getDepositValue(uint256)",
+      "name": "getDepositValue",
+      "description": "Gets the deposit required for self-assigning the task.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the task.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "deposit",
+          "description": "The translator's deposit.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getNumberOfRounds(uint256)",
+      "name": "getNumberOfRounds",
+      "description": "Gets the number of rounds of the specific task.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the task.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The number of rounds.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoundInfo(uint256,uint256)",
+      "name": "getRoundInfo",
+      "description": "Gets the information on a round of a task.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the task.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_round",
+          "description": "The round to be queried.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "paidFees",
+          "description": "The amount paid by each party in the round.",
+          "recommendedTypes": [],
+          "solidityType": "uint256[3]"
+        },
+        {
+          "name": "hasPaid",
+          "description": "Whether or not a given party has paid the full fees for the round.",
+          "recommendedTypes": [],
+          "solidityType": "bool[3]"
+        },
+        {
+          "name": "feeRewards",
+          "description": "The amount of fees that will be available as rewards for the winner.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTaskCount()",
+      "name": "getTaskCount",
+      "description": "Gets the total number of created tasks.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The number of created tasks.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTaskParties(uint256)",
+      "name": "getTaskParties",
+      "description": "Gets the addresses of parties of a specified task.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the task.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "parties",
+          "description": "The addresses of translator and challenger as [ZERO_ADDRESS, translator, challenger].",
+          "recommendedTypes": [],
+          "solidityType": "address[3]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTaskPrice(uint256)",
+      "name": "getTaskPrice",
+      "description": "Gets the current price of a specified task.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the task.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "price",
+          "description": "The price of the task.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "governor()",
+      "name": "governor",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "loserStakeMultiplier()",
+      "name": "loserStakeMultiplier",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "reimburseRequester(uint256)",
+      "name": "reimburseRequester",
+      "description": "Reimburses the requester if no one picked the task or the translator failed to submit the translation before deadline.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the task.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "reviewTimeout()",
+      "name": "reviewTimeout",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rule(uint256,uint256)",
+      "name": "rule",
+      "description": "Gives the ruling for a dispute. Can only be called by the arbitrator. The purpose of this function is to ensure that the address calling it has the right to rule on the contract and to invert the ruling in the case a party loses from lack of appeal fees funding.",
+      "parameterDecorators": [
+        {
+          "name": "_disputeID",
+          "description": "ID of the dispute in the Arbitrator contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_ruling",
+          "description": "Ruling given by the arbitrator. Note that 0 is reserved for \"Refuse to arbitrate\".",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "sharedStakeMultiplier()",
+      "name": "sharedStakeMultiplier",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "submitEvidence(uint256,string)",
+      "name": "submitEvidence",
+      "description": "Submit a reference to evidence. EVENT.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the task.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_evidence",
+          "description": "A link to evidence using its URI.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "submitTranslation(uint256,string)",
+      "name": "submitTranslation",
+      "description": "Submits translated text for a specific task.",
+      "parameterDecorators": [
+        {
+          "name": "_taskID",
+          "description": "The ID of the task.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_translation",
+          "description": "A URI to the translated text.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "tasks(uint256)",
+      "name": "tasks",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "submissionTimeout",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "minPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "maxPrice",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "status",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        },
+        {
+          "name": "lastInteraction",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "requester",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "requesterDeposit",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "sumDeposit",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "disputeID",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "ruling",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "translationMultiplier()",
+      "name": "translationMultiplier",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "winnerStakeMultiplier()",
+      "name": "winnerStakeMultiplier",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdrawFeesAndRewards(address,uint256,uint256)",
+      "name": "withdrawFeesAndRewards",
+      "description": "Withdraws contributions of appeal rounds. Reimburses contributions if no disputes were raised. If a dispute was raised, sends the fee stake rewards and reimbursements proportional to the contributions made to the winner of a dispute.",
+      "parameterDecorators": [
+        {
+          "name": "_beneficiary",
+          "description": "The address that made contributions.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_taskID",
+          "description": "The ID of the associated task.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_round",
+          "description": "The round from which to withdraw.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

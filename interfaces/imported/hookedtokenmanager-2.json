@@ -1,0 +1,935 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens"
+  ],
+  "name": "HookedTokenManager",
+  "description": "",
+  "eventDecorators": [
+    {
+      "signature": "NewVesting(address,uint256,uint256)",
+      "name": "NewVesting",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "receiver",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "vestingId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RevokeVesting(address,uint256,uint256)",
+      "name": "RevokeVesting",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "receiver",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "vestingId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "nonVestedAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ScriptResult(address,bytes,bytes,bytes)",
+      "name": "ScriptResult",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "executor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "script",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "input",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "returnData",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RecoverToVault(address,address,uint256)",
+      "name": "RecoverToVault",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "vault",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "hasInitialized()",
+      "name": "hasInitialized",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MAX_VESTINGS_PER_ADDRESS()",
+      "name": "MAX_VESTINGS_PER_ADDRESS",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "spendableBalanceOf(address)",
+      "name": "spendableBalanceOf",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_holder",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "assignVested(address,uint256,uint64,uint64,uint64,bool)",
+      "name": "assignVested",
+      "description": "Assign `@tokenAmount(self.token(): address, _amount, false)` tokens to `_receiver` from the Token Manager's holdings with a `_revokable : 'revokable' : ''` vesting starting at `@formatDate(_start)`, cliff at `@formatDate(_cliff)` (first portion of tokens transferable), and completed vesting at `@formatDate(_vested)` (all tokens transferable).",
+      "parameterDecorators": [
+        {
+          "name": "_receiver",
+          "description": "The address receiving the tokens, cannot be Token Manager itself.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "Number of tokens vested.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_start",
+          "description": "Date the vesting calculations start.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_cliff",
+          "description": "Date when the initial portion of tokens are transferable.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_vested",
+          "description": "Date when all tokens are transferable.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_revokable",
+          "description": "Whether the vesting can be revoked by the Token Manager.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getEVMScriptExecutor(bytes)",
+      "name": "getEVMScriptExecutor",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_script",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRecoveryVault()",
+      "name": "getRecoveryVault",
+      "description": "Get the recovery vault for the app.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getVesting(address,uint256)",
+      "name": "getVesting",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_recipient",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_vestingId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "start",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "cliff",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "vesting",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "revokable",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "mint(address,uint256)",
+      "name": "mint",
+      "description": "Mint `@tokenAmount(self.token(): address, _amount, false)` tokens for `_receiver`.",
+      "parameterDecorators": [
+        {
+          "name": "_receiver",
+          "description": "The address receiving the tokens, cannot be the Token Manager itself (use `issue()` instead).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "Number of tokens minted.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "onTransfer(address,address,uint256)",
+      "name": "onTransfer",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_from",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_to",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "registerHook(address)",
+      "name": "registerHook",
+      "description": "Create a new Token Manager hook for `_hook`.",
+      "parameterDecorators": [
+        {
+          "name": "_hook",
+          "description": "Contract that will be used as Token Manager hook.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferableBalance(address,uint256)",
+      "name": "transferableBalance",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_holder",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_time",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "allowRecoverability(address)",
+      "name": "allowRecoverability",
+      "description": "Disable recovery escape hatch for own token, as the it has the concept of issuing tokens without assigning them.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "appId()",
+      "name": "appId",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ISSUE_ROLE()",
+      "name": "ISSUE_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getInitializationBlock()",
+      "name": "getInitializationBlock",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "vestingsLengths(address)",
+      "name": "vestingsLengths",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferToVault(address)",
+      "name": "transferToVault",
+      "description": "Send funds to recovery Vault. This contract should never receive funds, but in case it does, this function allows one to recover them.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "Token balance to be sent to recovery vault.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "burn(address,uint256)",
+      "name": "burn",
+      "description": "Burn `@tokenAmount(self.token(): address, _amount, false)` tokens from `_holder`.",
+      "parameterDecorators": [
+        {
+          "name": "_holder",
+          "description": "Holder of tokens being burned.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "Number of tokens being burned.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "canPerform(address,bytes32,uint256[])",
+      "name": "canPerform",
+      "description": "Check whether an action can be performed by a sender for a particular role on this app.",
+      "parameterDecorators": [
+        {
+          "name": "_sender",
+          "description": "Sender of the call.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_role",
+          "description": "Role on this app.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_params",
+          "description": "Permission params for the role.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getEVMScriptRegistry()",
+      "name": "getEVMScriptRegistry",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ASSIGN_ROLE()",
+      "name": "ASSIGN_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "revokeHook(uint256)",
+      "name": "revokeHook",
+      "description": "Revoke Token Manager hook #`_hookId`.",
+      "parameterDecorators": [
+        {
+          "name": "_hookId",
+          "description": "Position of the hook to be removed.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "BURN_ROLE()",
+      "name": "BURN_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "assign(address,uint256)",
+      "name": "assign",
+      "description": "Assign `@tokenAmount(self.token(): address, _amount, false)` tokens to `_receiver` from the Token Manager's holdings.",
+      "parameterDecorators": [
+        {
+          "name": "_receiver",
+          "description": "The address receiving the tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "Number of tokens transferred.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "canForward(address,bytes)",
+      "name": "canForward",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_sender",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "issue(uint256)",
+      "name": "issue",
+      "description": "Mint `@tokenAmount(self.token(): address, _amount, false)` tokens for the Token Manager.",
+      "parameterDecorators": [
+        {
+          "name": "_amount",
+          "description": "Number of tokens minted.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "kernel()",
+      "name": "kernel",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "forward(bytes)",
+      "name": "forward",
+      "description": "Execute desired action as a token holder. IForwarder interface conformance. Forwards any token holder action.",
+      "parameterDecorators": [
+        {
+          "name": "_evmScript",
+          "description": "Script being executed.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "onApprove(address,address,uint256)",
+      "name": "onApprove",
+      "description": "Notifies the controller about an approval allowing the controller to react if desired Initialization check is implicitly provided by `onlyToken()`.",
+      "parameterDecorators": [
+        {
+          "name": "_holder",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_spender",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_amount",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isPetrified()",
+      "name": "isPetrified",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(address,bool,uint256)",
+      "name": "initialize",
+      "description": "Initialize Token Manager for `_token.symbol(): string`, whose tokens are `_transferable ? '' : 'not'` transferable`_maxAccountTokens > 0 ? ' and limited to a maximum of ' + @tokenAmount(_token, _maxAccountTokens, false) + ' per account' : ''`.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "MiniMeToken address for the managed token (Token Manager instance must be already set as the token controller).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_transferable",
+          "description": "whether the token can be transferred by holders.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_maxAccountTokens",
+          "description": "Maximum amount of tokens an account can have (0 for infinite tokens).",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "MINT_ROLE()",
+      "name": "MINT_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "maxAccountTokens()",
+      "name": "maxAccountTokens",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "REVOKE_VESTINGS_ROLE()",
+      "name": "REVOKE_VESTINGS_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "proxyPayment(address)",
+      "name": "proxyPayment",
+      "description": "Called when ether is sent to the MiniMe Token contract Initialization check is implicitly provided by `onlyToken()`.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "SET_HOOK_ROLE()",
+      "name": "SET_HOOK_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "revokeVesting(address,uint256)",
+      "name": "revokeVesting",
+      "description": "Revoke vesting #`_vestingId` from `_holder`, returning unvested tokens to the Token Manager.",
+      "parameterDecorators": [
+        {
+          "name": "_holder",
+          "description": "Address whose vesting to revoke.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_vestingId",
+          "description": "Numeric id of the vesting.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "token()",
+      "name": "token",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isForwarder()",
+      "name": "isForwarder",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

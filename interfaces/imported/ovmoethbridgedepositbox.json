@@ -1,0 +1,581 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "bridges",
+    "optimism"
+  ],
+  "name": "OVM_OETH_BridgeDepositBox",
+  "description": "OVM_OETH_BridgeDepositBox. Modified version of OVM_BridgeDepositBox that supports Optimism ETH being sent over the canonical bridge as ETH. This is re-wrapped to WETH on L2. All other functionality remains the same.",
+  "eventDecorators": [
+    {
+      "signature": "DepositsEnabled(address,bool)",
+      "name": "DepositsEnabled",
+      "description": "Events ///.",
+      "parameterDecorators": [
+        {
+          "name": "l2Token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "depositsEnabled",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "FundsDeposited(uint256,uint256,address,address,address,address,uint256,uint64,uint64,uint64)",
+      "name": "FundsDeposited",
+      "description": "Events ///.",
+      "parameterDecorators": [
+        {
+          "name": "chainId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "depositId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "l1Recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "l2Sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "l1Token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "l2Token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "slowRelayFeePct",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "instantRelayFeePct",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "quoteTimestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SetMinimumBridgingDelay(uint64)",
+      "name": "SetMinimumBridgingDelay",
+      "description": "Events ///.",
+      "parameterDecorators": [
+        {
+          "name": "newMinimumBridgingDelay",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SetXDomainAdmin(address)",
+      "name": "SetXDomainAdmin",
+      "description": "Events ///.",
+      "parameterDecorators": [
+        {
+          "name": "newAdmin",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "TokensBridged(address,uint256,uint256,address)",
+      "name": "TokensBridged",
+      "description": "Events ///.",
+      "parameterDecorators": [
+        {
+          "name": "l2Token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "numberOfTokensBridged",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "l1Gas",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "WhitelistToken(address,address,uint64,address)",
+      "name": "WhitelistToken",
+      "description": "Events ///.",
+      "parameterDecorators": [
+        {
+          "name": "l1Token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "l2Token",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "lastBridgeTime",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "bridgePool",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "bridgeTokens(address,uint32)",
+      "name": "bridgeTokens",
+      "description": "Called by relayer (or any other EOA) to move a batch of funds from the deposit box, through the canonical token bridge, to the L1 Withdraw box. Implementation is exactly the same as the standard OVM_BridgeDepositBox except constructed to work with Optimism ETH by first unwrapping WETH then bridging OETH. The target on L1 is not the bridgePool but to the l1EthWrapper that takes any ETH sent to it, wraps it and sends to the BridgePool. The frequency that this function can be called is rate limited by the `minimumBridgingDelay` to prevent spam on L1 as the finalization of a L2->L1 tx is quite expensive.",
+      "parameterDecorators": [
+        {
+          "name": "l2Token",
+          "description": "L2 token to relay over the canonical bridge.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "l1Gas",
+          "description": "Unused by optimism, but included for potential forward compatibility considerations.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "canBridge(address)",
+      "name": "canBridge",
+      "description": "Designed to be called by implementing contract in `bridgeTokens` method which sends this contract's balance of tokens from L2 to L1 via the canonical token bridge. Tokens that can be bridged are whitelisted and have had enough time elapsed since the latest bridge (or the time at which at was whitelisted). This function is also public for caller convenience.",
+      "parameterDecorators": [
+        {
+          "name": "l2Token",
+          "description": "L2 token to check bridging status.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "true if token is whitelised and enough time has elapsed since the previous bridge.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "chainId()",
+      "name": "chainId",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "crossDomainAdmin()",
+      "name": "crossDomainAdmin",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deposit(address,address,uint256,uint64,uint64,uint64)",
+      "name": "deposit",
+      "description": "Called by L2 user to bridge funds between L2 and L1. Emits the `FundsDeposited` event which relayers listen for as part of the bridging action.The caller must first approve this contract to spend `amount` of `l2Token`.",
+      "parameterDecorators": [
+        {
+          "name": "l1Recipient",
+          "description": "L1 address that should receive the tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "l2Token",
+          "description": "L2 token to deposit.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amount",
+          "description": "How many L2 tokens should be deposited.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "slowRelayFeePct",
+          "description": "Max fraction of `amount` that the depositor is willing to pay as a slow relay fee.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "instantRelayFeePct",
+          "description": "Fraction of `amount` that the depositor is willing to pay as an instant relay fee.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "quoteTimestamp",
+          "description": "Timestamp, at which the depositor will be quoted for L1 liquidity. This enables the depositor to know the L1 fees before submitting their deposit. Must be within 10 mins of the current time.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getCurrentTime()",
+      "name": "getCurrentTime",
+      "description": "Gets the current time. Will return the last time set in `setCurrentTime` if running in test mode. Otherwise, it will return the block timestamp.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "uint for the current Testable timestamp.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isWhitelistToken(address)",
+      "name": "isWhitelistToken",
+      "description": "Checks if a given L2 token is whitelisted. Check the whitelisted token's `lastBridgeTime` parameter since its guaranteed to be != 0 once the token has been whitelisted.",
+      "parameterDecorators": [
+        {
+          "name": "l2Token",
+          "description": "L2 token to check against the whitelist.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "true if token is whitelised.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "l1EthWrapper()",
+      "name": "l1EthWrapper",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "l1Weth()",
+      "name": "l1Weth",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "l2Eth()",
+      "name": "l2Eth",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "messenger()",
+      "name": "messenger",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "minimumBridgingDelay()",
+      "name": "minimumBridgingDelay",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "numberOfDeposits()",
+      "name": "numberOfDeposits",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setCrossDomainAdmin(address)",
+      "name": "setCrossDomainAdmin",
+      "description": "Changes the L1 contract that can trigger admin functions on this L2 deposit deposit box. This should be set to the address of the L1 contract that ultimately relays a cross-domain message, which is expected to be the Optimism_Messenger.Only callable by the existing admin via the Optimism cross domain messenger.",
+      "parameterDecorators": [
+        {
+          "name": "newCrossDomainAdmin",
+          "description": "address of the new L1 admin contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setCurrentTime(uint256)",
+      "name": "setCurrentTime",
+      "description": "Sets the current time. Will revert if not running in test mode.",
+      "parameterDecorators": [
+        {
+          "name": "time",
+          "description": "timestamp to set current Testable time to.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setEnableDeposits(address,bool)",
+      "name": "setEnableDeposits",
+      "description": "L1 owner can enable/disable deposits for a whitelisted token. Only callable by the existing crossDomainAdmin via the optimism cross domain messenger.",
+      "parameterDecorators": [
+        {
+          "name": "l2Token",
+          "description": "address of L2 token to enable/disable deposits for.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "depositsEnabled",
+          "description": "bool to set if the deposit box should accept/reject deposits.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMinimumBridgingDelay(uint64)",
+      "name": "setMinimumBridgingDelay",
+      "description": "Changes the minimum time in seconds that must elapse between withdraws from L2->L1. Only callable by the existing crossDomainAdmin via the optimism cross domain messenger.",
+      "parameterDecorators": [
+        {
+          "name": "newMinimumBridgingDelay",
+          "description": "the new minimum delay.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "timerAddress()",
+      "name": "timerAddress",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "whitelistToken(address,address,address)",
+      "name": "whitelistToken",
+      "description": "Enables L1 owner to whitelist a L1 Token <-> L2 Token pair for bridging. Only callable by the existing crossDomainAdmin via the optimism cross domain messenger.",
+      "parameterDecorators": [
+        {
+          "name": "l1Token",
+          "description": "Address of the canonical L1 token. This is the token users will receive on Ethereum.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "l2Token",
+          "description": "Address of the L2 token representation. This is the token users would deposit on optimism.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "l1BridgePool",
+          "description": "Address of the L1 withdrawal pool linked to this L2+L1 token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "whitelistedTokens(address)",
+      "name": "whitelistedTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "l1Token",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "l1BridgePool",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "lastBridgeTime",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        },
+        {
+          "name": "depositsEnabled",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

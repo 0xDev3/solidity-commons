@@ -1,0 +1,385 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens"
+  ],
+  "name": "ConduitController",
+  "description": "ConduitController. ConduitController enables deploying and managing new conduits, or contracts that allow registered callers (or open \"channels\") to transfer approved ERC20/721/1155 tokens on their behalf.",
+  "eventDecorators": [
+    {
+      "signature": "NewConduit(address,bytes32)",
+      "name": "NewConduit",
+      "description": "----------------------------------------------------------------------- Events -----------------------------------------------------------------------. This event will be emitted every time the implementation gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "conduit",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "conduitKey",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address,address)",
+      "name": "OwnershipTransferred",
+      "description": "----------------------------------------------------------------------- Events -----------------------------------------------------------------------. This event will be emitted every time the implementation gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "conduit",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "PotentialOwnerUpdated(address)",
+      "name": "PotentialOwnerUpdated",
+      "description": "----------------------------------------------------------------------- Events -----------------------------------------------------------------------. This event will be emitted every time the implementation gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "implementation",
+          "description": "representing the address of the upgraded implementation.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "acceptOwnership(address)",
+      "name": "acceptOwnership",
+      "description": "Accept ownership of a supplied conduit. Only accounts that the current owner has set as the new potential owner may call this function.",
+      "parameterDecorators": [
+        {
+          "name": "conduit",
+          "description": "The conduit for which to accept ownership.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "cancelOwnershipTransfer(address)",
+      "name": "cancelOwnershipTransfer",
+      "description": "Clear the currently set potential owner, if any, from a conduit. Only the owner of the conduit in question may call this function.",
+      "parameterDecorators": [
+        {
+          "name": "conduit",
+          "description": "The conduit for which to cancel ownership transfer.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "createConduit(bytes32,address)",
+      "name": "createConduit",
+      "description": "Deploy a new conduit using a supplied conduit key and assigning an initial owner for the deployed conduit. Note that the first twenty bytes of the supplied conduit key must match the caller and that a new conduit cannot be created if one has already been deployed using the same conduit key.",
+      "parameterDecorators": [
+        {
+          "name": "conduitKey",
+          "description": "The conduit key used to deploy the conduit. Note that the first twenty bytes of the conduit key must match the caller of this contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "initialOwner",
+          "description": "The initial owner to set for the new conduit.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "conduit",
+          "description": "The address of the newly deployed conduit.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "getChannel(address,uint256)",
+      "name": "getChannel",
+      "description": "Retrieve an open channel at a specific index for a given conduit. Note that the index of a channel can change as a result of other channels being closed on the conduit.",
+      "parameterDecorators": [
+        {
+          "name": "conduit",
+          "description": "The conduit for which to retrieve the open channel.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "channelIndex",
+          "description": "The index of the channel in question.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "channel",
+          "description": "The open channel, if any, at the specified channel index.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getChannelStatus(address,address)",
+      "name": "getChannelStatus",
+      "description": "Retrieve the status (either open or closed) of a given channel on a conduit.",
+      "parameterDecorators": [
+        {
+          "name": "conduit",
+          "description": "The conduit for which to retrieve the channel status.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "channel",
+          "description": "The channel for which to retrieve the status.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "isOpen",
+          "description": "The status of the channel on the given conduit.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getChannels(address)",
+      "name": "getChannels",
+      "description": "Retrieve all open channels for a given conduit. Note that calling this function for a conduit with many channels will revert with an out-of-gas error.",
+      "parameterDecorators": [
+        {
+          "name": "conduit",
+          "description": "The conduit for which to retrieve open channels.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "channels",
+          "description": "An array of open channels on the given conduit.",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getConduit(bytes32)",
+      "name": "getConduit",
+      "description": "Derive the conduit associated with a given conduit key and determine whether that conduit exists (i.e. whether it has been deployed).",
+      "parameterDecorators": [
+        {
+          "name": "conduitKey",
+          "description": "The conduit key used to derive the conduit.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "conduit",
+          "description": "The derived address of the conduit.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        },
+        {
+          "name": "exists",
+          "description": "A boolean indicating whether the derived conduit has been deployed or not.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getConduitCodeHashes()",
+      "name": "getConduitCodeHashes",
+      "description": "Retrieve the conduit creation code and runtime code hashes.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "creationCodeHash",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        },
+        {
+          "name": "runtimeCodeHash",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getKey(address)",
+      "name": "getKey",
+      "description": "Retrieve the conduit key for a deployed conduit via reverse lookup.",
+      "parameterDecorators": [
+        {
+          "name": "conduit",
+          "description": "The conduit for which to retrieve the associated conduit key.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "conduitKey",
+          "description": "The conduit key used to deploy the supplied conduit.",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPotentialOwner(address)",
+      "name": "getPotentialOwner",
+      "description": "Retrieve the potential owner, if any, for a given conduit. The current owner may set a new potential owner via `transferOwnership` and that owner may then accept ownership of the conduit in question via `acceptOwnership`.",
+      "parameterDecorators": [
+        {
+          "name": "conduit",
+          "description": "The conduit for which to retrieve the potential owner.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "potentialOwner",
+          "description": "The potential owner, if any, for the conduit.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getTotalChannels(address)",
+      "name": "getTotalChannels",
+      "description": "Retrieve the total number of open channels for a given conduit.",
+      "parameterDecorators": [
+        {
+          "name": "conduit",
+          "description": "The conduit for which to retrieve the total channel count.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "totalChannels",
+          "description": "The total number of open channels for the conduit.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ownerOf(address)",
+      "name": "ownerOf",
+      "description": "Retrieve the current owner of a deployed conduit.",
+      "parameterDecorators": [
+        {
+          "name": "conduit",
+          "description": "The conduit for which to retrieve the associated owner.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "owner",
+          "description": "The owner of the supplied conduit.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address,address)",
+      "name": "transferOwnership",
+      "description": "Initiate conduit ownership transfer by assigning a new potential owner for the given conduit. Once set, the new potential owner may call `acceptOwnership` to claim ownership of the conduit. Only the owner of the conduit in question may call this function.",
+      "parameterDecorators": [
+        {
+          "name": "conduit",
+          "description": "The conduit for which to initiate ownership transfer.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "newPotentialOwner",
+          "description": "The new potential owner of the conduit.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "updateChannel(address,address,bool)",
+      "name": "updateChannel",
+      "description": "Open or close a channel on a given conduit, thereby allowing the specified account to execute transfers against that conduit. Extreme care must be taken when updating channels, as malicious or vulnerable channels can transfer any ERC20, ERC721 and ERC1155 tokens where the token holder has granted the conduit approval. Only the owner of the conduit in question may call this function.",
+      "parameterDecorators": [
+        {
+          "name": "conduit",
+          "description": "The conduit for which to open or close the channel.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "channel",
+          "description": "The channel to open or close on the conduit.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "isOpen",
+          "description": "A boolean indicating whether to open or close the channel.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

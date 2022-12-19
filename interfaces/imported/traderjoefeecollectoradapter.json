@@ -1,0 +1,651 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "avalanche"
+  ],
+  "name": "TraderJoeFeeCollectorAdapter",
+  "description": "This is the fee collector splitting contract for TraderJoe strategies. By default it splits the reward token (JOE) converting 80% to stkUSDCv3 and injecting in the PSM; 10% converted into AVAX/JOE shares and sent to the associated fee collector; 4% converted into WAVAX and sent to the associated fee collector; 4% converted into WETH and sent to the associated collector; and 2% converted into WBTC and sent to the associated collector.",
+  "eventDecorators": [
+    {
+      "signature": "AddTargetToken(address)",
+      "name": "AddTargetToken",
+      "description": "Emitted when the contract is unpaused.",
+      "parameterDecorators": [
+        {
+          "name": "_newTargetToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "AnnounceDelayedAction(bytes4,bytes32)",
+      "name": "AnnounceDelayedAction",
+      "description": "Emitted when the contract is unpaused.",
+      "parameterDecorators": [
+        {
+          "name": "_selector",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_hash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ChangeCollector(address,address,address)",
+      "name": "ChangeCollector",
+      "description": "Emitted when the contract is unpaused.",
+      "parameterDecorators": [
+        {
+          "name": "_targetToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_oldCollector",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_newCollector",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ChangeExchange(address,address)",
+      "name": "ChangeExchange",
+      "description": "Emitted when the contract is unpaused.",
+      "parameterDecorators": [
+        {
+          "name": "_oldExchange",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_newExchange",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ChangeMinimalGulpFactor(uint256,uint256)",
+      "name": "ChangeMinimalGulpFactor",
+      "description": "Emitted when the contract is unpaused.",
+      "parameterDecorators": [
+        {
+          "name": "_oldMinimalGulpFactor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_newMinimalGulpFactor",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ChangePsm(address,address)",
+      "name": "ChangePsm",
+      "description": "Emitted when the contract is unpaused.",
+      "parameterDecorators": [
+        {
+          "name": "_oldPsm",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_newPsm",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ChangeRewardSplit(address,uint256,uint256)",
+      "name": "ChangeRewardSplit",
+      "description": "Emitted when the contract is unpaused.",
+      "parameterDecorators": [
+        {
+          "name": "_oldTargetToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "_oldPercent",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_newPercent",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ChangeTreasury(address,address)",
+      "name": "ChangeTreasury",
+      "description": "Emitted when the contract is unpaused.",
+      "parameterDecorators": [
+        {
+          "name": "_oldTreasury",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_newTreasury",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DropTargetToken(address)",
+      "name": "DropTargetToken",
+      "description": "Emitted when the contract is unpaused.",
+      "parameterDecorators": [
+        {
+          "name": "_oldTargetToken",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "ExecuteDelayedAction(bytes4,bytes32)",
+      "name": "ExecuteDelayedAction",
+      "description": "Emitted when the contract is unpaused.",
+      "parameterDecorators": [
+        {
+          "name": "_selector",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "_hash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "Emitted when the contract is unpaused.",
+      "parameterDecorators": [
+        {
+          "name": "previousOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "addTargetToken(address,bool,uint256,address)",
+      "name": "addTargetToken",
+      "description": "Adds a new target token. This is a privileged function.",
+      "parameterDecorators": [
+        {
+          "name": "_newTargetToken",
+          "description": "The new target token address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_pool",
+          "description": "whether or not the new target token is a liquidity pool share.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_percent",
+          "description": "The new target token percentual allocation.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_collector",
+          "description": "The new target token collector address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "announceDelayedAction(bytes4,bytes)",
+      "name": "announceDelayedAction",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_selector",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_params",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "bonusToken()",
+      "name": "bonusToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "collectors(address)",
+      "name": "collectors",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "dropTargetToken(address)",
+      "name": "dropTargetToken",
+      "description": "Removes an existing target token. This is a privileged function.",
+      "parameterDecorators": [
+        {
+          "name": "_oldTargetToken",
+          "description": "The address for the target token being removed.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "exchange()",
+      "name": "exchange",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "gulp()",
+      "name": "gulp",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "minimalGulpFactor()",
+      "name": "minimalGulpFactor",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Returns the address of the current owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "peggedToken()",
+      "name": "peggedToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "percents(address)",
+      "name": "percents",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "pools(address)",
+      "name": "pools",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "psm()",
+      "name": "psm",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "recoverLostFunds(address)",
+      "name": "recoverLostFunds",
+      "description": "Allows the recovery of tokens sent by mistake to this contract, excluding tokens relevant to its operations. The full balance is sent to the treasury address. This is a privileged function.",
+      "parameterDecorators": [
+        {
+          "name": "_token",
+          "description": "The address of the token to be recovered.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceOwnership()",
+      "name": "renounceOwnership",
+      "description": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setCollector(address,address)",
+      "name": "setCollector",
+      "description": "Updates the fee collector address used to collect the performance fee. This is a privileged function.",
+      "parameterDecorators": [
+        {
+          "name": "_targetToken",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newCollector",
+          "description": "The new fee collector address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setExchange(address)",
+      "name": "setExchange",
+      "description": "Updates the exchange address used to convert funds. A zero address can be used to temporarily pause conversions. This is a privileged function.",
+      "parameterDecorators": [
+        {
+          "name": "_newExchange",
+          "description": "The new exchange address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setMinimalGulpFactor(uint256)",
+      "name": "setMinimalGulpFactor",
+      "description": "Updates the minimal gulp factor which defines the tolerance for gulping when below the average price. Default is 80%, which implies accepting up to 20% below the average price. This is a privileged function.",
+      "parameterDecorators": [
+        {
+          "name": "_newMinimalGulpFactor",
+          "description": "The new minimal gulp factor.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setPsm(address)",
+      "name": "setPsm",
+      "description": "Updates the peg stability module address used to collect lending fees. This is a privileged function.",
+      "parameterDecorators": [
+        {
+          "name": "_newPsm",
+          "description": "The new peg stability module address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setRewardSplit(address,uint256)",
+      "name": "setRewardSplit",
+      "description": "Updates the split share for a given target token. This is a privileged function.",
+      "parameterDecorators": [
+        {
+          "name": "_oldTargetToken",
+          "description": "The given target token address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_newPercent",
+          "description": "The new target token split share.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setTreasury(address)",
+      "name": "setTreasury",
+      "description": "Updates the treasury address used to recover lost funds. This is a privileged function.",
+      "parameterDecorators": [
+        {
+          "name": "_newTreasury",
+          "description": "The new treasury address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "sourceToken()",
+      "name": "sourceToken",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "targetTokens(uint256)",
+      "name": "targetTokens",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.",
+      "parameterDecorators": [
+        {
+          "name": "newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "treasury()",
+      "name": "treasury",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

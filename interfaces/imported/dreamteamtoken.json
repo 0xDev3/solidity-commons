@@ -1,0 +1,754 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens"
+  ],
+  "name": "DreamTeamToken",
+  "description": "DreamTeam token contract. It implements the next capabilities: 1. Standard ERC20 functionality. 2. Additional utility function approveAndCall. 3. Function to rescue \"lost forever\" tokens, which were accidentally sent to this smart contract. 4. Additional transfer and approve functions which allow to distinct the transaction signer and executor, which enables accounts with no Ether on their balances to make token transfers and use DreamTeam services. 5. Token sale distribution rules.",
+  "eventDecorators": [
+    {
+      "signature": "Approval(address,address,uint256)",
+      "name": "Approval",
+      "description": "event emitted when a user has unstaked a token.",
+      "parameterDecorators": [
+        {
+          "name": "owner",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "spender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Transfer(address,address,uint256)",
+      "name": "Transfer",
+      "description": "event emitted when a user has unstaked a token.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "value",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "allowance(address,address)",
+      "name": "allowance",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "approve(address,uint256)",
+      "name": "approve",
+      "description": "Allow `spender` to take `value` tokens from the transaction sender's account. Beware that changing an allowance with this method brings the risk that `spender` may use both the old and the new allowance by unfortunate transaction ordering. One possible solution to mitigate this race condition is to first reduce the spender's allowance to 0 and set the desired value afterwards: https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729.",
+      "parameterDecorators": [
+        {
+          "name": "spender",
+          "description": "- the address authorized to spend.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "- the maximum amount they can spend.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "approveAndCall(address,uint256,bytes)",
+      "name": "approveAndCall",
+      "description": "Utility function, which acts the same as approve(...), but also calls `receiveApproval` function on a `spender` address, which is usually the address of the smart contract. In the same call, smart contract can withdraw tokens from the sender's account and receive additional `extraData` for processing.",
+      "parameterDecorators": [
+        {
+          "name": "spender",
+          "description": "- the address to be authorized to spend tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "- the max amount the `spender` can withdraw.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "extraData",
+          "description": "- some extra information to send to the approved contract.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "approveAndCallViaSignature(address,address,uint256,bytes,uint256,address,uint256,uint256,bytes,uint8)",
+      "name": "approveAndCallViaSignature",
+      "description": "Same as `approveViaSignature`, but for `approveAndCall`. Use case: the user wants to send tokens to the smart contract and pass additional data within one transaction.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "- the account to approve withdrawal from, which signed all below parameters.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "spender",
+          "description": "- the account allowed to withdraw tokens from `from` address (in this case, smart contract only).",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "- the value in tokens to approve to withdraw.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "extraData",
+          "description": "- additional data to pass to the `spender` smart contract.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fee",
+          "description": "- a fee to pay to `feeRecipient`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "feeRecipient",
+          "description": "- account which will receive fee.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "- until when the signature is valid.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "sigId",
+          "description": "- signature unique ID. Signatures made with the same signature ID cannot be submitted twice.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "sig",
+          "description": "- signature made by `from`, which is the proof of `from`'s agreement with the above parameters.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "sigStd",
+          "description": "- chosen standard for signature validation. The signer must explicitly tell which standard they use.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "approveViaSignature(address,address,uint256,uint256,address,uint256,uint256,bytes,uint8)",
+      "name": "approveViaSignature",
+      "description": "Same as `transferViaSignature`, but for `approve`. Use case: the user wants to set an allowance for the smart contract or another user without having Ether on their balance.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "- the account to approve withdrawal from, which signed all below parameters.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "spender",
+          "description": "- the account allowed to withdraw tokens from `from` address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "- the value in tokens to approve to withdraw.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fee",
+          "description": "- a fee to pay to `feeRecipient`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "feeRecipient",
+          "description": "- account which will receive fee.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "- until when the signature is valid.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "sigId",
+          "description": "- signature unique ID. Signatures made with the same signature ID cannot be submitted twice.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "sig",
+          "description": "- signature made by `from`, which is the proof of `from`'s agreement with the above parameters.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "sigStd",
+          "description": "- chosen standard for signature validation. The signer must explicitly tell which standard they use.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "balanceOf(address)",
+      "name": "balanceOf",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "changeRescueAccount(address)",
+      "name": "changeRescueAccount",
+      "description": "Utility function that allows to change the rescueAccount address, which can \"rescue\" tokens accidentally sent to this smart contract address.",
+      "parameterDecorators": [
+        {
+          "name": "newRescueAccount",
+          "description": "- account which will become authorized to rescue tokens.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "decimals()",
+      "name": "decimals",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "ethSignedMessagePrefix()",
+      "name": "ethSignedMessagePrefix",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "lastMint()",
+      "name": "lastMint",
+      "description": "The last mint that will ever happen. Disables the multiMint function and mints remaining 40% of tokens (in regard of 60% tokens minted before) to a `tokenDistributor` address.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "multiMint(address[],uint256[])",
+      "name": "multiMint",
+      "description": "`tokenDistributor` is authorized to distribute tokens to the parties who participated in the token sale by the time the `lastMint` function is triggered, which closes the ability to mint any new tokens forever. Once the token distribution event ends (lastMint is triggered), tokenDistributor will become 0x0 and multiMint function will never work again.",
+      "parameterDecorators": [
+        {
+          "name": "recipients",
+          "description": "- addresses of token recipients.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "amounts",
+          "description": "- corresponding amount of each token recipient in `recipients`.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "name()",
+      "name": "name",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rescueAccount()",
+      "name": "rescueAccount",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "rescueLostTokens(address,uint256)",
+      "name": "rescueLostTokens",
+      "description": "ERC20 tokens are not designed to hold any other tokens (or Ether) on their balances. There were thousands of cases when people accidentally transfer tokens to a contract address while there is no way to get them back. This function adds a possibility to \"rescue\" tokens that were accidentally sent to this smart contract.",
+      "parameterDecorators": [
+        {
+          "name": "tokenContract",
+          "description": "- ERC20-compatible token.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "- amount to rescue.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "sigDestinationApprove()",
+      "name": "sigDestinationApprove",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "sigDestinationApproveAndCall()",
+      "name": "sigDestinationApproveAndCall",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "sigDestinationTransfer()",
+      "name": "sigDestinationTransfer",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "sigDestinationTransferfrom()",
+      "name": "sigDestinationTransferfrom",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "symbol()",
+      "name": "symbol",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "tokenDistributor()",
+      "name": "tokenDistributor",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalSupply()",
+      "name": "totalSupply",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "transfer(address,uint256)",
+      "name": "transfer",
+      "description": "Transfer `value` tokens to `to` address from the account of sender.",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "- the address of the recipient.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "- the amount to send.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferViaSignature(address,address,uint256,uint256,address,uint256,uint256,bytes,uint8)",
+      "name": "transferViaSignature",
+      "description": "This function distincts transaction signer from transaction executor. It allows anyone to transfer tokens from the `from` account by providing a valid signature, which can only be obtained from the `from` account owner. Note that passed parameter sigId is unique and cannot be passed twice (prevents replay attacks). When there's a need to make signature once again (because the first one is lost or whatever), user should sign the message with the same sigId, thus ensuring that the previous signature can't be used if the new one passes. Use case: the user wants to send some tokens to another user or smart contract, but don't have Ether to do so.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "- the account giving its signature to transfer `value` tokens to `to` address.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "- the account receiving `value` tokens.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "- the value in tokens to transfer.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fee",
+          "description": "- a fee to pay to `feeRecipient`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "feeRecipient",
+          "description": "- account which will receive fee.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "- until when the signature is valid.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "sigId",
+          "description": "- signature unique ID. Signatures made with the same signature ID cannot be submitted twice.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "sig",
+          "description": "- signature made by `from`, which is the proof of `from`'s agreement with the above parameters.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "sigStd",
+          "description": "- chosen standard for signature validation. The signer must explicitly tell which standard they use.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferfrom(address,address,uint256)",
+      "name": "transferfrom",
+      "description": "Transfer `value` tokens to `to` address from the `from` account, using the previously set allowance.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "- the address to transfer tokens from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "- the address of the recipient.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "- the amount to send.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferfromViaSignature(address,address,address,uint256,uint256,address,uint256,uint256,bytes,uint8)",
+      "name": "transferfromViaSignature",
+      "description": "Same as `transferViaSignature`, but for `transferfrom`. Use case: the user wants to withdraw tokens from a smart contract or another user who allowed the user to do so. Important note: the fee is subtracted from the `value`, and `to` address receives `value - fee`.",
+      "parameterDecorators": [
+        {
+          "name": "signer",
+          "description": "- the address allowed to call transferfrom, which signed all below parameters.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "from",
+          "description": "- the account to make withdrawal from.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "to",
+          "description": "- the address of the recipient.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "value",
+          "description": "- the value in tokens to withdraw.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "fee",
+          "description": "- a fee to pay to `feeRecipient`.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "feeRecipient",
+          "description": "- account which will receive fee.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "deadline",
+          "description": "- until when the signature is valid.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "sigId",
+          "description": "- signature unique ID. Signatures made with the same signature ID cannot be submitted twice.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "sig",
+          "description": "- signature made by `from`, which is the proof of `from`'s agreement with the above parameters.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "sigStd",
+          "description": "- chosen standard for signature validation. The signer must explicitly tell which standard they use.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "usedSigIds(address,uint256)",
+      "name": "usedSigIds",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

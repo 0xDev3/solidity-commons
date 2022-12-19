@@ -1,0 +1,492 @@
+{
+  "schema": "../schema.json",
+  "tags": [],
+  "name": "JBFundingCycleStore",
+  "description": "Manages funding cycle configurations and scheduling.",
+  "eventDecorators": [
+    {
+      "signature": "Configure(uint256,uint256,tuple,uint256,uint256,address)",
+      "name": "Configure",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "configuration",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "data",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "metadata",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "mustStartAtOrAfter",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "caller",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Init(uint256,uint256,uint256)",
+      "name": "Init",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "configuration",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "projectId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "basedOn",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "configureFor(uint256,tuple(uint256,uint256,uint256,address),uint256,uint256)",
+      "name": "configureFor",
+      "description": "Configures the next eligible funding cycle for the specified project. Only a project's current controller can configure its funding cycles._data.duration The duration of the funding cycle. Measured in days. Set to 0 for no expiry and to be able to reconfigure anytime._data.discountRate A number from 0-1000000000 indicating how valuable a contribution to this funding cycle is compared to previous funding cycles. If it's 0, each funding cycle will have equal weight. If the number is 900000000, a contribution to the next funding cycle will only give you 10% of tickets given to a contribution of the same amoutn during the current funding cycle._data.ballot The new ballot that will be used to approve subsequent reconfigurations.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project being configured.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_data",
+          "description": "The funding cycle configuration.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "duration",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "weight",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "discountRate",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "ballot",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        },
+        {
+          "name": "_metadata",
+          "description": "Data to associate with this funding cycle configuration.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_mustStartAtOrAfter",
+          "description": "The time before which the initialized funding cycle can't start.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The funding cycle that the configuration will take effect during.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "number",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "configuration",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "basedOn",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "start",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "duration",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "weight",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "discountRate",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "ballot",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "metadata",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "currentBallotStateOf(uint256)",
+      "name": "currentBallotStateOf",
+      "description": "The current ballot state of the project.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project to check the ballot state of.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "The current ballot's state.",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "currentOf(uint256)",
+      "name": "currentOf",
+      "description": "The funding cycle that is currently active for the specified project. Returns an empty funding cycle with all properties set to 0 if a current funding cycle of the project is not found.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project to get the current funding cycle of.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "fundingCycle",
+          "description": "The current funding cycle.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "number",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "configuration",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "basedOn",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "start",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "duration",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "weight",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "discountRate",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "ballot",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "metadata",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "directory()",
+      "name": "directory",
+      "description": "The directory of terminals and controllers for projects.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "get(uint256,uint256)",
+      "name": "get",
+      "description": "Get the funding cycle with the given configuration for the specified project.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project to which the funding cycle belongs.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_configuration",
+          "description": "The configuration of the funding cycle to get.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "fundingCycle",
+          "description": "The funding cycle.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "number",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "configuration",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "basedOn",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "start",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "duration",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "weight",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "discountRate",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "ballot",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "metadata",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "latestConfigurationOf(uint256)",
+      "name": "latestConfigurationOf",
+      "description": "The latest funding cycle configuration for each project. _projectId The ID of the project to get the latest funding cycle configuration of.",
+      "parameterDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "queuedOf(uint256)",
+      "name": "queuedOf",
+      "description": "The funding cycle that's next up for the specified project. Returns an empty funding cycle with all properties set to 0 if a queued funding cycle of the project is not found.",
+      "parameterDecorators": [
+        {
+          "name": "_projectId",
+          "description": "The ID of the project to get the queued funding cycle of.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "fundingCycle",
+          "description": "The queued funding cycle.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "number",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "configuration",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "basedOn",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "start",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "duration",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "weight",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "discountRate",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "ballot",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "metadata",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}

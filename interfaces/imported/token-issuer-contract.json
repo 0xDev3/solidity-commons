@@ -1,0 +1,1592 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "tokens",
+    "liquidity"
+  ],
+  "name": "SynthereumLiquidityPool",
+  "description": "Token Issuer Contract. Collects collateral and issues synthetic assets.",
+  "eventDecorators": [
+    {
+      "signature": "ClaimFee(address,uint256,uint256)",
+      "name": "ClaimFee",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "claimer",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "feeAmount",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "totalRemainingFees",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "DecreaseCollateral(address,uint256,uint256)",
+      "name": "DecreaseCollateral",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "lp",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "collateralRemoved",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newTotalCollateral",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "EmergencyShutdown(uint256,uint256,uint256)",
+      "name": "EmergencyShutdown",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "timestamp",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "finalCollateral",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Exchange(address,address,uint256,uint256,uint256,address)",
+      "name": "Exchange",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "destPool",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "numTokensSent",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "destNumTokensReceived",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "feePaid",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "IncreaseCollateral(address,uint256,uint256)",
+      "name": "IncreaseCollateral",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "lp",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "collateralAdded",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "newTotalCollateral",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Liquidate(address,uint256,uint256,uint256,uint256,uint256)",
+      "name": "Liquidate",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "liquidator",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "tokensLiquidated",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "price",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "collateralExpected",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "collateralReceived",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "rewardReceived",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Mint(address,uint256,uint256,uint256,address)",
+      "name": "Mint",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "collateralSent",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "numTokensReceived",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "feePaid",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Redeem(address,uint256,uint256,uint256,address)",
+      "name": "Redeem",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "numTokensSent",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "collateralReceived",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "feePaid",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "recipient",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "RoleAdminChanged(bytes32,bytes32,bytes32)",
+      "name": "RoleAdminChanged",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "previousAdminRole",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "newAdminRole",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RoleGranted(bytes32,address,address)",
+      "name": "RoleGranted",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "RoleRevoked(bytes32,address,address)",
+      "name": "RoleRevoked",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "sender",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "SetFeePercentage(uint256)",
+      "name": "SetFeePercentage",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "feePercentage",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SetFeeRecipients(address[],uint32[])",
+      "name": "SetFeeRecipients",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "feeRecipients",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "feeProportions",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SetLiquidationReward(uint256)",
+      "name": "SetLiquidationReward",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "liquidationReward",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "SetOverCollateralization(uint256)",
+      "name": "SetOverCollateralization",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "overCollateralization",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Settle(address,uint256,uint256,uint256)",
+      "name": "Settle",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "numTokensSettled",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "collateralExpected",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "collateralSettled",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "WithdrawLiquidity(address,uint256,uint256)",
+      "name": "WithdrawLiquidity",
+      "description": "Emitted when someone's membership role is being updated.",
+      "parameterDecorators": [
+        {
+          "name": "lp",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "liquidityWithdrawn",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "remainingLiquidity",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "DEFAULT_ADMIN_ROLE()",
+      "name": "DEFAULT_ADMIN_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "LIQUIDITY_PROVIDER_ROLE()",
+      "name": "LIQUIDITY_PROVIDER_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "MAINTAINER_ROLE()",
+      "name": "MAINTAINER_ROLE",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "claimFee()",
+      "name": "claimFee",
+      "description": "Withdraw fees gained by the sender.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "feeClaimed",
+          "description": "Amount of fee claimed.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "collateralCoverage()",
+      "name": "collateralCoverage",
+      "description": "Returns if position is overcollateralized and thepercentage of coverage of the collateral according to the last price.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "collateralRequirement()",
+      "name": "collateralRequirement",
+      "description": "Returns the percentage of overcollateralization to which a liquidation can triggered.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Percentage of overcollateralization.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "collateralToken()",
+      "name": "collateralToken",
+      "description": "Get the collateral token.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "collateralCurrency",
+          "description": "The ERC20 collateral token.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "decreaseCollateral(uint256,uint256)",
+      "name": "decreaseCollateral",
+      "description": "Decrease collaterallization of Lp positionCheck that final poosition is not undercollateralizedOnly a sender with LP role can call this function.",
+      "parameterDecorators": [
+        {
+          "name": "collateralToDecrease",
+          "description": "Collateral to decreased from the position.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "collateralToWithdraw",
+          "description": "Collateral to be transferred to the LP.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "newTotalCollateral",
+          "description": "New total collateral amount.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "emergencyShutdown()",
+      "name": "emergencyShutdown",
+      "description": "Shutdown the pool in case of emergencyOnly Synthereum manager contract can call this function.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "timestamp",
+          "description": "Timestamp of emergency shutdown transaction.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "price",
+          "description": "Price of the pair at the moment of shutdown execution.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "emergencyShutdownPrice()",
+      "name": "emergencyShutdownPrice",
+      "description": "Returns the price of the pair at the moment of the shutdown.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Price of the pair.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "emergencyShutdownTimestamp()",
+      "name": "emergencyShutdownTimestamp",
+      "description": "Returns the timestamp (unix time) at the moment of the shutdown.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Timestamp.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "exchange(tuple(address,uint256,uint256,uint256,address))",
+      "name": "exchange",
+      "description": "Exchange a fixed amount of synthetic token of this pool, with an amount of synthetic tokens of an another poolThis calculate the price using on chain price feedUser must approve synthetic token transfer for the redeem request to succeed.",
+      "parameterDecorators": [
+        {
+          "name": "exchangeParams",
+          "description": "Input parameters for exchanging (see ExchangeParams struct).",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "destPool",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "numTokens",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "minDestNumTokens",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "expiration",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "recipient",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "destNumTokensMinted",
+          "description": "Amount of collateral redeem by user.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "feePaid",
+          "description": "Amount of collateral paid by user as fee.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "exchangeMint(uint256,uint256,address)",
+      "name": "exchangeMint",
+      "description": "Called by a source Pool's `exchange` function to mint destination tokensThis functon can be called only by a pool registered in the PoolRegister contract.",
+      "parameterDecorators": [
+        {
+          "name": "collateralAmount",
+          "description": "The amount of collateral to use from the source Pool.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "numTokens",
+          "description": "The number of new tokens to mint.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "recipient",
+          "description": "Recipient to which send synthetic token minted.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "feePercentage()",
+      "name": "feePercentage",
+      "description": "Returns fee percentage set by the maintainer.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Fee percentage.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "feeRecipientsInfo()",
+      "name": "feeRecipientsInfo",
+      "description": "Returns fee recipients info.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address[]"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint32[]"
+        },
+        {
+          "name": "param2",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getExchangeTradeInfo(uint256,address)",
+      "name": "getExchangeTradeInfo",
+      "description": "Returns the destination synthetic tokens amount will be received and fees will be paid in exchange for an input amount of synthetic tokensThis function is only trading-informative, it doesn't check liquidity and collateralization conditions.",
+      "parameterDecorators": [
+        {
+          "name": "syntheticTokens",
+          "description": "Amount of synthetic tokens to be exchanged.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "destinationPool",
+          "description": "Pool in which mint the destination synthetic token.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "destSyntheticTokensReceived",
+          "description": "Synthetic tokens will be received from destination pool.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "feePaid",
+          "description": "Collateral fee will be paid.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getMintTradeInfo(uint256)",
+      "name": "getMintTradeInfo",
+      "description": "Returns the synthetic tokens will be received and fees will be paid in exchange for an input collateral amountThis function is only trading-informative, it doesn't check liquidity and collateralization conditions.",
+      "parameterDecorators": [
+        {
+          "name": "inputCollateral",
+          "description": "Input collateral amount to be exchanged.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "synthTokensReceived",
+          "description": "Synthetic tokens will be minted.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "feePaid",
+          "description": "Collateral fee will be paid.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getPriceFeedIdentifier()",
+      "name": "getPriceFeedIdentifier",
+      "description": "Returns price identifier of the pool.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "identifier",
+          "description": "Price identifier.",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRedeemTradeInfo(uint256)",
+      "name": "getRedeemTradeInfo",
+      "description": "Returns the collateral amount will be received and fees will be paid in exchange for an input amount of synthetic tokensThis function is only trading-informative, it doesn't check liquidity and collateralization conditions.",
+      "parameterDecorators": [
+        {
+          "name": "syntheticTokens",
+          "description": "Amount of synthetic tokens to be exchanged.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "collateralAmountReceived",
+          "description": "Collateral amount will be received by the user.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "feePaid",
+          "description": "Collateral fee will be paid.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoleAdmin(bytes32)",
+      "name": "getRoleAdmin",
+      "description": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoleMember(bytes32,uint256)",
+      "name": "getRoleMember",
+      "description": "Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "index",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getRoleMemberCount(bytes32)",
+      "name": "getRoleMemberCount",
+      "description": "Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "grantRole(bytes32,address)",
+      "name": "grantRole",
+      "description": "Overload {grantRole} to track enumerable memberships.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "hasRole(bytes32,address)",
+      "name": "hasRole",
+      "description": "Returns `true` if `account` has been granted `role`.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "increaseCollateral(uint256,uint256)",
+      "name": "increaseCollateral",
+      "description": "Increase collaterallization of Lp positionOnly a sender with LP role can call this function.",
+      "parameterDecorators": [
+        {
+          "name": "collateralToTransfer",
+          "description": "Collateral to be transferred before increase collateral in the position.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "collateralToIncrease",
+          "description": "Collateral to be added to the position.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "newTotalCollateral",
+          "description": "New total collateral amount.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isTrustedForwarder(address)",
+      "name": "isTrustedForwarder",
+      "description": "Check if an address is the trusted forwarder.",
+      "parameterDecorators": [
+        {
+          "name": "forwarder",
+          "description": "Address to check.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "True is the input address is the trusted forwarder, otherwise false.",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "liquidate(uint256)",
+      "name": "liquidate",
+      "description": "Liquidate Lp position for an amount of synthetic tokens undercollateralizedRevert if position is not undercollateralized.",
+      "parameterDecorators": [
+        {
+          "name": "numSynthTokens",
+          "description": "Number of synthetic tokens that user wants to liquidate.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "synthTokensLiquidated",
+          "description": "Amount of synthetic tokens liquidated.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "collateralReceived",
+          "description": "Amount of received collateral equal to the value of tokens liquidated.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "rewardAmount",
+          "description": "Amount of received collateral as reward for the liquidation.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "liquidationReward()",
+      "name": "liquidationReward",
+      "description": "Returns the percentage of reward for correct liquidation by a liquidator.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Percentage of reward.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "mint(tuple(uint256,uint256,uint256,address))",
+      "name": "mint",
+      "description": "Mint synthetic tokens using fixed amount of collateralThis calculate the price using on chain price feedUser must approve collateral transfer for the mint request to succeed.",
+      "parameterDecorators": [
+        {
+          "name": "mintParams",
+          "description": "Input parameters for minting (see MintParams struct).",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "minNumTokens",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "collateralAmount",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "expiration",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "recipient",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "syntheticTokensMinted",
+          "description": "Amount of synthetic tokens minted by a user.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "feePaid",
+          "description": "Amount of collateral paid by the user as fee.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "overCollateralization()",
+      "name": "overCollateralization",
+      "description": "Return overcollateralization percentage from the storage.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Overcollateralization percentage.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "redeem(tuple(uint256,uint256,uint256,address))",
+      "name": "redeem",
+      "description": "Redeem amount of collateral using fixed number of synthetic tokenThis calculate the price using on chain price feedUser must approve synthetic token transfer for the redeem request to succeed.",
+      "parameterDecorators": [
+        {
+          "name": "redeemParams",
+          "description": "Input parameters for redeeming (see RedeemParams struct).",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "numTokens",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "minCollateral",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "expiration",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "recipient",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "collateralRedeemed",
+          "description": "Amount of collateral redeem by user.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "feePaid",
+          "description": "Amount of collateral paid by user as fee.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "renounceRole(bytes32,address)",
+      "name": "renounceRole",
+      "description": "Overload {renounceRole} to track enumerable memberships.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "revokeRole(bytes32,address)",
+      "name": "revokeRole",
+      "description": "Overload {revokeRole} to track enumerable memberships.",
+      "parameterDecorators": [
+        {
+          "name": "role",
+          "description": "",
+          "recommendedTypes": []
+        },
+        {
+          "name": "account",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setFee(tuple(tuple,address[],uint32[]))",
+      "name": "setFee",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_feeData",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "feePercentage",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "feeRecipients",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "feeProportions",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setFeePercentage(uint256)",
+      "name": "setFeePercentage",
+      "description": "Update the fee percentageOnly the maintainer can call this function.",
+      "parameterDecorators": [
+        {
+          "name": "_feePercentage",
+          "description": "The new fee percentage.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setFeeRecipients(address[],uint32[])",
+      "name": "setFeeRecipients",
+      "description": "Update the addresses of recipients for generated fees and proportions of fees each address will receiveOnly the maintainer can call this function.",
+      "parameterDecorators": [
+        {
+          "name": "feeRecipients",
+          "description": "An array of the addresses of recipients that will receive generated fees.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "feeProportions",
+          "description": "An array of the proportions of fees generated each recipient will receive.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setLiquidationReward(uint256)",
+      "name": "setLiquidationReward",
+      "description": "Update the liquidation reward percentageOnly the maintainer can call this function.",
+      "parameterDecorators": [
+        {
+          "name": "_liquidationReward",
+          "description": "Percentage of reward for correct liquidation by a liquidator.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "setOverCollateralization(uint256)",
+      "name": "setOverCollateralization",
+      "description": "Update the overcollateralization percentageOnly the maintainer can call this function.",
+      "parameterDecorators": [
+        {
+          "name": "_overCollateralization",
+          "description": "Overcollateralization percentage.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "settleEmergencyShutdown()",
+      "name": "settleEmergencyShutdown",
+      "description": "Redeem tokens after emergency shutdown.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "synthTokensSettled",
+          "description": "Amount of synthetic tokens liquidated.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        },
+        {
+          "name": "collateralSettled",
+          "description": "Amount of collateral withdrawn after emergency shutdown.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "supportsInterface(bytes4)",
+      "name": "supportsInterface",
+      "description": "See {IERC165-supportsInterface}.",
+      "parameterDecorators": [
+        {
+          "name": "interfaceId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "synthereumFinder()",
+      "name": "synthereumFinder",
+      "description": "Get Synthereum finder of the pool.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "finder",
+          "description": "Returns finder contract.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "syntheticToken()",
+      "name": "syntheticToken",
+      "description": "Get the synthetic token associated to this pool.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "syntheticCurrency",
+          "description": "The ERC20 synthetic token.",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "syntheticTokenSymbol()",
+      "name": "syntheticTokenSymbol",
+      "description": "Get the synthetic token symbol associated to this pool.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "symbol",
+          "description": "The ERC20 synthetic token symbol.",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalAvailableLiquidity()",
+      "name": "totalAvailableLiquidity",
+      "description": "Returns the total amount of liquidity deposited in the pool, but nut used as collateral.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Total available liquidity.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalCollateralAmount()",
+      "name": "totalCollateralAmount",
+      "description": "Returns the total amount of collateral used for collateralizing tokens (users + LP).",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Total collateral amount.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalFeeAmount()",
+      "name": "totalFeeAmount",
+      "description": "Returns the total amount of fees to be withdrawn.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Total fee amount.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "totalSyntheticTokens()",
+      "name": "totalSyntheticTokens",
+      "description": "Returns total number of synthetic tokens generated by this pool.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "Number of synthetic tokens.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "typology()",
+      "name": "typology",
+      "description": "Return typology of the contract.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "userFee(address)",
+      "name": "userFee",
+      "description": "Returns the user's fee to be withdrawn.",
+      "parameterDecorators": [
+        {
+          "name": "user",
+          "description": "User's address.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "User's fee.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "version()",
+      "name": "version",
+      "description": "Get Synthereum version.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "poolVersion",
+          "description": "Returns the version of the Synthereum pool.",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "withdrawLiquidity(uint256)",
+      "name": "withdrawLiquidity",
+      "description": "Withdraw unused deposited collateral by the LPOnly a sender with LP role can call this function.",
+      "parameterDecorators": [
+        {
+          "name": "collateralAmount",
+          "description": "Collateral to be withdrawn.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "remainingLiquidity",
+          "description": "Remaining unused collateral in the pool.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    }
+  ]
+}

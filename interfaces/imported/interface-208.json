@@ -1,0 +1,1535 @@
+{
+  "schema": "../schema.json",
+  "tags": [
+    "oracles",
+    "bridges"
+  ],
+  "name": "WitnetRequestBoardTrustableDefault",
+  "description": "Witnet Request Board \"trustable\" implementation contract. This contract enables posting requests that Witnet bridges will insert into the Witnet network. The result of the requests will be posted back to this contract by the bridge nodes too. Contract to bridge requests to Witnet Decentralized Oracle Network.",
+  "eventDecorators": [
+    {
+      "signature": "DeletedQuery(uint256,address)",
+      "name": "DeletedQuery",
+      "description": "Emitted when all data related to given query is deleted from the WRB.",
+      "parameterDecorators": [
+        {
+          "name": "queryId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "OwnershipTransferred(address,address)",
+      "name": "OwnershipTransferred",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "to",
+          "description": "Address of the receiver.",
+          "recommendedTypes": [],
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "signature": "PostedRequest(uint256,address)",
+      "name": "PostedRequest",
+      "description": "Emitted when a Witnet Data Request is posted to the WRB.",
+      "parameterDecorators": [
+        {
+          "name": "queryId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "PostedResult(uint256,address)",
+      "name": "PostedResult",
+      "description": "Emitted when a Witnet-solved result is reported to the WRB.",
+      "parameterDecorators": [
+        {
+          "name": "queryId",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Received(address,uint256)",
+      "name": "Received",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "Amount of the transaction.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ReportersSet(address[])",
+      "name": "ReportersSet",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "reporters",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "ReportersUnset(address[])",
+      "name": "ReportersUnset",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "reporters",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Transfer(address,uint256)",
+      "name": "Transfer",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "to",
+          "description": "Address of the receiver.",
+          "recommendedTypes": [],
+          "indexed": false
+        },
+        {
+          "name": "amount",
+          "description": "Amount of the transaction.",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "signature": "Upgraded(address,address,bytes32,bytes32)",
+      "name": "Upgraded",
+      "description": "Emitted every time the contract gets upgraded.",
+      "parameterDecorators": [
+        {
+          "name": "from",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "baseAddr",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "baseCodehash",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": true
+        },
+        {
+          "name": "versionTag",
+          "description": "",
+          "recommendedTypes": [],
+          "indexed": false
+        }
+      ]
+    }
+  ],
+  "functionDecorators": [
+    {
+      "signature": "asBool(tuple(bool,tuple))",
+      "name": "asBool",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_result",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "success",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "asBytes(tuple(bool,tuple))",
+      "name": "asBytes",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_result",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "success",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "asErrorCode(tuple(bool,tuple))",
+      "name": "asErrorCode",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_result",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "success",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "asErrorMessage(tuple(bool,tuple))",
+      "name": "asErrorMessage",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_result",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "success",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        },
+        {
+          "name": "param1",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "asFixed16(tuple(bool,tuple))",
+      "name": "asFixed16",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_result",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "success",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "asFixed16Array(tuple(bool,tuple))",
+      "name": "asFixed16Array",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_result",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "success",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int32[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "asInt128(tuple(bool,tuple))",
+      "name": "asInt128",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_result",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "success",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int128"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "asInt128Array(tuple(bool,tuple))",
+      "name": "asInt128Array",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_result",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "success",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "int128[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "asRawError(tuple(bool,tuple))",
+      "name": "asRawError",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_result",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "success",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "asString(tuple(bool,tuple))",
+      "name": "asString",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_result",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "success",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "asStringArray(tuple(bool,tuple))",
+      "name": "asStringArray",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_result",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "success",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "string[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "asUint64(tuple(bool,tuple))",
+      "name": "asUint64",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_result",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "success",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "asUint64Array(tuple(bool,tuple))",
+      "name": "asUint64Array",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_result",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "success",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint64[]"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "base()",
+      "name": "base",
+      "description": "Retrieves base contract. Differs from address(this) when via delegate-proxy pattern.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "codehash()",
+      "name": "codehash",
+      "description": "Retrieves the immutable codehash of this contract, even if invoked as delegatecall.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "_codehash",
+          "description": "This contracts immutable codehash.",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "currency()",
+      "name": "currency",
+      "description": "",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "deleteQuery(uint256)",
+      "name": "deleteQuery",
+      "description": "Retrieves copy of all response data related to a previously posted request, removing the whole query from storage. Fails if the `_queryId` is not in 'Reported' status, or called from an address different tothe one that actually posted the given request.",
+      "parameterDecorators": [
+        {
+          "name": "_queryId",
+          "description": "The unique query identifier.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_response",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "reporter",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "timestamp",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "drTxHash",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bytes32"
+            },
+            {
+              "name": "cborBytes",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bytes"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "destruct()",
+      "name": "destruct",
+      "description": "Destroys current instance. Only callable by the owner.",
+      "parameterDecorators": [],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "estimateReward(uint256)",
+      "name": "estimateReward",
+      "description": "Estimates the amount of reward we need to insert for a given gas price.",
+      "parameterDecorators": [
+        {
+          "name": "_gasPrice",
+          "description": "The gas price for which we need to calculate the rewards.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getNextQueryId()",
+      "name": "getNextQueryId",
+      "description": "Returns next request id to be generated by the Witnet Request Board.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getQueryData(uint256)",
+      "name": "getQueryData",
+      "description": "Gets the whole Query data contents, if any, no matter its current status.",
+      "parameterDecorators": [
+        {
+          "name": "_queryId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "request",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "tuple"
+            },
+            {
+              "name": "response",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "tuple"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "getQueryStatus(uint256)",
+      "name": "getQueryStatus",
+      "description": "Gets current status of given query.",
+      "parameterDecorators": [
+        {
+          "name": "_queryId",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint8"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "initialize(bytes)",
+      "name": "initialize",
+      "description": "Initialize storage-context when invoked as delegatecall. Must fail when trying to initialize same instance more than once.",
+      "parameterDecorators": [
+        {
+          "name": "_initData",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "isError(tuple(bool,tuple))",
+      "name": "isError",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_result",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "success",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isOk(tuple(bool,tuple))",
+      "name": "isOk",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_result",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "success",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isReporter(address)",
+      "name": "isReporter",
+      "description": "Tells whether given address is included in the active reporters control list.",
+      "parameterDecorators": [
+        {
+          "name": "_reporter",
+          "description": "The address to be checked.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isUpgradable()",
+      "name": "isUpgradable",
+      "description": "Determines whether current instance allows being upgraded.Returned value should be invariant from whoever is calling.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "isUpgradableFrom(address)",
+      "name": "isUpgradableFrom",
+      "description": "Tells whether provided address could eventually upgrade the contract.",
+      "parameterDecorators": [
+        {
+          "name": "_from",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bool"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "owner()",
+      "name": "owner",
+      "description": "Gets admin/owner address.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "postRequest(address)",
+      "name": "postRequest",
+      "description": "Requests the execution of the given Witnet Data Request in expectation that it will be relayed and solved by the Witnet DON. A reward amount is escrowed by the Witnet Request Board that will be transferred to the reporter who relays back the Witnet-provided result to this request. Fails if:- provided reward is too low.- provided script is zero address.- provided script bytecode is empty.",
+      "parameterDecorators": [
+        {
+          "name": "_addr",
+          "description": "The address of a IWitnetRequest contract, containing the actual Data Request seralized bytecode.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_queryId",
+          "description": "An unique query identifier.",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "proxiableUUID()",
+      "name": "proxiableUUID",
+      "description": "Gets immutable \"heritage blood line\" (ie. genotype) as a Proxiable, and eventually Upgradable, contract. If implemented as an Upgradable touch, upgrading this contract to another one with a different `proxiableUUID()` value should fail.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "readRequest(uint256)",
+      "name": "readRequest",
+      "description": "Retrieves the whole Request record posted to the Witnet Request Board. Fails if the `_queryId` is not valid or, if it has been deleted,or if the related script bytecode got changed after being posted.",
+      "parameterDecorators": [
+        {
+          "name": "_queryId",
+          "description": "The unique identifier of a previously posted query.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "addr",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "requester",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "hash",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bytes32"
+            },
+            {
+              "name": "gasprice",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "reward",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "readRequestBytecode(uint256)",
+      "name": "readRequestBytecode",
+      "description": "Retrieves the Witnet data request actual bytecode of a previously posted request. Fails if the `_queryId` is not valid or, if it has been deleted,or if the related script bytecode got changed after being posted.",
+      "parameterDecorators": [
+        {
+          "name": "_queryId",
+          "description": "The unique identifier of the request query.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_bytecode",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "readRequestGasPrice(uint256)",
+      "name": "readRequestGasPrice",
+      "description": "Retrieves the gas price that any assigned reporter will have to pay when reporting result to a previously posted Witnet data request. Fails if the `_queryId` is not valid or, if it has been deleted,or if the related script bytecode got changed after being posted.",
+      "parameterDecorators": [
+        {
+          "name": "_queryId",
+          "description": "The unique query identifier.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "readRequestReward(uint256)",
+      "name": "readRequestReward",
+      "description": "Retrieves the reward currently set for a previously posted request. Fails if the `_queryId` is not valid or, if it has been deleted,or if the related script bytecode got changed after being posted.",
+      "parameterDecorators": [
+        {
+          "name": "_queryId",
+          "description": "The unique query identifier.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "readResponse(uint256)",
+      "name": "readResponse",
+      "description": "Retrieves the Witnet-provided result, and metadata, to a previously posted request. Fails if the `_queryId` is not in 'Reported' status.",
+      "parameterDecorators": [
+        {
+          "name": "_queryId",
+          "description": "The unique query identifier.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_response",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "reporter",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "address"
+            },
+            {
+              "name": "timestamp",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "uint256"
+            },
+            {
+              "name": "drTxHash",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bytes32"
+            },
+            {
+              "name": "cborBytes",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bytes"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "readResponseDrTxHash(uint256)",
+      "name": "readResponseDrTxHash",
+      "description": "Retrieves the hash of the Witnet transaction that actually solved the referred query. Fails if the `_queryId` is not in 'Reported' status.",
+      "parameterDecorators": [
+        {
+          "name": "_queryId",
+          "description": "The unique query identifier.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "readResponseReporter(uint256)",
+      "name": "readResponseReporter",
+      "description": "Retrieves the address that reported the result to a previously-posted request. Fails if the `_queryId` is not in 'Reported' status.",
+      "parameterDecorators": [
+        {
+          "name": "_queryId",
+          "description": "The unique query identifier.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "address"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "readResponseResult(uint256)",
+      "name": "readResponseResult",
+      "description": "Retrieves the Witnet-provided CBOR-bytes result of a previously posted request. Fails if the `_queryId` is not in 'Reported' status.",
+      "parameterDecorators": [
+        {
+          "name": "_queryId",
+          "description": "The unique query identifier.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "success",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bool"
+            },
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "tuple"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "readResponseTimestamp(uint256)",
+      "name": "readResponseTimestamp",
+      "description": "Retrieves the timestamp in which the result to the referred query was solved by the Witnet DON. Fails if the `_queryId` is not in 'Reported' status.",
+      "parameterDecorators": [
+        {
+          "name": "_queryId",
+          "description": "The unique query identifier.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "uint256"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "reportResult(uint256,bytes32,bytes)",
+      "name": "reportResult",
+      "description": "Reports the Witnet-provided result to a previously posted request. Will assume `block.timestamp` as the timestamp at which the request was solved.Fails if:- the `_queryId` is not in 'Posted' status.- provided `_drTxHash` is zero;- length of provided `_result` is zero.",
+      "parameterDecorators": [
+        {
+          "name": "_queryId",
+          "description": "The unique identifier of the data request.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_drTxHash",
+          "description": "The hash of the solving tally transaction in Witnet.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_cborBytes",
+          "description": "The result itself as bytes.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "reportResult(uint256,uint256,bytes32,bytes)",
+      "name": "reportResult",
+      "description": "Reports the Witnet-provided result to a previously posted request. Fails if:- called from unauthorized address;- the `_queryId` is not in 'Posted' status.- provided `_drTxHash` is zero;- length of provided `_result` is zero.",
+      "parameterDecorators": [
+        {
+          "name": "_queryId",
+          "description": "The unique query identifier.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_timestamp",
+          "description": "The timestamp of the solving tally transaction in Witnet.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_drTxHash",
+          "description": "The hash of the solving tally transaction in Witnet.",
+          "recommendedTypes": []
+        },
+        {
+          "name": "_cborBytes",
+          "description": "The result itself as bytes.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "resultFromCborBytes(bytes)",
+      "name": "resultFromCborBytes",
+      "description": "Decode raw CBOR bytes into a Witnet.Result instance.",
+      "parameterDecorators": [
+        {
+          "name": "_cborBytes",
+          "description": "Raw bytes representing a CBOR-encoded value.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "_0",
+          "description": "A `Witnet.Result` instance.",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "success",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bool"
+            },
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "tuple"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "resultFromCborValue(tuple(tuple,uint8,uint8,uint8,uint64,uint64))",
+      "name": "resultFromCborValue",
+      "description": "",
+      "parameterDecorators": [
+        {
+          "name": "_cborValue",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "buffer",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "initialByte",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "majorType",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "additionalInformation",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "len",
+              "description": "",
+              "recommendedTypes": []
+            },
+            {
+              "name": "tag",
+              "description": "",
+              "recommendedTypes": []
+            }
+          ]
+        }
+      ],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "parameters": [
+            {
+              "name": "success",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "bool"
+            },
+            {
+              "name": "value",
+              "description": "",
+              "recommendedTypes": [],
+              "solidityType": "tuple"
+            }
+          ],
+          "solidityType": "tuple"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    },
+    {
+      "signature": "setReporters(address[])",
+      "name": "setReporters",
+      "description": "Adds given addresses to the active reporters control list. Can only be called from the owner address.Emits the `ReportersSet` event.",
+      "parameterDecorators": [
+        {
+          "name": "_reporters",
+          "description": "List of addresses to be added to the active reporters control list.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "transferOwnership(address)",
+      "name": "transferOwnership",
+      "description": "Transfers ownership.",
+      "parameterDecorators": [
+        {
+          "name": "_newOwner",
+          "description": "",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "unsetReporters(address[])",
+      "name": "unsetReporters",
+      "description": "Removes given addresses from the active reporters control list. Can only be called from the owner address.Emits the `ReportersUnset` event.",
+      "parameterDecorators": [
+        {
+          "name": "_exReporters",
+          "description": "List of addresses to be added to the active reporters control list.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "upgradeReward(uint256)",
+      "name": "upgradeReward",
+      "description": "Increments the reward of a previously posted request by adding the transaction value to it. Updates request `gasPrice` in case this method is called with a higher gas price value than the one used in previous calls to `postRequest` or`upgradeReward`. Fails if the `_queryId` is not in 'Posted' status.Fails also in case the request `gasPrice` is increased, and the new reward value gets below new recalculated threshold.",
+      "parameterDecorators": [
+        {
+          "name": "_queryId",
+          "description": "The unique query identifier.",
+          "recommendedTypes": []
+        }
+      ],
+      "returnDecorators": [],
+      "emittableEvents": [],
+      "readOnly": false
+    },
+    {
+      "signature": "version()",
+      "name": "version",
+      "description": "Retrieves human-readable version tag of current implementation.",
+      "parameterDecorators": [],
+      "returnDecorators": [
+        {
+          "name": "param0",
+          "description": "",
+          "recommendedTypes": [],
+          "solidityType": "bytes32"
+        }
+      ],
+      "emittableEvents": [],
+      "readOnly": true
+    }
+  ]
+}
