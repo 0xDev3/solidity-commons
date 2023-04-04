@@ -1,0 +1,260 @@
+{
+    "$schema": "../../schema.json",
+    "tags": [
+        "Chainlink",
+        "cron",
+        "upkeep"
+    ],
+    "implements": [
+        "chainlink.automation.automation-compatible",
+        "openzeppelin.security.pausable"
+    ],
+    "name": "Cron Upkeep",
+    "description": "This contract allows a cron job to be used to trigger an upkeep on a target contract.",
+    "eventDecorators": [
+        {
+            "signature": "CronJobExecuted(address,address)",
+            "name": "Cron Job Executed",
+            "description": "Emitted when a cron job is executed.",
+            "parameterDecorators": [
+                {
+                    "name": "Id",
+                    "description": "Id of the cron job.",
+                    "recommendedTypes": [],
+                    "indexed": true
+                },
+                {
+                    "name": "Success",
+                    "description": "Whether the cron job was successful.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                }
+            ]
+        },
+        {
+            "signature": "CronJobCreated(uint256,address,bytes)",
+            "name": "Cron Job Created",
+            "description": "Emitted when a cron job is created.",
+            "parameterDecorators": [
+                {
+                    "name": "Id",
+                    "description": "Id of the cron job.",
+                    "recommendedTypes": [],
+                    "indexed": true
+                },
+                {
+                    "name": "Target",
+                    "description": "Target contract of the cron job.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                },
+                {
+                    "name": "Handler",
+                    "description": "Handler of the cron job.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                }
+            ]
+        },
+        {
+            "signature": "CronJobUpdated(uint256,address,bytes)",
+            "name": "Cron Job Updated",
+            "description": "Emitted when a cron job is updated.",
+            "parameterDecorators": [
+                {
+                    "name": "Id",
+                    "description": "Id of the cron job.",
+                    "recommendedTypes": [],
+                    "indexed": true
+                },
+                {
+                    "name": "Target",
+                    "description": "Target contract of the cron job.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                },
+                {
+                    "name": "Handler",
+                    "description": "Handler of the cron job.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                }
+            ]
+        },
+        {
+            "signature": "CronJobDeleted(address)",
+            "name": "Cron Job Deleted",
+            "description": "Emitted when a cron job is deleted.",
+            "parameterDecorators": [
+                {
+                    "name": "Id",
+                    "description": "Id of the cron job.",
+                    "recommendedTypes": [],
+                    "indexed": true
+                }
+            ]
+        }
+    ],
+    "constructorDecorators": [
+        {
+            "signature": "constructor(address,address,uint256,bytes)",
+            "name": "Constructor",
+            "description": "Creates a new Cron Upkeep contract.",
+            "parameterDecorators": [
+                {
+                    "name": "Owner",
+                    "description": "Address of the new owner.",
+                    "recommendedTypes": ["common.contract-caller"]
+                },
+                {
+                    "name": "Delegate",
+                    "description": "Address of the delegate contract.",
+                    "recommendedTypes": ["common.contract-caller"]
+                },
+                {
+                    "name": "Max Jobs",
+                    "description": "Maximum number of cron jobs that can be created.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "First Job",
+                    "description": "First cron job to be created.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        }
+    ],
+    "functionDecorators": [
+        {
+            "signature": "createCronJobFromEncodedSpec(address,bytes,bytes)",
+            "name": "Create Cron Job From Encoded Spec",
+            "description": "Creates a new cron job from the given encoded spec.",
+            "parameterDecorators": [
+                {
+                    "name": "Target",
+                    "description": "Target contract of the cron job.",
+                    "recommendedTypes": ["common.contract-caller"]
+                },
+                {
+                    "name": "Handler",
+                    "description": "Handler of the cron job.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Encoded Cron Spec",
+                    "description": "Encoded spec of the cron job.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "updateCronJob(uint256,address,bytes,bytes)",
+            "name": "Create Cron Job From Encoded Spec",
+            "description": "Creates a new cron job from the given encoded spec.",
+            "parameterDecorators": [
+                {
+                    "name": "Id",
+                    "description": "Id of the cron job.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "New Target",
+                    "description": "The new target contract of the cron job.",
+                    "recommendedTypes": ["common.contract-caller"]
+                },
+                {
+                    "name": "New Handler",
+                    "description": "The new handler of the cron job.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "New Encoded Cron Spec",
+                    "description": "New encoded spec of the cron job.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [
+                "CronJobUpdated(uint256,address,bytes)"
+            ],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "deleteCronJob(uint256)",
+            "name": "Delete Cron Job",
+            "description": "Deletes the cron job with the given id.",
+            "parameterDecorators": [
+                {
+                    "name": "Id",
+                    "description": "Id of the cron job.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [
+                "CronJobDeleted(address)"
+            ],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "getActiveCronJobIds()",
+            "name": "Get Active Cron Job Ids",
+            "description": "Returns the ids of all active cron jobs.",
+            "parameterDecorators": [],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Ids",
+                    "description": "Ids of all cron jobs.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint256[]"
+                }
+            ],
+            "readOnly": true
+        },
+        {
+            "signature": "getCronJob(uint256)",
+            "name": "Get Cron Job",
+            "description": "Returns the cron job with the given id.",
+            "parameterDecorators": [
+                {
+                    "name": "Id",
+                    "description": "Id of the cron job.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Target",
+                    "description": "The address a cron job forwards the eth transaction to.",
+                    "recommendedTypes": ["common.contract-caller"],
+                    "solidityType": "address"
+                },
+                {
+                    "name": "Handler",
+                    "description": "The encoded function sig to execute when forwarding a tx.",
+                    "recommendedTypes": [],
+                    "solidityType": "bytes"
+                },
+                {
+                    "name": "Cron String",
+                    "description": "The string representing the cron job.",
+                    "recommendedTypes": [],
+                    "solidityType": "string"
+                },
+                {
+                    "name": "Next tick",
+                    "description": "The timestamp of the next time the cron job will run.",
+                    "recommendedTypes": ["types.unixTimestamp"],
+                    "solidityType": "uint256"
+                }
+            ],
+            "readOnly": true
+        }
+    ]
+}
