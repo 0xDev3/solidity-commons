@@ -1,0 +1,5 @@
+# VRF COORDINATOR V2
+
+The VRFCoordinatorV2 chainlink Solidity smart contract is designed to manage and coordinate the process of generating verifiable random numbers on the Ethereum blockchain. It acts as an interface between the blockchain and off-chain or external data sources, providing a secure and transparent way to generate random numbers that can be used for a variety of applications such as gaming and voting systems.
+
+The contract uses a decentralized oracle network to securely and transparently obtain random values from external sources, ensuring that the generated values cannot be manipulated or tampered with. It also enables developers to specify their own randomness requirements, such as the range of values, and provides a mechanism for verifying the authenticity and validity of the generated values.

@@ -1,0 +1,992 @@
+{
+    "$schema": "../../schema.json",
+    "tags": [
+        "Chainlink",
+        "random",
+        "vrf",
+        "verifiable",
+        "randomness",
+        "random number"
+    ],
+    "implements": [
+        "chainlink.link-token",
+        "chainlink.block-hash-store",
+        "chainlink.aggregator.aggregator-v3",
+        "chainlink.vrf-coordinator-v2",
+        "chainlink.type-and-version-interface",
+        "chainlink.erc677-receiver",
+        "chainlink.vrf-consumer-base-v2"
+    ],
+    "name": "VRF Coordinator V2",
+    "description": "The VRF Coordinator contract provides a way to securely request randomness from Chainlink VRF nodes.",
+    "eventDecorators": [
+        {
+            "signature": "SubscriptionCreated(uint64,address)",
+            "name": "Subscription Created",
+            "description": "Emitted when a subscription is created.",
+            "parameterDecorators": [
+                {
+                    "name": "Sub ID",
+                    "description": "The subscription ID.",
+                    "recommendedTypes": [],
+                    "indexed": true
+                },
+                {
+                    "name": "Owner",
+                    "description": "The owner of the subscription.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                }
+            ]
+        },
+        {
+            "signature": "SubscriptionFunded(uint64,uint256,uint256)",
+            "name": "Subscription Funded",
+            "description": "Emitted when a subscription is funded.",
+            "parameterDecorators": [
+                {
+                    "name": "Sub ID",
+                    "description": "The subscription ID.",
+                    "recommendedTypes": [],
+                    "indexed": true
+                },
+                {
+                    "name": "Old Balance",
+                    "description": "The old balance of the subscription.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                },
+                {
+                    "name": "New Balance",
+                    "description": "The new balance of the subscription.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                }
+            ]
+        },
+        {
+            "signature": "SubscriptionConsumerAdded(uint64,address)",
+            "name": "Subscription Consumer Added",
+            "description": "Emitted when a consumer is added to a subscription.",
+            "parameterDecorators": [
+                {
+                    "name": "Sub ID",
+                    "description": "The subscription ID.",
+                    "recommendedTypes": [],
+                    "indexed": true
+                },
+                {
+                    "name": "Consumer",
+                    "description": "The consumer address.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                }
+            ]
+        },
+        {
+            "signature": "SubscriptionConsumerRemoved(uint64,address)",
+            "name": "Subscription Consumer Removed",
+            "description": "Emitted when a consumer is removed from a subscription.",
+            "parameterDecorators": [
+                {
+                    "name": "Sub ID",
+                    "description": "The subscription ID.",
+                    "recommendedTypes": [],
+                    "indexed": true
+                },
+                {
+                    "name": "Consumer",
+                    "description": "The consumer address.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                }
+            ]
+        },
+        {
+            "signature": "SubscriptionCanceled(uint64)",
+            "name": "Subscription Canceled",
+            "description": "Emitted when a subscription is canceled.",
+            "parameterDecorators": [
+                {
+                    "name": "Sub ID",
+                    "description": "The subscription ID.",
+                    "recommendedTypes": [],
+                    "indexed": true
+                }
+            ]
+        },
+        {
+            "signature": "SubscriptionOwnerTransferRequested(uint64,address)",
+            "name": "Subscription Owner Transfer Requested",
+            "description": "Emitted when a subscription owner transfer is requested.",
+            "parameterDecorators": [
+                {
+                    "name": "Sub ID",
+                    "description": "The subscription ID.",
+                    "recommendedTypes": [],
+                    "indexed": true
+                },
+                {
+                    "name": "From",
+                    "description": "The address to transfer the subscription from.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                },
+                {
+                    "name": "To",
+                    "description": "The address to transfer the subscription to.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                }
+            ]
+        },
+        {
+            "signature": "SubscriptionOwnerTransfered(uint64,address,address)",
+            "name": "Subscription Owner Transfered",
+            "description": "Emitted when a subscription owner transfer is completed.",
+            "parameterDecorators": [
+                {
+                    "name": "Sub ID",
+                    "description": "The subscription ID.",
+                    "recommendedTypes": [],
+                    "indexed": true
+                },
+                {
+                    "name": "From",
+                    "description": "The address to transfer the subscription from.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                },
+                {
+                    "name": "To",
+                    "description": "The address to transfer the subscription to.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                }
+            ]
+        },
+        {
+            "signature": "ProvingKeyRegistered(bytes32,address)",
+            "name": "Proving Key Registered",
+            "description": "Emitted when a proving key is registered.",
+            "parameterDecorators": [
+                {
+                    "name": "Key Hash",
+                    "description": "The key hash of the proving key.",
+                    "recommendedTypes": [],
+                    "indexed": true
+                },
+                {
+                    "name": "Oracle",
+                    "description": "The address of the proving oracle.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                }
+            ]
+        },
+        {
+            "signature": "ProvingKeyDeregistered(bytes32,address)",
+            "name": "Proving Key Deregistered",
+            "description": "Emitted when a proving key is deregistered.",
+            "parameterDecorators": [
+                {
+                    "name": "Key Hash",
+                    "description": "The key hash of the proving key.",
+                    "recommendedTypes": [],
+                    "indexed": true
+                },
+                {
+                    "name": "Oracle",
+                    "description": "The address of the proving oracle.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                }
+            ]
+        },
+        {
+            "signature": "RandomWordsRequested(bytes32,uint256,uint256,uint64,uint16,uint32,uint32,address)",
+            "name": "Random Words Requested",
+            "description": "Emitted when a random words request is made.",
+            "parameterDecorators": [
+                {
+                    "name": "Key Hash",
+                    "description": "Hash of the key used for the random number generation.",
+                    "recommendedTypes": [],
+                    "indexed": true
+                },
+                {
+                    "name": "Request Id",
+                    "description": "The request ID.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                },
+                {
+                    "name": "Pre Seed",
+                    "description": "the pre-seed used for the random number generation.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                },
+                {
+                    "name": "Sub Id",
+                    "description": "The subscription ID.",
+                    "recommendedTypes": [],
+                    "indexed": true
+                },
+                {
+                    "name": "Minimum Request Confirmations",
+                    "description": "The minimum number of confirmations before the request is considered fulfilled.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                },
+                {
+                    "name": "Callback Gas Limit",
+                    "description": "The gas limit for the callback function.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                },
+                {
+                    "name": "Num Words",
+                    "description": "The number of random words to be generated.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                },
+                {
+                    "name": "Sender",
+                    "description": "The address of the account that initiated the request.",
+                    "recommendedTypes": [],
+                    "indexed": true
+                }
+            ]
+        },
+        {
+            "signature": "RandomWordsFulfilled(bytes32,uint256,uint256,bool)",
+            "name": "RandomWordsFullfilled",
+            "description": "Emitted when a random words request is fulfilled.",
+            "parameterDecorators": [
+                {
+                    "name": "Request Id",
+                    "description": "The ID of the fulfilled request.",
+                    "recommendedTypes": [],
+                    "indexed": true
+                },
+                {
+                    "name": "Output Seed",
+                    "description": "The resulting random number that was generated.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                },
+                {
+                    "name": "Payment",
+                    "description": "The amount of LINK tokens paid to the Chainlink node for fulfilling the request.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                },
+                {
+                    "name": "Success",
+                    "description": "Whether the request was fulfilled.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                }
+            ]
+        },
+        {
+            "signature": "ConfigSet(uint16,uint32,uint32,uint32,int256,tuple)",
+            "name": "Config Set",
+            "description": "Emitted when the configuration is set.",
+            "parameterDecorators": [
+                {
+                    "name": "Minimum Request Confirmations",
+                    "description": "The minimum number of confirmations before the request is considered fulfilled.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                },
+                {
+                    "name": "Max Gas Limit",
+                    "description": "The gas limit for the callback function.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                },
+                {
+                    "name": "Staleness Seconds",
+                    "description": "The number of seconds after which a VRF response is considered stale.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                },
+                {
+                    "name": "Gas After Payment Calculation",
+                    "description": "The amount of gas to be added to a VRF request after the payment has been calculated.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                },
+                {
+                    "name": "Fallback Wei Per Unit Link",
+                    "description": "The fallback price for LINK tokens, used if no other price can be obtained.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                },
+                {
+                    "name": "Fee Config",
+                    "description": "The fee configuration (fee is charged per fulfillment in milionths of link).",
+                    "recommendedTypes": [],
+                    "parameters": [
+                        {
+                            "name": "Fulfillment Flat Fee Link PPM Tier 1",
+                            "description": "The flat fee for fulfilling a request in milionths of link for tier 1.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint32"
+                        },
+                        {
+                            "name": "Fulfillment Flat Fee Link PPM Tier 2",
+                            "description": "The flat fee for fulfilling a request in milionths of link for tier 2.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint32"
+                        },
+                        {
+                            "name": "Fulfillment Flat Fee Link PPM Tier 3",
+                            "description": "The flat fee for fulfilling a request in milionths of link for tier 3.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint32"
+                        },
+                        {
+                            "name": "Fulfillment Flat Fee Link PPM Tier 4",
+                            "description": "The flat fee for fulfilling a request in milionths of link for tier 4.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint32"
+                        },
+                        {
+                            "name": "Fulfillment Flat Fee Link PPM Tier 5",
+                            "description": "The flat fee for fulfilling a request in milionths of link for tier 5.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint32"
+                        },
+                        {
+                            "name": "Reqs For Tier 2",
+                            "description": "The number of fulfilled requests required to reach tier 2.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint24"
+                        },
+                        {
+                            "name": "Reqs For Tier 3",
+                            "description": "The number of fulfilled requests required to reach tier 3.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint24"
+                        },
+                        {
+                            "name": "Reqs For Tier 4",
+                            "description": "The number of fulfilled requests required to reach tier 4.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint24"
+                        },
+                        {
+                            "name": "Reqs For Tier 5",
+                            "description": "The number of fulfilled requests required to reach tier 5.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint24"
+                        }
+                    ],
+                    "solidityType": "tuple",
+                    "indexed": false
+                }
+            ]
+        }
+    ],
+    "constructorDecorators": [
+        {
+            "signature": "constructor(address,address,address)",
+            "name": "Constructor",
+            "description": "Initializes the contract with the provided addresses.",
+            "parameterDecorators": [
+                {
+                    "name": "Link",
+                    "description": "The address of the LinkToken contract.",
+                    "recommendedTypes": ["common.erc20-receiver"]
+                },
+                {
+                    "name": "Blockhash Store",
+                    "description": "The address of the BlockhashStore contract.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Link Eth Feed",
+                    "description": "The address of the AggregatorV3Interface contract, which is used to fetch the latest price of LINK/ETH.",
+                    "recommendedTypes": ["chainlink.aggregator.aggregator-v3"]
+                }
+            ],
+            "emittableEvents": []
+        }
+    ],
+    "functionDecorators": [
+        {
+            "signature": "registerProvingKey(address,uint256[2])",
+            "name": "Register Proving Key",
+            "description": "Registers a proving key to an oracle.",
+            "parameterDecorators": [
+                {
+                    "name": "Address",
+                    "description": "Address of the oracle.",
+                    "recommendedTypes": [
+                        "common.eth-receiver",
+                        "common.erc20-receiver"
+                    ]
+                },
+                {
+                    "name": "Public Proving Key",
+                    "description": "Key that oracle can use to submit vrf fulfillments.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [
+                "ProvingKeyRegistered(bytes32,address)"
+            ],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "deregisterProvingKey(uint256[2])",
+            "name": "Deregister Proving Key",
+            "description": "Deregisters a proving key from an oracle.",
+            "parameterDecorators": [
+                {
+                    "name": "Public Proving Key",
+                    "description": "Key that oracle can use to submit vrf fulfillments.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [
+                "ProvingKeyDeregistered(bytes32,address)"
+            ],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "hashOfKey(uint256[2])",
+            "name": "Hash Of Key",
+            "description": "Returns the proving key hash key associated with the provided public key.",
+            "parameterDecorators": [
+                {
+                    "name": "Public Key",
+                    "description": "The key to return the hash of.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "setConfig(uint16,uint32,uint32,uint32,int256,tuple)",
+            "name": "Set Config",
+            "description": "Sets the configuration for the VRFV2 coordinator.",
+            "parameterDecorators": [
+                {
+                    "name": "Minimum Request Confirmations",
+                    "description": "The minimum number of confirmations required for a request to be fulfilled.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Max Gas Limit",
+                    "description": "The maximum amount of gas that can be used to fulfill a request.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Staleness Seconds",
+                    "description": "The number of seconds after which a VRF response is considered stale.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Gas After Payment Calculation",
+                    "description": "Gas used in doing accounting after completing the gas measurement.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Fallback Wei Per Unit Link",
+                    "description": "The fallback price for LINK tokens in the case of a stale feed.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Fee Config",
+                    "description": "The fee configuration (fee is charged per fulfillment in milionths of link).",
+                    "recommendedTypes": [],
+                    "parameters": [
+                        {
+                            "name": "Fulfillment Flat Fee Link PPM Tier 1",
+                            "description": "The flat fee for fulfilling a request in milionths of link for tier 1.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint32"
+                        },
+                        {
+                            "name": "Fulfillment Flat Fee Link PPM Tier 2",
+                            "description": "The flat fee for fulfilling a request in milionths of link for tier 2.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint32"
+                        },
+                        {
+                            "name": "Fulfillment Flat Fee Link PPM Tier 3",
+                            "description": "The flat fee for fulfilling a request in milionths of link for tier 3.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint32"
+                        },
+                        {
+                            "name": "Fulfillment Flat Fee Link PPM Tier 4",
+                            "description": "The flat fee for fulfilling a request in milionths of link for tier 4.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint32"
+                        },
+                        {
+                            "name": "Fulfillment Flat Fee Link PPM Tier 5",
+                            "description": "The flat fee for fulfilling a request in milionths of link for tier 5.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint32"
+                        },
+                        {
+                            "name": "Reqs For Tier 2",
+                            "description": "The number of fulfilled requests required to reach tier 2.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint24"
+                        },
+                        {
+                            "name": "Reqs For Tier 3",
+                            "description": "The number of fulfilled requests required to reach tier 3.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint24"
+                        },
+                        {
+                            "name": "Reqs For Tier 4",
+                            "description": "The number of fulfilled requests required to reach tier 4.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint24"
+                        },
+                        {
+                            "name": "Reqs For Tier 5",
+                            "description": "The number of fulfilled requests required to reach tier 5.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint24"
+                        }
+                    ],
+                    "solidityType": "tuple"
+                }
+            ],
+            "emittableEvents": [
+                "FeeConfigSet(uint16,uint32,uint32,uint32,int256,tuple)"
+            ],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "getConfig()",
+            "name": "Get Config",
+            "description": "Returns the vrf coordinator configuration.",
+            "parameterDecorators": [],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Minimum Request Confirmations",
+                    "description": "The minimum number of confirmations required for a request to be fulfilled.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint16"
+                },
+                {
+                    "name": "Max Gas Limit",
+                    "description": "The maximum amount of gas that can be used to fulfill a request.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint32"
+                },
+                {
+                    "name": "Staleness Seconds",
+                    "description": "The number of seconds after which a VRF response is considered stale.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint32"
+                },
+                {
+                    "name": "Gas After Payment Calculation",
+                    "description": "Gas used in doing accounting after completing the gas measurement.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint32"
+                }
+            ],
+            "readOnly": true
+        },
+        {
+            "signature": "getFeeConfig()",
+            "name": "Get Fee Config",
+            "description": "Returns the vrf coordinator fee configuration.",
+            "parameterDecorators": [],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Fulfillment Flat Fee Link PPM Tier 1",
+                    "description": "The flat fee for fulfilling a request in milionths of link for tier 1.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint32"
+                },
+                {
+                    "name": "Fulfillment Flat Fee Link PPM Tier 2",
+                    "description": "The flat fee for fulfilling a request in milionths of link for tier 2.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint32"
+                },
+                {
+                    "name": "Fulfillment Flat Fee Link PPM Tier 3",
+                    "description": "The flat fee for fulfilling a request in milionths of link for tier 3.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint32"
+                },
+                {
+                    "name": "Fulfillment Flat Fee Link PPM Tier 4",
+                    "description": "The flat fee for fulfilling a request in milionths of link for tier 4.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint32"
+                },
+                {
+                    "name": "Fulfillment Flat Fee Link PPM Tier 5",
+                    "description": "The flat fee for fulfilling a request in milionths of link for tier 5.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint32"
+                },
+                {
+                    "name": "Reqs For Tier 2",
+                    "description": "The number of fulfilled requests required to reach tier 2.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint24"
+                },
+                {
+                    "name": "Reqs For Tier 3",
+                    "description": "The number of fulfilled requests required to reach tier 3.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint24"
+                },
+                {
+                    "name": "Reqs For Tier 4",
+                    "description": "The number of fulfilled requests required to reach tier 4.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint24"
+                },
+                {
+                    "name": "Reqs For Tier 5",
+                    "description": "The number of fulfilled requests required to reach tier 5.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint24"
+                }
+            ],
+            "readOnly": true
+        },
+        {
+            "signature": "getTotalBalance()",
+            "name": "Get Total Balance",
+            "description": "Returns the total balance of LINK available to the coordinator.",
+            "parameterDecorators": [],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Total Balance",
+                    "description": "The total balance of LINK available to the coordinator.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint256"
+                }
+            ],
+            "readOnly": true
+        },
+        {
+            "signature": "getFallbackWeiPerUnitLink()",
+            "name": "Get Fallback Wei Per Unit Link",
+            "description": "Returns the fallback wei per unit link.",
+            "parameterDecorators": [],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Fallback Wei Per Unit Link",
+                    "description": "The fallback wei per unit link.",
+                    "recommendedTypes": [],
+                    "solidityType": "int256"
+                }
+            ],
+            "readOnly": true
+        },
+        {
+            "signature": "ownerCancelSubscription(uint64)",
+            "name": "Owner Cancel Subscription",
+            "description": "Allows the owner to cancel a subscription and sends remaining link directly to the subscription owner.",
+            "parameterDecorators": [
+                {
+                    "name": "Subscription ID",
+                    "description": "The subscription ID to cancel.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "recoverFunds(address)",
+            "name": "Recover Funds",
+            "description": "Allows the owner to recover any LINK balance on the contract.",
+            "parameterDecorators": [
+                {
+                    "name": "To",
+                    "description": "The address to send LINK to.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "requestRandomWords(bytes32,uint32,uint16,uint32,uint32)",
+            "name": "Request Random Words",
+            "description": "Request a set of random words.",
+            "parameterDecorators": [
+                {
+                    "name": "Key Hash",
+                    "description": "Corresponds to a particular oracle job which uses that key for generating the VRF proof.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Sub Id",
+                    "description": "The ID of the VRF subscription.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Request Confirmations",
+                    "description": "How many blocks you'd like the oracle to wait before responding to the request.",
+                    "recommendedTypes": ["types.durationBlocks"]
+                },
+                {
+                    "name": "Callback Gas Limit",
+                    "description": "How much gas you'd like to receive in your fulfillRandomWords callback.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Num Words",
+                    "description": "The number of uint256 random values you'd like to receive in your fulfillRandomWords callback.",
+                    "recommendedTypes": []
+                }
+            ],
+            "returnDecorators": [
+                {
+                    "name": "Request ID",
+                    "description": "The ID of the request.",
+                    "recommendedTypes": [],
+                    "solidityType": "bytes32"
+                }
+            ],
+            "emittableEvents": [
+                "RandomWordsRequested(bytes32,uint256,uint256,uint64,uint16,uint32,uint32,address)"
+            ],
+            "readOnly": false
+        },
+        {
+            "signature": "getCommitment(uint256)",
+            "name": "Get Commitment",
+            "description": "Returns the commitment for a given request ID.",
+            "parameterDecorators": [
+                {
+                    "name": "Request ID",
+                    "description": "The ID of the request.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Commitment",
+                    "description": "The commitment for the given request ID.",
+                    "recommendedTypes": [],
+                    "solidityType": "bytes32"
+                }
+            ],
+            "readOnly": true
+        },
+        {
+            "signature": "getFeeTier(uint64)",
+            "name": "Get Fee Tier",
+            "description": "Compute fee based on the request count.",
+            "parameterDecorators": [
+                {
+                    "name": "Req Count",
+                    "description": "The number of fulfilled requests.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Fee PPM",
+                    "description": "The fee in LINK PPM",
+                    "recommendedTypes": [],
+                    "solidityType": "uint8"
+                }
+            ],
+            "readOnly": true
+        },
+        {
+            "signature": "fulfillRandomWords(tuple,tuple)",
+            "name": "Fulfill Random Words",
+            "description": "Fulfills a random number request. This function is called by the VRF Coordinator.",
+            "parameterDecorators": [
+                {
+                    "name": "Proof",
+                    "description": "Contains the proof and randomness.",
+                    "recommendedTypes": [],
+                    "parameters": [
+                        {
+                            "name": "Pk",
+                            "description": "A 256-bit public key used in the VRF computation.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint256[2]"
+                        },
+                        {
+                            "name": "Gamma",
+                            "description": "A 256-bit random value used in the VRF computation.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint256[2]"
+                        },
+                        {
+                            "name": "C",
+                            "description": "A 256-bit value used in the VRF computation.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint256"
+                        },
+                        {
+                            "name": "S",
+                            "description": "A 256-bit value used in the VRF computation.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint256"
+                        },
+                        {
+                            "name": "Seed",
+                            "description": "A 256-bit random value generated by the VRF computation.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint256"
+                        },
+                        {
+                            "name": "U Witness",
+                            "description": "An Ethereum address that witnessed the VRF computation.",
+                            "recommendedTypes": [],
+                            "solidityType": "address"
+                        },
+                        {
+                            "name": "C Gamma Witness",
+                            "description": "An array of two 256-bit values that witnessed the VRF computation.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint256[2]"
+                        },
+                        {
+                            "name": "S Hash Witness",
+                            "description": "An array of two 256-bit values that witnessed the VRF computation.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint256[2]"
+                        },
+                        {
+                            "name": "Z Ivn",
+                            "description": "A 256-bit value used in the VRF computation.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint256"
+                        }
+                    ]
+                },
+                {
+                    "name": "Request Commitment",
+                    "description": "Request commitment pre-image, committed to at request time",
+                    "recommendedTypes": [],
+                    "parameters": [
+                        {
+                            "name": "Block Num",
+                            "description": "The block number of the request.",
+                            "recommendedTypes": ["types.blockNumber"],
+                            "solidityType": "uint64"
+                        },
+                        {
+                            "name": "Sub Id",
+                            "description": "The ID of the VRF subscription.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint64"
+                        },
+                        {
+                            "name": "Callback Gas Limit",
+                            "description": "The gas limit for the callback function that will be called when the VRF response is received.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint32"
+                        },
+                        {
+                            "name": "Num Words",
+                            "description": "The number of words that the VRF response will consist of..",
+                            "recommendedTypes": [],
+                            "solidityType": "uint32"
+                        },
+                        {
+                            "name": "Sender",
+                            "description": "The address of the request sender.",
+                            "recommendedTypes": [],
+                            "solidityType": "address"
+                        }
+                    ]
+                }
+            ],
+            "returnDecorators": [],
+            "emittableEvents": [
+                "RandomWordsFulfilled(bytes32,uint256,uint256,bool)"
+            ],
+            "readOnly": false
+        },
+        {
+            "signature": "oracleWithdraw(address,uint96)",
+            "name": "Oracle Withdraw",
+            "description": "Withdraw LINK earned through fulfilling requests.",
+            "parameterDecorators": [
+                {
+                    "name": "Recipient",
+                    "description": "The address to send the LINK to.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Amount",
+                    "description": "The amount of LINK to withdraw.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "getCurrentSubId()",
+            "name": "Get Current Sub ID",
+            "description": "Returns the current subscription ID.",
+            "parameterDecorators": [],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Sub ID",
+                    "description": "The current subscription ID.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint64"
+                }
+            ],
+            "readOnly": true
+        },
+        {
+            "signature": "pendingRequestExists(uint64)",
+            "name": "Pending Request Exists",
+            "description": "Used to disable subscription canceling while outstanding request are present.",
+            "parameterDecorators": [
+                {
+                    "name": "Sub Id",
+                    "description": "The ID of the subscription.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Exists",
+                    "description": "True if there is a pending request for the subscription.",
+                    "recommendedTypes": [],
+                    "solidityType": "bool"
+                }
+            ],
+            "readOnly": true
+        }
+    ]
+}

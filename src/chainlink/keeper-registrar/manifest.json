@@ -1,0 +1,562 @@
+{
+    "$schema": "../../schema.json",
+    "tags": [
+        "Chainlink",
+        "Keeper",
+        "KeeperRegistry"
+    ],
+    "implements": [
+        "chainlink.link-token",
+        "chainlink.keeper-registry",
+        "chainlink.type-and-version-interface"
+    ],
+    "name": "Keeper Registrar",
+    "description": "This contract allows to register keeper nodes and to assign them to a specific job.",
+    "eventDecorators": [
+        {
+            "signature": "RegistrationRequested(bytes32,string,bytes,address,uint32,address,bytes,uint96,uint8)",
+            "name": "Registration requested",
+            "description": "Emitted when a keeper node requests to be registered.",
+            "parameterDecorators": [
+                {
+                    "name": "Hash",
+                    "description": "Hash of the registration request.",
+                    "recommendedTypes": [],
+                    "solidityType": "bytes32",
+                    "indexed": true
+                },
+                {
+                    "name": "Name",
+                    "description": "Name of Upkeep.",
+                    "recommendedTypes": [],
+                    "solidityType": "string",
+                    "indexed": false
+                },
+                {
+                    "name": "Encrypted email",
+                    "description": "Encrypted email of the node that requested to be registered.",
+                    "recommendedTypes": [],
+                    "solidityType": "bytes",
+                    "indexed": false
+                },
+                {
+                    "name": "Upkeep contract",
+                    "description": "Address of Keepers-compatible contract that will be automated.",
+                    "recommendedTypes": ["common.contract-caller"],
+                    "indexed": true
+                },
+                {
+                    "name": "Gas limit",
+                    "description": "The maximum amount of gas that will be used to execute your function on-chain.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint32",
+                    "indexed": false
+                },
+                {
+                    "name": "Admin address",
+                    "description": "Address for Upkeep administrator. Upkeep administrator can fund contract.",
+                    "recommendedTypes": ["common.contract-caller"],
+                    "indexed": false
+                },
+                {
+                    "name": "Check data",
+                    "description": "ABI-encoded fixed and specified at Upkeep registration and used in every checkUpkeep. Can be empty (0x).",
+                    "recommendedTypes": [],
+                    "solidityType": "bytes",
+                    "indexed": false
+                },
+                {
+                    "name": "Amount",
+                    "description": "The amount of LINK (in Wei) to fund your Upkeep. The minimum amount is 0.1 LINK. To fund 0.1 LINK please set this to 100000000000000000.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint96",
+                    "indexed": false
+                },
+                {
+                    "name": "Source",
+                    "description": "Not in use in programmatic registration. Please specify with 0.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint8",
+                    "indexed": true
+                }
+            ]
+        },
+        {
+            "signature": "RegistrationApproved(bytes32,string,uint256)",
+            "name": "Registration approved",
+            "description": "Emitted when a keeper node is approved and assigned an upkeep ID.",
+            "parameterDecorators": [
+                {
+                    "name": "Hash",
+                    "description": "Hash of the registration request.",
+                    "recommendedTypes": [],
+                    "solidityType": "bytes32",
+                    "indexed": true
+                },
+                {
+                    "name": "Display name",
+                    "description": "Display name of the keeper.",
+                    "recommendedTypes": [],
+                    "solidityType": "string",
+                    "indexed": false
+                },
+                {
+                    "name": "Upkeep ID",
+                    "description": "Assigned ID for the keeper's upkeep.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint256",
+                    "indexed": true
+                }
+            ]
+        },
+        {
+            "signature": "RegistrationRejected(bytes32)",
+            "name": "Registration rejected",
+            "description": "Emitted when a keeper node's registration request is rejected.",
+            "parameterDecorators": [
+                {
+                    "name": "Hash",
+                    "description": "Hash of the registration request.",
+                    "recommendedTypes": [],
+                    "solidityType": "bytes32",
+                    "indexed": true
+                }
+            ]
+        },
+        {
+            "signature": "AutoApproveAllowedSenderSet(address,bool)",
+            "name": "Auto approve allowed sender set",
+            "description": "Emitted when the allowed sender for auto approval is set.",
+            "parameterDecorators": [
+                {
+                    "name": "Sender address",
+                    "description": "Address of the allowed sender for auto approval.",
+                    "recommendedTypes": ["common.contract-caller"],
+                    "indexed": true
+                },
+                {
+                    "name": "Allowed",
+                    "description": "Whether the sender is allowed for auto approval or not.",
+                    "recommendedTypes": [],
+                    "solidityType": "bool",
+                    "indexed": false
+                }
+            ]
+        },
+        {
+            "signature": "ConfigChanged(uint8,uint32,address,uint96)",
+            "name": "Config changed",
+            "description": "Emitted when the configuration for the upkeep is changed.",
+            "parameterDecorators": [
+                {
+                    "name": "Auto approve config type",
+                    "description": "Type of auto approve configuration.",
+                    "recommendedTypes": [],
+                    "parameters": [
+                        {
+                            "name": "DISABLED",
+                            "description": "No auto approval.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint8"
+                        },
+                        {
+                            "name": "ENABLED_SENDER_ALLOWLIST",
+                            "description": "Auto approve registration requests if the sender is in the allowlist.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint8"
+                        },
+                        {
+                            "name": "ENABLED_ALL",
+                            "description": "Auto approve all registration requests.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint8"
+                        }
+                    ],
+                    "solidityType": "uint8",
+                    "indexed": false
+                },
+                {
+                    "name": "Auto approve max allowed",
+                    "description": "Maximum number of nodes to auto approve.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint32",
+                    "indexed": false
+                },
+                {
+                    "name": "Keeper registry",
+                    "description": "Address of the keeper registry contract.",
+                    "recommendedTypes": ["common.contract-caller"],
+                    "indexed": false
+                },
+                {
+                    "name": "Min LINK juels",
+                    "description": "Minimum amount of LINK required to fund the upkeep.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint96",
+                    "indexed": false
+                }
+            ]
+        }
+    ],
+    "constructorDecorators": [
+        {
+            "signature": "constructor(address,uint8,uint16,address,uint96)",
+            "name": "Constructor",
+            "description": "Deploys the contract with the provided LINK address, auto approve config type, auto approve max allowed, keeper registry, and minimum LINK juels.",
+            "parameterDecorators": [
+                {
+                    "name": "LINK address",
+                    "description": "The address of the LINK token contract.",
+                    "recommendedTypes": ["common.erc20-receiver"]
+                },
+                {
+                    "name": "Auto approve config type",
+                    "description": "The type of auto approve configuration.",
+                    "recommendedTypes": [],
+                    "parameters": [
+                        {
+                            "name": "DISABLED",
+                            "description": "No auto approval.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint8"
+                        },
+                        {
+                            "name": "ENABLED_SENDER_ALLOWLIST",
+                            "description": "Auto approve registration requests if the sender is in the allowlist.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint8"
+                        },
+                        {
+                            "name": "ENABLED_ALL",
+                            "description": "Auto approve all registration requests.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint8"
+                        }
+                    ]
+                },
+                {
+                    "name": "Auto approve max allowed",
+                    "description": "The maximum number of auto approvals allowed.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Keeper registry",
+                    "description": "The address of the Keeper Registry contract.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Min LINK juels",
+                    "description": "The minimum amount of LINK (in juels) required for an upkeep registration.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": []
+        }
+    ],
+    "functionDecorators": [
+        {
+            "signature": "register(string,bytes,address,uint32,address,bytes,uint96,uint8,address)",
+            "name": "Register",
+            "description": "Registers a keeper node with the provided display name, URL, check data, and minimum LINK juels.",
+            "parameterDecorators": [
+                {
+                    "name": "Name",
+                    "description": "Name of the upkeep to be registered",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Encrypted email",
+                    "description": "Email address of upkeep contact",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Upkeep contract",
+                    "description": "Address to perform upkeep on.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Gas limit",
+                    "description": "Amount of gas to provide the target contract when performing upkeep.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Admin address",
+                    "description": "Address to cancel upkeep and withdraw remaining funds.",
+                    "recommendedTypes": ["common.contract-caller"]
+                },
+                {
+                    "name": "Check data",
+                    "description": "Data passed to the contract when checking for upkeep.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Amount",
+                    "description": "Quantity of LINK upkeep is funded with (specified in Juels).",
+                    "recommendedTypes": [],
+                    "hints":[
+                        {
+                            "id":"decimals",
+                            "decimals_fetcher":"$this.decimals()"
+                        }
+                    ]
+                },
+                {
+                    "name": "Source",
+                    "description": "Application sending this request.",
+                    "recommendedTypes": ["common.contract-caller"]
+                },
+                {
+                    "name": "Sender",
+                    "description": "Address of the sender making the request.",
+                    "recommendedTypes": ["common.contract-caller"]
+                }
+            ],
+            "emittableEvents": [
+                "RegistrationRequested(bytes32,string,bytes,address,uint32,address,bytes,uint96,uint8)"
+            ],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature":"approve(string,address,uint32,address,bytes,bytes32)",
+            "name":"Approve",
+            "description":"Approves a pending upkeep registration request.",
+            "parameterDecorators":[
+                {
+                    "name":"Name",
+                    "description":"Name of the upkeep being approved.",
+                    "recommendedTypes":[]
+                },
+                {
+                    "name":"Upkeep contract",
+                    "description":"Address to perform upkeep on.",
+                    "recommendedTypes":[]
+                },
+                {
+                    "name":"Gas limit",
+                    "description":"Amount of gas to provide the target contract when performing upkeep.",
+                    "recommendedTypes":[]
+                },
+                {
+                    "name":"Admin address",
+                    "description":"Address to cancel upkeep and withdraw remaining funds.",
+                    "recommendedTypes":["common.contract-caller"]
+                },
+                {
+                    "name":"Check data",
+                    "description":"Data passed to the contract when checking for upkeep.",
+                    "recommendedTypes":[]
+                },
+                {
+                    "name":"Hash",
+                    "description":"Hash of the upkeep registration request to approve.",
+                    "recommendedTypes":[]
+                }
+            ],
+            "emittableEvents":[],
+            "returnDecorators":[],
+            "readOnly":false
+        },
+        {
+            "signature":"cancel(bytes32)",
+            "name":"Cancel",
+            "description":"Cancels a pending upkeep registration request and refunds the LINK balance.",
+            "parameterDecorators":[
+                {
+                    "name":"Hash",
+                    "description":"Hash of the registration request to cancel.",
+                    "recommendedTypes":[]
+                }
+            ],
+            "emittableEvents":[
+                "RegistrationRejected(bytes32)"
+            ],
+            "returnDecorators":[],
+            "readOnly":false
+        },
+        {
+            "signature": "setRegistrationConfig(uint8,uint16,address,uint96)",
+            "name": "Set Registration Config",
+            "description": "Updates the registration configuration for the Keeper registry",
+            "parameterDecorators": [
+                {
+                    "name": "Auto Approve Type",
+                    "description": "Type of auto approval for upkeeps",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Auto Approve Max Allowed",
+                    "description": "Maximum number of auto approved upkeeps",
+                    "recommendedTypes": [],
+                    "parameters": [
+                        {
+                            "name": "DISABLED",
+                            "description": "No auto approval.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint8"
+                        },
+                        {
+                            "name": "ENABLED_SENDER_ALLOWLIST",
+                            "description": "Auto approve registration requests if the sender is in the allowlist.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint8"
+                        },
+                        {
+                            "name": "ENABLED_ALL",
+                            "description": "Auto approve all registration requests.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint8"
+                        }
+                    ]
+                },
+                {
+                    "name": "Keeper Registry",
+                    "description": "Address of the Keeper registry contract",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Min LINK Juels",
+                    "description": "Minimum amount of LINK tokens required for upkeeps",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [
+                "ConfigChanged(uint8,uint16,address,uint96)"
+            ],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "setAutoApproveAllowedSender(address,bool)",
+            "name": "Set Auto Approve Allowed Sender",
+            "description": "Sets the auto approve allowed status for the specified sender address.",
+            "parameterDecorators": [
+                {
+                    "name": "Sender address",
+                    "description": "Address of the sender for which to set the auto approve allowed status.",
+                    "recommendedTypes": ["common.contract-caller"]
+                },
+                {
+                    "name": "Allowed",
+                    "description": "True if senderAddress needs to be added to allowlist, false if needs to be removed.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [
+                "AutoApproveAllowedSenderSet(address,bool)"
+            ],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "getAutoApproveAllowedSender(address)",
+            "name": "getAutoApproveAllowedSender",
+            "description": "Read the allowlist status of a sender address.",
+            "parameterDecorators": [
+                {
+                    "name": "Sender address",
+                    "description": "Address to read the allowlist status for.",
+                    "recommendedTypes": ["common.contract-caller"]
+                }
+            ],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Is allowed",
+                    "description": "Whether the sender is allowed for auto-approvals.",
+                    "recommendedTypes": [],
+                    "solidityType": "bool"
+                }
+            ],
+            "readOnly": true
+        },
+        {
+            "signature": "getRegistrationConfig()",
+            "name": "Get Registration Config",
+            "description": "Read the current registration configuration.",
+            "parameterDecorators": [],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Auto Approve Config Type",
+                    "description": "The type of auto-approval allowed.",
+                    "recommendedTypes": [],
+                    "parameters": [
+                        {
+                            "name": "DISABLED",
+                            "description": "No auto approval.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint8"
+                        },
+                        {
+                            "name": "ENABLED_SENDER_ALLOWLIST",
+                            "description": "Auto approve registration requests if the sender is in the allowlist.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint8"
+                        },
+                        {
+                            "name": "ENABLED_ALL",
+                            "description": "Auto approve all registration requests.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint8"
+                        }
+                    ],
+                    "solidityType": "uint8"
+                },
+                {
+                    "name": "Auto Approve Max Allowed",
+                    "description": "The maximum number of auto-approvals allowed.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint32"
+                },
+                {
+                    "name": "Approved Count",
+                    "description": "The number of approved upkeep registrations.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint32"
+                },
+                {
+                    "name": "Keeper Registry",
+                    "description": "The address of the keeper registry.",
+                    "recommendedTypes": [],
+                    "solidityType": "address"
+                },
+                {
+                    "name": "Min LINK Juels",
+                    "description": "The minimum amount of LINK required to register upkeep.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint256"
+                }
+            ],
+            "readOnly": true
+        },
+        {
+            "signature": "getPendingRequest(bytes32)",
+            "name": "Get Pending Request",
+            "description": "Gets the admin address and the current balance of a registration request.",
+            "parameterDecorators": [
+                {
+                    "name": "Hash",
+                    "description": "Hash of the registration request.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Admin",
+                    "description": "Admin address of the registration request.",
+                    "recommendedTypes": ["common.contract-caller"],
+                    "solidityType": "address"
+                },
+                {
+                    "name": "Balance",
+                    "description": "Current balance of the registration request (in Juels).",
+                    "recommendedTypes": [],
+                    "solidityType": "uint96"
+                }
+            ],
+            "readOnly": true
+        }
+    ]
+}
