@@ -1,11 +1,398 @@
+// File: contracts/src/v0.8/interfaces/LinkTokenInterface.sol
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+interface LinkTokenInterface {
+    function allowance(
+        address owner,
+        address spender
+    ) external view returns (uint256 remaining);
+
+    function approve(
+        address spender,
+        uint256 value
+    ) external returns (bool success);
+
+    function balanceOf(address owner) external view returns (uint256 balance);
+
+    function decimals() external view returns (uint8 decimalPlaces);
+
+    function decreaseApproval(
+        address spender,
+        uint256 addedValue
+    ) external returns (bool success);
+
+    function increaseApproval(
+        address spender,
+        uint256 subtractedValue
+    ) external;
+
+    function name() external view returns (string memory tokenName);
+
+    function symbol() external view returns (string memory tokenSymbol);
+
+    function totalSupply() external view returns (uint256 totalTokensIssued);
+
+    function transfer(
+        address to,
+        uint256 value
+    ) external returns (bool success);
+
+    function transferAndCall(
+        address to,
+        uint256 value,
+        bytes calldata data
+    ) external returns (bool success);
+
+    function transferFrom(
+        address from,
+        address to,
+        uint256 value
+    ) external returns (bool success);
+}
+
+// File: contracts/src/v0.8/interfaces/automation/2_0/AutomationRegistryInterface2_0.sol
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+/**
+ * @notice OnchainConfig of the registry
+ * @dev only used in params and return values
+ * @member paymentPremiumPPB payment premium rate oracles receive on top of
+ * being reimbursed for gas, measured in parts per billion
+ * @member flatFeeMicroLink flat fee paid to oracles for performing upkeeps,
+ * priced in MicroLink; can be used in conjunction with or independently of
+ * paymentPremiumPPB
+ * @member checkGasLimit gas limit when checking for upkeep
+ * @member stalenessSeconds number of seconds that is allowed for feed data to
+ * be stale before switching to the fallback pricing
+ * @member gasCeilingMultiplier multiplier to apply to the fast gas feed price
+ * when calculating the payment ceiling for keepers
+ * @member minUpkeepSpend minimum LINK that an upkeep must spend before cancelling
+ * @member maxPerformGas max executeGas allowed for an upkeep on this registry
+ * @member fallbackGasPrice gas price used if the gas price feed is stale
+ * @member fallbackLinkPrice LINK price used if the LINK price feed is stale
+ * @member transcoder address of the transcoder contract
+ * @member registrar address of the registrar contract
+ */
+struct OnchainConfig {
+    uint32 paymentPremiumPPB;
+    uint32 flatFeeMicroLink; // min 0.000001 LINK, max 4294 LINK
+    uint32 checkGasLimit;
+    uint24 stalenessSeconds;
+    uint16 gasCeilingMultiplier;
+    uint96 minUpkeepSpend;
+    uint32 maxPerformGas;
+    uint32 maxCheckDataSize;
+    uint32 maxPerformDataSize;
+    uint256 fallbackGasPrice;
+    uint256 fallbackLinkPrice;
+    address transcoder;
+    address registrar;
+}
+
+/**
+ * @notice state of the registry
+ * @dev only used in params and return values
+ * @member nonce used for ID generation
+ * @member ownerLinkBalance withdrawable balance of LINK by contract owner
+ * @member expectedLinkBalance the expected balance of LINK of the registry
+ * @member totalPremium the total premium collected on registry so far
+ * @member numUpkeeps total number of upkeeps on the registry
+ * @member configCount ordinal number of current config, out of all configs applied to this contract so far
+ * @member latestConfigBlockNumber last block at which this config was set
+ * @member latestConfigDigest domain-separation tag for current config
+ * @member latestEpoch for which a report was transmitted
+ * @member paused freeze on execution scoped to the entire registry
+ */
+struct State {
+    uint32 nonce;
+    uint96 ownerLinkBalance;
+    uint256 expectedLinkBalance;
+    uint96 totalPremium;
+    uint256 numUpkeeps;
+    uint32 configCount;
+    uint32 latestConfigBlockNumber;
+    bytes32 latestConfigDigest;
+    uint32 latestEpoch;
+    bool paused;
+}
+
+/**
+ * @notice all information about an upkeep
+ * @dev only used in return values
+ * @member target the contract which needs to be serviced
+ * @member executeGas the gas limit of upkeep execution
+ * @member checkData the checkData bytes for this upkeep
+ * @member balance the balance of this upkeep
+ * @member admin for this upkeep
+ * @member maxValidBlocknumber until which block this upkeep is valid
+ * @member lastPerformBlockNumber the last block number when this upkeep was performed
+ * @member amountSpent the amount this upkeep has spent
+ * @member paused if this upkeep has been paused
+ * @member skipSigVerification skip signature verification in transmit for a low security low cost model
+ */
+struct UpkeepInfo {
+    address target;
+    uint32 executeGas;
+    bytes checkData;
+    uint96 balance;
+    address admin;
+    uint64 maxValidBlocknumber;
+    uint32 lastPerformBlockNumber;
+    uint96 amountSpent;
+    bool paused;
+    bytes offchainConfig;
+}
+
+enum UpkeepFailureReason {
+    NONE,
+    UPKEEP_CANCELLED,
+    UPKEEP_PAUSED,
+    TARGET_CHECK_REVERTED,
+    UPKEEP_NOT_NEEDED,
+    PERFORM_DATA_EXCEEDS_LIMIT,
+    INSUFFICIENT_BALANCE
+}
+
+interface AutomationRegistryBaseInterface {
+    function registerUpkeep(
+        address target,
+        uint32 gasLimit,
+        address admin,
+        bytes calldata checkData,
+        bytes calldata offchainConfig
+    ) external returns (uint256 id);
+
+    function cancelUpkeep(uint256 id) external;
+
+    function pauseUpkeep(uint256 id) external;
+
+    function unpauseUpkeep(uint256 id) external;
+
+    function transferUpkeepAdmin(uint256 id, address proposed) external;
+
+    function acceptUpkeepAdmin(uint256 id) external;
+
+    function updateCheckData(uint256 id, bytes calldata newCheckData) external;
+
+    function addFunds(uint256 id, uint96 amount) external;
+
+    function setUpkeepGasLimit(uint256 id, uint32 gasLimit) external;
+
+    function setUpkeepOffchainConfig(
+        uint256 id,
+        bytes calldata config
+    ) external;
+
+    function getUpkeep(
+        uint256 id
+    ) external view returns (UpkeepInfo memory upkeepInfo);
+
+    function getActiveUpkeepIDs(
+        uint256 startIndex,
+        uint256 maxCount
+    ) external view returns (uint256[] memory);
+
+    function getTransmitterInfo(
+        address query
+    )
+        external
+        view
+        returns (
+            bool active,
+            uint8 index,
+            uint96 balance,
+            uint96 lastCollected,
+            address payee
+        );
+
+    function getState()
+        external
+        view
+        returns (
+            State memory state,
+            OnchainConfig memory config,
+            address[] memory signers,
+            address[] memory transmitters,
+            uint8 f
+        );
+}
+
+/**
+ * @dev The view methods are not actually marked as view in the implementation
+ * but we want them to be easily queried off-chain. Solidity will not compile
+ * if we actually inherit from this interface, so we document it here.
+ */
+interface AutomationRegistryInterface is AutomationRegistryBaseInterface {
+    function checkUpkeep(
+        uint256 upkeepId
+    )
+        external
+        view
+        returns (
+            bool upkeepNeeded,
+            bytes memory performData,
+            UpkeepFailureReason upkeepFailureReason,
+            uint256 gasUsed,
+            uint256 fastGasWei,
+            uint256 linkNative
+        );
+}
+
+interface AutomationRegistryExecutableInterface is
+    AutomationRegistryBaseInterface
+{
+    function checkUpkeep(
+        uint256 upkeepId
+    )
+        external
+        returns (
+            bool upkeepNeeded,
+            bytes memory performData,
+            UpkeepFailureReason upkeepFailureReason,
+            uint256 gasUsed,
+            uint256 fastGasWei,
+            uint256 linkNative
+        );
+}
+
+// File: contracts/src/v0.8/interfaces/TypeAndVersionInterface.sol
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+abstract contract TypeAndVersionInterface {
+    function typeAndVersion() external pure virtual returns (string memory);
+}
+
+// File: contracts/src/v0.8/interfaces/OwnableInterface.sol
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+interface OwnableInterface {
+    function owner() external returns (address);
+
+    function transferOwnership(address recipient) external;
+
+    function acceptOwnership() external;
+}
+
+// File: contracts/src/v0.8/ConfirmedOwnerWithProposal.sol
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+/**
+ * @title The ConfirmedOwner contract
+ * @notice A contract with helpers for basic contract ownership.
+ */
+contract ConfirmedOwnerWithProposal is OwnableInterface {
+    address private s_owner;
+    address private s_pendingOwner;
+
+    event OwnershipTransferRequested(address indexed from, address indexed to);
+    event OwnershipTransferred(address indexed from, address indexed to);
+
+    constructor(address newOwner, address pendingOwner) {
+        require(newOwner != address(0), "Cannot set owner to zero");
+
+        s_owner = newOwner;
+        if (pendingOwner != address(0)) {
+            _transferOwnership(pendingOwner);
+        }
+    }
+
+    /**
+     * @notice Allows an owner to begin transferring ownership to a new address,
+     * pending.
+     */
+    function transferOwnership(address to) public override onlyOwner {
+        _transferOwnership(to);
+    }
+
+    /**
+     * @notice Allows an ownership transfer to be completed by the recipient.
+     */
+    function acceptOwnership() external override {
+        require(msg.sender == s_pendingOwner, "Must be proposed owner");
+
+        address oldOwner = s_owner;
+        s_owner = msg.sender;
+        s_pendingOwner = address(0);
+
+        emit OwnershipTransferred(oldOwner, msg.sender);
+    }
+
+    /**
+     * @notice Get the current owner
+     */
+    function owner() public view override returns (address) {
+        return s_owner;
+    }
+
+    /**
+     * @notice validate, transfer ownership, and emit relevant events
+     */
+    function _transferOwnership(address to) private {
+        require(to != msg.sender, "Cannot transfer to self");
+
+        s_pendingOwner = to;
+
+        emit OwnershipTransferRequested(s_owner, to);
+    }
+
+    /**
+     * @notice validate access
+     */
+    function _validateOwnership() internal view {
+        require(msg.sender == s_owner, "Only callable by owner");
+    }
+
+    /**
+     * @notice Reverts if called by anyone other than the contract owner.
+     */
+    modifier onlyOwner() {
+        _validateOwnership();
+        _;
+    }
+}
+
+// File: contracts/src/v0.8/ConfirmedOwner.sol
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+/**
+ * @title The ConfirmedOwner contract
+ * @notice A contract with helpers for basic contract ownership.
+ */
+contract ConfirmedOwner is ConfirmedOwnerWithProposal {
+    constructor(
+        address newOwner
+    ) ConfirmedOwnerWithProposal(newOwner, address(0)) {}
+}
+
+// File: contracts/src/v0.8/interfaces/ERC677ReceiverInterface.sol
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.6;
+
+interface ERC677ReceiverInterface {
+    function onTokenTransfer(
+        address sender,
+        uint256 amount,
+        bytes calldata data
+    ) external;
+}
+
+// File: contracts/src/v0.8/automation/2_0/KeeperRegistrar2_0.sol
+
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.6;
-
-import "./interfaces/LinkTokenInterface.sol";
-import "./interfaces/KeeperRegistryInterface1_2.sol";
-import "./interfaces/TypeAndVersionInterface.sol";
-import "./ConfirmedOwner.sol";
-import "./interfaces/ERC677ReceiverInterface.sol";
 
 /**
  * @notice Contract to accept requests for upkeep registrations
@@ -17,7 +404,7 @@ import "./interfaces/ERC677ReceiverInterface.sol";
  * The idea is to have same interface(functions,events) for UI or anyone using this contract irrespective of auto approve being enabled or not.
  * they can just listen to `RegistrationRequested` & `RegistrationApproved` events and know the status on registrations.
  */
-contract KeeperRegistrar is
+contract KeeperRegistrar2_0 is
     TypeAndVersionInterface,
     ConfirmedOwner,
     ERC677ReceiverInterface
@@ -41,17 +428,19 @@ contract KeeperRegistrar is
 
     /**
      * @notice versions:
+     * - KeeperRegistrar 2.0.0: Remove source from register
+     *                          Breaks our example of "Register an Upkeep using your own deployed contract"
      * - KeeperRegistrar 1.1.0: Add functionality for sender allowlist in auto approve
      *                        : Remove rate limit and add max allowed for auto approve
      * - KeeperRegistrar 1.0.0: initial release
      */
-    string public constant override typeAndVersion = "KeeperRegistrar 1.1.0";
+    string public constant override typeAndVersion = "KeeperRegistrar 2.0.0";
 
-    struct Config {
+    struct RegistrarConfig {
         AutoApproveType autoApproveConfigType;
         uint32 autoApproveMaxAllowed;
         uint32 approvedCount;
-        KeeperRegistryBaseInterface keeperRegistry;
+        AutomationRegistryBaseInterface keeperRegistry;
         uint96 minLINKJuels;
     }
 
@@ -60,7 +449,18 @@ contract KeeperRegistrar is
         uint96 balance;
     }
 
-    Config private s_config;
+    struct RegistrationParams {
+        string name;
+        bytes encryptedEmail;
+        address upkeepContract;
+        uint32 gasLimit;
+        address adminAddress;
+        bytes checkData;
+        bytes offchainConfig;
+        uint96 amount;
+    }
+
+    RegistrarConfig private s_config;
     // Only applicable if s_config.configType is ENABLED_SENDER_ALLOWLIST
     mapping(address => bool) private s_autoApproveAllowedSenders;
 
@@ -72,8 +472,7 @@ contract KeeperRegistrar is
         uint32 gasLimit,
         address adminAddress,
         bytes checkData,
-        uint96 amount,
-        uint8 indexed source
+        uint96 amount
     );
 
     event RegistrationApproved(
@@ -143,7 +542,7 @@ contract KeeperRegistrar is
      * @param adminAddress address to cancel upkeep and withdraw remaining funds
      * @param checkData data passed to the contract when checking for upkeep
      * @param amount quantity of LINK upkeep is funded with (specified in Juels)
-     * @param source application sending this request
+     * @param offchainConfig offchainConfig for upkeep in bytes
      * @param sender address of the sender making the request
      */
     function register(
@@ -153,49 +552,39 @@ contract KeeperRegistrar is
         uint32 gasLimit,
         address adminAddress,
         bytes calldata checkData,
+        bytes calldata offchainConfig,
         uint96 amount,
-        uint8 source,
         address sender
     ) external onlyLINK {
-        if (adminAddress == address(0)) {
-            revert InvalidAdminAddress();
-        }
-        bytes32 hash = keccak256(
-            abi.encode(upkeepContract, gasLimit, adminAddress, checkData)
+        _register(
+            RegistrationParams({
+                name: name,
+                encryptedEmail: encryptedEmail,
+                upkeepContract: upkeepContract,
+                gasLimit: gasLimit,
+                adminAddress: adminAddress,
+                checkData: checkData,
+                offchainConfig: offchainConfig,
+                amount: amount
+            }),
+            sender
         );
+    }
 
-        emit RegistrationRequested(
-            hash,
-            name,
-            encryptedEmail,
-            upkeepContract,
-            gasLimit,
-            adminAddress,
-            checkData,
-            amount,
-            source
-        );
-
-        Config memory config = s_config;
-        if (_shouldAutoApprove(config, sender)) {
-            s_config.approvedCount = config.approvedCount + 1;
-
-            _approve(
-                name,
-                upkeepContract,
-                gasLimit,
-                adminAddress,
-                checkData,
-                amount,
-                hash
-            );
-        } else {
-            uint96 newBalance = s_pendingRequests[hash].balance + amount;
-            s_pendingRequests[hash] = PendingRequest({
-                admin: adminAddress,
-                balance: newBalance
-            });
+    /**
+     * @notice Allows external users to register upkeeps; assumes amount is approved for transfer by the contract
+     * @param requestParams struct of all possible registration parameters
+     */
+    function registerUpkeep(
+        RegistrationParams calldata requestParams
+    ) external returns (uint256) {
+        if (requestParams.amount < s_config.minLINKJuels) {
+            revert InsufficientPayment();
         }
+
+        LINK.transferFrom(msg.sender, address(this), requestParams.amount);
+
+        return _register(requestParams, msg.sender);
     }
 
     /**
@@ -207,6 +596,7 @@ contract KeeperRegistrar is
         uint32 gasLimit,
         address adminAddress,
         bytes calldata checkData,
+        bytes calldata offchainConfig,
         bytes32 hash
     ) external onlyOwner {
         PendingRequest memory request = s_pendingRequests[hash];
@@ -214,25 +604,35 @@ contract KeeperRegistrar is
             revert RequestNotFound();
         }
         bytes32 expectedHash = keccak256(
-            abi.encode(upkeepContract, gasLimit, adminAddress, checkData)
+            abi.encode(
+                upkeepContract,
+                gasLimit,
+                adminAddress,
+                checkData,
+                offchainConfig
+            )
         );
         if (hash != expectedHash) {
             revert HashMismatch();
         }
         delete s_pendingRequests[hash];
         _approve(
-            name,
-            upkeepContract,
-            gasLimit,
-            adminAddress,
-            checkData,
-            request.balance,
-            hash
+            RegistrationParams({
+                name: name,
+                encryptedEmail: "",
+                upkeepContract: upkeepContract,
+                gasLimit: gasLimit,
+                adminAddress: adminAddress,
+                checkData: checkData,
+                offchainConfig: offchainConfig,
+                amount: request.balance
+            }),
+            expectedHash
         );
     }
 
     /**
-     * @notice cancel will remove a registration request and return the refunds to the msg.sender
+     * @notice cancel will remove a registration request and return the refunds to the request.admin
      * @param hash the request hash
      */
     function cancel(bytes32 hash) external {
@@ -244,9 +644,9 @@ contract KeeperRegistrar is
             revert RequestNotFound();
         }
         delete s_pendingRequests[hash];
-        bool success = LINK.transfer(msg.sender, request.balance);
+        bool success = LINK.transfer(request.admin, request.balance);
         if (!success) {
-            revert LinkTransferFailed(msg.sender);
+            revert LinkTransferFailed(request.admin);
         }
         emit RegistrationRejected(hash);
     }
@@ -266,12 +666,12 @@ contract KeeperRegistrar is
         uint96 minLINKJuels
     ) public onlyOwner {
         uint32 approvedCount = s_config.approvedCount;
-        s_config = Config({
+        s_config = RegistrarConfig({
             autoApproveConfigType: autoApproveConfigType,
             autoApproveMaxAllowed: autoApproveMaxAllowed,
             approvedCount: approvedCount,
             minLINKJuels: minLINKJuels,
-            keeperRegistry: KeeperRegistryBaseInterface(keeperRegistry)
+            keeperRegistry: AutomationRegistryBaseInterface(keeperRegistry)
         });
 
         emit ConfigChanged(
@@ -320,7 +720,7 @@ contract KeeperRegistrar is
             uint256 minLINKJuels
         )
     {
-        Config memory config = s_config;
+        RegistrarConfig memory config = s_config;
         return (
             config.autoApproveConfigType,
             config.autoApproveMaxAllowed,
@@ -372,46 +772,93 @@ contract KeeperRegistrar is
     //PRIVATE
 
     /**
+     * @dev verify registration request and emit RegistrationRequested event
+     */
+    function _register(
+        RegistrationParams memory params,
+        address sender
+    ) private returns (uint256) {
+        if (params.adminAddress == address(0)) {
+            revert InvalidAdminAddress();
+        }
+        bytes32 hash = keccak256(
+            abi.encode(
+                params.upkeepContract,
+                params.gasLimit,
+                params.adminAddress,
+                params.checkData,
+                params.offchainConfig
+            )
+        );
+
+        emit RegistrationRequested(
+            hash,
+            params.name,
+            params.encryptedEmail,
+            params.upkeepContract,
+            params.gasLimit,
+            params.adminAddress,
+            params.checkData,
+            params.amount
+        );
+
+        uint256 upkeepId;
+        RegistrarConfig memory config = s_config;
+        if (_shouldAutoApprove(config, sender)) {
+            s_config.approvedCount = config.approvedCount + 1;
+
+            upkeepId = _approve(params, hash);
+        } else {
+            uint96 newBalance = s_pendingRequests[hash].balance + params.amount;
+            s_pendingRequests[hash] = PendingRequest({
+                admin: params.adminAddress,
+                balance: newBalance
+            });
+        }
+
+        return upkeepId;
+    }
+
+    /**
      * @dev register upkeep on KeeperRegistry contract and emit RegistrationApproved event
      */
     function _approve(
-        string memory name,
-        address upkeepContract,
-        uint32 gasLimit,
-        address adminAddress,
-        bytes calldata checkData,
-        uint96 amount,
+        RegistrationParams memory params,
         bytes32 hash
-    ) private {
-        KeeperRegistryBaseInterface keeperRegistry = s_config.keeperRegistry;
+    ) private returns (uint256) {
+        AutomationRegistryBaseInterface keeperRegistry = s_config
+            .keeperRegistry;
 
         // register upkeep
         uint256 upkeepId = keeperRegistry.registerUpkeep(
-            upkeepContract,
-            gasLimit,
-            adminAddress,
-            checkData
+            params.upkeepContract,
+            params.gasLimit,
+            params.adminAddress,
+            params.checkData,
+            params.offchainConfig
         );
         // fund upkeep
         bool success = LINK.transferAndCall(
             address(keeperRegistry),
-            amount,
+            params.amount,
             abi.encode(upkeepId)
         );
         if (!success) {
             revert LinkTransferFailed(address(keeperRegistry));
         }
 
-        emit RegistrationApproved(hash, name, upkeepId);
+        emit RegistrationApproved(hash, params.name, upkeepId);
+
+        return upkeepId;
     }
 
     /**
      * @dev verify sender allowlist if needed and check max limit
      */
     function _shouldAutoApprove(
-        Config memory config,
+        RegistrarConfig memory config,
         address sender
-    ) private returns (bool) {
+    ) private view returns (bool) {
         if (config.autoApproveConfigType == AutoApproveType.DISABLED) {
             return false;
         }
@@ -461,12 +908,23 @@ contract KeeperRegistrar is
      * @param expected amount that should match the actual amount
      * @param data bytes
      */
-    modifier isActualAmount(uint256 expected, bytes memory data) {
-        uint256 actual;
-        assembly {
-            actual := mload(add(data, 228))
-        }
-        if (expected != actual) {
+    modifier isActualAmount(uint256 expected, bytes calldata data) {
+        // decode register function arguments to get actual amount
+        (, , , , , , , uint96 amount, ) = abi.decode(
+            data[4:],
+            (
+                string,
+                bytes,
+                address,
+                uint32,
+                address,
+                bytes,
+                bytes,
+                uint96,
+                address
+            )
+        );
+        if (expected != amount) {
             revert AmountMismatch();
         }
         _;
@@ -477,12 +935,23 @@ contract KeeperRegistrar is
      * @param expected address that should match the actual sender address
      * @param data bytes
      */
-    modifier isActualSender(address expected, bytes memory data) {
-        address actual;
-        assembly {
-            actual := mload(add(data, 292))
-        }
-        if (expected != actual) {
+    modifier isActualSender(address expected, bytes calldata data) {
+        // decode register function arguments to get actual sender
+        (, , , , , , , , address sender) = abi.decode(
+            data[4:],
+            (
+                string,
+                bytes,
+                address,
+                uint32,
+                address,
+                bytes,
+                bytes,
+                uint96,
+                address
+            )
+        );
+        if (expected != sender) {
             revert SenderMismatch();
         }
         _;
