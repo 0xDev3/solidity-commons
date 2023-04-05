@@ -1,7 +1,18 @@
-// SPDX-License-Identifier: MIT
+// File: contracts/src/v0.8/interfaces/OwnableInterface.sol
+
 pragma solidity ^0.8.0;
 
-import "./interfaces/OwnableInterface.sol";
+interface OwnableInterface {
+    function owner() external returns (address);
+
+    function transferOwnership(address recipient) external;
+
+    function acceptOwnership() external;
+}
+
+// File: contracts/src/v0.8/ConfirmedOwnerWithProposal.sol
+
+pragma solidity ^0.8.0;
 
 /**
  * @title The ConfirmedOwner contract
