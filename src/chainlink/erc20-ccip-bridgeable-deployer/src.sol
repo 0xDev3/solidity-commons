@@ -7,6 +7,7 @@ import {ERC20Bridgeable} from "./ERC20Bridgeable.sol";
 interface ICCIPBridgeableDeployer {
     
     function calculateAddress(
+        address caller,
         string memory name,
         string memory symbol,
         string memory salt
@@ -35,20 +36,21 @@ contract Deployer is ICCIPBridgeableDeployer {
     }
 
     function calculateAddress(
+        address caller,
         string memory name,
         string memory symbol,
         string memory salt
     ) external view returns (address) {
         bytes32 hash = keccak256(
             abi.encodePacked(
-                bytes1(0xff), address(this), keccak256(abi.encodePacked(msg.sender, salt)), keccak256(getBytecode(name, symbol))
+                bytes1(0xff), address(this), keccak256(abi.encodePacked(caller, salt)), keccak256(getBytecode(name, symbol))
             )
         );
         return address (uint160(uint(hash)));
     }
 
     // get the ByteCode of the contract ERC20Bridgeable
-    function getBytecode(string memory name, string memory symbol) public pure returns (bytes memory) {
+    function getBytecode(string memory name, string memory symbol) private pure returns (bytes memory) {
         bytes memory bytecode = type(ERC20Bridgeable).creationCode;
         return abi.encodePacked(bytecode, abi.encode(name, symbol));
     }
