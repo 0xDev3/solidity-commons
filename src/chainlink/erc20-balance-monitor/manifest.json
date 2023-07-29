@@ -1,0 +1,388 @@
+{
+    "$schema": "../../schema.json",
+    "tags": [
+        "Chainlink",
+        "erc20 balance",
+        "balance"
+    ],
+    "implements": [
+        "chainlink.automation.automation-compatible",
+        "openzeppelin.security.pausable"
+    ],
+    "name": "ERC20 Balance Monitor",
+    "description": "A keeper-compatible contract that monitors and funds ERC20 tokens.",
+    "eventDecorators": [
+        {
+            "signature": "FundsWithdrawn(uint256,address)",
+            "name": "Funds Withdrawn",
+            "description": "Emitted when funds are withdrawn from the contract.",
+            "parameterDecorators": [
+                {
+                    "name": "Amount",
+                    "description": "Amount of funds withdrawn.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                },
+                {
+                    "name": "Payee",
+                    "description": "Address of the payee.",
+                    "recommendedTypes": ["common.contract-caller"],
+                    "indexed": false
+                }
+            ]
+        },
+        {
+            "signature": "TopUpSucceded(address)",
+            "name": "Top Up Succeded",
+            "description": "Emitted when a top up is successful.",
+            "parameterDecorators": [
+                {
+                    "name": "Top Up Address",
+                    "description": "Address of the top up.",
+                    "recommendedTypes": ["common.contract-caller"],
+                    "indexed": true
+                }
+            ]
+        },
+        {
+            "signature": "WatchListUpdated(address[],address[])",
+            "name": "Watch List Updated",
+            "description": "Emitted when the watch list is updated.",
+            "parameterDecorators": [
+                {
+                    "name": "Old watchlist",
+                    "description": "Addresses that are removed from the watch list.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                },
+                {
+                    "name": "New watchlist",
+                    "description": "Addresses that are added to the watch list.",
+                    "recommendedTypes": [],
+                    "indexed": false
+                }
+            ]
+        },
+        {
+            "signature": "KeeperRegistryAddressUpdated(address,address)",
+            "name": "Keeper Registry Address Updated",
+            "description": "Emitted when the keeper registry address is updated.",
+            "parameterDecorators": [
+                {
+                    "name": "Old Address",
+                    "description": "Old keeper registry address.",
+                    "recommendedTypes": ["chainlink.keeper.keeper-registry"],
+                    "indexed": false
+                },
+                {
+                    "name": "New Address",
+                    "description": "New keeper registry address.",
+                    "recommendedTypes": ["chainlink.keeper.keeper-registry"],
+                    "indexed": false
+                }
+            ]
+        },
+        {
+            "signature": "ERC20TokenAddressUpdated(address,address)",
+            "name": "ERC20 Token Address Updated",
+            "description": "Emitted when the ERC20 token address is updated.",
+            "parameterDecorators": [
+                {
+                    "name": "Old Address",
+                    "description": "Old ERC20 token address.",
+                    "recommendedTypes": ["common.erc20-receiver"],
+                    "indexed": false
+                },
+                {
+                    "name": "New Address",
+                    "description": "New ERC20 token address.",
+                    "recommendedTypes": ["common.erc20-receiver"],
+                    "indexed": false
+                }
+            ]
+        },
+        {
+            "signature": "MinWaitPeriodUpdated(uint256,uint256)",
+            "name": "Min Wait Period Updated",
+            "description": "Emitted when the minimum wait period is updated.",
+            "parameterDecorators": [
+                {
+                    "name": "Old Min Wait Period",
+                    "description": "Old minimum wait period.",
+                    "recommendedTypes": ["types.durationSeconds"],
+                    "indexed": false
+                },
+                {
+                    "name": "New Min Wait Period",
+                    "description": "New minimum wait period.",
+                    "recommendedTypes": ["types.durationSeconds"],
+                    "indexed": false
+                }
+            ]
+        }
+    ],
+    "constructorDecorators": [
+        {
+            "signature": "constructor(address,address,uint256)",
+            "name": "Constructor",
+            "description": "Registers the keeper registry address, the ERC20 token address and the minimum wait period.",
+            "parameterDecorators": [
+                {
+                    "name": "ERC20 Token Address",
+                    "description": "Address of the ERC20 token.",
+                    "recommendedTypes": ["common.erc20-receiver"]
+                },
+                {
+                    "name": "Keeper Registry Address",
+                    "description": "Address of the keeper registry.",
+                    "recommendedTypes": ["chainlink.keeper.keeper-registry"]
+                },
+                {
+                    "name": "Min Wait Period Seconds",
+                    "description": "Minimum wait period in seconds.",
+                    "recommendedTypes": ["types.durationSeconds"]
+                }
+            ],
+            "emittableEvents": []
+        }
+    ],
+    "functionDecorators": [
+        {
+            "signature": "setWatchList(address[],uint96[],uint96[])",
+            "name": "Set Watch List",
+            "description": "Sets the list of subscriptions to watch and their funding parameters.",
+            "parameterDecorators": [
+                {
+                    "name": "Addresses",
+                    "description": "The list of subscription ids to watch.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Minimum Balance",
+                    "description": "The minimum balance of each subscription.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Top Up levels",
+                    "description": "The amount to top up for each subscription.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [
+                "WatchListUpdated(address[],address[])"
+            ],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "getUnderfundedAddresses()",
+            "name": "Get Underfunded Addresses",
+            "description": "Gets a list of subscriptions that are underfunded.",
+            "parameterDecorators": [],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Addresses",
+                    "description": "The list of underfunded subscriptions.",
+                    "recommendedTypes": [],
+                    "solidityType": "address[]"
+                }
+            ],
+            "readOnly": true
+        },
+        {
+            "signature": "topUp(address[])",
+            "name": "Top Up",
+            "description": "Send funds to the subscriptions provided.",
+            "parameterDecorators": [
+                {
+                    "name": "Needs Funding",
+                    "description": "The list of subscriptions that need funding.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [
+                "TopUpSucceded(address)"
+            ],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "withdraw(uint256,address)",
+            "name": "Withdraw",
+            "description": "Withdraws the contract balance in the ERC20 token.",
+            "parameterDecorators": [
+                {
+                    "name": "Amount",
+                    "description": "Amount to withdraw.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Payee",
+                    "description": "Address to send the funds to.",
+                    "recommendedTypes": ["common.erc20-receiver"]
+                }
+            ],
+            "emittableEvents": [
+                "FundsWithdrawn(uint256,address)"
+            ],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "setERC20TokenAddress(address)",
+            "name": "Set ERC20 Token Address",
+            "description": "Sets the ERC20 token address.",
+            "parameterDecorators": [
+                {
+                    "name": "ERC20 Token Address",
+                    "description": "Address of the ERC20 token.",
+                    "recommendedTypes": ["common.erc20-receiver"]
+                }
+            ],
+            "emittableEvents": [
+                "ERC20TokenAddressUpdated(address,address)"
+            ],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "setKeeperRegistryAddress(address)",
+            "name": "Set Keeper Registry Address",
+            "description": "Sets the keeper registry address.",
+            "parameterDecorators": [
+                {
+                    "name": "Keeper Registry Address",
+                    "description": "Address of the keeper registry.",
+                    "recommendedTypes": ["chainlink.keeper.keeper-registry"]
+                }
+            ],
+            "emittableEvents": [
+                "KeeperRegistryAddressUpdated(address,address)"
+            ],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "setMinWaitPeriodSeconds(uint256)",
+            "name": "Set Min Wait Period Seconds",
+            "description": "Sets the minimum wait period.",
+            "parameterDecorators": [
+                {
+                    "name": "Min Wait Period Seconds",
+                    "description": "Minimum wait period in seconds.",
+                    "recommendedTypes": ["types.durationSeconds"]
+                }
+            ],
+            "emittableEvents": [
+                "MinWaitPeriodUpdated(uint256,uint256)"
+            ],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "getERC20TokenAddress()",
+            "name": "Get ERC20 Token Address",
+            "description": "Gets the ERC20 token address.",
+            "parameterDecorators": [],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "ERC20 Token Address",
+                    "description": "Address of the ERC20 token.",
+                    "recommendedTypes": ["common.erc20-receiver"],
+                    "solidityType": "address"
+                }
+            ],
+            "readOnly": true
+        },
+        {
+            "signature": "getKeeperRegistryAddress()",
+            "name": "Get Keeper Registry Address",
+            "description": "Gets the keeper registry address.",
+            "parameterDecorators": [],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Keeper Registry Address",
+                    "description": "Address of the keeper registry.",
+                    "recommendedTypes": ["chainlink.keeper.keeper-registry"],
+                    "solidityType": "address"
+                }
+            ],
+            "readOnly": true
+        },
+        {
+            "signature": "getMinWaitPeriodSeconds()",
+            "name": "Get Min Wait Period Seconds",
+            "description": "Gets the minimum wait period.",
+            "parameterDecorators": [],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Min Wait Period Seconds",
+                    "description": "Minimum wait period in seconds.",
+                    "recommendedTypes": ["types.durationSeconds"],
+                    "solidityType": "uint256"
+                }
+            ],
+            "readOnly": true
+        },
+        {
+            "signature": "getWatchList()",
+            "name": "Get Watch List",
+            "description": "Gets the watch list.",
+            "parameterDecorators": [],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Watch List",
+                    "description": "Gets the list of subscription ids being watched.",
+                    "recommendedTypes": [],
+                    "solidityType": "address[]"
+                }
+            ],
+            "readOnly": true
+        },
+        {
+            "signature": "getAccountInfo(address)",
+            "name": "Get Account Info",
+            "description": "Gets configuration information for an address on the watchlist.",
+            "parameterDecorators": [
+                {
+                    "name": "Address",
+                    "description": "Address to get the account info for.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Is Active",
+                    "description": "Whether the address is active.",
+                    "recommendedTypes": [],
+                    "solidityType": "bool"
+                },
+                {
+                    "name": "Min Balance",
+                    "description": "The minimum balance the address must have to be active.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint256"
+                },
+                {
+                    "name": "Top Up Level",
+                    "description": "The amount to top up for the subscription.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint256"
+                },
+                {
+                    "name": "Last Top Up Timestamp",
+                    "description": "The last time the subscription was topped up.",
+                    "recommendedTypes": ["types.unixTimestamp"],
+                    "solidityType": "uint256"
+                }
+            ],
+            "readOnly": true
+        }
+    ]
+}

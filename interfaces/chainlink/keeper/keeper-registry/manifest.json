@@ -1,0 +1,411 @@
+{
+    "$schema": "../../../schema.json",
+    "tags": [
+        "chainlink",
+        "keeper",
+        "registry"
+    ],
+    "name": "Keeper Registry",
+    "description": "This contract defines a registry of upkeeps for Chainlink oracles.",
+    "eventDecorators": [],
+    "functionDecorators": [
+        {
+            "signature": "registerUpkeep(address,uint32,address,bytes)",
+            "name": "registerUpkeep",
+            "description": "Registers a new upkeep in the registry.",
+            "parameterDecorators": [
+                {
+                    "name": "Target",
+                    "description": "The address of the contract that will be called when upkeep is needed.",
+                    "recommendedTypes": ["common.contract-caller"]
+                },
+                {
+                    "name": "Gas limit",
+                    "description": "The amount of gas needed to execute the upkeep.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Admin",
+                    "description": "The address of the admin.",
+                    "recommendedTypes": ["common.contract-caller"]
+                },
+                {
+                    "name": "Check Data",
+                    "description": "Data bytes with which the keeper should call checkUpkeep, if upkeep is needed. ABI-encoded fixed and specified at Upkeep registration and used in every checkUpkeep. Can be empty (0x).",
+                    "recommendedTypes": []
+                }
+            ],
+            "returnDecorators": [
+                {
+                    "signature": "Upkeep Id",
+                    "name": "Upkeep ID",
+                    "description": "The ID of the newly registered upkeep.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint256"
+                }
+            ],
+            "emittableEvents": [],
+            "readOnly": false
+        },
+        {
+            "signature": "performUpkeep(uint256,bytes)",
+            "name": "Perform Upkeep",
+            "description": "Executes the upkeep with the given ID, passing in the provided performData.",
+            "parameterDecorators": [
+                {
+                    "name": "ID",
+                    "description": "ID of the upkeep to be executed.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Perform data",
+                    "description": "Data to be passed to the target contract when performing the upkeep.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Success",
+                    "description": "Whether the upkeep was successfully performed.",
+                    "recommendedTypes": [],
+                    "solidityType": "bool"
+                }
+            ],
+            "readOnly": false
+        },
+        {
+            "signature": "cancelUpkeep(uint256)",
+            "name": "Cancel Upkeep",
+            "description": "Cancels the upkeep with the given ID.",
+            "parameterDecorators": [
+                {
+                    "name": "ID",
+                    "description": "ID of the upkeep to be cancelled.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "addFunds(uint256,uint96)",
+            "name": "Add Funds",
+            "description": "Adds funds to the upkeep with the given ID.",
+            "parameterDecorators": [
+                {
+                    "name": "ID",
+                    "description": "ID of the upkeep to add funds to.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Amount",
+                    "description": "Quantity of LINK to add to the upkeep (specified in Juels).",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "setUpkeepGasLimit(uint256,uint32)",
+            "name": "Set Upkeep Gas Limit",
+            "description": "Sets the gas limit for the upkeep with the given ID.",
+            "parameterDecorators": [
+                {
+                    "name": "ID",
+                    "description": "ID of the upkeep to set the gas limit for.",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Gas limit",
+                    "description": "Amount of gas to provide the target contract when performing upkeep.",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [],
+            "returnDecorators": [],
+            "readOnly": false
+        },
+        {
+            "signature": "getUpkeep(uint256)",
+            "name": "Get Upkeep",
+            "description": "Retrieves the information for an upkeep in the registry.",
+            "parameterDecorators": [
+                {
+                    "name": "ID",
+                    "description": "The ID of the upkeep to retrieve.",
+                    "recommendedTypes": []
+                }
+            ],
+            "returnDecorators": [
+                {
+                    "name": "Target",
+                    "description": "The address of the contract that will be called when upkeep is needed.",
+                    "recommendedTypes": ["common.contract-caller"],
+                    "solidityType": "address"
+                },
+                {
+                    "name": "Execute Gas",
+                    "description": "The amount of gas needed to execute the upkeep.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint32"
+                },
+                {
+                    "name": "Check data",
+                    "description": "Data bytes with which the keeper should call checkUpkeep, if upkeep is needed. ABI-encoded fixed and specified at Upkeep registration and used in every checkUpkeep. Can be empty (0x).",
+                    "recommendedTypes": [],
+                    "solidityType": "bytes"
+                },
+                {
+                    "name": "Balance",
+                    "description": "The amount of LINK available for the upkeep.",
+                    "recommendedTypes": [],
+                    "hints":[
+                        {
+                            "id":"decimals",
+                            "decimals_fetcher":"18"
+                        }
+                    ],
+                    "solidityType": "uint32"
+                },
+                {
+                    "name": "Last Keeper",
+                    "description": "The address of the last keeper to perform upkeep on the target contract.",
+                    "recommendedTypes": ["common.contract-caller"],
+                    "solidityType": "address"
+                },
+                {
+                    "name": "Admin",
+                    "description": "The address of the admin of the upkeep.",
+                    "recommendedTypes": ["common.contract-caller"],
+                    "solidityType": "address"
+                },
+                {
+                    "name": "Max Valid Blocknumber",
+                    "description": "The maximum block number that the upkeep can be performed at.",
+                    "recommendedTypes": ["types.blockNumber"],
+                    "solidityType": "uint64"
+                },
+                {
+                    "name": "Amount Spent",
+                    "description": "The amount of LINK spent on the upkeep.",
+                    "recommendedTypes": [],
+                    "hints":[
+                        {
+                            "id":"decimals",
+                            "decimals_fetcher":"18"
+                        }
+                    ],
+                    "solidityType": "uint96"
+                }
+            ],
+            "emittableEvents": [],
+            "readOnly": true
+        },
+        {
+            "signature": "getActiveUpkeepIDs(uint256,uint256)",
+            "name": "Get Active Upkeep IDs",
+            "description": "Get a list of active upkeep IDs",
+            "parameterDecorators": [
+                {
+                    "name": "Start Index",
+                    "description": "Index to start at",
+                    "recommendedTypes": []
+                },
+                {
+                    "name": "Max Count",
+                    "description": "Maximum number of IDs to return",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Active Upkeep IDs",
+                    "description": "List of active upkeep IDs",
+                    "recommendedTypes": [],
+                    "solidityType": "uint256[]"
+                }
+            ],
+            "readOnly": true
+        },
+        {
+            "signature": "getKeeperInfo(address)",
+            "name": "Get Keeper Info",
+            "description": "Get information about a specific keeper",
+            "parameterDecorators": [
+                {
+                    "name": "query",
+                    "description": "Address of the keeper to get information about",
+                    "recommendedTypes": []
+                }
+            ],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "Payee",
+                    "description": "The address that will receive the payment for performing an upkeep.",
+                    "recommendedTypes": [],
+                    "solidityType": "address"
+                },
+                {
+                    "name": "Active",
+                    "description": "Is the keeper active or not.",
+                    "recommendedTypes": [],
+                    "solidityType": "bool"
+                },
+                {
+                    "name": "Balance",
+                    "description": "The amount of LINK available for the upkeep.",
+                    "recommendedTypes": [],
+                    "solidityType": "uint96"
+                }
+            ],
+            "readOnly": true
+        },
+        {
+            "signature": "getState()",
+            "name": "Get State",
+            "description": "Returns the current state of the registry and its configuration parameters.",
+            "parameterDecorators": [],
+            "emittableEvents": [],
+            "returnDecorators": [
+                {
+                    "name": "state",
+                    "description": "The current state of the registry.",
+                    "parameters": [
+                        {
+                            "name": "Nonce",
+                            "description": "The nonce used for ID generation.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint32"
+                        },
+                        {
+                            "name": "Owner Link Balance",
+                            "description": "Withdrawable balance of LINK by contract owner",
+                            "recommendedTypes": [],
+                            "solidityType": "uint96"
+                        },
+                        {
+                            "name": "Expected Link Balance",
+                            "description": "The expected balance of LINK of the registry",
+                            "recommendedTypes": [],
+                            "solidityType": "uint256"
+                        },
+                        {
+                            "name": "Num of Upkeeps",
+                            "description": "Total number of upkeeps on the registry.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint256"
+                        }
+                    ],
+                    "recommendedTypes": [],
+                    "solidityType": "tuple"
+                },
+                {
+                    "name": "Config",
+                    "description": "The current configuration parameters of the registry.",
+                    "parameters": [
+                        {
+                            "name": "Payment Premium PPB",
+                            "description": "The payment premium rate oracles receive on top of being reimbursed for gas, measured in parts per billion.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint32"
+                        },
+                        {
+                            "name": "Flat Fee Micro Link",
+                            "description": "The flat fee paid to oracles for performing upkeeps, priced in MicroLink; can be used in conjunction with or independently of paymentPremiumPPB.",
+                            "recommendedTypes": [],
+                            "solidityType": "uint32",
+                            "hints":[
+                                {
+                                    "id":"decimals",
+                                    "decimals_fetcher":"6"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Block Count Per Turn",
+                            "description": "Number of blocks each oracle has during their turn to perform upkeep before it will be the next keeper's turn to submit",
+                            "recommendedTypes": ["types.blockNumber"],
+                            "solidityType": "uint24"
+                        },
+                        {
+                            "name": "Check Gas Limit",
+                            "description": "Gas limit when checking for upkeep",
+                            "recommendedTypes": [],
+                            "solidityType": "uint32"
+                        },
+                        {
+                            "name": "Staleness Seconds",
+                            "description": "Number of seconds that is allowed for feed data to be stale before switching to the fallback pricing",
+                            "recommendedTypes": ["types.durationSeconds"],
+                            "solidityType": "uint24"
+                        },
+                        {
+                            "name": "Gas Ceiling Multiplier",
+                            "description": "Multiplier to apply to the fast gas feed price when calculating the payment ceiling for keepers",
+                            "recommendedTypes": [],
+                            "solidityType": "uint16"
+                        },
+                        {
+                            "name": "Min Upkeep Spend",
+                            "description": "Minimum LINK that an upkeep must spend before cancelling",
+                            "recommendedTypes": [],
+                            "hints":[
+                                {
+                                    "id":"decimals",
+                                    "decimals_fetcher":"18"
+                                }
+                            ],
+                            "solidityType": "uint96"
+                        },
+                        {
+                            "name": "Max Perform Gas",
+                            "description": "Max executeGas allowed for an upkeep on this registry",
+                            "recommendedTypes": [],
+                            "solidityType": "uint32"
+                        },
+                        {
+                            "name": "Fallback Gas Price",
+                            "description": "Gas price used if the gas price feed is stale",
+                            "recommendedTypes": [],
+                            "solidityType": "uint256"
+                        },
+                        {
+                            "name": "Fallback Link Price",
+                            "description": "LINK price used if the LINK price feed is stale",
+                            "recommendedTypes": [],
+                            "solidityType": "uint256"
+                        },
+                        {
+                            "name": "Transcoder",
+                            "description": "Address of the transcoder contract",
+                            "recommendedTypes": ["common.contract-caller"],
+                            "solidityType": "address"
+                        },
+                        {
+                            "name": "Registrar",
+                            "description": "Address of the registrar contract",
+                            "recommendedTypes": ["common.contract-caller"],
+                            "solidityType": "address"
+                        }
+                    ],
+                    "recommendedTypes": [],
+                    "solidityType": "tuple"
+                },
+                {
+                    "name": "Keeper Addresses",
+                    "description": "The addresses of all registered keepers in the registry.",
+                    "recommendedTypes": [],
+                    "solidityType": "address[]",
+                    "indexed": false
+                }
+            ],
+            "readOnly": true
+        }
+    ]
+}
