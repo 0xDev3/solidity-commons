@@ -5,7 +5,7 @@ pragma solidity 0.8.19;
 import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
 import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
-import {IERC20Metadata, ERC20Bridgeable} from "./ERC20Bridgeable.sol";
+import {IERC20Metadata, McToken} from "./McToken.sol";
 
 interface ICCIPBridgeableDeployer {
     
@@ -68,6 +68,9 @@ contract Deployer is ICCIPBridgeableDeployer, CCIPReceiver {
     mapping (address => bool) deployedTokens;
     address[] deployedTokensList;
 
+    mapping (address => address) wrappedTokens; // token => wrapped token
+    mapping (address => mapping (address => uint256)) wrappedAmounts; // wrapped token => account => wrapped amount
+
     constructor() CCIPReceiver(_getRouterAddy(block.chainid)) {
         _addSupportedChains();
     }
@@ -126,7 +129,7 @@ contract Deployer is ICCIPBridgeableDeployer, CCIPReceiver {
         string memory salt
     ) public returns (address) {
         require(!deployedTokens[calculateAddress(msg.sender, name, symbol, salt)], "Token already deployed! Use different salt.");
-        ERC20Bridgeable token = new ERC20Bridgeable{salt: keccak256(abi.encodePacked(msg.sender, salt))}(name, symbol);
+        McToken token = new McToken{salt: keccak256(abi.encodePacked(msg.sender, salt))}(name, symbol);
         token.mint(msg.sender, initialSupply);
         deployedTokens[address(token)] = true;
         deployedTokensList.push(address(token));
@@ -167,9 +170,11 @@ contract Deployer is ICCIPBridgeableDeployer, CCIPReceiver {
                 require(destChainConfig.router != address(0), "Destination chain not supported.");
 
                 // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
+                bytes32 calculatedSalt = keccak256(abi.encodePacked(caller, salt));
+                bytes memory message = abi.encode(caller, name, symbol, calculatedSalt, initialSupply);
                 Client.EVM2AnyMessage memory evm2AnyMessage = _buildCCIPMessage(
                     address(this),
-                    abi.encode(caller, name, symbol, keccak256(abi.encodePacked(caller, salt)), initialSupply),
+                    message,
                     address(0)
                 );
 
@@ -205,7 +210,7 @@ contract Deployer is ICCIPBridgeableDeployer, CCIPReceiver {
 
     // get the ByteCode of the contract ERC20Bridgeable
     function getBytecode(string memory name, string memory symbol) private pure returns (bytes memory) {
-        bytes memory bytecode = type(ERC20Bridgeable).creationCode;
+        bytes memory bytecode = type(McToken).creationCode;
         return abi.encodePacked(bytecode, abi.encode(name, symbol));
     }
 
@@ -297,7 +302,7 @@ contract Deployer is ICCIPBridgeableDeployer, CCIPReceiver {
             uint256 initialSupply
         ) = abi.decode(any2EvmMessage.data, (address, string, string, bytes32, uint256));
 
-        ERC20Bridgeable token = new ERC20Bridgeable{salt: salt}(name, symbol);
+        McToken token = new McToken{salt: salt}(name, symbol);
         token.mint(caller, initialSupply);
     }
 
